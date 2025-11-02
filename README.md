@@ -70,3 +70,11 @@ This advice — ideally delivered by **September or October 2026** — may be su
 
 If this repository will include R modelling workflows (e.g. using the [`targets`](https://docs.ropensci.org/targets/) package), a recommended structure is:
 
+```mermaid 
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
