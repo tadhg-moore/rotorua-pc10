@@ -70,6 +70,10 @@ This advice — ideally delivered by **September or October 2026** — may be su
 
 If this repository will include R modelling workflows (e.g. using the [`targets`](https://docs.ropensci.org/targets/) package), a recommended structure is:
 
+## 🧭 Project Workflow Overview
+
+The following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.
+
 ```mermaid 
 flowchart TD 
 %% --- Project Overview --- 
