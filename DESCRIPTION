@@ -1,0 +1,13 @@
+Package: rotorua-pc10
+Title: Rotorua Plan Change 10 - Water Quality Modelling
+Version: 0.0.0.9000
+Authors@R: 
+    person("Tadhg", "Moore", , "tadhg@limnotrack.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3834-8868"))
+Description: Project files used in the Rotorua PC10 water quality modelling
+    project.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+URL: https://tadhg-moore.github.io/rotorua-pc10/
