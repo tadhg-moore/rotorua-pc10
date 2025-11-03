@@ -10,6 +10,8 @@ website:
     right:
       - href: resources.qmd
         text: Resources
+      - href: gantt.qmd
+        text: GANTT
 
 format:
   html:
