@@ -1,0 +1,10 @@
+---
+title: "Resources"
+format: html
+---
+
+Below are some useful resources and reports from previous water quality 
+studies on Lake Rotorua:
+
+- [Lake Rotorua Science Review Summary (2023)](https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content)
+- [Lake Rotorua Nutrient Management - Plan Change 10](https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/)
