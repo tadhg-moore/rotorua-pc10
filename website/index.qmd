@@ -2,4 +2,4 @@
 title: "Home"
 ---
 
-{{< include ../README.md >}}
+{{< include ../README.qmd >}}
