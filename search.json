@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "Resources",
+    "section": "",
+    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\n\nLake Rotorua Science Review Summary (2023)\nLake Rotorua Nutrient Management - Plan Change 10"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Home",
@@ -54,5 +61,12 @@
     "title": "Home",
     "section": "",
     "text": "The following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.\nflowchart TD \n%% --- Project Overview --- \n\nA[Project Start&lt;br&gt;Sept 2025] --&gt; B[GLM-AED Model Upgrade] \nB --&gt; C[Model Calibration&lt;br&gt;with Sediment Dynamics]\nC --&gt; D[Climate Scenario Development]\nD --&gt; E[Alum–Phosphorus Module&lt;br&gt;Collaboration with UWA] \nE --&gt; F[\"Scenario Testing&lt;br&gt;(Climate & Management)\"] \nF --&gt; G[Final Lake Model Outputs&lt;br&gt;Feb 2027] \n\n\n%% --- Parallel / External Links --- \nB -.-&gt; H[\"SWAT-MODFLOW Catchment Pilot&lt;br&gt;(3 Catchments)\"] \nH -.-&gt; I[\"Scaling Decision&lt;br&gt;Early 2026\"] \nI -.-&gt; D\n\n%% --- Outputs & Advice ---\n\nF --&gt; J[\"Preliminary Advice on Lake Rotoiti&lt;br&gt;(Sept–Oct 2026)\"]\nG --&gt; K[Documentation & Reporting] \n\n%% --- Styles --- \nstyle A fill:#cce5ff,stroke:#004085,stroke-width:1px \nstyle G fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle K fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle H fill:#fff3cd,stroke:#856404,stroke-width:1px \nstyle J fill:#fff3cd,stroke:#856404,stroke-width:1px"
+  },
+  {
+    "objectID": "gantt.html",
+    "href": "gantt.html",
+    "title": "GANTT Chart",
+    "section": "",
+    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    section Catchment Pilot\n    \"SWAT-MODFLOW pilot (3 catchments)\" :a1, 2026-03-01, 30d\n\n    section Lake Model Upgrade\n    GLM-AED model upgrade            :b1, 2026-03-01, 30d\n    Scaling decision – catchment     :b2, 2026-01-01, 60d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-09-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-09-01, 45d\n    Complete lake model delivery     :c3, 2027-02-01, 30d"
   }
 ]
