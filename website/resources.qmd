@@ -8,3 +8,6 @@ studies on Lake Rotorua:
 
 - [Lake Rotorua Science Review Summary (2023)](https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content)
 - [Lake Rotorua Nutrient Management - Plan Change 10](https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/)
+- [Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)](https://atlas.boprc.govt.nz/api/v1/edms/document/A3139961/content)
+- [Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (2023)](https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content)
+- [Trends and state of nutrients in Lake Rotorua streams 2013 (2013)](https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content)
