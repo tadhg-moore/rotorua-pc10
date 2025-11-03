@@ -1,0 +1,24 @@
+---
+title: "GANTT Chart"
+format: html
+---
+
+Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:
+
+```{mermaid}
+gantt
+    title Rotorua Lake Modelling – PC10 Deliverables
+    dateFormat  YYYY-MM-DD
+    section Catchment Pilot
+    "SWAT-MODFLOW pilot (3 catchments)" :a1, 2026-03-01, 30d
+
+    section Lake Model Upgrade
+    GLM-AED model upgrade            :b1, 2026-03-01, 30d
+    Scaling decision – catchment     :b2, 2026-01-01, 60d
+
+    section Scenario Testing
+    Initial climate scenarios        :c1, 2026-09-01, 30d
+    Preliminary advice re Rotoiti    :c2, 2026-09-01, 45d
+    Complete lake model delivery     :c3, 2027-02-01, 30d
+```
+
