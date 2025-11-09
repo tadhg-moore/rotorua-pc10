@@ -1,6 +1,6 @@
 ---
 title: "Rotorua Lake Modelling – PC10 Support"
-format: gfm
+# format: gfm
 ---
 
 The Rotorua Lake model will be updated to [**GLM-AED**](https://aquatic.science.uwa.edu.au/research/models/AED/), an open-source hydrodynamic–ecological model that enables improved simulation of vertical mixing, nutrient cycling, and management interventions under variable climate conditions.
