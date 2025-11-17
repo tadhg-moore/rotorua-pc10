@@ -9,16 +9,17 @@ Below is the GANTT chart outlining the key deliverables and timeline for the Rot
 gantt
     title Rotorua Lake Modelling – PC10 Deliverables
     dateFormat  YYYY-MM-DD
+    axisFormat  %b %Y
     section Catchment Pilot
-    "SWAT-MODFLOW pilot (3 catchments)" :a1, 2026-03-01, 30d
+    "SWAT-MODFLOW pilot (3 catchments)" :a1, 2025-12-01, 30d
 
     section Lake Model Upgrade
-    GLM-AED model upgrade            :b1, 2026-03-01, 30d
+    GLM-AED model upgrade            :b1, 2025-11-07, 50d
+    CMIP6 Data Processing            :b1, 2025-11-07, 30d
     Scaling decision – catchment     :b2, 2026-01-01, 60d
 
     section Scenario Testing
-    Initial climate scenarios        :c1, 2026-09-01, 30d
-    Preliminary advice re Rotoiti    :c2, 2026-09-01, 45d
-    Complete lake model delivery     :c3, 2027-02-01, 30d
+    Initial climate scenarios        :c1, 2026-01-01, 30d
+    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d
 ```
 
