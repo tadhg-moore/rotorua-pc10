@@ -12,6 +12,18 @@ website:
         text: Resources
       - href: gantt.qmd
         text: GANTT
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - text: "Project Overview"
+        href: index.qmd
+        contents:
+          - gantt.qmd
+      - section: "Tasks"
+        href: basics-summary.qmd
+        contents:
+          - data-request.qmd
 
 format:
   html:
