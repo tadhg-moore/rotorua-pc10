@@ -11,3 +11,4 @@ studies on Lake Rotorua:
 - [Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)](https://atlas.boprc.govt.nz/api/v1/edms/document/A3139961/content)
 - [Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (2023)](https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content)
 - [Trends and state of nutrients in Lake Rotorua streams 2013 (2013)](https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content)
+- [Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupo, New Zealand](https://www.mssanz.org.au/modsim05/papers/rutherford.pdf)
