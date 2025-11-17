@@ -90,8 +90,8 @@ F --> G[Final Lake Model Outputs<br>Feb 2027]
 
 
 %% --- Parallel / External Links --- 
-B -.-> H["SWAT-MODFLOW Catchment Pilot<br>(3 Catchments)"] 
-H -.-> I["Scaling Decision<br>Early 2026"] 
+B -.-> H["SWAT-MODFLOW Catchment Pilot<br>3 Catchments"] 
+H -.-> I[Scaling Decision<br>Early 2026] 
 I -.-> D
 
 %% --- Outputs & Advice ---
