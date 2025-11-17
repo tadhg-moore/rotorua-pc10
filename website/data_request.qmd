@@ -1,0 +1,49 @@
+---
+title: "Data Request"
+format: html
+editor: visual
+---
+
+# Draft Data Request List — Lake Modelling Project
+
+Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.
+
+------------------------------------------------------------------------
+
+## Data Request Table
+
+| Dataset | Description / Variables | Purpose in Modelling | Source |
+|--------------|------------------------|---------------------|--------------|
+| **Inflow volumes** | Daily/hourly flow records for all tributaries and stormwater inputs | Define hydrological boundary conditions; drive water balance | BoPRC |
+| **Inflow chemistry** | Nutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature | Set up inflow nutrient loads and biogeochemical forcing | BoPRC |
+| **Grab samples & rating curve data** | Flow–concentration relationships, historical spot samples | Improve accuracy of nutrient load estimates | CM / BoPRC |
+| **Meteorological data (buoy)** | Wind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall | Primary atmospheric forcing for lake model | BoPRC |
+| **Meteorological data (airport)** | NIWA climate station data (same variables as above) | Gap filling and long-term climate records | NIWA Climate Portal |
+| **CMIP6 climate data** | Bias-corrected scenario climate inputs | Future scenario modelling | Shared Drive |
+| **Lake level / stage** | Time series of lake height | Convert model depths to dynamic hypsography; align inflow/outflow | BoPRC |
+| **Outflow data** | Outflow discharge and control structure operations | Complete hydrological mass balance | BoPRC |
+| **Water quality profiles** | Vertical profiles of temperature, DO, chlorophyll-a, nutrients | Calibration & validation of GLM-AED | Limnotrack/BoPRC |
+| **Historical GLM-AED outputs** | Previous model runs and configuration files | Provide baseline assumptions and compare structure | BoPRC / CM |
+| **Old DYRESM-CAEDYM report** | Model description and past findings | Reference for parameterisation and historical context | Deniz |
+| **Catchment shapefile** | Full catchment boundary polygon | Define drainage area for inflow and land-use analysis | BoPRC |
+| **Sub-catchment delineations** | Individual subcatchment polygons | Attribute inflows to specific contributing areas | BoPRC |
+| **Land-use data (current)** | Latest regional council land-use dataset | Estimate nutrient export, identify land-use pressures | BoPRC |
+| **Historical land-use (LCDB)** | LCDB time-series land-cover data | Identify changes over time influencing nutrient loading | LINZ / LCDB |
+| **ROTAN model outputs** | Rotorua/Taupō nitrate model datasets (flows, loads) | Cross-check nutrient source estimates; historic nitrate loading | Rutherford |
+| **Bathymetry** | High-resolution depth raster or contours | Build lake hypsography for GLM-AED | BoPRC |
+| **Sediment parameters** | Sediment P/N fractions, nutrient release data | Support AED sediment flux and diagenesis modules | BoPRC / Literature |
+| **Point-source inputs** | Any wastewater/stormwater discharge records | Ensure all external loads are captured | BoPRC |
+
+------------------------------------------------------------------------
+
+## Notes
+
+-   Begin with highest-priority datasets: **inflow volumes**, **inflow chemistry**, **met data**, **catchment shapefiles**.
+-   Ask CM specifically for:
+    -   Nutrient loading work (grab samples, rating curves)\
+    -   Any old Rotorua model equations for estimating inflow concentrations.
+-   ROTAN datasets may help fill large data gaps.
+
+------------------------------------------------------------------------
+
+Let me know if you want this expanded into a **formal request letter** or broken into **priority tiers** (high/medium/low).
