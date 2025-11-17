@@ -4,69 +4,130 @@
     "href": "resources.html",
     "title": "Resources",
     "section": "",
-    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\n\nLake Rotorua Science Review Summary (2023)\nLake Rotorua Nutrient Management - Plan Change 10\nLong-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)\nTrend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (2023)\nTrends and state of nutrients in Lake Rotorua streams 2013 (2013)"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "",
-    "text": "The Rotorua Lake model will be updated to GLM-AED, an open-source hydrodynamic–ecological model that enables improved simulation of vertical mixing, nutrient cycling, and management interventions under variable climate conditions.\nThis upgrade will allow long-term scenario testing and a more flexible, modular architecture."
-  },
-  {
-    "objectID": "index.html#overview",
-    "href": "index.html#overview",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "🔍 Overview",
-    "text": "🔍 Overview\nKey enhancements over previous Lake Rotorua models will include:\n\nDynamic sediment–water feedback to better represent internal nutrient loading and delayed responses to external inputs.\n\nSupport for climate change scenarios, enabling projections of lake responses over decadal scales.\n\nMechanistic simulation of alum dosing, which is currently conducted in two inflows on a near-daily basis.\n\nActive and ongoing development of model software and related tools."
-  },
-  {
-    "objectID": "index.html#alumphosphorus-modelling",
-    "href": "index.html#alumphosphorus-modelling",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "⚗️ Alum–Phosphorus Modelling",
-    "text": "⚗️ Alum–Phosphorus Modelling\nOne important improvement will be incorporating a mechanistic representation of Al–P interactions.\nCurrent models do not explicitly simulate alum chemistry or its interaction with phosphorus.\nWe are engaging with the University of Western Australia (UWA) to explore support for code modification within the AED structure.\nThe proposed model will simulate:\n\nHydrolysis of dosed alum and speciation of aluminium (e.g. Al³⁺, Al(OH)₃)\n\npH and temperature dependence of phosphate binding efficiency\n\nSediment-mediated sorption and variable effectiveness depending on depth, organic content, and redox state\n\nAging or decay of reactive Al over time to simulate persistence of alum effects\n\nDosing through inflow boundary conditions, allowing for flexible scenario testing\n\n\nIf this collaboration is not confirmed, alternate pathways for implementing alum dynamics will be explored to maintain model delivery timelines."
-  },
-  {
-    "objectID": "index.html#timeline-and-resources",
-    "href": "index.html#timeline-and-resources",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "🗓️ Timeline and Resources",
-    "text": "🗓️ Timeline and Resources\n\nThe model upgrade and calibration will begin in September 2025, using existing University of Waikato resources.\n\nInitial climate change scenarios will be prioritised and delivered by September 2026, with alum scenario testing dependent on code development.\n\nThis lake modelling work will proceed independently of catchment model scaling, ensuring continuity regardless of SWAT-MODFLOW outcomes."
-  },
-  {
-    "objectID": "index.html#deliverables-and-milestones",
-    "href": "index.html#deliverables-and-milestones",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "📅 Deliverables and Milestones",
-    "text": "📅 Deliverables and Milestones\n\n\n\n\n\n\n\n\nMilestone\nTarget Date\nDeliverable\n\n\n\n\nSWAT-MODFLOW pilot (3 catchments)\nMarch 2026\nCalibrated sub-catchment models and model evaluation\n\n\nGLM-AED model upgrade\nMarch 2026\nLake model calibrated with sediment dynamics\n\n\nScaling decision – catchment model\nEarly 2026\nEvaluation and planning for full-catchment rollout\n\n\nInitial climate scenarios for lake\nSeptember 2026\nLong-term projections under climate change (inclusion of catchment scenarios contingent on scaling decision)\n\n\nPreliminary advice re Rotoiti\nSeptember–October 2026\nAdvice on potential downstream impacts (if Ōhau Wall is repaired)\n\n\nComplete lake model and scenario delivery\nFebruary 2027\nFinalised lake model outputs including full climate and management scenario set; documentation and reporting"
-  },
-  {
-    "objectID": "index.html#other-considerations",
-    "href": "index.html#other-considerations",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "🧭 Other Considerations",
-    "text": "🧭 Other Considerations\nThe proposed work is strongly aligned with PC10 implementation.\nCouncil staff have highlighted the need for early advice on potential changes in nutrient delivery to Lake Rotoiti, particularly if the Ōhau Wall is repaired.\nThis advice — ideally delivered by September or October 2026 — may be supported by the updated lake model and preliminary catchment scenario runs (depending on the outcome of the pilot)."
-  },
-  {
-    "objectID": "index.html#repository-structure-for-development",
-    "href": "index.html#repository-structure-for-development",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "🧱 Repository Structure (for development)",
-    "text": "🧱 Repository Structure (for development)\nIf this repository will include R modelling workflows (e.g. using the targets package), a recommended structure is:"
-  },
-  {
-    "objectID": "index.html#project-workflow-overview",
-    "href": "index.html#project-workflow-overview",
-    "title": "Rotorua Lake Modelling – PC10 Support",
-    "section": "🧭 Project Workflow Overview",
-    "text": "🧭 Project Workflow Overview\nThe following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.\n\n\n\n\n\nflowchart TD \n%% --- Project Overview --- \n\nA[Project Start&lt;br&gt;Sept 2025] --&gt; B[GLM-AED Model Upgrade] \nB --&gt; C[Model Calibration&lt;br&gt;with Sediment Dynamics]\nC --&gt; D[Climate Scenario Development]\nD --&gt; E[Alum–Phosphorus Module&lt;br&gt;Collaboration with UWA] \nE --&gt; F[\"Scenario Testing&lt;br&gt;(Climate & Management)\"] \nF --&gt; G[Final Lake Model Outputs&lt;br&gt;Feb 2027] \n\n\n%% --- Parallel / External Links --- \nB -.-&gt; H[\"SWAT-MODFLOW Catchment Pilot&lt;br&gt;(3 Catchments)\"] \nH -.-&gt; I[\"Scaling Decision&lt;br&gt;Early 2026\"] \nI -.-&gt; D\n\n%% --- Outputs & Advice ---\n\nF --&gt; J[\"Preliminary Advice on Lake Rotoiti&lt;br&gt;(Sept–Oct 2026)\"]\nG --&gt; K[Documentation & Reporting] \n\n%% --- Styles --- \nstyle A fill:#cce5ff,stroke:#004085,stroke-width:1px \nstyle G fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle K fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle H fill:#fff3cd,stroke:#856404,stroke-width:1px \nstyle J fill:#fff3cd,stroke:#856404,stroke-width:1px"
+    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\n\nLake Rotorua Science Review Summary (2023)\nLake Rotorua Nutrient Management - Plan Change 10\nLong-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)\nTrend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (2023)\nTrends and state of nutrients in Lake Rotorua streams 2013 (2013)\nModelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupo, New Zealand"
   },
   {
     "objectID": "gantt.html",
     "href": "gantt.html",
     "title": "GANTT Chart",
     "section": "",
-    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    section Catchment Pilot\n    \"SWAT-MODFLOW pilot (3 catchments)\" :a1, 2026-03-01, 30d\n\n    section Lake Model Upgrade\n    GLM-AED model upgrade            :b1, 2026-03-01, 30d\n    Scaling decision – catchment     :b2, 2026-01-01, 60d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-09-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-09-01, 45d\n    Complete lake model delivery     :c3, 2027-02-01, 30d"
+    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    \"SWAT-MODFLOW pilot (3 catchments)\" :a1, 2025-12-01, 30d\n\n    section Lake Model Upgrade\n    GLM-AED model upgrade            :b1, 2025-11-07, 50d\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    Scaling decision – catchment     :b2, 2026-01-01, 60d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "GANTT Chart"
+    ]
+  },
+  {
+    "objectID": "data-request.html",
+    "href": "data-request.html",
+    "title": "Data Request",
+    "section": "",
+    "text": "Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.\n\n\n\n\n\n\n\n\n\n\nDataset\nDescription / Variables\nPurpose in Modelling\nSource\n\n\n\n\nInflow volumes\nDaily/hourly flow records for all tributaries and stormwater inputs\nDefine hydrological boundary conditions; drive water balance\nBoPRC\n\n\nInflow chemistry\nNutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature\nSet up inflow nutrient loads and biogeochemical forcing\nBoPRC\n\n\nGrab samples & rating curve data\nFlow–concentration relationships, historical spot samples\nImprove accuracy of nutrient load estimates\nCM / BoPRC\n\n\nMeteorological data (buoy)\nWind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall\nPrimary atmospheric forcing for lake model\nBoPRC\n\n\nMeteorological data (airport)\nNIWA climate station data (same variables as above)\nGap filling and long-term climate records\nNIWA Climate Portal\n\n\nCMIP6 climate data\nBias-corrected scenario climate inputs\nFuture scenario modelling\nShared Drive\n\n\nLake level / stage\nTime series of lake height\nConvert model depths to dynamic hypsography; align inflow/outflow\nBoPRC\n\n\nOutflow data\nOutflow discharge and control structure operations\nComplete hydrological mass balance\nBoPRC\n\n\nWater quality profiles\nVertical profiles of temperature, DO, chlorophyll-a, nutrients\nCalibration & validation of GLM-AED\nLimnotrack/BoPRC\n\n\nHistorical GLM-AED outputs\nPrevious model runs and configuration files\nProvide baseline assumptions and compare structure\nBoPRC / CM\n\n\nOld DYRESM-CAEDYM report\nModel description and past findings\nReference for parameterisation and historical context\nDeniz\n\n\nCatchment shapefile\nFull catchment boundary polygon\nDefine drainage area for inflow and land-use analysis\nBoPRC\n\n\nSub-catchment delineations\nIndividual subcatchment polygons\nAttribute inflows to specific contributing areas\nBoPRC\n\n\nLand-use data (current)\nLatest regional council land-use dataset\nEstimate nutrient export, identify land-use pressures\nBoPRC\n\n\nHistorical land-use (LCDB)\nLCDB time-series land-cover data\nIdentify changes over time influencing nutrient loading\nLINZ / LCDB\n\n\nROTAN model outputs\nRotorua/Taupō nitrate model datasets (flows, loads)\nCross-check nutrient source estimates; historic nitrate loading\nRutherford\n\n\nBathymetry\nHigh-resolution depth raster or contours\nBuild lake hypsography for GLM-AED\nBoPRC\n\n\nSediment parameters\nSediment P/N fractions, nutrient release data\nSupport AED sediment flux and diagenesis modules\nBoPRC / Literature\n\n\nPoint-source inputs\nAny wastewater/stormwater discharge records\nEnsure all external loads are captured\nBoPRC\n\n\n\n\n\n\n\nBegin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
+    "objectID": "data-request.html#notes",
+    "href": "data-request.html#notes",
+    "title": "Data Request",
+    "section": "",
+    "text": "Begin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "",
+    "text": "The Rotorua Lake model will be updated to GLM-AED, an open-source hydrodynamic–ecological model that enables improved simulation of vertical mixing, nutrient cycling, and management interventions under variable climate conditions.\nThis upgrade will allow long-term scenario testing and a more flexible, modular architecture.",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "🔍 Overview",
+    "text": "🔍 Overview\nKey enhancements over previous Lake Rotorua models will include:\n\nDynamic sediment–water feedback to better represent internal nutrient loading and delayed responses to external inputs.\n\nSupport for climate change scenarios, enabling projections of lake responses over decadal scales.\n\nMechanistic simulation of alum dosing, which is currently conducted in two inflows on a near-daily basis.\n\nActive and ongoing development of model software and related tools.",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#alumphosphorus-modelling",
+    "href": "index.html#alumphosphorus-modelling",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "⚗️ Alum–Phosphorus Modelling",
+    "text": "⚗️ Alum–Phosphorus Modelling\nOne important improvement will be incorporating a mechanistic representation of Al–P interactions.\nCurrent models do not explicitly simulate alum chemistry or its interaction with phosphorus.\nWe are engaging with the University of Western Australia (UWA) to explore support for code modification within the AED structure.\nThe proposed model will simulate:\n\nHydrolysis of dosed alum and speciation of aluminium (e.g. Al³⁺, Al(OH)₃)\n\npH and temperature dependence of phosphate binding efficiency\n\nSediment-mediated sorption and variable effectiveness depending on depth, organic content, and redox state\n\nAging or decay of reactive Al over time to simulate persistence of alum effects\n\nDosing through inflow boundary conditions, allowing for flexible scenario testing\n\n\nIf this collaboration is not confirmed, alternate pathways for implementing alum dynamics will be explored to maintain model delivery timelines.",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#timeline-and-resources",
+    "href": "index.html#timeline-and-resources",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "🗓️ Timeline and Resources",
+    "text": "🗓️ Timeline and Resources\n\nThe model upgrade and calibration will begin in September 2025, using existing University of Waikato resources.\n\nInitial climate change scenarios will be prioritised and delivered by September 2026, with alum scenario testing dependent on code development.\n\nThis lake modelling work will proceed independently of catchment model scaling, ensuring continuity regardless of SWAT-MODFLOW outcomes.",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#deliverables-and-milestones",
+    "href": "index.html#deliverables-and-milestones",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "📅 Deliverables and Milestones",
+    "text": "📅 Deliverables and Milestones\n\n\n\n\n\n\n\n\nMilestone\nTarget Date\nDeliverable\n\n\n\n\nSWAT-MODFLOW pilot (3 catchments)\nMarch 2026\nCalibrated sub-catchment models and model evaluation\n\n\nGLM-AED model upgrade\nMarch 2026\nLake model calibrated with sediment dynamics\n\n\nScaling decision – catchment model\nEarly 2026\nEvaluation and planning for full-catchment rollout\n\n\nInitial climate scenarios for lake\nSeptember 2026\nLong-term projections under climate change (inclusion of catchment scenarios contingent on scaling decision)\n\n\nPreliminary advice re Rotoiti\nSeptember–October 2026\nAdvice on potential downstream impacts (if Ōhau Wall is repaired)\n\n\nComplete lake model and scenario delivery\nFebruary 2027\nFinalised lake model outputs including full climate and management scenario set; documentation and reporting",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#other-considerations",
+    "href": "index.html#other-considerations",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "🧭 Other Considerations",
+    "text": "🧭 Other Considerations\nThe proposed work is strongly aligned with PC10 implementation.\nCouncil staff have highlighted the need for early advice on potential changes in nutrient delivery to Lake Rotoiti, particularly if the Ōhau Wall is repaired.\nThis advice — ideally delivered by September or October 2026 — may be supported by the updated lake model and preliminary catchment scenario runs (depending on the outcome of the pilot).",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#repository-structure-for-development",
+    "href": "index.html#repository-structure-for-development",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "🧱 Repository Structure (for development)",
+    "text": "🧱 Repository Structure (for development)\nIf this repository will include R modelling workflows (e.g. using the targets package), a recommended structure is:",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
+  },
+  {
+    "objectID": "index.html#project-workflow-overview",
+    "href": "index.html#project-workflow-overview",
+    "title": "Rotorua Lake Modelling – PC10 Support",
+    "section": "🧭 Project Workflow Overview",
+    "text": "🧭 Project Workflow Overview\nThe following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.\n\n\n\n\n\nflowchart TD \n%% --- Project Overview --- \n\nA[Project Start&lt;br&gt;Sept 2025] --&gt; B[GLM-AED Model Upgrade] \nB --&gt; C[Model Calibration&lt;br&gt;with Sediment Dynamics]\nC --&gt; D[Climate Scenario Development]\nD --&gt; E[Alum–Phosphorus Module&lt;br&gt;Collaboration with UWA] \nE --&gt; F[\"Scenario Testing&lt;br&gt;(Climate & Management)\"] \nF --&gt; G[Final Lake Model Outputs&lt;br&gt;Feb 2027] \n\n\n%% --- Parallel / External Links --- \nB -.-&gt; H[\"SWAT-MODFLOW Catchment Pilot&lt;br&gt;3 Catchments\"] \nH -.-&gt; I[Scaling Decision&lt;br&gt;Early 2026] \nI -.-&gt; D\n\n%% --- Outputs & Advice ---\n\nF --&gt; J[\"Preliminary Advice on Lake Rotoiti&lt;br&gt;(Sept–Oct 2026)\"]\nG --&gt; K[Documentation & Reporting] \n\n%% --- Styles --- \nstyle A fill:#cce5ff,stroke:#004085,stroke-width:1px \nstyle G fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle K fill:#d4edda,stroke:#155724,stroke-width:1px \nstyle H fill:#fff3cd,stroke:#856404,stroke-width:1px \nstyle J fill:#fff3cd,stroke:#856404,stroke-width:1px",
+    "crumbs": [
+      "Home",
+      "Project Overview"
+    ]
   }
 ]
