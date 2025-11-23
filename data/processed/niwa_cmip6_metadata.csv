@@ -1,0 +1,333 @@
+filename,basename,variable,scenario,gcm,model,timestep,spatial_res,biascorrection,calendar,variable_name_long,variable_units
+hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw,hurs,historical,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw,hurs,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw,hurs,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw,hurs,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw,hurs,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,PEDsrad,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,PETsrad,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,PETsrad,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,PETsrad,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,PETsrad,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,PETsrad,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,pr_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,pr,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,pr_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,pr,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,pr_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,pr,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,pr_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,pr,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,pr_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,pr,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,rsds_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw,rsds,historical,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw,rsds,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw,rsds,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw,rsds,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw,rsds,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWind,historical,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWind,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWind,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWind,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWind,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWindmax,historical,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tas_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,tas,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tas_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,tas,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tas_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,tas,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tas_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,tas,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tas_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,tas,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmax_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmax,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmax,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmax,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmax,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmax,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmin_historical_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmin,historical,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmin,ssp126,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmin,ssp245,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmin,ssp370,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_ACCESS-CM2_CCAM_daily_NZ5km_bc,tasmin,ssp585,ACCESS-CM2,CCAM,daily,NZ5km,bc,365_day,NA,NA
+hurs_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,hurs_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,hurs,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,hurs,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,hurs,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,hurs,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,hurs,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PEDsrad,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PETsrad,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PETsrad,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PETsrad,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PETsrad,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,PETsrad,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,pr_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,pr,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,pr_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,pr,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,pr_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,pr,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,pr_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,pr,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,pr_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,pr,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,rsds_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,rsds,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,rsds,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,rsds,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,rsds,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,rsds,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWind,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWind,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWind,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWind,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWind,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWindmax,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tas_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tas,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tas_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tas,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tas_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tas,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tas_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tas,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tas_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tas,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmax_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmax,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmax,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmax,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmax,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmax,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmin_historical_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmin,historical,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmin,ssp126,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmin,ssp245,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmin,ssp370,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_AWI-CM-1-1-MR_CCAM_daily_NZ5km_bc,tasmin,ssp585,AWI-CM-1-1-MR,CCAM,daily,NZ5km,bc,365_day,NA,NA
+hurs_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,hurs_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw,hurs,historical,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw,hurs,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw,hurs,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw,hurs,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw,hurs,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PEDsrad,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PETsrad,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PETsrad,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PETsrad,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PETsrad,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,PETsrad,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,pr_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,pr,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,pr_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,pr,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,pr_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,pr,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,pr_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,pr,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,pr_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,pr,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,rsds_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw,rsds,historical,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw,rsds,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw,rsds,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw,rsds,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw,rsds,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWind,historical,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWind,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWind,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWind,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWind,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWindmax,historical,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tas_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tas,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tas_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tas,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tas_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tas,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tas_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tas,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tas_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tas,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmax_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmax,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmax,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmax,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmax,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmax,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmin_historical_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmin,historical,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmin,ssp126,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmin,ssp245,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmin,ssp370,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_CNRM-CM6-1_CCAM_daily_NZ5km_bc,tasmin,ssp585,CNRM-CM6-1,CCAM,daily,NZ5km,bc,365_day,NA,NA
+hurs_historical_EC-Earth3_CCAM_daily_NZ5km_raw.nc,hurs_historical_EC-Earth3_CCAM_daily_NZ5km_raw,hurs,historical,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw,hurs,ssp126,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw,hurs,ssp245,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw,hurs,ssp370,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw,hurs,ssp585,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_EC-Earth3_CCAM_daily_NZ5km_bc,PEDsrad,historical,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_EC-Earth3_CCAM_daily_NZ5km_bc,PETsrad,historical,EC-Earth3,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,PETsrad,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,PETsrad,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,PETsrad,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,PETsrad,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,pr_historical_EC-Earth3_CCAM_daily_NZ5km_bc,pr,historical,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,pr_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,pr,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,pr_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,pr,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,pr_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,pr,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,pr_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,pr,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_EC-Earth3_CCAM_daily_NZ5km_raw.nc,rsds_historical_EC-Earth3_CCAM_daily_NZ5km_raw,rsds,historical,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw,rsds,ssp126,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw,rsds,ssp245,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw,rsds,ssp370,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw,rsds,ssp585,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWind,historical,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWind,ssp126,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWind,ssp245,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWind,ssp370,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWind,ssp585,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWindmax,historical,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_EC-Earth3_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,EC-Earth3,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tas_historical_EC-Earth3_CCAM_daily_NZ5km_bc,tas,historical,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tas_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,tas,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tas_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,tas,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tas_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,tas,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tas_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,tas,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmax_historical_EC-Earth3_CCAM_daily_NZ5km_bc,tasmax,historical,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,tasmax,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,tasmax,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,tasmax,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,tasmax,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmin_historical_EC-Earth3_CCAM_daily_NZ5km_bc,tasmin,historical,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_EC-Earth3_CCAM_daily_NZ5km_bc,tasmin,ssp126,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_EC-Earth3_CCAM_daily_NZ5km_bc,tasmin,ssp245,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_EC-Earth3_CCAM_daily_NZ5km_bc,tasmin,ssp370,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_EC-Earth3_CCAM_daily_NZ5km_bc,tasmin,ssp585,EC-Earth3,CCAM,daily,NZ5km,bc,365_day,NA,NA
+hurs_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,hurs_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw,hurs,historical,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw,hurs,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw,hurs,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw,hurs,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw,hurs,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,PEDsrad,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,PETsrad,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,PETsrad,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,PETsrad,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,PETsrad,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,PETsrad,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,pr_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,pr,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,pr_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,pr,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,pr_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,pr,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,pr_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,pr,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,pr_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,pr,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,rsds_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw,rsds,historical,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw,rsds,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw,rsds,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw,rsds,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw,rsds,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWind,historical,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWind,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWind,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWind,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWind,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWindmax,historical,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tas_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,tas,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tas_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,tas,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tas_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,tas,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tas_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,tas,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tas_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,tas,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmax_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmax,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmax,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmax,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmax,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmax,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmin_historical_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmin,historical,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmin,ssp126,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmin,ssp245,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmin,ssp370,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_GFDL-ESM4_CCAM_daily_NZ5km_bc,tasmin,ssp585,GFDL-ESM4,CCAM,daily,NZ5km,bc,365_day,NA,NA
+hurs_historical_NZESM_UM_daily_NZ5km_raw.nc,hurs_historical_NZESM_UM_daily_NZ5km_raw,hurs,historical,NZESM,UM,daily,NZ5km,raw,360_day,Average relative humidity,%
+hurs_ssp126_NZESM_UM_daily_NZ5km_raw.nc,hurs_ssp126_NZESM_UM_daily_NZ5km_raw,hurs,ssp126,NZESM,UM,daily,NZ5km,raw,360_day,Average relative humidity,%
+hurs_ssp245_NZESM_UM_daily_NZ5km_raw.nc,hurs_ssp245_NZESM_UM_daily_NZ5km_raw,hurs,ssp245,NZESM,UM,daily,NZ5km,raw,360_day,Average relative humidity,%
+hurs_ssp370_NZESM_UM_daily_NZ5km_raw.nc,hurs_ssp370_NZESM_UM_daily_NZ5km_raw,hurs,ssp370,NZESM,UM,daily,NZ5km,raw,360_day,Average relative humidity,%
+pr_historical_NZESM_UM_daily_NZ5km_bc.nc,pr_historical_NZESM_UM_daily_NZ5km_bc,pr,historical,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+pr_ssp126_NZESM_UM_daily_NZ5km_bc.nc,pr_ssp126_NZESM_UM_daily_NZ5km_bc,pr,ssp126,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+pr_ssp245_NZESM_UM_daily_NZ5km_bc.nc,pr_ssp245_NZESM_UM_daily_NZ5km_bc,pr,ssp245,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+pr_ssp370_NZESM_UM_daily_NZ5km_bc.nc,pr_ssp370_NZESM_UM_daily_NZ5km_bc,pr,ssp370,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+rsds_historical_NZESM_UM_daily_NZ5km_raw.nc,rsds_historical_NZESM_UM_daily_NZ5km_raw,rsds,historical,NZESM,UM,daily,NZ5km,raw,360_day,Average solar radiation,W/m2
+rsds_ssp126_NZESM_UM_daily_NZ5km_raw.nc,rsds_ssp126_NZESM_UM_daily_NZ5km_raw,rsds,ssp126,NZESM,UM,daily,NZ5km,raw,360_day,Average solar radiation,W/m2
+rsds_ssp245_NZESM_UM_daily_NZ5km_raw.nc,rsds_ssp245_NZESM_UM_daily_NZ5km_raw,rsds,ssp245,NZESM,UM,daily,NZ5km,raw,360_day,Average solar radiation,W/m2
+rsds_ssp370_NZESM_UM_daily_NZ5km_raw.nc,rsds_ssp370_NZESM_UM_daily_NZ5km_raw,rsds,ssp370,NZESM,UM,daily,NZ5km,raw,360_day,Average solar radiation,W/m2
+sfcWind_historical_NZESM_UM_daily_NZ5km_raw.nc,sfcWind_historical_NZESM_UM_daily_NZ5km_raw,sfcWind,historical,NZESM,UM,daily,NZ5km,raw,360_day,Average wind speed,m/s
+sfcWind_ssp126_NZESM_UM_daily_NZ5km_raw.nc,sfcWind_ssp126_NZESM_UM_daily_NZ5km_raw,sfcWind,ssp126,NZESM,UM,daily,NZ5km,raw,360_day,Average wind speed,m/s
+sfcWind_ssp245_NZESM_UM_daily_NZ5km_raw.nc,sfcWind_ssp245_NZESM_UM_daily_NZ5km_raw,sfcWind,ssp245,NZESM,UM,daily,NZ5km,raw,360_day,Average wind speed,m/s
+sfcWind_ssp370_NZESM_UM_daily_NZ5km_raw.nc,sfcWind_ssp370_NZESM_UM_daily_NZ5km_raw,sfcWind,ssp370,NZESM,UM,daily,NZ5km,raw,360_day,Average wind speed,m/s
+sfcWindmax_historical_NZESM_UM_daily_NZ5km_raw.nc,sfcWindmax_historical_NZESM_UM_daily_NZ5km_raw,sfcWindmax,historical,NZESM,UM,daily,NZ5km,raw,360_day,NA,NA
+sfcWindmax_ssp126_NZESM_UM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_NZESM_UM_daily_NZ5km_raw,sfcWindmax,ssp126,NZESM,UM,daily,NZ5km,raw,360_day,NA,NA
+sfcWindmax_ssp245_NZESM_UM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_NZESM_UM_daily_NZ5km_raw,sfcWindmax,ssp245,NZESM,UM,daily,NZ5km,raw,360_day,NA,NA
+sfcWindmax_ssp370_NZESM_UM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_NZESM_UM_daily_NZ5km_raw,sfcWindmax,ssp370,NZESM,UM,daily,NZ5km,raw,360_day,NA,NA
+tas_historical_NZESM_UM_daily_NZ5km_bc.nc,tas_historical_NZESM_UM_daily_NZ5km_bc,tas,historical,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tas_ssp126_NZESM_UM_daily_NZ5km_bc.nc,tas_ssp126_NZESM_UM_daily_NZ5km_bc,tas,ssp126,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tas_ssp245_NZESM_UM_daily_NZ5km_bc.nc,tas_ssp245_NZESM_UM_daily_NZ5km_bc,tas,ssp245,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tas_ssp370_NZESM_UM_daily_NZ5km_bc.nc,tas_ssp370_NZESM_UM_daily_NZ5km_bc,tas,ssp370,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmax_historical_NZESM_UM_daily_NZ5km_bc.nc,tasmax_historical_NZESM_UM_daily_NZ5km_bc,tasmax,historical,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmax_ssp126_NZESM_UM_daily_NZ5km_bc.nc,tasmax_ssp126_NZESM_UM_daily_NZ5km_bc,tasmax,ssp126,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmax_ssp245_NZESM_UM_daily_NZ5km_bc.nc,tasmax_ssp245_NZESM_UM_daily_NZ5km_bc,tasmax,ssp245,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmax_ssp370_NZESM_UM_daily_NZ5km_bc.nc,tasmax_ssp370_NZESM_UM_daily_NZ5km_bc,tasmax,ssp370,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmin_historical_NZESM_UM_daily_NZ5km_bc.nc,tasmin_historical_NZESM_UM_daily_NZ5km_bc,tasmin,historical,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmin_ssp126_NZESM_UM_daily_NZ5km_bc.nc,tasmin_ssp126_NZESM_UM_daily_NZ5km_bc,tasmin,ssp126,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmin_ssp245_NZESM_UM_daily_NZ5km_bc.nc,tasmin_ssp245_NZESM_UM_daily_NZ5km_bc,tasmin,ssp245,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+tasmin_ssp370_NZESM_UM_daily_NZ5km_bc.nc,tasmin_ssp370_NZESM_UM_daily_NZ5km_bc,tasmin,ssp370,NZESM,UM,daily,NZ5km,bc,360_day,NA,NA
+hurs_historical_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,hurs_historical_NorESM2-MM_CCAM_daily_NZ5km_raw,hurs,historical,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,hurs_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw,hurs,ssp126,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,hurs_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw,hurs,ssp245,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,hurs_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw,hurs,ssp370,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+hurs_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,hurs_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw,hurs,ssp585,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average relative humidity,%
+PEDsrad_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PEDsrad_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,PEDsrad,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,PEDsrad,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,PEDsrad,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,PEDsrad,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PEDsrad_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PEDsrad_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,PEDsrad,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,Potential Evapotranspiration Deficit (PED),mm
+PETsrad_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PETsrad_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,PETsrad,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,PETsrad,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,PETsrad,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,PETsrad,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,NA,NA,NA
+PETsrad_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,PETsrad_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,PETsrad,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,NA,NA,NA
+pr_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,pr_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,pr,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,pr_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,pr,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,pr_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,pr,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,pr_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,pr,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+pr_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,pr_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,pr,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+rsds_historical_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,rsds_historical_NorESM2-MM_CCAM_daily_NZ5km_raw,rsds,historical,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,rsds_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw,rsds,ssp126,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,rsds_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw,rsds,ssp245,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,rsds_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw,rsds,ssp370,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+rsds_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,rsds_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw,rsds,ssp585,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average solar radiation,W/m2
+sfcWind_historical_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWind_historical_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWind,historical,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWind,ssp126,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWind,ssp245,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWind,ssp370,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWind_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWind_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWind,ssp585,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,Average wind speed,m/s
+sfcWindmax_historical_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWindmax_historical_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWindmax,historical,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp126_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWindmax,ssp126,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp245_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWindmax,ssp245,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp370_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWindmax,ssp370,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,NA,NA
+sfcWindmax_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw.nc,sfcWindmax_ssp585_NorESM2-MM_CCAM_daily_NZ5km_raw,sfcWindmax,ssp585,NorESM2-MM,CCAM,daily,NZ5km,raw,365_day,NA,NA
+tas_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tas_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,tas,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tas_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,tas,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tas_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,tas,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tas_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,tas,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tas_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tas_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,tas,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmax_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmax,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmax_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmax,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmax_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmax,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmax_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmax,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmax_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmax_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmax,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_historical_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmin_historical_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmin,historical,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmin_ssp126_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmin,ssp126,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmin_ssp245_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmin,ssp245,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmin_ssp370_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmin,ssp370,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
+tasmin_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc.nc,tasmin_ssp585_NorESM2-MM_CCAM_daily_NZ5km_bc,tasmin,ssp585,NorESM2-MM,CCAM,daily,NZ5km,bc,365_day,NA,NA
