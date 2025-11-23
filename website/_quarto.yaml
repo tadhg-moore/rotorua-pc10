@@ -23,7 +23,7 @@ website:
       - section: "Tasks"
         contents:
           - data-request.qmd
-          - cmip6-processing.qmd
+          # - cmip6-processing.qmd
 
 format:
   html:
