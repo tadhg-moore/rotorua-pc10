@@ -21,7 +21,6 @@ website:
         contents:
           - gantt.qmd
       - section: "Tasks"
-        href: basics-summary.qmd
         contents:
           - data-request.qmd
           - cmip6-processing.qmd
