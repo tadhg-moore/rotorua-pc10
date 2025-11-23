@@ -21,6 +21,10 @@ process_cmip6_shp <- function(x, vcsn_grid_points, metadata, out_dir,
     
     outfile <- process_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,
                              file = file, outfile = outfile)
+    if (is.null(outfile)) {
+      cli::cli_alert_danger("Processing failed for {metadata$filename[i]}")
+      next
+    }
     
     cli::cli_alert_success("Saved processed file to {outfile}")
   }
