@@ -11,12 +11,12 @@ gantt
     dateFormat  YYYY-MM-DD
     axisFormat  %b %Y
     section Catchment Pilot
-    "SWAT-MODFLOW pilot (3 catchments)" :a1, 2025-12-01, 30d
+    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d
 
     section Lake Model Upgrade
-    GLM-AED model upgrade            :b1, 2025-11-07, 50d
     CMIP6 Data Processing            :b1, 2025-11-07, 30d
-    Scaling decision – catchment     :b2, 2026-01-01, 60d
+    GLM-AED model upgrade            :b2, 2025-11-24, 50d
+    GLM-AED model calibration        :b3, 2025-12-08, 50d
 
     section Scenario Testing
     Initial climate scenarios        :c1, 2026-01-01, 30d
