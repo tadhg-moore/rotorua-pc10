@@ -29,8 +29,12 @@ jobs:
         run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
               sudo apt-get update
-              sudo apt-get install -y libudunits2-dev
-         fi
+              sudo apt-get install -y \
+                libudunits2-dev \
+                libgdal-dev \
+                libgeos-dev \
+                libproj-dev
+          fi
 
       - name: Cache renv packages
         uses: actions/cache@v4
