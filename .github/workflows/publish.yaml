@@ -25,11 +25,11 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
 
-      - name:  Install
+      - name:  Install dependencies
         run:   |
          if [ "$RUNNER_OS" == "Linux" ]; then
-              apt-get update
-              apt-get install -y libudunits2-dev
+              sudo apt-get update
+              sudo apt-get install -y libudunits2-dev
          fi
 
       - name: Cache renv packages
