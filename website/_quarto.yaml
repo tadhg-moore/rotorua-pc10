@@ -1,5 +1,8 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "!cmip6-processing.qmd"
 
 website:
   title: "Rotorua Lake Modelling"
