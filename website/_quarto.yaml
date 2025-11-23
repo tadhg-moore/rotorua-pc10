@@ -24,6 +24,7 @@ website:
         href: basics-summary.qmd
         contents:
           - data-request.qmd
+          - cmip6-processing.qmd
 
 format:
   html:

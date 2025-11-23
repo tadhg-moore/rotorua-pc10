@@ -3,3 +3,15 @@ title: "CMIP 6 Processing"
 format: html
 editor: visual
 ---
+
+Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.
+
+Also there are >4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.
+
+## Metadata
+
+We have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used. 
+
+Further details can be found [here](https://climatedata.environment.govt.nz/).
+
+## File access
