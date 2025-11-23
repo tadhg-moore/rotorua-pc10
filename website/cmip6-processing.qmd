@@ -12,8 +12,9 @@ editor: visual
 cmip6_metadata <- readr::read_csv(here::here("data", "processed",
                                              "niwa_cmip6_metadata.csv"), 
                                   col_types = readr::cols())
-vcsn_grid_points <- sf::st_read(here::here("data", "processed",
-                                           "vcsn_grid_points.gpkg"))
+# vcsn_grid_points <- sf::st_read(here::here("data", "processed",
+#                                            "vcsn_grid_points.gpkg"))
+vcsn_grid_points <- sf::st_read("https://climatedata.environment.govt.nz/data/core_public_data/geospatial/index_grid_points_vcsn_filtered_2193.gpkg")
 ```
 
 
