@@ -129,5 +129,41 @@
       "Home",
       "Project Overview"
     ]
+  },
+  {
+    "objectID": "cmip6-processing.html",
+    "href": "cmip6-processing.html",
+    "title": "CMIP 6 Processing",
+    "section": "",
+    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#metadata",
+    "href": "cmip6-processing.html#metadata",
+    "title": "CMIP 6 Processing",
+    "section": "Metadata",
+    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#file-access",
+    "href": "cmip6-processing.html#file-access",
+    "title": "CMIP 6 Processing",
+    "section": "File access",
+    "text": "File access",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
   }
 ]
