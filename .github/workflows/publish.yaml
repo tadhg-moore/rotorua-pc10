@@ -35,6 +35,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-renv-
 
+      - name: Install renv
+        run: Rscript -e 'install.packages("renv")'
+
       - name: Restore renv packages
         run: Rscript -e 'renv::restore(prompt = FALSE)'
           
