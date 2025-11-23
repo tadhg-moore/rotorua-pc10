@@ -1,5 +1,5 @@
-process_cmip6_shp <- function(x, vcsn_grid_points, metadata, out_dir, 
-                              overwrite = FALSE) {
+process_cmip6_shp <- function(x, variable = NULL, vcsn_grid_points, metadata, 
+                              out_dir, overwrite = FALSE) {
   # x <- mapedit::drawFeatures()
   # saveRDS(x, here::here("data", "processed", "rotorua_area.rds"))
   
@@ -7,6 +7,10 @@ process_cmip6_shp <- function(x, vcsn_grid_points, metadata, out_dir,
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
   metadata <- metadata |> 
     dplyr::arrange(gcm, scenario)
+  if (!is.null(variable)) {
+    metadata <- metadata |> 
+      dplyr::filter(variable %in% !!variable)
+  }
   
   for (i in seq_len(nrow(metadata))) {
     
@@ -38,7 +42,9 @@ vcsn_grid_points <- sf::st_read(here::here("data", "processed",
 cmip6_metadata <- readr::read_csv(here::here("data", "processed",
                                              "niwa_cmip6_metadata.csv"), 
                                   col_types = readr::cols())
-process_cmip6_shp(x = rotorua_area,
+
+variable <- c("hurs", "pr", "rsds", "sfcWind", "tas")
+process_cmip6_shp(x = rotorua_area, variable = variable,
                   vcsn_grid_points = vcsn_grid_points,
                   metadata = cmip6_metadata,
                   out_dir = here::here("data", "processed", "rotorua_cmip6"))
