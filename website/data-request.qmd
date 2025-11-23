@@ -11,7 +11,7 @@ Below is a proposed list of datasets to request from Bay of Plenty Regional Coun
 ------------------------------------------------------------------------
 
 | Dataset | Description / Variables | Purpose in Modelling | Source |
-|----------------|----------------------|-------------------|----------------|
+|----|----|----|----|
 | **Inflow volumes** | Daily/hourly flow records for all tributaries and stormwater inputs | Define hydrological boundary conditions; drive water balance | BoPRC |
 | **Inflow chemistry** | Nutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature | Set up inflow nutrient loads and biogeochemical forcing | BoPRC |
 | **Grab samples & rating curve data** | Flow–concentration relationships, historical spot samples | Improve accuracy of nutrient load estimates | CM / BoPRC |
