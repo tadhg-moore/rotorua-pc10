@@ -11,7 +11,7 @@
     "href": "gantt.html",
     "title": "GANTT Chart",
     "section": "",
-    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    \"SWAT-MODFLOW pilot (3 catchments)\" :a1, 2025-12-01, 30d\n\n    section Lake Model Upgrade\n    GLM-AED model upgrade            :b1, 2025-11-07, 50d\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    Scaling decision – catchment     :b2, 2026-01-01, 60d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
+    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d\n\n    section Lake Model Upgrade\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    GLM-AED model upgrade            :b2, 2025-11-24, 50d\n    GLM-AED model calibration        :b3, 2025-12-08, 50d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
     "crumbs": [
       "Home",
       "Project Overview",
@@ -128,42 +128,6 @@
     "crumbs": [
       "Home",
       "Project Overview"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html",
-    "href": "cmip6-processing.html",
-    "title": "CMIP 6 Processing",
-    "section": "",
-    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#metadata",
-    "href": "cmip6-processing.html#metadata",
-    "title": "CMIP 6 Processing",
-    "section": "Metadata",
-    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#file-access",
-    "href": "cmip6-processing.html#file-access",
-    "title": "CMIP 6 Processing",
-    "section": "File access",
-    "text": "File access",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
     ]
   }
 ]
