@@ -1,18 +1,14 @@
+#' Process CMIP6 netCDF file for given polygon and grid points
+#'
+#' @param x sf polygon
+#' @param vcsn_grid_points sf points of VCSN grid 
+#' @param file path to input netCDF file
+#' @param outfile path to output netCDF file
+#'
+#' @returns path to output netCDF file
+#' @export
+#'
 process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
-  # x <- mapedit::drawFeatures()
-  
-  # file <- list.files(
-  #   path = shared_drive,
-  #   pattern = paste0(var,"_", scenario, "_", gcm, ".*\\.nc$"),
-  #   full.names = TRUE
-  # )
-  # 
-  # if (length(files) == 0) {
-  #   cli::cli_abort("No files found for the specified scenario, and GCM.")
-  # }
-  # if (length(files) > 1) {
-  #   cli::cli_abort("Multiple files found for the specified variable, scenario, and GCM.")
-  # }
   if (!file.exists(file)) {
     cli::cli_abort("File {file} does not exist.")
   }
@@ -27,6 +23,7 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
     vcsn_grid_points <- sf::st_transform(vcsn_grid_points, crs = 4326)
   }
   
+  # Select grid points within polygon
   sel_grid_points <- sf::st_intersection(vcsn_grid_points, x)
   coords <- sel_grid_points |> 
     sf::st_drop_geometry() |> 
@@ -41,7 +38,6 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
   y_end <- y_start + y_count - 1
   
   # Read nc file
-  # Get dimensions
   nc <- ncdf4::nc_open(file, readunlim = FALSE, return_on_error = TRUE)
   if (nc$error) {
     cli::cli_alert_danger("Error opening netCDF file {file}.
@@ -51,6 +47,7 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
   on.exit(ncdf4::nc_close(nc))
   # Extract variable data in chunks
   varid <- names(nc$var)[[1]]
+  # Get dimensions
   lon <- ncdf4::ncvar_get(nc, varid = "longitude", start = x_start, 
                           count = x_count)
   lat <- ncdf4::ncvar_get(nc, varid = "latitude", start = y_start, 
@@ -85,6 +82,7 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
   time_pcict <- PCICt::as.PCICt(time_sec, cal = time_calendar,
                                 origin = origin, tz = "UTC")
   
+  # Divide time into chunks and read
   tmax <- nc$dim$time$len
   chunks <- seq(1, tmax, by = chunk_size)
   out <- vector("list", length(chunks))
@@ -105,29 +103,27 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
       count = c(x_count, y_count, t_count)
     )
   }
-  # ncdf4::nc_close(nc)
-  
+
   t1 <- Sys.time()
   tdiff <- round(difftime(t1, t0, units = "sec"), 1)
   print(tdiff)
   
+  # Combine chunks
   out <- abind::abind(out, along = 3)
-  dim(out)
   
-  
+  # Define new dimensions
   lon_idx <- x_start:x_end
   lat_idx <- y_start:y_end
-  # time_idx <- t_start:t_end
-  
+
   lon_new <- lon[lon_idx]
   lat_new <- lat[lat_idx]
   time_new <- time_raw
   
+  # Define new dimensions and variable
   dim_lon <- ncdf4::ncdim_def("longitude", "degrees_east", lon)
   dim_lat <- ncdf4::ncdim_def("latitude", "degrees_north", lat)
   dim_time <- ncdf4::ncdim_def("time", time_units, time_new,
                                calendar = time_calendar)
-  
   
   var_def <- ncdf4::ncvar_def(name = varid, units = var_att$units,  
                               longname = var_att$long_name, 
@@ -136,21 +132,11 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
                               missval = var_att$missing_value, 
                               compression = 5, 
                               chunksizes = c(1, 1, 100))
-  
+  # Create new netCDF file with compressed variable
   dst <- ncdf4::nc_create(outfile, var_def)
-  
   ncdf4::ncvar_put(dst, varid = varid, vals = out)
   ncdf4::nc_close(dst)
   
-  # Return data array
-  # r <- terra::rast("subset.nc")
-  # terra::plot(r)
-  
-  # nc <- ncdf4::nc_open(outfile)
-  # ncdf4::nc_close(nc)
-  
-  # dat <- ncdf4::ncvar_get(nc = nc, varid = vars[1], 
-  #                         start = c(x_start, y_start, 1), 
-  #                         count = c(x_count, y_count, -1))
+  # Return output file path
   return(outfile)
 }
