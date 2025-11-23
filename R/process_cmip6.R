@@ -42,7 +42,12 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
   
   # Read nc file
   # Get dimensions
-  nc <- ncdf4::nc_open(file, readunlim = FALSE)
+  nc <- ncdf4::nc_open(file, readunlim = FALSE, return_on_error = TRUE)
+  if (nc$error) {
+    cli::cli_alert_danger("Error opening netCDF file {file}.
+                          Returning NULL.")
+    return(NULL)
+  }
   on.exit(ncdf4::nc_close(nc))
   # Extract variable data in chunks
   varid <- names(nc$var)[[1]]
