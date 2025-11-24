@@ -19,7 +19,7 @@ Websites:
 
 ## 2023
 
-### Özkundakci (2023) [@ozkundakci2023]
+### @ozkundakci2023
 
 Lake Rotorua science review, summary (Environmental Publication 2023/09).\
 Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.\
@@ -37,7 +37,7 @@ Brief summary text here.
 
 ## 2022
 
-### Hamill (2022) [@hamill2022]
+### @hamill2022
 
 Trend and State of Nutrients in Lake Rotorua Streams 2002–2022.\
 River Lake Ltd for Bay of Plenty Regional Council.\
@@ -87,7 +87,7 @@ observed trends in nutrient concentrations across the monitored streams.
 
 </details>
 
-### Mangeya (2022) [@mangeya2022]
+### @mangeya2022
 
 Groundwater Modelling Report.\
 Jacobs for Bay of Plenty Regional Council (Toi Moana).
@@ -132,7 +132,7 @@ model.
 
 ## 2021
 
-### McBride et al. (2021) [@mcbride2021]
+### @mcbride2021
 
 Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa
 Lakes.\
@@ -195,7 +195,7 @@ ERI report 143, University of Waikato.\
 
 ## 2019
 
-### McBride et al. (2019) [@mcbride2019]
+### @mcbride2019
 
 Long-term nutrient loads and water quality for Lake Rotorua: 1965–2017.\
 ERI Report 123, University of Waikato.\
@@ -213,7 +213,7 @@ Summary…
 
 ## 2018
 
-### Wang et al. (2018) [@wang2018]
+### @wang2018
 
 Modeling the effects of climate change on water quality of Lake Rotorua, New
 Zealand.
@@ -259,7 +259,7 @@ of climate change on hydrological cycles and nutrient dynamics.
 
 ## 2015
 
-### Abell et al. (2015) [@abell2015]
+### @abell2015
 
 Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study ERI
 Report 80, University of Waikato. [PDF](https://hdl.handle.net/10289/12474)
@@ -303,7 +303,7 @@ Report 80, University of Waikato. [PDF](https://hdl.handle.net/10289/12474)
 
 ## 2013
 
-### Scholes (2013) [@scholes2013]
+### @scholes2013
 
 Trends and state of nutrients in Lake Rotorua streams 2013.\
 Bay of Plenty Regional Council.\
@@ -321,7 +321,7 @@ Summary…
 
 ## 2012
 
-### Hamilton et al. (2012) [@hamilton2012]
+### @hamilton2012
 
 Predicting the effects of nutrient loads, management regimes and climate change
 on water quality of Lake Rotorua. (pers. comm. 2025-11-24)
@@ -385,7 +385,7 @@ Rotorua.
 
 ## 2009
 
-### Burns et al. (2009) [@burns2009]
+### @burns2009
 
 Managing the lakes of the Rotorua District, New Zealand.\
 *Lake and Reservoir Management*, 25(3), 284–296.\
@@ -403,7 +403,7 @@ Summary…
 
 ## 2005
 
-### Rutherford (2005) [@rutherford2005]
+### @rutherford2005
 
 Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &
 Taupō.\
