@@ -19,7 +19,36 @@ Websites:
 
 - Hamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp. [URL](https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content)
 
-- Mangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-]
+<details>
+<summary>Click to expand: Summary</summary>
+The report focuses on nine major streams contributing to Lake Rotorua's water quality.
+- Nutrient trends were assessed using the seasonal Kendall test over three periods: 2002-2022, 2002-2010, and 2010-2019.
+- The analysis includes total nitrogen (TN), total phosphorus (TP), and dissolved reactive phosphorus (DRP) concentrations and loads.
+
+*Nutrient Concentrations and Stream Flows*
+This section details the mean flow rates and nutrient concentrations in the streams entering Lake Rotorua.
+
+- The mean flow to Lake Rotorua from 2002-2022 was 11.8 m³/s, with Hamurana being the largest contributor at 2.63 m³/s.
+- The highest total nitrogen concentrations were found in Waiohewa (2839 mg/m³) and the highest total phosphorus concentrations in Waingaehe (123 mg/m³).
+- Streams like Hamurana, Awahou, and Waingaehe showed high concentrations of dissolved reactive phosphorus (DRP), with ratios of DRP to TP between 80-90%.
+
+*Trends in Nutrient Concentrations Over Time*
+This section discusses the observed trends in nutrient concentrations across the monitored streams.
+
+- From 2002 to 2022, TN concentrations increased in Hamurana, Awahou, and Waiteti, particularly in Awahou and Waiteti since 2010.
+- TN concentrations decreased in Puarenga and possibly Ngongotaha, but this trend did not continue post-2010.
+- TP concentrations increased in Hamurana, Ngongotaha, Utuhina, Puarenga, Waingaehe, and Waiohewa, with trends continuing since 2010 in all but Waingaehe.
+
+*Nutrient Loads to Lake Rotorua*
+
+- The nine main streams transported an average of 410 t/y of nitrogen and 28 t/y of phosphorus from 2002-2022.
+- The highest TN loads came from Awahou (71.1 t/y), Puarenga (67.4 t/y), and Hamurana (66.5 t/y).
+- TP loads were primarily contributed by Hamurana (7.5 t/y), Puarenga (5.1 t/y), and Awahou (3.9 t/y). 
+
+</details>
+
+
+- Mangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-24]
 
 <details>
 <summary>Click to expand: Summary</summary>
