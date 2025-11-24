@@ -1,0 +1,28 @@
+/* styles.css */
+:root {
+  --primary-red: #BE0403;
+  --secondary-yellow: #FAA61A;
+  --text-grey: #32373D;
+  --dark-grey: #353535;
+}
+
+body {
+  color: var(--text-grey);
+}
+
+a {
+  color: var(--primary-red);
+}
+a:hover {
+  color: #D40100;
+}
+
+header, .navbar {
+  background-color: var(--secondary-yellow);
+  color: var(--dark-grey);
+}
+
+footer {
+  background-color: var(--dark-grey);
+  color: white;
+}

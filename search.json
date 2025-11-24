@@ -18,7 +18,7 @@
     "href": "resources.html#section-1",
     "title": "Resources",
     "section": "2022",
-    "text": "2022\n\nHamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp. URL\nMangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-]\n\n\n\nClick to expand: Summary\n\nProject Background and Objectives\nThe Bay of Plenty Regional Council engaged Jacobs to develop a groundwater flow model for the Rotorua Water Management Area to enhance water management practices. The Rotorua Water Management Area covers approximately 1,100 km². The model aims to improve understanding of groundwater systems and surface water interactions. It will inform groundwater allocation limits and assess various abstraction scenarios.\nScope of Work for Groundwater Modelling\nThe project involved several key tasks to develop and document the groundwater model.\n\nAnalyze available data and create a conceptual hydrogeological model.\nDevelop and calibrate a transient three-dimensional numerical groundwater flow model using MODFLOW.\nSimulate predictive scenarios and document the model development and predictions.\nDeliver the numerical model and associated files to the Bay of Plenty Regional Council.\n\nLimitations of the Groundwater Modelling\n\nThe model does not account for certain factors that could affect groundwater and surface water quality.\nExcludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir."
+    "text": "2022\n\nHamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp. URL\n\n\n\nClick to expand: Summary\n\nThe report focuses on nine major streams contributing to Lake Rotorua’s water quality. - Nutrient trends were assessed using the seasonal Kendall test over three periods: 2002-2022, 2002-2010, and 2010-2019. - The analysis includes total nitrogen (TN), total phosphorus (TP), and dissolved reactive phosphorus (DRP) concentrations and loads.\nNutrient Concentrations and Stream Flows This section details the mean flow rates and nutrient concentrations in the streams entering Lake Rotorua.\n\nThe mean flow to Lake Rotorua from 2002-2022 was 11.8 m³/s, with Hamurana being the largest contributor at 2.63 m³/s.\nThe highest total nitrogen concentrations were found in Waiohewa (2839 mg/m³) and the highest total phosphorus concentrations in Waingaehe (123 mg/m³).\nStreams like Hamurana, Awahou, and Waingaehe showed high concentrations of dissolved reactive phosphorus (DRP), with ratios of DRP to TP between 80-90%.\n\nTrends in Nutrient Concentrations Over Time This section discusses the observed trends in nutrient concentrations across the monitored streams.\n\nFrom 2002 to 2022, TN concentrations increased in Hamurana, Awahou, and Waiteti, particularly in Awahou and Waiteti since 2010.\nTN concentrations decreased in Puarenga and possibly Ngongotaha, but this trend did not continue post-2010.\nTP concentrations increased in Hamurana, Ngongotaha, Utuhina, Puarenga, Waingaehe, and Waiohewa, with trends continuing since 2010 in all but Waingaehe.\n\nNutrient Loads to Lake Rotorua\n\nThe nine main streams transported an average of 410 t/y of nitrogen and 28 t/y of phosphorus from 2002-2022.\nThe highest TN loads came from Awahou (71.1 t/y), Puarenga (67.4 t/y), and Hamurana (66.5 t/y).\nTP loads were primarily contributed by Hamurana (7.5 t/y), Puarenga (5.1 t/y), and Awahou (3.9 t/y).\n\n\n\nMangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-24]\n\n\n\nClick to expand: Summary\n\nProject Background and Objectives\nThe Bay of Plenty Regional Council engaged Jacobs to develop a groundwater flow model for the Rotorua Water Management Area to enhance water management practices. The Rotorua Water Management Area covers approximately 1,100 km². The model aims to improve understanding of groundwater systems and surface water interactions. It will inform groundwater allocation limits and assess various abstraction scenarios.\nScope of Work for Groundwater Modelling\nThe project involved several key tasks to develop and document the groundwater model.\n\nAnalyze available data and create a conceptual hydrogeological model.\nDevelop and calibrate a transient three-dimensional numerical groundwater flow model using MODFLOW.\nSimulate predictive scenarios and document the model development and predictions.\nDeliver the numerical model and associated files to the Bay of Plenty Regional Council.\n\nLimitations of the Groundwater Modelling\n\nThe model does not account for certain factors that could affect groundwater and surface water quality.\nExcludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir."
   },
   {
     "objectID": "resources.html#section-2",
@@ -65,6 +65,66 @@
       "Home",
       "Project Overview",
       "GANTT Chart"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html",
+    "href": "cmip6-processing.html",
+    "title": "CMIP 6 Processing",
+    "section": "",
+    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#metadata",
+    "href": "cmip6-processing.html#metadata",
+    "title": "CMIP 6 Processing",
+    "section": "Metadata",
+    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#file-access",
+    "href": "cmip6-processing.html#file-access",
+    "title": "CMIP 6 Processing",
+    "section": "File access",
+    "text": "File access\nThe CMIP6 data is stored on a shared drive (Z: drive) accessible within our institutional network. The files are organized by variable, scenario, model, region, timestep, spatial resolution, and bias correction method e.g “hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc”. This corresponds to relative humidity (hurs) for the historical scenario from the ACCESS-CM2 GCM, downscaled using the CCAM model over New Zealand at a daily timestep and 5 km spatial resolution, without bias correction.\nLoading and reading data from these NetCDF files can be done using the ncdf4 package in R. However, reading large datasets can be time-consuming, so we have implemented a function which uses a grid reference system to efficiently extract only the required data points.\nThis provided as the VCSN agent data. This contains a grid of points at 5 km resolution covering New Zealand, with each point having a unique coordinate index. We use this grid to identify which points fall within our area of interest, and then extract only those points from the NetCDF files.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#processing-function",
+    "href": "cmip6-processing.html#processing-function",
+    "title": "CMIP 6 Processing",
+    "section": "Processing function",
+    "text": "Processing function\nThe process_cmip6 function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.\n\nsource(here::here(\"R\", \"process_cmip6.R\"))\nprocess_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,\n              file = file, outfile = outfile)",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#create-an-area-of-interest",
+    "href": "cmip6-processing.html#create-an-area-of-interest",
+    "title": "CMIP 6 Processing",
+    "section": "Create an area of interest",
+    "text": "Create an area of interest\nIf you do not have a shapefile of your area of interest (AOI), you can easily generate one with the mapedit package.\n\nx &lt;- mapedit::drawFeatures()\n\nSave the drawn features for future use:\n\nsaveRDS(x, here::here(\"data\", \"processed\", \"rotorua_area.rds\"))",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
     ]
   },
   {
