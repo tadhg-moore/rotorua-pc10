@@ -16,7 +16,7 @@ dir.create(here::here("data", "aeme"), showWarnings = FALSE, recursive = TRUE)
 
 # Set target options
 tar_option_set(
-  packages = c("dplyr", "ggplot2", "readr", "glmtools"), # packages needed in your functions
+  packages = c("dplyr", "ggplot2", "readr"), # packages needed in your functions
   format = "rds" # default storage format
 )
 
