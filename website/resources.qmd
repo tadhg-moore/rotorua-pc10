@@ -1,6 +1,7 @@
 ---
 title: "Resources"
 format: html
+bibliography: references.bib
 ---
 
 Below are some useful resources and reports from previous water quality 
@@ -10,14 +11,30 @@ Websites:
 
 - [Lake Rotorua Nutrient Management - Plan Change 10](https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/)
 
+---
 
 ## 2023
 
-- Özkundakci, D. (2023). Lake Rotorua science review, summary (Environmental Publication 2023/09). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand. [PDF](https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content)
+### Özkundakci (2023) [@ozkundakci2023]
+Lake Rotorua science review, summary (Environmental Publication 2023/09).  
+Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.  
+[PDF](https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content)
+
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Brief summary text here.
+
+</details>
+
+---
 
 ## 2022
 
-- Hamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp. [URL](https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content)
+### Hamill (2022) [@hamill2022]
+Trend and State of Nutrients in Lake Rotorua Streams 2002–2022.  
+River Lake Ltd for Bay of Plenty Regional Council.  
+[PDF](https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content)
 
 <details>
 <summary>Click to expand: Summary</summary>
@@ -48,7 +65,9 @@ This section discusses the observed trends in nutrient concentrations across the
 </details>
 
 
-- Mangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-24]
+### Mangeya (2022) [@mangeya2022]
+Groundwater Modelling Report.  
+Jacobs for Bay of Plenty Regional Council (Toi Moana).
 
 <details>
 <summary>Click to expand: Summary</summary>
@@ -76,26 +95,168 @@ Does not consider density effects from variable groundwater salinity or temperat
 Ignores two-phase fluids in the active geothermal reservoir.
 </details>
 
+---
 
 ## 2021
 
-- McBride, C.G., MacCormick, A., and Verburg, P. (2021). Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes. ERI report 143, The University of Waikato. 93 pp. [PDF](https://hdl.handle.net/10289/16725)
+### McBride et al. (2021) [@mcbride2021]
+Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes.  
+ERI report 143, University of Waikato.  
+[PDF](https://hdl.handle.net/10289/16725)
+
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Summary text…
+
+</details>
+
+---
 
 ## 2019
 
-- McBride, C.G., Abell, J. M., and Hamilton, D. (2019). Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017. ERI report 123, The University of Waikato. 70 pp.[PDF](https://hdl.handle.net/10289/16725)
-- [Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)](https://atlas.boprc.govt.nz/api/v1/edms/document/A3139961/content)
+### McBride et al. (2019) [@mcbride2019]
+Long-term nutrient loads and water quality for Lake Rotorua: 1965–2017.  
+ERI Report 123, University of Waikato.  
+[PDF](https://hdl.handle.net/10289/16725)
+
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Summary…
+
+</details>
+
+---
+
+## 2018
+
+### Wang et al. (2018) [@wang2018]
+Modeling the effects of climate change on water quality of Lake Rotorua, New Zealand.
+
+<details>
+  <summary>Click to expand: Summary</summary>
+*Modelling Hydrology and Water Quality*
+This study integrates a catchment model with a lake water quality model to assess the impacts of nutrient load reductions and climate change on a eutrophic lake.
+
+- The study combines SWAT and DYRESM–CAEDYM models to simulate nutrient dynamics and water quality.
+- The models performed satisfactorily in simulating observed data, indicating accurate representation of key processes.
+- Nutrient load reductions from agricultural practices had minor effects on lake nutrient concentrations.
+- Climate change projections for 2090 showed significant impacts on nutrient levels and water quality.
+
+*Nutrient Load Reductions and Their Effects*
+The study evaluates how reducing nutrient loads affects the trophic state of Lake Rotorua.
+
+- Simulations indicated that reducing fertilizer and wastewater irrigation had limited impact on lake nutrient concentrations.
+- The projected climate change for 2090 is expected to increase internal nutrient loading significantly.
+- Polymictic lakes like Lake Rotorua are particularly vulnerable to eutrophication due to climate change.
+
+*Climate Change Impacts on Water Quality*
+This section discusses the influence of climate change on hydrological cycles and nutrient dynamics.
+
+- Increased precipitation is predicted to raise total phosphorus loads by 3.3%–16.5% in Danish streams.
+- A study in Slovenia projected total nitrogen losses could increase by 5.3% to 80.2% due to climate change.
+- Climate change is expected to directly affect lake water temperature and stratification, altering nutrient dynamics.
+</details>
+
+## 2015
+
+### Abell et al. (2015) [@abell2015]
+Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study
+ERI Report 80, University of Waikato.
+[PDF](https://hdl.handle.net/10289/12474)
+<details>
+  <summary>Click to expand: Summary</summary>
+Summary…
+</details>
+
 
 ## 2013
 
-- Scholes, P. (2013). Trends and state of nutrients in Lake Rotorua streams 2013 (Environmental Publication 2013/08). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.  [PDF](https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content)
+### Scholes (2013) [@scholes2013]
+Trends and state of nutrients in Lake Rotorua streams 2013.  
+Bay of Plenty Regional Council.  
+[PDF](https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content)
 
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Summary…
+
+</details>
+
+---
+
+## 2012
+
+### Hamilton et al. (2012) [@hamilton2012]
+Predicting the effects of nutrient loads, management regimes and climate change on water quality of Lake Rotorua. (pers. comm. 2025-11-24)
+
+<details>
+<summary>Click to expand: Summary</summary>
+*Lake Rotorua's Water Quality Challenges*
+Lake Rotorua has faced significant water quality decline due to nutrient loads and land use changes, necessitating a comprehensive management strategy.
+
+- Lake area: 80 km², mean depth: 10 m.
+- Cultural significance to the Te Arawa people and vital for tourism and recreation.
+- Water quality deterioration began in the 1960s, linked to treated wastewater inputs and land use changes from forest to pasture.
+- Urban wastewater discharge ceased in 1991, but ongoing pastoral expansion, especially dairy farming, has continued to impact water quality.
+- Legacy effects from historical land use and nutrient pools in sediments complicate current management efforts.
+
+*Modelling Approach for Water Quality Management*
+A modelling approach is essential for assessing the impacts of land use, climate change, and management actions on Lake Rotorua's water quality.
+
+- Integrated multiple models: SimCLIM, ROTAN, CLUES, DYRESM-CAEDYM.
+- SimCLIM predicts climate data (temperature, rainfall) for the Rotorua catchment up to 2100.
+- ROTAN simulates streamflows and nitrate transport between surface water and groundwater.
+- CLUES estimates annual average phosphorus loads in streams.
+- DYRESM-CAEDYM models vertical distribution of water temperature and nutrient cycling relevant to trophic state.
+
+*Nutrient Load Reduction Requirements*
+To improve water quality, significant reductions in nitrogen and phosphorus loads are necessary.
+
+- At least 350 tonnes of nitrogen and a similar amount of phosphorus must be removed annually.
+- Target Trophic Level Index (TLI) value set at 4.2 to restore water quality.
+- Climate change is expected to exacerbate challenges, increasing stratification and internal nutrient loading.
+- Internal nutrient release from sediments is comparable to external loads, complicating management.
+
+*Internal Nutrient Loading and Management Strategies*
+Addressing internal nutrient loading is critical for achieving long-term water quality goals in Lake Rotorua.
+
+- Internal loading from sediments contributes significantly to nutrient levels, especially during stratification.
+- Chemical flocculants may reduce internal loading but have limited duration of effectiveness (approximately four years).
+- Effective sediment capping can offset water quality deterioration but requires prior reduction of catchment nutrient loads.
+</details>
+
+
+---
 
 ## 2009
 
-- Burns, N., McIntosh, J., & Scholes, P. (2009). Managing the lakes of the Rotorua District, New Zealand. Lake and Reservoir Management, 25(3), 284–296. [https://doi.org/10.1080/07438140903083815](https://doi.org/10.1080/07438140903083815)
+### Burns et al. (2009) [@burns2009]
+Managing the lakes of the Rotorua District, New Zealand.  
+*Lake and Reservoir Management*, 25(3), 284–296.  
+[DOI](https://doi.org/10.1080/07438140903083815)
+
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Summary…
+
+</details>
+
+---
 
 ## 2005
 
-- Rutherford, J. C. (2005) Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupo, New Zealand. In Zerger, A. and Argent, R.M. (eds) MODSIM 2005 International Congress on Modelling and Simulation. Modelling and Simulation Society of Australia and New Zealand, December 2005, pp. 2749-2754 ISBN: 0-9758400-2-9. [https://www.mssanz.org.au/modsim05/papers/rutherford.pdf](https://www.mssanz.org.au/modsim05/papers/rutherford.pdf)
+### Rutherford (2005) [@rutherford2005]
+Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupō.  
+In *MODSIM 2005*, pp. 2749–2754.  
+[PDF](https://www.mssanz.org.au/modsim05/papers/rutherford.pdf)
 
+<details>
+  <summary>Click to expand: Summary</summary>
+
+Summary…
+
+</details>
