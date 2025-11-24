@@ -29,7 +29,9 @@ website:
           - data-request.qmd
           - cmip6-processing.qmd
   page-footer: 
-    left: "Rotorua Plan Change 10" 
+    left: 
+      - text: "Rotorua Plan Change 10" 
+        href: "https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/"
     right: |
       <a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;">
         <i class="bi bi-github" style="font-size: 1.3em;"></i>
