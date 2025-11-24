@@ -1,28 +1,70 @@
-/* styles.css */
-:root {
-  --primary-red: #BE0403;
-  --secondary-yellow: #FAA61A;
-  --text-grey: #32373D;
-  --dark-grey: #353535;
+/* styles.css - override main colours for Quarto theme */
+
+/* Primary link colour */
+a, a:visited {
+  color: #000000;  /* red */
 }
 
+a:hover, a:focus {
+  color: #FFA400;  /* orange */
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #000000;  /* black */
+}
+
+/* Code blocks, buttons, and highlights */
+code, pre, .btn {
+  background-color: #FFA400;  /* optional highlight for buttons/code */
+  color: #000000;
+}
+
+/* Any other main text you want black */
 body {
-  color: var(--text-grey);
+  color: #000000;
 }
 
-a {
-  color: var(--primary-red);
-}
-a:hover {
-  color: #D40100;
-}
-
-header, .navbar {
-  background-color: var(--secondary-yellow);
-  color: var(--dark-grey);
+/* Optional: navbar or header links */
+.navbar, header {
+  background-color: #E1251B;
+  color: #FFFFFF;
 }
 
-footer {
-  background-color: var(--dark-grey);
-  color: white;
+/* Make navbar links black */
+.navbar, .navbar a, .navbar-nav a {
+  color: #000000 !important;
 }
+
+/* Optional: navbar hover effect (keep red/orange if you like) */
+.navbar a:hover, .navbar-nav a:hover {
+  color: #000000 !important;
+}
+
+/* Make sidebar text black */
+.sidebar, .sidebar a {
+  color: #000000 !important;
+}
+
+/* Optional: sidebar hover effect */
+.sidebar a:hover {
+  color: #E1251B !important;
+}
+
+/* Breadcrumbs (e.g., "Tasks > Data Request") */
+.quarto-breadcrumbs,
+.quarto-breadcrumbs a,
+.breadcrumb,
+.breadcrumb a,
+.breadcrumb-item,
+.breadcrumb-item a {
+  color: #000000 !important;
+}
+
+/* Optional hover colour */
+.quarto-breadcrumbs a:hover,
+.breadcrumb a:hover,
+.breadcrumb-item a:hover {
+  color: #FFA400 !important;  /* red hover */
+}
+
