@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -184,13 +204,47 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section">2023</a></li>
-  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">2022</a></li>
-  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">2021</a></li>
-  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">2019</a></li>
-  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">2013</a></li>
-  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">2009</a></li>
-  <li><a href="#section-6" id="toc-section-6" class="nav-link" data-scroll-target="#section-6">2005</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section">2023</a>
+  <ul class="collapse">
+  <li><a href="#özkundakci-2023-ozkundakci2023" id="toc-özkundakci-2023-ozkundakci2023" class="nav-link" data-scroll-target="#özkundakci-2023-ozkundakci2023">Özkundakci (2023) <span class="citation" data-cites="ozkundakci2023">(Özkundakci 2023)</span></a></li>
+  </ul></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">2022</a>
+  <ul class="collapse">
+  <li><a href="#hamill-2022-hamill2022" id="toc-hamill-2022-hamill2022" class="nav-link" data-scroll-target="#hamill-2022-hamill2022">Hamill (2022) <span class="citation" data-cites="hamill2022">(Hamill 2022)</span></a></li>
+  <li><a href="#mangeya-2022-mangeya2022" id="toc-mangeya-2022-mangeya2022" class="nav-link" data-scroll-target="#mangeya-2022-mangeya2022">Mangeya (2022) <span class="citation" data-cites="mangeya2022">(Mangeya 2022)</span></a></li>
+  </ul></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">2021</a>
+  <ul class="collapse">
+  <li><a href="#mcbride-et-al.-2021-mcbride2021" id="toc-mcbride-et-al.-2021-mcbride2021" class="nav-link" data-scroll-target="#mcbride-et-al.-2021-mcbride2021">McBride et al.&nbsp;(2021) <span class="citation" data-cites="mcbride2021">(McBride, MacCormick, and Verburg 2021)</span></a></li>
+  </ul></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">2019</a>
+  <ul class="collapse">
+  <li><a href="#mcbride-et-al.-2019-mcbride2019" id="toc-mcbride-et-al.-2019-mcbride2019" class="nav-link" data-scroll-target="#mcbride-et-al.-2019-mcbride2019">McBride et al.&nbsp;(2019) <span class="citation" data-cites="mcbride2019">(McBride, Abell, and Hamilton 2019)</span></a></li>
+  </ul></li>
+  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">2018</a>
+  <ul class="collapse">
+  <li><a href="#wang-et-al.-2018-wang2018" id="toc-wang-et-al.-2018-wang2018" class="nav-link" data-scroll-target="#wang-et-al.-2018-wang2018">Wang et al.&nbsp;(2018) <span class="citation" data-cites="wang2018">(Me et al. 2018)</span></a></li>
+  </ul></li>
+  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">2015</a>
+  <ul class="collapse">
+  <li><a href="#abell-et-al.-2015-abell2015" id="toc-abell-et-al.-2015-abell2015" class="nav-link" data-scroll-target="#abell-et-al.-2015-abell2015">Abell et al.&nbsp;(2015) <span class="citation" data-cites="abell2015">(Abell, McBride, and Hamilton 2015)</span></a></li>
+  </ul></li>
+  <li><a href="#section-6" id="toc-section-6" class="nav-link" data-scroll-target="#section-6">2013</a>
+  <ul class="collapse">
+  <li><a href="#scholes-2013-scholes2013" id="toc-scholes-2013-scholes2013" class="nav-link" data-scroll-target="#scholes-2013-scholes2013">Scholes (2013) <span class="citation" data-cites="scholes2013">(Scholes 2013)</span></a></li>
+  </ul></li>
+  <li><a href="#section-7" id="toc-section-7" class="nav-link" data-scroll-target="#section-7">2012</a>
+  <ul class="collapse">
+  <li><a href="#hamilton-et-al.-2012-hamilton2012" id="toc-hamilton-et-al.-2012-hamilton2012" class="nav-link" data-scroll-target="#hamilton-et-al.-2012-hamilton2012">Hamilton et al.&nbsp;(2012) <span class="citation" data-cites="hamilton2012">(Hamilton et al. 2012)</span></a></li>
+  </ul></li>
+  <li><a href="#section-8" id="toc-section-8" class="nav-link" data-scroll-target="#section-8">2009</a>
+  <ul class="collapse">
+  <li><a href="#burns-et-al.-2009-burns2009" id="toc-burns-et-al.-2009-burns2009" class="nav-link" data-scroll-target="#burns-et-al.-2009-burns2009">Burns et al.&nbsp;(2009) <span class="citation" data-cites="burns2009">(Burns, McIntosh, and Scholes 2009)</span></a></li>
+  </ul></li>
+  <li><a href="#section-9" id="toc-section-9" class="nav-link" data-scroll-target="#section-9">2005</a>
+  <ul class="collapse">
+  <li><a href="#rutherford-2005-rutherford2005" id="toc-rutherford-2005-rutherford2005" class="nav-link" data-scroll-target="#rutherford-2005-rutherford2005">Rutherford (2005) <span class="citation" data-cites="rutherford2005">(Rutherford 2005)</span></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -221,17 +275,30 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><a href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">Lake Rotorua Nutrient Management - Plan Change 10</a></li>
 </ul>
+<hr>
 <section id="section" class="level2">
 <h2 class="anchored" data-anchor-id="section">2023</h2>
-<ul>
-<li>Özkundakci, D. (2023). Lake Rotorua science review, summary (Environmental Publication 2023/09). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand. <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content">PDF</a></li>
-</ul>
+<section id="özkundakci-2023-ozkundakci2023" class="level3">
+<h3 class="anchored" data-anchor-id="özkundakci-2023-ozkundakci2023">Özkundakci (2023) <span class="citation" data-cites="ozkundakci2023">(<a href="#ref-ozkundakci2023" role="doc-biblioref">Özkundakci 2023</a>)</span></h3>
+<p>Lake Rotorua science review, summary (Environmental Publication 2023/09).<br>
+Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.<br>
+<a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p>Brief summary text here.</p>
+</details>
+<hr>
+</section>
 </section>
 <section id="section-1" class="level2">
 <h2 class="anchored" data-anchor-id="section-1">2022</h2>
-<ul>
-<li>Hamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp.&nbsp;<a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content">URL</a></li>
-</ul>
+<section id="hamill-2022-hamill2022" class="level3">
+<h3 class="anchored" data-anchor-id="hamill-2022-hamill2022">Hamill (2022) <span class="citation" data-cites="hamill2022">(<a href="#ref-hamill2022" role="doc-biblioref">Hamill 2022</a>)</span></h3>
+<p>Trend and State of Nutrients in Lake Rotorua Streams 2002–2022.<br>
+River Lake Ltd for Bay of Plenty Regional Council.<br>
+<a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content">PDF</a></p>
 <details>
 <summary>
 Click to expand: Summary
@@ -256,9 +323,11 @@ Click to expand: Summary
 <li>TP loads were primarily contributed by Hamurana (7.5 t/y), Puarenga (5.1 t/y), and Awahou (3.9 t/y).</li>
 </ul>
 </details>
-<ul>
-<li>Mangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp.&nbsp;[pers. comm 2025-11-24]</li>
-</ul>
+</section>
+<section id="mangeya-2022-mangeya2022" class="level3">
+<h3 class="anchored" data-anchor-id="mangeya-2022-mangeya2022">Mangeya (2022) <span class="citation" data-cites="mangeya2022">(<a href="#ref-mangeya2022" role="doc-biblioref">Mangeya 2022</a>)</span></h3>
+<p>Groundwater Modelling Report.<br>
+Jacobs for Bay of Plenty Regional Council (Toi Moana).</p>
 <details>
 <summary>
 Click to expand: Summary
@@ -279,42 +348,250 @@ Click to expand: Summary
 <li>Excludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir.</li>
 </ul>
 </details>
+<hr>
+</section>
 </section>
 <section id="section-2" class="level2">
 <h2 class="anchored" data-anchor-id="section-2">2021</h2>
+<section id="mcbride-et-al.-2021-mcbride2021" class="level3">
+<h3 class="anchored" data-anchor-id="mcbride-et-al.-2021-mcbride2021">McBride et al.&nbsp;(2021) <span class="citation" data-cites="mcbride2021">(<a href="#ref-mcbride2021" role="doc-biblioref">McBride, MacCormick, and Verburg 2021</a>)</span></h3>
+<p>Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes.<br>
+ERI report 143, University of Waikato.<br>
+<a href="https://hdl.handle.net/10289/16725">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p><em>Importance and Context</em></p>
 <ul>
-<li>McBride, C.G., MacCormick, A., and Verburg, P. (2021). Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes. ERI report 143, The University of Waikato. 93 pp.&nbsp;<a href="https://hdl.handle.net/10289/16725">PDF</a></li>
+<li><p>Rotorua Te Arawa Lakes are culturally, historically, and ecologically significant.</p></li>
+<li><p>Water quality varies with catchment characteristics: undeveloped (e.g., Tikitapu, Okataina) vs.&nbsp;highly developed agricultural/forestry (e.g., Rotorua, Rerewhakaaitu, Okaro).</p></li>
+<li><p>Lake water quality is strongly influenced by nutrient inputs from surface and groundwater flows.</p></li>
 </ul>
+<p><em>Methodology for Nutrient Loads</em></p>
+<ul>
+<li><p>Used updated export coefficient approach and Overseer® modelling for nitrogen (N) and phosphorus (P).</p></li>
+<li><p>Land use areas calculated for surface and groundwater catchments.</p></li>
+<li><p>Nutrient loss rates estimated per land use, accounting for local factors (e.g., pest impacts, forest removal).</p></li>
+<li><p>Additional sources included geothermal inputs, septic systems, municipal wastewater, atmospheric deposition, and hydrological connections among lakes.</p></li>
+<li><p>Attenuation estimated from physiography to produce a consistent regional nutrient budget.</p></li>
+</ul>
+<p><em>Key Findings and Implications</em></p>
+<ul>
+<li><p>Agricultural land contributes disproportionately to N and P loads.</p></li>
+<li><p>Geothermal, atmospheric, and connected-lake sources are significant in some catchments.</p></li>
+<li><p>Many catchments exceed ‘reference’ nutrient loads by 2–3×, complicating restoration.</p></li>
+<li><p>Provides basis for assessing internal lake loading and guiding catchment/lake management strategies.</p></li>
+</ul>
+<p><strong>Example Nutrient Loads (kg/yr)</strong></p>
+<ul>
+<li>Lake Rotorua: N 721,427, P 56,760.5</li>
+</ul>
+</details>
+<hr>
+</section>
 </section>
 <section id="section-3" class="level2">
 <h2 class="anchored" data-anchor-id="section-3">2019</h2>
-<ul>
-<li>McBride, C.G., Abell, J. M., and Hamilton, D. (2019). Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017. ERI report 123, The University of Waikato. 70 pp.<a href="https://hdl.handle.net/10289/16725">PDF</a></li>
-<li><a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A3139961/content">Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)</a></li>
-</ul>
+<section id="mcbride-et-al.-2019-mcbride2019" class="level3">
+<h3 class="anchored" data-anchor-id="mcbride-et-al.-2019-mcbride2019">McBride et al.&nbsp;(2019) <span class="citation" data-cites="mcbride2019">(<a href="#ref-mcbride2019" role="doc-biblioref">McBride, Abell, and Hamilton 2019</a>)</span></h3>
+<p>Long-term nutrient loads and water quality for Lake Rotorua: 1965–2017.<br>
+ERI Report 123, University of Waikato.<br>
+<a href="https://hdl.handle.net/10289/16725">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p>Summary…</p>
+</details>
+<hr>
+</section>
 </section>
 <section id="section-4" class="level2">
-<h2 class="anchored" data-anchor-id="section-4">2013</h2>
+<h2 class="anchored" data-anchor-id="section-4">2018</h2>
+<section id="wang-et-al.-2018-wang2018" class="level3">
+<h3 class="anchored" data-anchor-id="wang-et-al.-2018-wang2018">Wang et al.&nbsp;(2018) <span class="citation" data-cites="wang2018">(<a href="#ref-wang2018" role="doc-biblioref">Me et al. 2018</a>)</span></h3>
+<p>Modeling the effects of climate change on water quality of Lake Rotorua, New Zealand.</p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p><em>Modelling Hydrology and Water Quality</em> This study integrates a catchment model with a lake water quality model to assess the impacts of nutrient load reductions and climate change on a eutrophic lake.</p>
 <ul>
-<li>Scholes, P. (2013). Trends and state of nutrients in Lake Rotorua streams 2013 (Environmental Publication 2013/08). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand. <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content">PDF</a></li>
+<li>The study combines SWAT and DYRESM–CAEDYM models to simulate nutrient dynamics and water quality.</li>
+<li>The models performed satisfactorily in simulating observed data, indicating accurate representation of key processes.</li>
+<li>Nutrient load reductions from agricultural practices had minor effects on lake nutrient concentrations.</li>
+<li>Climate change projections for 2090 showed significant impacts on nutrient levels and water quality.</li>
 </ul>
+<p><em>Nutrient Load Reductions and Their Effects</em> The study evaluates how reducing nutrient loads affects the trophic state of Lake Rotorua.</p>
+<ul>
+<li>Simulations indicated that reducing fertilizer and wastewater irrigation had limited impact on lake nutrient concentrations.</li>
+<li>The projected climate change for 2090 is expected to increase internal nutrient loading significantly.</li>
+<li>Polymictic lakes like Lake Rotorua are particularly vulnerable to eutrophication due to climate change.</li>
+</ul>
+<p><em>Climate Change Impacts on Water Quality</em> This section discusses the influence of climate change on hydrological cycles and nutrient dynamics.</p>
+<ul>
+<li>Increased precipitation is predicted to raise total phosphorus loads by 3.3%–16.5% in Danish streams.</li>
+<li>A study in Slovenia projected total nitrogen losses could increase by 5.3% to 80.2% due to climate change.</li>
+<li>Climate change is expected to directly affect lake water temperature and stratification, altering nutrient dynamics.</li>
+</ul>
+</details>
+</section>
 </section>
 <section id="section-5" class="level2">
-<h2 class="anchored" data-anchor-id="section-5">2009</h2>
+<h2 class="anchored" data-anchor-id="section-5">2015</h2>
+<section id="abell-et-al.-2015-abell2015" class="level3">
+<h3 class="anchored" data-anchor-id="abell-et-al.-2015-abell2015">Abell et al.&nbsp;(2015) <span class="citation" data-cites="abell2015">(<a href="#ref-abell2015" role="doc-biblioref">Abell, McBride, and Hamilton 2015</a>)</span></h3>
+<p>Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study ERI Report 80, University of Waikato. <a href="https://hdl.handle.net/10289/12474">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p><em>Key Findings</em></p>
 <ul>
-<li>Burns, N., McIntosh, J., &amp; Scholes, P. (2009). Managing the lakes of the Rotorua District, New Zealand. Lake and Reservoir Management, 25(3), 284–296. <a href="https://doi.org/10.1080/07438140903083815">https://doi.org/10.1080/07438140903083815</a></li>
+<li>The treated wastewater discharge contributes a measurable nutrient load to Lake Rotorua, which may influence the lake’s trophic status, algal growth, and water-quality trends.</li>
+<li>There is evidence of spatial variability in how the discharge impacts the lake — e.g., nearer to the discharge site showing different water quality versus more remote parts of the lake.</li>
+<li>The effectiveness of the current wastewater treatment and discharge regime is assessed and found to have limitations: even treated wastewater can contribute significant nutrient inputs if volumes are large and/or treatment is not optimised.</li>
+<li>The report discusses the lake’s capacity to assimilate or dilute the nutrient load, and whether it is being exceeded or approaching thresholds that may degrade ecological health.</li>
 </ul>
+<p><em>Implications &amp; Recommendations</em></p>
+<ul>
+<li>Management of wastewater inputs to Lake Rotorua must account not just for concentration of nutrients in the effluent but for volume of discharge and how that interacts with lake hydrodynamics (mixing, stratification, residence time).</li>
+<li>Upgrading treatment processes, reducing nutrient concentrations further, or reducing the volume of discharge may be necessary to protect lake health.</li>
+<li>Monitoring of water quality and ecological responses (algal blooms, oxygen levels, benthic habitat) should continue and be linked explicitly to discharge data to evaluate trends.</li>
+<li>Lake management strategies should take a holistic view: catchment land-use, inflows, internal nutrient cycling, and wastewater discharges all interact to determine lake condition.</li>
+</ul>
+</details>
+</section>
 </section>
 <section id="section-6" class="level2">
-<h2 class="anchored" data-anchor-id="section-6">2005</h2>
+<h2 class="anchored" data-anchor-id="section-6">2013</h2>
+<section id="scholes-2013-scholes2013" class="level3">
+<h3 class="anchored" data-anchor-id="scholes-2013-scholes2013">Scholes (2013) <span class="citation" data-cites="scholes2013">(<a href="#ref-scholes2013" role="doc-biblioref">Scholes 2013</a>)</span></h3>
+<p>Trends and state of nutrients in Lake Rotorua streams 2013.<br>
+Bay of Plenty Regional Council.<br>
+<a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p>Summary…</p>
+</details>
+<hr>
+</section>
+</section>
+<section id="section-7" class="level2">
+<h2 class="anchored" data-anchor-id="section-7">2012</h2>
+<section id="hamilton-et-al.-2012-hamilton2012" class="level3">
+<h3 class="anchored" data-anchor-id="hamilton-et-al.-2012-hamilton2012">Hamilton et al.&nbsp;(2012) <span class="citation" data-cites="hamilton2012">(<a href="#ref-hamilton2012" role="doc-biblioref">Hamilton et al. 2012</a>)</span></h3>
+<p>Predicting the effects of nutrient loads, management regimes and climate change on water quality of Lake Rotorua. (pers. comm. 2025-11-24)</p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p><em>Lake Rotorua’s Water Quality Challenges</em> Lake Rotorua has faced significant water quality decline due to nutrient loads and land use changes, necessitating a comprehensive management strategy.</p>
 <ul>
-<li>Rutherford, J. C. (2005) Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &amp; Taupo, New Zealand. In Zerger, A. and Argent, R.M. (eds) MODSIM 2005 International Congress on Modelling and Simulation. Modelling and Simulation Society of Australia and New Zealand, December 2005, pp.&nbsp;2749-2754 ISBN: 0-9758400-2-9. <a href="https://www.mssanz.org.au/modsim05/papers/rutherford.pdf">https://www.mssanz.org.au/modsim05/papers/rutherford.pdf</a></li>
+<li>Lake area: 80 km², mean depth: 10 m.</li>
+<li>Cultural significance to the Te Arawa people and vital for tourism and recreation.</li>
+<li>Water quality deterioration began in the 1960s, linked to treated wastewater inputs and land use changes from forest to pasture.</li>
+<li>Urban wastewater discharge ceased in 1991, but ongoing pastoral expansion, especially dairy farming, has continued to impact water quality.</li>
+<li>Legacy effects from historical land use and nutrient pools in sediments complicate current management efforts.</li>
 </ul>
+<p><em>Modelling Approach for Water Quality Management</em> A modelling approach is essential for assessing the impacts of land use, climate change, and management actions on Lake Rotorua’s water quality.</p>
+<ul>
+<li>Integrated multiple models: SimCLIM, ROTAN, CLUES, DYRESM-CAEDYM.</li>
+<li>SimCLIM predicts climate data (temperature, rainfall) for the Rotorua catchment up to 2100.</li>
+<li>ROTAN simulates streamflows and nitrate transport between surface water and groundwater.</li>
+<li>CLUES estimates annual average phosphorus loads in streams.</li>
+<li>DYRESM-CAEDYM models vertical distribution of water temperature and nutrient cycling relevant to trophic state.</li>
+</ul>
+<p><em>Nutrient Load Reduction Requirements</em> To improve water quality, significant reductions in nitrogen and phosphorus loads are necessary.</p>
+<ul>
+<li>At least 350 tonnes of nitrogen and a similar amount of phosphorus must be removed annually.</li>
+<li>Target Trophic Level Index (TLI) value set at 4.2 to restore water quality.</li>
+<li>Climate change is expected to exacerbate challenges, increasing stratification and internal nutrient loading.</li>
+<li>Internal nutrient release from sediments is comparable to external loads, complicating management.</li>
+</ul>
+<p><em>Internal Nutrient Loading and Management Strategies</em> Addressing internal nutrient loading is critical for achieving long-term water quality goals in Lake Rotorua.</p>
+<ul>
+<li>Internal loading from sediments contributes significantly to nutrient levels, especially during stratification.</li>
+<li>Chemical flocculants may reduce internal loading but have limited duration of effectiveness (approximately four years).</li>
+<li>Effective sediment capping can offset water quality deterioration but requires prior reduction of catchment nutrient loads.</li>
+</ul>
+</details>
+<hr>
+</section>
+</section>
+<section id="section-8" class="level2">
+<h2 class="anchored" data-anchor-id="section-8">2009</h2>
+<section id="burns-et-al.-2009-burns2009" class="level3">
+<h3 class="anchored" data-anchor-id="burns-et-al.-2009-burns2009">Burns et al.&nbsp;(2009) <span class="citation" data-cites="burns2009">(<a href="#ref-burns2009" role="doc-biblioref">Burns, McIntosh, and Scholes 2009</a>)</span></h3>
+<p>Managing the lakes of the Rotorua District, New Zealand.<br>
+<em>Lake and Reservoir Management</em>, 25(3), 284–296.<br>
+<a href="https://doi.org/10.1080/07438140903083815">DOI</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p>Summary…</p>
+</details>
+<hr>
+</section>
+</section>
+<section id="section-9" class="level2">
+<h2 class="anchored" data-anchor-id="section-9">2005</h2>
+<section id="rutherford-2005-rutherford2005" class="level3">
+<h3 class="anchored" data-anchor-id="rutherford-2005-rutherford2005">Rutherford (2005) <span class="citation" data-cites="rutherford2005">(<a href="#ref-rutherford2005" role="doc-biblioref">Rutherford 2005</a>)</span></h3>
+<p>Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &amp; Taupō.<br>
+In <em>MODSIM 2005</em>, pp.&nbsp;2749–2754.<br>
+<a href="https://www.mssanz.org.au/modsim05/papers/rutherford.pdf">PDF</a></p>
+<details>
+<summary>
+Click to expand: Summary
+</summary>
+<p>Summary…</p>
+</details>
+
 
 
 </section>
+</section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-abell2015" class="csl-entry" role="listitem">
+Abell, J. M., C. G. McBride, and D. P. Hamilton. 2015. <span>“Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study.”</span> ERI Report. Hamilton, New Zealand: Environmental Research Institute, Faculty of Science; Engineering, The University of Waikato.
+</div>
+<div id="ref-burns2009" class="csl-entry" role="listitem">
+Burns, N., J. McIntosh, and P. Scholes. 2009. <span>“Managing the Lakes of the Rotorua District, New Zealand.”</span> <em>Lake and Reservoir Management</em> 25 (3): 284–96. <a href="https://doi.org/10.1080/07438140903083815">https://doi.org/10.1080/07438140903083815</a>.
+</div>
+<div id="ref-hamill2022" class="csl-entry" role="listitem">
+Hamill, K. 2022. <span>“Trend and State of Nutrients in Lake Rotorua Streams 2002–2022.”</span> River Lake Ltd for Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content</a>.
+</div>
+<div id="ref-hamilton2012" class="csl-entry" role="listitem">
+Hamilton, D. P., D. Özkundakci, C. McBride, L. Luo, W. B. Silvester, and P. White. 2012. <span>“Predicting the Effects of Nutrient Loads, Management Regimes and Climate Change on Water Quality of Lake Rotorua.”</span>
+</div>
+<div id="ref-mangeya2022" class="csl-entry" role="listitem">
+Mangeya, P. 2022. <span>“Groundwater Modelling Report.”</span> Jacobs for Bay of Plenty Regional Council (Toi Moana).
+</div>
+<div id="ref-mcbride2019" class="csl-entry" role="listitem">
+McBride, C. G., J. M. Abell, and D. Hamilton. 2019. <span>“Long-Term Nutrient Loads and Water Quality for Lake Rotorua: 1965 to 2017.”</span> ERI Report 123. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
+</div>
+<div id="ref-mcbride2021" class="csl-entry" role="listitem">
+McBride, C. G., A. MacCormick, and P. Verburg. 2021. <span>“Estimated Catchment Loads of Nitrogen and Phosphorus to the Rotorua Te Arawa Lakes.”</span> ERI Report 143. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
+</div>
+<div id="ref-wang2018" class="csl-entry" role="listitem">
+Me, Wang, David P. Hamilton, Christopher G. McBride, Jonathan M. Abell, and Brendan J. Hicks. 2018. <span>“Modelling Hydrology and Water Quality in a Mixed Land Use Catchment and Eutrophic Lake: Effects of Nutrient Load Reductions and Climate Change.”</span> <em>Environmental Modelling &amp; Software</em> 109: 114–33. https://doi.org/<a href="https://doi.org/10.1016/j.envsoft.2018.08.001">https://doi.org/10.1016/j.envsoft.2018.08.001</a>.
+</div>
+<div id="ref-ozkundakci2023" class="csl-entry" role="listitem">
+Özkundakci, Deniz. 2023. <span>“Lake Rotorua Science Review, Summary.”</span> Environmental Publication 2023/09. Whakatāne, New Zealand: Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content</a>.
+</div>
+<div id="ref-rutherford2005" class="csl-entry" role="listitem">
+Rutherford, J. C. 2005. <span>“Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &amp; Taupo, New Zealand.”</span> In <em>MODSIM 2005 International Congress on Modelling and Simulation</em>, edited by A. Zerger and R. M. Argent, 2749–54. Modelling; Simulation Society of Australia; New Zealand. <a href="https://www.mssanz.org.au/modsim05/papers/rutherford.pdf">https://www.mssanz.org.au/modsim05/papers/rutherford.pdf</a>.
+</div>
+<div id="ref-scholes2013" class="csl-entry" role="listitem">
+Scholes, P. 2013. <span>“Trends and State of Nutrients in Lake Rotorua Streams 2013.”</span> Environmental Publication 2013/08. Whakatāne, New Zealand: Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -739,8 +1016,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
 <p>Rotorua Plan Change 10</p>
-</div>   
+</a>
+  </li>  
+</ul>
+    </div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
