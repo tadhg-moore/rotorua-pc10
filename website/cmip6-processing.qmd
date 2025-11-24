@@ -76,6 +76,39 @@ tm_shape(sub_points) +
 The `process_cmip6` function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.
 
 ```{r}
+#| label: load-fun-meta
+#| echo: false
+#| include: true
+#| eval: true
+#| result: asis
+
+roxy <- roxygen2::parse_file(here::here("R", "process_cmip6.R"))
+block <- roxy[[1]]
+
+params <- block$tags[ sapply(block$tags, function(x) x$tag == "param") ]
+
+# List of parameter names and descriptions:
+param_list <- lapply(params, function(p) {
+  list(name = p$val[[1]], description = p$val[[2]])
+})
+
+# Convert into a table for markdown
+param_table <- do.call(rbind, lapply(param_list, function(p) {
+  data.frame(
+    Parameter = paste0("`", p$name, "`"),
+    Description = p$description,
+    stringsAsFactors = FALSE
+  )
+}))
+
+knitr::kable(param_table, format = "markdown", 
+                 caption = "Function Parameters for `process_cmip6()`")
+
+
+```
+
+
+```{r}
 #| label: process-cmip6-function
 #| echo: true
 #| include: true
