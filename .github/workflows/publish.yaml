@@ -53,7 +53,7 @@ jobs:
         run: Rscript -e 'renv::restore(prompt = FALSE)'
           
       - name: Render site
-        run: quarto render website   # or '.' if your _quarto.yml is in the repo root
+        run: quarto render website   # use 'website' dir
 
       - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
