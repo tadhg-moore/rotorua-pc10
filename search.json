@@ -4,7 +4,56 @@
     "href": "resources.html",
     "title": "Resources",
     "section": "",
-    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\n\nLake Rotorua Science Review Summary (2023)\nLake Rotorua Nutrient Management - Plan Change 10\nLong-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)\nTrend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (2023)\nTrends and state of nutrients in Lake Rotorua streams 2013 (2013)\nModelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupo, New Zealand"
+    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\nWebsites:"
+  },
+  {
+    "objectID": "resources.html#section",
+    "href": "resources.html#section",
+    "title": "Resources",
+    "section": "2023",
+    "text": "2023\n\nÖzkundakci, D. (2023). Lake Rotorua science review, summary (Environmental Publication 2023/09). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand. PDF"
+  },
+  {
+    "objectID": "resources.html#section-1",
+    "href": "resources.html#section-1",
+    "title": "Resources",
+    "section": "2022",
+    "text": "2022\n\nHamill, K. (2022). Trend and State of nutrients in Lake Rotorua Streams 2002 - 2022 (River Lake Ltd for Bay of Plenty Regional Council (Toi Moana)) 70 pp. URL\nMangeya, P. (2022). Groundwater Modelling Report (Jacobs for Bay of Plenty Regional Council (Toi Moana)) 115 pp. [pers. comm 2025-11-]\n\n\n\nClick to expand: Summary\n\nProject Background and Objectives\nThe Bay of Plenty Regional Council engaged Jacobs to develop a groundwater flow model for the Rotorua Water Management Area to enhance water management practices. The Rotorua Water Management Area covers approximately 1,100 km². The model aims to improve understanding of groundwater systems and surface water interactions. It will inform groundwater allocation limits and assess various abstraction scenarios.\nScope of Work for Groundwater Modelling\nThe project involved several key tasks to develop and document the groundwater model.\n\nAnalyze available data and create a conceptual hydrogeological model.\nDevelop and calibrate a transient three-dimensional numerical groundwater flow model using MODFLOW.\nSimulate predictive scenarios and document the model development and predictions.\nDeliver the numerical model and associated files to the Bay of Plenty Regional Council.\n\nLimitations of the Groundwater Modelling\n\nThe model does not account for certain factors that could affect groundwater and surface water quality.\nExcludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir."
+  },
+  {
+    "objectID": "resources.html#section-2",
+    "href": "resources.html#section-2",
+    "title": "Resources",
+    "section": "2021",
+    "text": "2021\n\nMcBride, C.G., MacCormick, A., and Verburg, P. (2021). Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes. ERI report 143, The University of Waikato. 93 pp. PDF"
+  },
+  {
+    "objectID": "resources.html#section-3",
+    "href": "resources.html#section-3",
+    "title": "Resources",
+    "section": "2019",
+    "text": "2019\n\nMcBride, C.G., Abell, J. M., and Hamilton, D. (2019). Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017. ERI report 123, The University of Waikato. 70 pp.PDF\nLong-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017 (2019)"
+  },
+  {
+    "objectID": "resources.html#section-4",
+    "href": "resources.html#section-4",
+    "title": "Resources",
+    "section": "2013",
+    "text": "2013\n\nScholes, P. (2013). Trends and state of nutrients in Lake Rotorua streams 2013 (Environmental Publication 2013/08). Bay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand. PDF"
+  },
+  {
+    "objectID": "resources.html#section-5",
+    "href": "resources.html#section-5",
+    "title": "Resources",
+    "section": "2009",
+    "text": "2009\n\nBurns, N., McIntosh, J., & Scholes, P. (2009). Managing the lakes of the Rotorua District, New Zealand. Lake and Reservoir Management, 25(3), 284–296. https://doi.org/10.1080/07438140903083815"
+  },
+  {
+    "objectID": "resources.html#section-6",
+    "href": "resources.html#section-6",
+    "title": "Resources",
+    "section": "2005",
+    "text": "2005\n\nRutherford, J. C. (2005) Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupo, New Zealand. In Zerger, A. and Argent, R.M. (eds) MODSIM 2005 International Congress on Modelling and Simulation. Modelling and Simulation Society of Australia and New Zealand, December 2005, pp. 2749-2754 ISBN: 0-9758400-2-9. https://www.mssanz.org.au/modsim05/papers/rutherford.pdf"
   },
   {
     "objectID": "gantt.html",
