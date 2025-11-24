@@ -3,7 +3,10 @@ project:
   render:
     - "*.qmd"
     # - "!cmip6-processing.qmd"
-
+execute:
+  freeze: auto  # re-render only when source changes
+  cache: true
+  
 website:
   title: "Rotorua Lake Modelling"
   favicon: www/favicon.ico
