@@ -2,10 +2,11 @@ project:
   type: website
   render:
     - "*.qmd"
-    - "!cmip6-processing.qmd"
+    # - "!cmip6-processing.qmd"
 
 website:
   title: "Rotorua Lake Modelling"
+  favicon: www/favicon.ico
   navbar:
     left:
       - href: index.qmd
@@ -28,16 +29,14 @@ website:
           - data-request.qmd
           - cmip6-processing.qmd
   page-footer: 
-    left: "Copyright 2021, Norah Jones" 
+    left: "Rotorua Plan Change 10" 
     right: 
       - icon: github
-        href: https://github.com/
-      - icon: twitter 
-        href: https://twitter.com/
+        href: https://github.com/tadhg-moore/rotorua-pc10
 
 format:
   html:
     theme: cosmo
-    css: styles.css
+    css: www/styles.css
     toc: true
     
