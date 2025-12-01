@@ -1,4 +1,4 @@
-get_vcsn_grid_points <- function() {
+get_vcsn_grid_points <- function(out_dir = here::here("data", "processed")) {
   # Read in VCSN grid points https://climatedata.environment.govt.nz/core-public-dataset.html#vcsn-agent-data
   vcsn_grid_points <- "https://climatedata.environment.govt.nz/data/core_public_data/geospatial/index_grid_points_vcsn_filtered_2193.gpkg"
   

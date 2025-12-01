@@ -1,11 +1,12 @@
-gather_cmip6_metadata <- function(out_dir, shared_drive = "Z:") {
+gather_cmip6_metadata <- function(out_dir = here::here("data", "processed"), 
+                                  shared_drive = "Z:") {
   # Dynamical downscaling CMIP6 models over New Zealand: added value of climatology and extremes (2024)
   # https://link.springer.com/article/10.1007/s00382-024-07337-5
   
   
   
   fils <- list.files(shared_drive)
-  out_dir <- here::here("data", "processed")
+  # out_dir <- here::here("data", "processed")
   dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
   
   # Extract metadata from filenames "variable_scenario_model_region_timestep_spatialres_biascorrection.nc"
@@ -29,12 +30,24 @@ gather_cmip6_metadata <- function(out_dir, shared_drive = "Z:") {
     dplyr::select(variable_name, variable_name_long, variable_units) |>
     dplyr::distinct()
   
+  # Get Daily data metadata
+  url <- "https://climatedata.environment.govt.nz/daily-data.html"
+  
+  # Scrape two tables
+  page <- rvest::read_html(url)
+  daily_vars <- page |> 
+    rvest::html_nodes("table") |> 
+    rvest::html_table() |> 
+    dplyr::bind_rows() |> 
+    dplyr::rename(variable_name = "Variable ID",
+                  daily_variable_name_long = "Description"
+                  ) 
   
   # GCM calendars
   # Open and check all netCDF calendars
   fils_metadata <- fils_metadata |> 
     dplyr::arrange(gcm) |>
-    dplyr::mutate(calendar = NA_character_)
+    dplyr::mutate(calendar = NA_character_, units = NA_character_)
   for (i in seq_len(nrow(fils_metadata))) {
     print(i)
     var <- fils_metadata$variable[i]
@@ -48,16 +61,27 @@ gather_cmip6_metadata <- function(out_dir, shared_drive = "Z:") {
     }
     nc <- ncdf4::nc_open(file, readunlim = FALSE)
     time_calendar <- ncdf4::ncatt_get(nc, varid = "time", attname = "calendar")$value
+    fils_metadata$units[i] <- ncdf4::ncatt_get(nc, varid = fils_metadata$variable[i], attname = "units")$value
     fils_metadata$calendar[i] <- time_calendar
     ncdf4::nc_close(nc)
   }
   
   fils_metadata |> 
-    dplyr::distinct(gcm, variable, calendar)
+    dplyr::distinct(gcm, variable, calendar, units)
   
   # Conformal Cubic Atmospheric Model (CCAM) CCAM https://research.csiro.au/ccam/
   metadata <- fils_metadata |> 
-    dplyr::left_join(meta_vars, by = c("variable" = "variable_name")) 
+    dplyr::left_join(meta_vars, by = c("variable" = "variable_name")) |> 
+    dplyr::left_join(daily_vars, by = c("variable" = "variable_name")) |> 
+    dplyr::mutate(
+      variable_name_long = dplyr::if_else(is.na(variable_name_long), 
+                                          daily_variable_name_long, 
+                                          variable_name_long)
+    )
+  
+  daily_meta <- fils_metadata |> 
+    dplyr::filter(variable %in% daily_vars$variable_name) |>
+    dplyr::left_join(daily_vars, by = c("variable" = "variable_name"))
   
   metadata |> 
     dplyr::distinct(gcm, scenario)
