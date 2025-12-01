@@ -29,7 +29,7 @@ summarise_gcm_ts <- function(variable, gcm, files) {
     hist_df <- data.frame(
       year = as.integer(hist_years),
       value = hist_annual_means,
-      scenario = "Historical",
+      scenario = "historical",
       gcm = g
     )
     return(hist_df)
@@ -69,6 +69,7 @@ summarise_gcm_ts <- function(variable, gcm, files) {
   
   
   all_df <- dplyr::bind_rows(hist_all, scen_all) |> 
-    dplyr::select(year, value, scenario, gcm)
+    dplyr::mutate(variable = variable) |>
+    dplyr::select(year, value, variable, scenario, gcm)
   return(all_df)
 }
