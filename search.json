@@ -1,176 +1,10 @@
 [
   {
-    "objectID": "resources.html",
-    "href": "resources.html",
-    "title": "Resources",
+    "objectID": "targets.html",
+    "href": "targets.html",
+    "title": "Targets",
     "section": "",
-    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\nWebsites:"
-  },
-  {
-    "objectID": "resources.html#section",
-    "href": "resources.html#section",
-    "title": "Resources",
-    "section": "2023",
-    "text": "2023\n\nÖzkundakci (2023)\nLake Rotorua science review, summary (Environmental Publication 2023/09).\nBay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.\nPDF\n\n\nClick to expand: Summary\n\nBrief summary text here."
-  },
-  {
-    "objectID": "resources.html#section-1",
-    "href": "resources.html#section-1",
-    "title": "Resources",
-    "section": "2022",
-    "text": "2022\n\nHamill (2022)\nTrend and State of Nutrients in Lake Rotorua Streams 2002–2022.\nRiver Lake Ltd for Bay of Plenty Regional Council.\nPDF\n\n\nClick to expand: Summary\n\nThe report focuses on nine major streams contributing to Lake Rotorua’s water quality. - Nutrient trends were assessed using the seasonal Kendall test over three periods: 2002-2022, 2002-2010, and 2010-2019. - The analysis includes total nitrogen (TN), total phosphorus (TP), and dissolved reactive phosphorus (DRP) concentrations and loads.\nNutrient Concentrations and Stream Flows This section details the mean flow rates and nutrient concentrations in the streams entering Lake Rotorua.\n\nThe mean flow to Lake Rotorua from 2002-2022 was 11.8 m³/s, with Hamurana being the largest contributor at 2.63 m³/s.\nThe highest total nitrogen concentrations were found in Waiohewa (2839 mg/m³) and the highest total phosphorus concentrations in Waingaehe (123 mg/m³).\nStreams like Hamurana, Awahou, and Waingaehe showed high concentrations of dissolved reactive phosphorus (DRP), with ratios of DRP to TP between 80-90%.\n\nTrends in Nutrient Concentrations Over Time This section discusses the observed trends in nutrient concentrations across the monitored streams.\n\nFrom 2002 to 2022, TN concentrations increased in Hamurana, Awahou, and Waiteti, particularly in Awahou and Waiteti since 2010.\nTN concentrations decreased in Puarenga and possibly Ngongotaha, but this trend did not continue post-2010.\nTP concentrations increased in Hamurana, Ngongotaha, Utuhina, Puarenga, Waingaehe, and Waiohewa, with trends continuing since 2010 in all but Waingaehe.\n\nNutrient Loads to Lake Rotorua\n\nThe nine main streams transported an average of 410 t/y of nitrogen and 28 t/y of phosphorus from 2002-2022.\nThe highest TN loads came from Awahou (71.1 t/y), Puarenga (67.4 t/y), and Hamurana (66.5 t/y).\nTP loads were primarily contributed by Hamurana (7.5 t/y), Puarenga (5.1 t/y), and Awahou (3.9 t/y).\n\n\n\n\nMangeya (2022)\nGroundwater Modelling Report.\nJacobs for Bay of Plenty Regional Council (Toi Moana).\n\n\nClick to expand: Summary\n\nProject Background and Objectives\nThe Bay of Plenty Regional Council engaged Jacobs to develop a groundwater flow model for the Rotorua Water Management Area to enhance water management practices. The Rotorua Water Management Area covers approximately 1,100 km². The model aims to improve understanding of groundwater systems and surface water interactions. It will inform groundwater allocation limits and assess various abstraction scenarios.\nScope of Work for Groundwater Modelling\nThe project involved several key tasks to develop and document the groundwater model.\n\nAnalyze available data and create a conceptual hydrogeological model.\nDevelop and calibrate a transient three-dimensional numerical groundwater flow model using MODFLOW.\nSimulate predictive scenarios and document the model development and predictions.\nDeliver the numerical model and associated files to the Bay of Plenty Regional Council.\n\nLimitations of the Groundwater Modelling\n\nThe model does not account for certain factors that could affect groundwater and surface water quality.\nExcludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir."
-  },
-  {
-    "objectID": "resources.html#section-2",
-    "href": "resources.html#section-2",
-    "title": "Resources",
-    "section": "2021",
-    "text": "2021\n\nMcBride, MacCormick, and Verburg (2021)\nEstimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes.\nERI report 143, University of Waikato.\nPDF\n\n\nClick to expand: Summary\n\nImportance and Context\n\nRotorua Te Arawa Lakes are culturally, historically, and ecologically significant.\nWater quality varies with catchment characteristics: undeveloped (e.g., Tikitapu, Okataina) vs. highly developed agricultural/forestry (e.g., Rotorua, Rerewhakaaitu, Okaro).\nLake water quality is strongly influenced by nutrient inputs from surface and groundwater flows.\n\nMethodology for Nutrient Loads\n\nUsed updated export coefficient approach and Overseer® modelling for nitrogen (N) and phosphorus (P).\nLand use areas calculated for surface and groundwater catchments.\nNutrient loss rates estimated per land use, accounting for local factors (e.g., pest impacts, forest removal).\nAdditional sources included geothermal inputs, septic systems, municipal wastewater, atmospheric deposition, and hydrological connections among lakes.\nAttenuation estimated from physiography to produce a consistent regional nutrient budget.\n\nKey Findings and Implications\n\nAgricultural land contributes disproportionately to N and P loads.\nGeothermal, atmospheric, and connected-lake sources are significant in some catchments.\nMany catchments exceed ‘reference’ nutrient loads by 2–3×, complicating restoration.\nProvides basis for assessing internal lake loading and guiding catchment/lake management strategies.\n\nExample Nutrient Loads (kg/yr)\n\nLake Rotorua: N 721,427, P 56,760.5"
-  },
-  {
-    "objectID": "resources.html#section-3",
-    "href": "resources.html#section-3",
-    "title": "Resources",
-    "section": "2019",
-    "text": "2019\n\nMcBride, Abell, and Hamilton (2019)\nLong-term nutrient loads and water quality for Lake Rotorua: 1965–2017.\nERI Report 123, University of Waikato.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
-  },
-  {
-    "objectID": "resources.html#section-4",
-    "href": "resources.html#section-4",
-    "title": "Resources",
-    "section": "2018",
-    "text": "2018\n\nMe et al. (2018)\nModeling the effects of climate change on water quality of Lake Rotorua, New Zealand.\n\n\nClick to expand: Summary\n\nModelling Hydrology and Water Quality This study integrates a catchment model with a lake water quality model to assess the impacts of nutrient load reductions and climate change on a eutrophic lake.\n\nThe study combines SWAT and DYRESM–CAEDYM models to simulate nutrient dynamics and water quality.\nThe models performed satisfactorily in simulating observed data, indicating accurate representation of key processes.\nNutrient load reductions from agricultural practices had minor effects on lake nutrient concentrations.\nClimate change projections for 2090 showed significant impacts on nutrient levels and water quality.\n\nNutrient Load Reductions and Their Effects The study evaluates how reducing nutrient loads affects the trophic state of Lake Rotorua.\n\nSimulations indicated that reducing fertilizer and wastewater irrigation had limited impact on lake nutrient concentrations.\nThe projected climate change for 2090 is expected to increase internal nutrient loading significantly.\nPolymictic lakes like Lake Rotorua are particularly vulnerable to eutrophication due to climate change.\n\nClimate Change Impacts on Water Quality This section discusses the influence of climate change on hydrological cycles and nutrient dynamics.\n\nIncreased precipitation is predicted to raise total phosphorus loads by 3.3%–16.5% in Danish streams.\nA study in Slovenia projected total nitrogen losses could increase by 5.3% to 80.2% due to climate change.\nClimate change is expected to directly affect lake water temperature and stratification, altering nutrient dynamics."
-  },
-  {
-    "objectID": "resources.html#section-5",
-    "href": "resources.html#section-5",
-    "title": "Resources",
-    "section": "2015",
-    "text": "2015\n\nAbell, McBride, and Hamilton (2015)\nLake Rotorua Treated Wastewater Discharge: Environmental Effects Study ERI Report 80, University of Waikato. PDF\n\n\nClick to expand: Summary\n\nKey Findings\n\nThe treated wastewater discharge contributes a measurable nutrient load to Lake Rotorua, which may influence the lake’s trophic status, algal growth, and water-quality trends.\nThere is evidence of spatial variability in how the discharge impacts the lake — e.g., nearer to the discharge site showing different water quality versus more remote parts of the lake.\nThe effectiveness of the current wastewater treatment and discharge regime is assessed and found to have limitations: even treated wastewater can contribute significant nutrient inputs if volumes are large and/or treatment is not optimised.\nThe report discusses the lake’s capacity to assimilate or dilute the nutrient load, and whether it is being exceeded or approaching thresholds that may degrade ecological health.\n\nImplications & Recommendations\n\nManagement of wastewater inputs to Lake Rotorua must account not just for concentration of nutrients in the effluent but for volume of discharge and how that interacts with lake hydrodynamics (mixing, stratification, residence time).\nUpgrading treatment processes, reducing nutrient concentrations further, or reducing the volume of discharge may be necessary to protect lake health.\nMonitoring of water quality and ecological responses (algal blooms, oxygen levels, benthic habitat) should continue and be linked explicitly to discharge data to evaluate trends.\nLake management strategies should take a holistic view: catchment land-use, inflows, internal nutrient cycling, and wastewater discharges all interact to determine lake condition."
-  },
-  {
-    "objectID": "resources.html#section-6",
-    "href": "resources.html#section-6",
-    "title": "Resources",
-    "section": "2013",
-    "text": "2013\n\nScholes (2013)\nTrends and state of nutrients in Lake Rotorua streams 2013.\nBay of Plenty Regional Council.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
-  },
-  {
-    "objectID": "resources.html#section-7",
-    "href": "resources.html#section-7",
-    "title": "Resources",
-    "section": "2012",
-    "text": "2012\n\nHamilton et al. (2012)\nPredicting the effects of nutrient loads, management regimes and climate change on water quality of Lake Rotorua. (pers. comm. 2025-11-24)\n\n\nClick to expand: Summary\n\nLake Rotorua’s Water Quality Challenges Lake Rotorua has faced significant water quality decline due to nutrient loads and land use changes, necessitating a comprehensive management strategy.\n\nLake area: 80 km², mean depth: 10 m.\nCultural significance to the Te Arawa people and vital for tourism and recreation.\nWater quality deterioration began in the 1960s, linked to treated wastewater inputs and land use changes from forest to pasture.\nUrban wastewater discharge ceased in 1991, but ongoing pastoral expansion, especially dairy farming, has continued to impact water quality.\nLegacy effects from historical land use and nutrient pools in sediments complicate current management efforts.\n\nModelling Approach for Water Quality Management A modelling approach is essential for assessing the impacts of land use, climate change, and management actions on Lake Rotorua’s water quality.\n\nIntegrated multiple models: SimCLIM, ROTAN, CLUES, DYRESM-CAEDYM.\nSimCLIM predicts climate data (temperature, rainfall) for the Rotorua catchment up to 2100.\nROTAN simulates streamflows and nitrate transport between surface water and groundwater.\nCLUES estimates annual average phosphorus loads in streams.\nDYRESM-CAEDYM models vertical distribution of water temperature and nutrient cycling relevant to trophic state.\n\nNutrient Load Reduction Requirements To improve water quality, significant reductions in nitrogen and phosphorus loads are necessary.\n\nAt least 350 tonnes of nitrogen and a similar amount of phosphorus must be removed annually.\nTarget Trophic Level Index (TLI) value set at 4.2 to restore water quality.\nClimate change is expected to exacerbate challenges, increasing stratification and internal nutrient loading.\nInternal nutrient release from sediments is comparable to external loads, complicating management.\n\nInternal Nutrient Loading and Management Strategies Addressing internal nutrient loading is critical for achieving long-term water quality goals in Lake Rotorua.\n\nInternal loading from sediments contributes significantly to nutrient levels, especially during stratification.\nChemical flocculants may reduce internal loading but have limited duration of effectiveness (approximately four years).\nEffective sediment capping can offset water quality deterioration but requires prior reduction of catchment nutrient loads."
-  },
-  {
-    "objectID": "resources.html#section-8",
-    "href": "resources.html#section-8",
-    "title": "Resources",
-    "section": "2009",
-    "text": "2009\n\nBurns, McIntosh, and Scholes (2009)\nManaging the lakes of the Rotorua District, New Zealand.\nLake and Reservoir Management, 25(3), 284–296.\nDOI\n\n\nClick to expand: Summary\n\nSummary…"
-  },
-  {
-    "objectID": "resources.html#section-9",
-    "href": "resources.html#section-9",
-    "title": "Resources",
-    "section": "2005",
-    "text": "2005\n\nRutherford (2005)\nModelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupō.\nIn MODSIM 2005, pp. 2749–2754.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
-  },
-  {
-    "objectID": "gantt.html",
-    "href": "gantt.html",
-    "title": "GANTT Chart",
-    "section": "",
-    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d\n\n    section Lake Model Upgrade\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    GLM-AED model upgrade            :b2, 2025-11-24, 50d\n    GLM-AED model calibration        :b3, 2025-12-08, 50d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
-    "crumbs": [
-      "Home",
-      "Project Overview",
-      "GANTT Chart"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html",
-    "href": "cmip6-processing.html",
-    "title": "CMIP 6 Processing",
-    "section": "",
-    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#metadata",
-    "href": "cmip6-processing.html#metadata",
-    "title": "CMIP 6 Processing",
-    "section": "Metadata",
-    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#file-access",
-    "href": "cmip6-processing.html#file-access",
-    "title": "CMIP 6 Processing",
-    "section": "File access",
-    "text": "File access\nThe CMIP6 data is stored on a shared drive (Z: drive) accessible within our institutional network. The files are organized by variable, scenario, model, region, timestep, spatial resolution, and bias correction method e.g “hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc”. This corresponds to relative humidity (hurs) for the historical scenario from the ACCESS-CM2 GCM, downscaled using the CCAM model over New Zealand at a daily timestep and 5 km spatial resolution, without bias correction.\nLoading and reading data from these NetCDF files can be done using the ncdf4 package in R. However, reading large datasets can be time-consuming, so we have implemented a function which uses a grid reference system to efficiently extract only the required data points.\nThis provided as the VCSN agent data. This contains a grid of points at 5 km resolution covering New Zealand, with each point having a unique coordinate index. We use this grid to identify which points fall within our area of interest, and then extract only those points from the NetCDF files.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#processing-function",
-    "href": "cmip6-processing.html#processing-function",
-    "title": "CMIP 6 Processing",
-    "section": "Processing function",
-    "text": "Processing function\nThe process_cmip6 function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.\n\n\n\nFunction Parameters for process_cmip6()\n\n\nParameter\nDescription\n\n\n\n\nx\nsf polygon\n\n\nvcsn_grid_points\nsf points of VCSN grid\n\n\nfile\npath to input netCDF file\n\n\noutfile\npath to output netCDF file\n\n\n\n\n\n\nsource(here::here(\"R\", \"process_cmip6.R\"))\nprocess_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,\n              file = file, outfile = outfile)",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#create-an-area-of-interest",
-    "href": "cmip6-processing.html#create-an-area-of-interest",
-    "title": "CMIP 6 Processing",
-    "section": "Create an area of interest",
-    "text": "Create an area of interest\nIf you do not have a shapefile of your area of interest (AOI), you can easily generate one with the mapedit package.\n\nx &lt;- mapedit::drawFeatures()\n\nSave the drawn features for future use:\n\nsaveRDS(x, here::here(\"data\", \"processed\", \"rotorua_area.rds\"))",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "data-request.html",
-    "href": "data-request.html",
-    "title": "Data Request",
-    "section": "",
-    "text": "Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.\n\n\n\n\n\n\n\n\n\n\nDataset\nDescription / Variables\nPurpose in Modelling\nSource\n\n\n\n\nInflow volumes\nDaily/hourly flow records for all tributaries and stormwater inputs\nDefine hydrological boundary conditions; drive water balance\nBoPRC\n\n\nInflow chemistry\nNutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature\nSet up inflow nutrient loads and biogeochemical forcing\nBoPRC\n\n\nGrab samples & rating curve data\nFlow–concentration relationships, historical spot samples\nImprove accuracy of nutrient load estimates\nCM / BoPRC\n\n\nMeteorological data (buoy)\nWind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall\nPrimary atmospheric forcing for lake model\nBoPRC\n\n\nMeteorological data (airport)\nNIWA climate station data (same variables as above)\nGap filling and long-term climate records\nNIWA Climate Portal\n\n\nCMIP6 climate data\nBias-corrected scenario climate inputs\nFuture scenario modelling\nShared Drive\n\n\nLake level / stage\nTime series of lake height\nConvert model depths to dynamic hypsography; align inflow/outflow\nBoPRC\n\n\nOutflow data\nOutflow discharge and control structure operations\nComplete hydrological mass balance\nBoPRC\n\n\nWater quality profiles\nVertical profiles of temperature, DO, chlorophyll-a, nutrients\nCalibration & validation of GLM-AED\nLimnotrack/BoPRC\n\n\nHistorical GLM-AED outputs\nPrevious model runs and configuration files\nProvide baseline assumptions and compare structure\nBoPRC / CM\n\n\nOld DYRESM-CAEDYM report\nModel description and past findings\nReference for parameterisation and historical context\nDeniz\n\n\nCatchment shapefile\nFull catchment boundary polygon\nDefine drainage area for inflow and land-use analysis\nBoPRC\n\n\nSub-catchment delineations\nIndividual subcatchment polygons\nAttribute inflows to specific contributing areas\nBoPRC\n\n\nLand-use data (current)\nLatest regional council land-use dataset\nEstimate nutrient export, identify land-use pressures\nBoPRC\n\n\nHistorical land-use (LCDB)\nLCDB time-series land-cover data\nIdentify changes over time influencing nutrient loading\nLINZ / LCDB\n\n\nROTAN model outputs\nRotorua/Taupō nitrate model datasets (flows, loads)\nCross-check nutrient source estimates; historic nitrate loading\nRutherford\n\n\nBathymetry\nHigh-resolution depth raster or contours\nBuild lake hypsography for GLM-AED\nBoPRC\n\n\nSediment parameters\nSediment P/N fractions, nutrient release data\nSupport AED sediment flux and diagenesis modules\nBoPRC / Literature\n\n\nPoint-source inputs\nAny wastewater/stormwater discharge records\nEnsure all external loads are captured\nBoPRC\n\n\n\n\n\n\n\nBegin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Data Request"
-    ]
-  },
-  {
-    "objectID": "data-request.html#notes",
-    "href": "data-request.html#notes",
-    "title": "Data Request",
-    "section": "",
-    "text": "Begin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Data Request"
-    ]
+    "text": "This project uses the targets package for pipeline management in R. The targets package helps to automate the workflow by defining a series of steps (targets) that depend on each other. Each target represents a piece of data or a computation, and targets ensures that only the necessary parts of the pipeline are re-executed when changes occur.\nHere is a visual network showing the relationships between the targets in this project:\n\n\ntar_source(): these files do not exist: /home/runner/work/rotorua-pc10/rotorua-pc10/R/plot_gcm_spatial.R, /home/runner/work/rotorua-pc10/rotorua-pc10/R/plot_var_ts.R"
   },
   {
     "objectID": "index.html",
@@ -259,5 +93,190 @@
       "Home",
       "Project Overview"
     ]
+  },
+  {
+    "objectID": "data-request.html",
+    "href": "data-request.html",
+    "title": "Data Request",
+    "section": "",
+    "text": "Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.\n\n\n\n\n\n\n\n\n\n\nDataset\nDescription / Variables\nPurpose in Modelling\nSource\n\n\n\n\nInflow volumes\nDaily/hourly flow records for all tributaries and stormwater inputs\nDefine hydrological boundary conditions; drive water balance\nBoPRC\n\n\nInflow chemistry\nNutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature\nSet up inflow nutrient loads and biogeochemical forcing\nBoPRC\n\n\nGrab samples & rating curve data\nFlow–concentration relationships, historical spot samples\nImprove accuracy of nutrient load estimates\nCM / BoPRC\n\n\nMeteorological data (buoy)\nWind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall\nPrimary atmospheric forcing for lake model\nBoPRC\n\n\nMeteorological data (airport)\nNIWA climate station data (same variables as above)\nGap filling and long-term climate records\nNIWA Climate Portal\n\n\nCMIP6 climate data\nBias-corrected scenario climate inputs\nFuture scenario modelling\nShared Drive\n\n\nLake level / stage\nTime series of lake height\nConvert model depths to dynamic hypsography; align inflow/outflow\nBoPRC\n\n\nOutflow data\nOutflow discharge and control structure operations\nComplete hydrological mass balance\nBoPRC\n\n\nWater quality profiles\nVertical profiles of temperature, DO, chlorophyll-a, nutrients\nCalibration & validation of GLM-AED\nLimnotrack/BoPRC\n\n\nHistorical GLM-AED outputs\nPrevious model runs and configuration files\nProvide baseline assumptions and compare structure\nBoPRC / CM\n\n\nOld DYRESM-CAEDYM report\nModel description and past findings\nReference for parameterisation and historical context\nDeniz\n\n\nCatchment shapefile\nFull catchment boundary polygon\nDefine drainage area for inflow and land-use analysis\nBoPRC\n\n\nSub-catchment delineations\nIndividual subcatchment polygons\nAttribute inflows to specific contributing areas\nBoPRC\n\n\nLand-use data (current)\nLatest regional council land-use dataset\nEstimate nutrient export, identify land-use pressures\nBoPRC\n\n\nHistorical land-use (LCDB)\nLCDB time-series land-cover data\nIdentify changes over time influencing nutrient loading\nLINZ / LCDB\n\n\nROTAN model outputs\nRotorua/Taupō nitrate model datasets (flows, loads)\nCross-check nutrient source estimates; historic nitrate loading\nRutherford\n\n\nBathymetry\nHigh-resolution depth raster or contours\nBuild lake hypsography for GLM-AED\nBoPRC\n\n\nSediment parameters\nSediment P/N fractions, nutrient release data\nSupport AED sediment flux and diagenesis modules\nBoPRC / Literature\n\n\nPoint-source inputs\nAny wastewater/stormwater discharge records\nEnsure all external loads are captured\nBoPRC\n\n\n\n\n\n\n\nBegin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
+    "objectID": "data-request.html#notes",
+    "href": "data-request.html#notes",
+    "title": "Data Request",
+    "section": "",
+    "text": "Begin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html",
+    "href": "cmip6-processing.html",
+    "title": "CMIP 6 Processing",
+    "section": "",
+    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#metadata",
+    "href": "cmip6-processing.html#metadata",
+    "title": "CMIP 6 Processing",
+    "section": "Metadata",
+    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#file-access",
+    "href": "cmip6-processing.html#file-access",
+    "title": "CMIP 6 Processing",
+    "section": "File access",
+    "text": "File access\nThe CMIP6 data is stored on a shared drive (Z: drive) accessible within our institutional network. The files are organized by variable, scenario, model, region, timestep, spatial resolution, and bias correction method e.g “hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc”. This corresponds to relative humidity (hurs) for the historical scenario from the ACCESS-CM2 GCM, downscaled using the CCAM model over New Zealand at a daily timestep and 5 km spatial resolution, without bias correction.\nLoading and reading data from these NetCDF files can be done using the ncdf4 package in R. However, reading large datasets can be time-consuming, so we have implemented a function which uses a grid reference system to efficiently extract only the required data points.\nThis provided as the VCSN agent data. This contains a grid of points at 5 km resolution covering New Zealand, with each point having a unique coordinate index. We use this grid to identify which points fall within our area of interest, and then extract only those points from the NetCDF files.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#create-an-area-of-interest",
+    "href": "cmip6-processing.html#create-an-area-of-interest",
+    "title": "CMIP 6 Processing",
+    "section": "Create an area of interest",
+    "text": "Create an area of interest\nIf you do not have a shapefile of your area of interest (AOI), you can easily generate one with the mapedit package.\n\nx &lt;- mapedit::drawFeatures()\n\nSave the drawn features for future use:\n\nsaveRDS(x, here::here(\"data\", \"processed\", \"rotorua_area.rds\"))",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#processing-function",
+    "href": "cmip6-processing.html#processing-function",
+    "title": "CMIP 6 Processing",
+    "section": "Processing function",
+    "text": "Processing function\nThe process_cmip6 function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.\n\n\n\nFunction Parameters for process_cmip6()\n\n\nParameter\nDescription\n\n\n\n\nx\nsf polygon\n\n\nvcsn_grid_points\nsf points of VCSN grid\n\n\nfile\npath to input netCDF file\n\n\noutfile\npath to output netCDF file\n\n\n\n\n\n\nsource(here::here(\"R\", \"process_cmip6.R\"))\nprocess_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,\n              file = file, outfile = outfile)",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-visualisation.html",
+    "href": "cmip6-visualisation.html",
+    "title": "Visualise CMIP6",
+    "section": "",
+    "text": "After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.\nWe present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Visualise CMIP6"
+    ]
+  },
+  {
+    "objectID": "gantt.html",
+    "href": "gantt.html",
+    "title": "GANTT Chart",
+    "section": "",
+    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d\n\n    section Lake Model Upgrade\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    GLM-AED model upgrade            :b2, 2025-11-24, 50d\n    GLM-AED model calibration        :b3, 2025-12-08, 50d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "GANTT Chart"
+    ]
+  },
+  {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "Resources",
+    "section": "",
+    "text": "Below are some useful resources and reports from previous water quality studies on Lake Rotorua:\nWebsites:"
+  },
+  {
+    "objectID": "resources.html#section",
+    "href": "resources.html#section",
+    "title": "Resources",
+    "section": "2023",
+    "text": "2023\n\nÖzkundakci (2023)\nLake Rotorua science review, summary (Environmental Publication 2023/09).\nBay of Plenty Regional Council (Toi Moana). Whakatāne, New Zealand.\nPDF\n\n\nClick to expand: Summary\n\nBrief summary text here."
+  },
+  {
+    "objectID": "resources.html#section-1",
+    "href": "resources.html#section-1",
+    "title": "Resources",
+    "section": "2022",
+    "text": "2022\n\nHamill (2022)\nTrend and State of Nutrients in Lake Rotorua Streams 2002–2022.\nRiver Lake Ltd for Bay of Plenty Regional Council.\nPDF\n\n\nClick to expand: Summary\n\nThe report focuses on nine major streams contributing to Lake Rotorua’s water quality. - Nutrient trends were assessed using the seasonal Kendall test over three periods: 2002-2022, 2002-2010, and 2010-2019. - The analysis includes total nitrogen (TN), total phosphorus (TP), and dissolved reactive phosphorus (DRP) concentrations and loads.\nNutrient Concentrations and Stream Flows This section details the mean flow rates and nutrient concentrations in the streams entering Lake Rotorua.\n\nThe mean flow to Lake Rotorua from 2002-2022 was 11.8 m³/s, with Hamurana being the largest contributor at 2.63 m³/s.\nThe highest total nitrogen concentrations were found in Waiohewa (2839 mg/m³) and the highest total phosphorus concentrations in Waingaehe (123 mg/m³).\nStreams like Hamurana, Awahou, and Waingaehe showed high concentrations of dissolved reactive phosphorus (DRP), with ratios of DRP to TP between 80-90%.\n\nTrends in Nutrient Concentrations Over Time This section discusses the observed trends in nutrient concentrations across the monitored streams.\n\nFrom 2002 to 2022, TN concentrations increased in Hamurana, Awahou, and Waiteti, particularly in Awahou and Waiteti since 2010.\nTN concentrations decreased in Puarenga and possibly Ngongotaha, but this trend did not continue post-2010.\nTP concentrations increased in Hamurana, Ngongotaha, Utuhina, Puarenga, Waingaehe, and Waiohewa, with trends continuing since 2010 in all but Waingaehe.\n\nNutrient Loads to Lake Rotorua\n\nThe nine main streams transported an average of 410 t/y of nitrogen and 28 t/y of phosphorus from 2002-2022.\nThe highest TN loads came from Awahou (71.1 t/y), Puarenga (67.4 t/y), and Hamurana (66.5 t/y).\nTP loads were primarily contributed by Hamurana (7.5 t/y), Puarenga (5.1 t/y), and Awahou (3.9 t/y).\n\n\n\n\nMangeya (2022)\nGroundwater Modelling Report.\nJacobs for Bay of Plenty Regional Council (Toi Moana).\n\n\nClick to expand: Summary\n\nProject Background and Objectives\nThe Bay of Plenty Regional Council engaged Jacobs to develop a groundwater flow model for the Rotorua Water Management Area to enhance water management practices. The Rotorua Water Management Area covers approximately 1,100 km². The model aims to improve understanding of groundwater systems and surface water interactions. It will inform groundwater allocation limits and assess various abstraction scenarios.\nScope of Work for Groundwater Modelling\nThe project involved several key tasks to develop and document the groundwater model.\n\nAnalyze available data and create a conceptual hydrogeological model.\nDevelop and calibrate a transient three-dimensional numerical groundwater flow model using MODFLOW.\nSimulate predictive scenarios and document the model development and predictions.\nDeliver the numerical model and associated files to the Bay of Plenty Regional Council.\n\nLimitations of the Groundwater Modelling\n\nThe model does not account for certain factors that could affect groundwater and surface water quality.\nExcludes the impact of groundwater extraction on water quality. Does not consider density effects from variable groundwater salinity or temperature. Ignores two-phase fluids in the active geothermal reservoir."
+  },
+  {
+    "objectID": "resources.html#section-2",
+    "href": "resources.html#section-2",
+    "title": "Resources",
+    "section": "2021",
+    "text": "2021\n\nMcBride, MacCormick, and Verburg (2021)\nEstimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes.\nERI report 143, University of Waikato.\nPDF\n\n\nClick to expand: Summary\n\nImportance and Context\n\nRotorua Te Arawa Lakes are culturally, historically, and ecologically significant.\nWater quality varies with catchment characteristics: undeveloped (e.g., Tikitapu, Okataina) vs. highly developed agricultural/forestry (e.g., Rotorua, Rerewhakaaitu, Okaro).\nLake water quality is strongly influenced by nutrient inputs from surface and groundwater flows.\n\nMethodology for Nutrient Loads\n\nUsed updated export coefficient approach and Overseer® modelling for nitrogen (N) and phosphorus (P).\nLand use areas calculated for surface and groundwater catchments.\nNutrient loss rates estimated per land use, accounting for local factors (e.g., pest impacts, forest removal).\nAdditional sources included geothermal inputs, septic systems, municipal wastewater, atmospheric deposition, and hydrological connections among lakes.\nAttenuation estimated from physiography to produce a consistent regional nutrient budget.\n\nKey Findings and Implications\n\nAgricultural land contributes disproportionately to N and P loads.\nGeothermal, atmospheric, and connected-lake sources are significant in some catchments.\nMany catchments exceed ‘reference’ nutrient loads by 2–3×, complicating restoration.\nProvides basis for assessing internal lake loading and guiding catchment/lake management strategies.\n\nExample Nutrient Loads (kg/yr)\n\nLake Rotorua: N 721,427, P 56,760.5"
+  },
+  {
+    "objectID": "resources.html#section-3",
+    "href": "resources.html#section-3",
+    "title": "Resources",
+    "section": "2019",
+    "text": "2019\n\nMcBride, Abell, and Hamilton (2019)\nLong-term nutrient loads and water quality for Lake Rotorua: 1965–2017.\nERI Report 123, University of Waikato.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
+  },
+  {
+    "objectID": "resources.html#section-4",
+    "href": "resources.html#section-4",
+    "title": "Resources",
+    "section": "2018",
+    "text": "2018\n\nMe et al. (2018)\nModeling the effects of climate change on water quality of Lake Rotorua, New Zealand.\n\n\nClick to expand: Summary\n\nModelling Hydrology and Water Quality This study integrates a catchment model with a lake water quality model to assess the impacts of nutrient load reductions and climate change on a eutrophic lake.\n\nThe study combines SWAT and DYRESM–CAEDYM models to simulate nutrient dynamics and water quality.\nThe models performed satisfactorily in simulating observed data, indicating accurate representation of key processes.\nNutrient load reductions from agricultural practices had minor effects on lake nutrient concentrations.\nClimate change projections for 2090 showed significant impacts on nutrient levels and water quality.\n\nNutrient Load Reductions and Their Effects The study evaluates how reducing nutrient loads affects the trophic state of Lake Rotorua.\n\nSimulations indicated that reducing fertilizer and wastewater irrigation had limited impact on lake nutrient concentrations.\nThe projected climate change for 2090 is expected to increase internal nutrient loading significantly.\nPolymictic lakes like Lake Rotorua are particularly vulnerable to eutrophication due to climate change.\n\nClimate Change Impacts on Water Quality This section discusses the influence of climate change on hydrological cycles and nutrient dynamics.\n\nIncreased precipitation is predicted to raise total phosphorus loads by 3.3%–16.5% in Danish streams.\nA study in Slovenia projected total nitrogen losses could increase by 5.3% to 80.2% due to climate change.\nClimate change is expected to directly affect lake water temperature and stratification, altering nutrient dynamics."
+  },
+  {
+    "objectID": "resources.html#section-5",
+    "href": "resources.html#section-5",
+    "title": "Resources",
+    "section": "2015",
+    "text": "2015\n\nAbell, McBride, and Hamilton (2015)\nLake Rotorua Treated Wastewater Discharge: Environmental Effects Study ERI Report 80, University of Waikato. PDF\n\n\nClick to expand: Summary\n\nKey Findings\n\nThe treated wastewater discharge contributes a measurable nutrient load to Lake Rotorua, which may influence the lake’s trophic status, algal growth, and water-quality trends.\nThere is evidence of spatial variability in how the discharge impacts the lake — e.g., nearer to the discharge site showing different water quality versus more remote parts of the lake.\nThe effectiveness of the current wastewater treatment and discharge regime is assessed and found to have limitations: even treated wastewater can contribute significant nutrient inputs if volumes are large and/or treatment is not optimised.\nThe report discusses the lake’s capacity to assimilate or dilute the nutrient load, and whether it is being exceeded or approaching thresholds that may degrade ecological health.\n\nImplications & Recommendations\n\nManagement of wastewater inputs to Lake Rotorua must account not just for concentration of nutrients in the effluent but for volume of discharge and how that interacts with lake hydrodynamics (mixing, stratification, residence time).\nUpgrading treatment processes, reducing nutrient concentrations further, or reducing the volume of discharge may be necessary to protect lake health.\nMonitoring of water quality and ecological responses (algal blooms, oxygen levels, benthic habitat) should continue and be linked explicitly to discharge data to evaluate trends.\nLake management strategies should take a holistic view: catchment land-use, inflows, internal nutrient cycling, and wastewater discharges all interact to determine lake condition."
+  },
+  {
+    "objectID": "resources.html#section-6",
+    "href": "resources.html#section-6",
+    "title": "Resources",
+    "section": "2013",
+    "text": "2013\n\nScholes (2013)\nTrends and state of nutrients in Lake Rotorua streams 2013.\nBay of Plenty Regional Council.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
+  },
+  {
+    "objectID": "resources.html#section-7",
+    "href": "resources.html#section-7",
+    "title": "Resources",
+    "section": "2012",
+    "text": "2012\n\nHamilton et al. (2012)\nPredicting the effects of nutrient loads, management regimes and climate change on water quality of Lake Rotorua. (pers. comm. 2025-11-24)\n\n\nClick to expand: Summary\n\nLake Rotorua’s Water Quality Challenges Lake Rotorua has faced significant water quality decline due to nutrient loads and land use changes, necessitating a comprehensive management strategy.\n\nLake area: 80 km², mean depth: 10 m.\nCultural significance to the Te Arawa people and vital for tourism and recreation.\nWater quality deterioration began in the 1960s, linked to treated wastewater inputs and land use changes from forest to pasture.\nUrban wastewater discharge ceased in 1991, but ongoing pastoral expansion, especially dairy farming, has continued to impact water quality.\nLegacy effects from historical land use and nutrient pools in sediments complicate current management efforts.\n\nModelling Approach for Water Quality Management A modelling approach is essential for assessing the impacts of land use, climate change, and management actions on Lake Rotorua’s water quality.\n\nIntegrated multiple models: SimCLIM, ROTAN, CLUES, DYRESM-CAEDYM.\nSimCLIM predicts climate data (temperature, rainfall) for the Rotorua catchment up to 2100.\nROTAN simulates streamflows and nitrate transport between surface water and groundwater.\nCLUES estimates annual average phosphorus loads in streams.\nDYRESM-CAEDYM models vertical distribution of water temperature and nutrient cycling relevant to trophic state.\n\nNutrient Load Reduction Requirements To improve water quality, significant reductions in nitrogen and phosphorus loads are necessary.\n\nAt least 350 tonnes of nitrogen and a similar amount of phosphorus must be removed annually.\nTarget Trophic Level Index (TLI) value set at 4.2 to restore water quality.\nClimate change is expected to exacerbate challenges, increasing stratification and internal nutrient loading.\nInternal nutrient release from sediments is comparable to external loads, complicating management.\n\nInternal Nutrient Loading and Management Strategies Addressing internal nutrient loading is critical for achieving long-term water quality goals in Lake Rotorua.\n\nInternal loading from sediments contributes significantly to nutrient levels, especially during stratification.\nChemical flocculants may reduce internal loading but have limited duration of effectiveness (approximately four years).\nEffective sediment capping can offset water quality deterioration but requires prior reduction of catchment nutrient loads."
+  },
+  {
+    "objectID": "resources.html#section-8",
+    "href": "resources.html#section-8",
+    "title": "Resources",
+    "section": "2009",
+    "text": "2009\n\nBurns, McIntosh, and Scholes (2009)\nManaging the lakes of the Rotorua District, New Zealand.\nLake and Reservoir Management, 25(3), 284–296.\nDOI\n\n\nClick to expand: Summary\n\nSummary…"
+  },
+  {
+    "objectID": "resources.html#section-9",
+    "href": "resources.html#section-9",
+    "title": "Resources",
+    "section": "2005",
+    "text": "2005\n\nRutherford (2005)\nModelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua & Taupō.\nIn MODSIM 2005, pp. 2749–2754.\nPDF\n\n\nClick to expand: Summary\n\nSummary…"
   }
 ]

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>GANTT Chart – Rotorua Lake Modelling</title>
+<title>Visualise CMIP6 – Rotorua Lake Modelling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -67,9 +67,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="www/styles.css">
@@ -121,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Project Overview</a></li><li class="breadcrumb-item"><a href="./gantt.html">GANTT Chart</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./cmip6-visualisation.html">Visualise CMIP6</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -152,7 +149,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./gantt.html" class="sidebar-item-text sidebar-link active">
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">GANTT Chart</span></a>
   </div>
 </li>
@@ -181,7 +178,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Visualise CMIP6</span></a>
   </div>
 </li>
@@ -198,9 +195,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Project Overview</a></li><li class="breadcrumb-item"><a href="./gantt.html">GANTT Chart</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./cmip6-visualisation.html">Visualise CMIP6</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">GANTT Chart</h1>
+<h1 class="title">Visualise CMIP6</h1>
 </div>
 
 
@@ -217,33 +214,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">gantt
-    title Rotorua Lake Modelling – PC10 Deliverables
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %Y
-    section Catchment Pilot
-    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d
-
-    section Lake Model Upgrade
-    CMIP6 Data Processing            :b1, 2025-11-07, 30d
-    GLM-AED model upgrade            :b2, 2025-11-24, 50d
-    GLM-AED model calibration        :b3, 2025-12-08, 50d
-
-    section Scenario Testing
-    Initial climate scenarios        :c1, 2026-01-01, 30d
-    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p>After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.</p>
+<p>We present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.</p>
+<p><img src="../man/figures/test.png" class="img-fluid"></p>
 
 
 
