@@ -35,7 +35,8 @@ jobs:
                 libgdal-dev \
                 libgeos-dev \
                 libproj-dev \
-                libsecret-1-dev
+                libsecret-1-dev \
+                libglpk40
           fi
 
       - name: Cache renv packages
