@@ -5,6 +5,17 @@ warning: false
 message: false
 ---
 
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+library(targets)
+
+tar_config_set(script = here::here("_targets.R"))
+```
+
+
 This project uses the `targets` package for pipeline management in R. The `targets` package helps to automate the workflow by defining a series of steps (targets) that depend on each other. Each target represents a piece of data or a computation, and `targets` ensures that only the necessary parts of the pipeline are re-executed when changes occur.
 
 Here is a visual network showing the relationships between the targets in this project:
@@ -12,7 +23,6 @@ Here is a visual network showing the relationships between the targets in this p
 ```{r}
 #| label: visnetwork
 #| echo: false
-#| 
-targets::tar_visnetwork()
+tar_visnetwork()
 ```
 
