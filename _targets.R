@@ -27,7 +27,7 @@ tar_source(
 )
 # Set target options
 tar_option_set(
-  # packages = c("dplyr", "ggplot2", "aemetools"), # packages needed in your functions
+  packages = c("dplyr", "ggplot2"), # packages needed in your functions
   format = "rds" # default storage format
 )
 
@@ -76,7 +76,7 @@ list(
   
   tar_target(
     lernzmp_aeme, aemetools::get_aeme(id = lake_id,
-                                          api_key = Sys.getenv("LERNZMP_API"))
+                                      api_key = Sys.getenv("LERNZMP_API"))
   ),
   
   tar_target(
@@ -88,7 +88,7 @@ list(
   tar_target(
     rotorua_catchment_bbox, readRDS(rotorua_catchment_bbox_file)
   ),
-
+  
   
   # ---------------------------
   # 2. Preprocess / clean data
@@ -153,8 +153,9 @@ list(
     {
       p <- plot_gcm_spatial(gcm_spatial_df, variable = cmip_vars)
       ggsave(
-        filename = here::here("man", "figures", paste0("gcm_spatial_", 
-                                                           cmip_vars, ".png")),
+        filename = here::here("website", "www", "plots", paste0("gcm_spatial_", 
+                                                                cmip_vars, 
+                                                                ".png")),
         plot = p,
         width = 10,
         height = 6
@@ -167,10 +168,12 @@ list(
   tar_target(
     gcm_ts_plot, 
     {
-      p <- plot_var_ts(gcm_ts_df, variable = cmip_vars)
+      p <- plot_var_ts(gcm_ts_df, variable = cmip_vars,
+                       metadata = cmip6_metadata)
       ggsave(
-        filename = here::here("man", "figures", paste0("gcm_ts_", 
-                                                           cmip_vars, ".png")),
+        filename = here::here("website", "www", "plots", paste0("gcm_ts_", 
+                                                                cmip_vars, 
+                                                                ".png")),
         plot = p,
         width = 10,
         height = 6
@@ -185,5 +188,5 @@ list(
   # ---------------------------
   # 6. Reporting / Quarto rendering
   # ---------------------------
-
+  
 )
