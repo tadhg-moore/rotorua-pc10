@@ -1,0 +1,6 @@
+---
+title: "Visualise CMIP6"
+format: html
+---
+
+![](../man/figures/test.png)
