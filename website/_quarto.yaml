@@ -21,6 +21,8 @@ website:
         text: Resources
       - href: gantt.qmd
         text: GANTT
+      - icon: github
+        href: https://github.com/tadhg-moore/rotorua-pc10
   sidebar:
     style: "docked"
     search: true
