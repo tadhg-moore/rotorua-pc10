@@ -1,6 +1,29 @@
 ---
 title: "Visualise CMIP6"
 format: html
+warning: false
+message: false
 ---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+#| cache: true
+
+metadata <- readr::read_csv(here::here("data", "processed",
+                                             "niwa_cmip6_metadata.csv"), 
+                                  col_types = readr::cols())
+gcm <- unique(metadata$gcm)
+scenarios <- unique(metadata$scenario)
+```
+
+After processing the CMIP6 data for the Rotorua catchment, we can visualise the
+results.
+
+We present both the spatial summary and time series summary for each GCM and
+scenario. This allows us to inspect how the different models and scenarios
+represent climate variables over the catchment area.
+
 
 ![](../man/figures/test.png)
