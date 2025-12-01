@@ -17,6 +17,13 @@ metadata <- readr::read_csv(here::here("data", "processed",
 gcm <- unique(metadata$gcm)
 scenarios <- unique(metadata$scenario)
 cmip_vars <- c("tas", "hurs", "pr", "rsds", "sfcWind")
+var_meta <- metadata |> 
+  dplyr::filter(variable %in% cmip_vars) |> 
+  dplyr::distinct(variable, .keep_all = TRUE) |> 
+  dplyr::mutate(units = dplyr::case_when(
+    variable == "tas" ~ "°C",
+    TRUE ~ units
+  ))
 ```
 
 After processing the CMIP6 data for the Rotorua catchment, we can visualise the
@@ -26,5 +33,25 @@ We present both the spatial summary and time series summary for each GCM and
 scenario. This allows us to inspect how the different models and scenarios
 represent climate variables over the catchment area.
 
+## CMIP6 Variable Plots
 
-![](../man/figures/test.png)
+::: {.panel-tabset}
+
+```{r}
+#| label: gcm-variable-plots
+#| echo: false
+#| results: asis
+#| include: true
+
+# Loop over each variable and print a tab section
+for (i in seq_len(nrow(var_meta))) {
+  var <- var_meta$variable[i]
+  title <- var_meta$variable_name_long[i] %||% var   # or use var_meta$variable_name
+  units <- var_meta$units[i]
+
+  cat("### ", title, " (", units, ")\n\n", sep = "")
+  cat("![](/plots/gcm_ts_", var, ".png)\n\n", sep = "")
+}
+```
+
+:::
