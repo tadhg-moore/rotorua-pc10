@@ -34,7 +34,8 @@ jobs:
                 libudunits2-dev \
                 libgdal-dev \
                 libgeos-dev \
-                libproj-dev
+                libproj-dev \
+                libsecret-1-dev
           fi
 
       - name: Cache renv packages
