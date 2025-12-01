@@ -4,7 +4,7 @@
     "href": "targets.html",
     "title": "Targets",
     "section": "",
-    "text": "This project uses the targets package for pipeline management in R. The targets package helps to automate the workflow by defining a series of steps (targets) that depend on each other. Each target represents a piece of data or a computation, and targets ensures that only the necessary parts of the pipeline are re-executed when changes occur.\nHere is a visual network showing the relationships between the targets in this project:\n\n\ntar_source(): these files do not exist: /home/runner/work/rotorua-pc10/rotorua-pc10/R/plot_gcm_spatial.R, /home/runner/work/rotorua-pc10/rotorua-pc10/R/plot_var_ts.R"
+    "text": "This project uses the targets package for pipeline management in R. The targets package helps to automate the workflow by defining a series of steps (targets) that depend on each other. Each target represents a piece of data or a computation, and targets ensures that only the necessary parts of the pipeline are re-executed when changes occur.\nHere is a visual network showing the relationships between the targets in this project:"
   },
   {
     "objectID": "index.html",
@@ -184,6 +184,18 @@
     "title": "Visualise CMIP6",
     "section": "",
     "text": "After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.\nWe present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Visualise CMIP6"
+    ]
+  },
+  {
+    "objectID": "cmip6-visualisation.html#cmip6-variable-plots",
+    "href": "cmip6-visualisation.html#cmip6-variable-plots",
+    "title": "Visualise CMIP6",
+    "section": "CMIP6 Variable Plots",
+    "text": "CMIP6 Variable Plots\n\nAverage relative humidity (%)Daily accumulated precipitation (mm/day)Average solar radiation (W m-2)Average wind speed (m s-1)Daily mean 2m air temperature (°C)",
     "crumbs": [
       "Home",
       "Tasks",
