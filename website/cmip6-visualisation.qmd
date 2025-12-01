@@ -16,6 +16,7 @@ metadata <- readr::read_csv(here::here("data", "processed",
                                   col_types = readr::cols())
 gcm <- unique(metadata$gcm)
 scenarios <- unique(metadata$scenario)
+cmip_vars <- c("tas", "hurs", "pr", "rsds", "sfcWind")
 ```
 
 After processing the CMIP6 data for the Rotorua catchment, we can visualise the
