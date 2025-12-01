@@ -15,6 +15,8 @@ website:
       - href: index.qmd
         text: Home
     right:
+      - href: targets.qmd
+        text: Targets
       - href: resources.qmd
         text: Resources
       - href: gantt.qmd
@@ -31,6 +33,7 @@ website:
         contents:
           - data-request.qmd
           - cmip6-processing.qmd
+          - cmip6-visualisation.qmd
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 

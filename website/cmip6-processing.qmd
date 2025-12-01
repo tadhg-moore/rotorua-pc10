@@ -18,14 +18,13 @@ cmip6_metadata <- readr::read_csv(here::here("data", "processed",
 vcsn_grid_points <- sf::st_read("https://climatedata.environment.govt.nz/data/core_public_data/geospatial/index_grid_points_vcsn_filtered_2193.gpkg")
 ```
 
-
 Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.
 
-Also there are >4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.
+Also there are \>4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.
 
 ## Metadata
 
-We have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used. 
+We have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.
 
 Further details can be found [here](https://climatedata.environment.govt.nz/).
 
@@ -39,7 +38,6 @@ cmip6_metadata |>
   dplyr::select(variable_name_long, variable, variable_units, scenario, gcm, model, timestep, spatial_res, biascorrection, calendar) |> 
   DT::datatable(options = list(pageLength = 5))
 ```
-
 
 ## File access
 
@@ -69,6 +67,29 @@ tm_shape(sub_points) +
   tm_borders(col = "red", lwd = 2) +
   tm_view(set_view = c(176.27, -38.14, 10))
 
+```
+
+## Create an area of interest
+
+If you do not have a shapefile of your area of interest (AOI), you can easily generate one with the [`mapedit`](https://r-spatial.org/r/2019/03/31/mapedit_leafpm.html) package.
+
+```{r}
+#| label: draw-aoi
+#| echo: true
+#| include: true
+#| eval: false
+x <- mapedit::drawFeatures()
+
+```
+
+Save the drawn features for future use:
+
+```{r}
+#| label: save-aoi
+#| echo: true
+#| include: true
+#| eval: false
+saveRDS(x, here::here("data", "processed", "rotorua_area.rds"))
 ```
 
 ## Processing function
@@ -107,7 +128,6 @@ knitr::kable(param_table, format = "markdown",
 
 ```
 
-
 ```{r}
 #| label: process-cmip6-function
 #| echo: true
@@ -117,27 +137,4 @@ knitr::kable(param_table, format = "markdown",
 source(here::here("R", "process_cmip6.R"))
 process_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,
               file = file, outfile = outfile)
-```
-
-## Create an area of interest
-
-If you do not have a shapefile of your area of interest (AOI), you can easily generate one with the [`mapedit`](https://r-spatial.org/r/2019/03/31/mapedit_leafpm.html) package.
-
-```{r}
-#| label: draw-aoi
-#| echo: true
-#| include: true
-#| eval: false
-x <- mapedit::drawFeatures()
-
-```
-
-Save the drawn features for future use:
-
-```{r}
-#| label: save-aoi
-#| echo: true
-#| include: true
-#| eval: false
-saveRDS(x, here::here("data", "processed", "rotorua_area.rds"))
 ```
