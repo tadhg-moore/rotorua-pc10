@@ -26,32 +26,37 @@ var_meta <- metadata |>
   ))
 ```
 
-After processing the CMIP6 data for the Rotorua catchment, we can visualise the
-results.
+After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.
 
-We present both the spatial summary and time series summary for each GCM and
-scenario. This allows us to inspect how the different models and scenarios
-represent climate variables over the catchment area.
+We present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.
 
 ## CMIP6 Variable Plots
 
-::: {.panel-tabset}
+![test](www/plots/gcm_ts_tas.png)
 
+::: panel-tabset
 ```{r}
 #| label: gcm-variable-plots
 #| echo: false
-#| results: asis
 #| include: true
 
-# Loop over each variable and print a tab section
+library(glue)
+
 for (i in seq_len(nrow(var_meta))) {
   var <- var_meta$variable[i]
-  title <- var_meta$variable_name_long[i] %||% var   # or use var_meta$variable_name
+  title <- var_meta$variable_name_long[i] %||% var
   units <- var_meta$units[i]
+  
+  md <- glue("
+### {title} ({units})
 
-  cat("### ", title, " (", units, ")\n\n", sep = "")
-  cat("![](/plots/gcm_ts_", var, ".png)\n\n", sep = "")
+![](/plots/gcm_ts_{var}.png)
+")
+  
+  # cat(md, "\n")
+  # Or safer: knitr::asis_output(md)
+  knitr::asis_output(md)
 }
-```
 
+```
 :::
