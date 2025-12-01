@@ -20,7 +20,9 @@ tar_source(
     here::here("R", "utils-nc.R"),
     here::here("R", "process_cmip6.R"),
     here::here("R", "summarise_gcm_spatial.R"),
-    here::here("R", "summarise_gcm_ts.R")
+    here::here("R", "summarise_gcm_ts.R"),
+    here::here("R", "plot_gcm_spatial.R"),
+    here::here("R", "plot_var_ts.R")
   )
 )
 # Set target options
@@ -165,7 +167,7 @@ list(
   tar_target(
     gcm_ts_plot, 
     {
-      p <- plot_gcm_ts(gcm_ts_df, variable = cmip_vars)
+      p <- plot_var_ts(gcm_ts_df, variable = cmip_vars)
       ggsave(
         filename = here::here("man", "figures", paste0("gcm_ts_", 
                                                            cmip_vars, ".png")),
