@@ -17,6 +17,26 @@ Websites:
 
 --------------------------------------------------------------------------------
 
+## 2025
+
+### @gibson2025
+
+Downscaled CMIP6 future climate projections for New Zealand: climatology and 
+extremes. 
+
+<details>
+
+<summary>Click to expand: Summary</summary>
+
+-   National average warming of 3.1°C by end-of-century, with enhanced warming at high elevations compared to GCMs.
+-   Largest increases in summer mean temperatures, with daily maximum temperatures warming faster than minimums.
+-   Wetter winters and drier summers projected, with high uncertainty in summer precipitation changes.
+-   Substantial increases in heatwave frequency, duration .
+
+</details>
+
+--------------------------------------------------------------------------------
+
 ## 2023
 
 ### @ozkundakci2023
