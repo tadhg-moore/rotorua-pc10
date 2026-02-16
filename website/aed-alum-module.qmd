@@ -1,0 +1,223 @@
+---
+title: "Simplified Alum–Phosphorus Module for GLM-AED"
+format: html
+editor: visual
+---
+
+# Conceptual Overview
+
+To maintain mechanistic defensibility while keeping the implementation simple, we propose a minimal two-state kinetic model representing alum–phosphorus (Al–P) interactions in the water column.
+
+The model captures:
+
+-   pH-dependent aluminium hydrolysis and reactivity\
+-   Phosphate sorption onto amorphous Al(OH)₃ flocs\
+-   Temperature effects on reaction kinetics\
+-   Rapid settling of aluminium flocs (\~10 m d⁻¹)\
+-   Optional slow aging (loss of reactivity)
+
+This structure is designed for scenario testing of alum dosing strategies.
+
+------------------------------------------------------------------------
+
+# State Variables
+
+## Water Column
+
+-   $Al_r$ — Reactive aluminium floc (g Al m$^{-3}$)\
+-   $P_{Al}$ — Phosphorus bound to aluminium floc (g P m$^{-3}$)
+
+Coupled to existing AED variable:
+
+-   $PO_4$ — Dissolved reactive phosphorus (FRP)
+
+------------------------------------------------------------------------
+
+# Governing Equations
+
+## 1. Reactive Aluminium
+
+Alum added via inflows is assumed to rapidly hydrolyse to reactive floc.
+
+$$
+\frac{d Al_r}{dt} =
+L_{Al,in}
+- k_{age} Al_r
+- R_{bind}
+- settling
+$$
+
+Where:
+
+-   $L_{Al,in}$ = alum loading from inflow forcing\
+-   $k_{age}$ = first-order aging constant (loss of reactivity)\
+-   $R_{bind}$ = phosphate binding rate
+
+------------------------------------------------------------------------
+
+## 2. Phosphate (FRP)
+
+$$
+\frac{d PO_4}{dt} = - R_{bind}
+$$
+
+------------------------------------------------------------------------
+
+## 3. Aluminium-Bound Phosphorus
+
+$$
+\frac{d P_{Al}}{dt} =
++ R_{bind}
+- settling
+$$
+
+------------------------------------------------------------------------
+
+# Binding Kinetics
+
+The core sorption/precipitation reaction is represented as:
+
+$$
+R_{bind} =
+k_{bind,20}
+\cdot Q_{10}^{\frac{T-20}{10}}
+\cdot f(pH)
+\cdot Al_r
+\cdot PO_4
+$$
+
+This captures:
+
+-   Second-order interaction between Al and phosphate\
+-   Temperature-dependent reaction rates\
+-   Strong pH control
+
+------------------------------------------------------------------------
+
+# pH Dependence
+
+Binding efficiency is highest near neutral pH.
+
+A Gaussian response is used:
+
+$$
+f(pH) =
+\exp\left(
+-\frac{(pH - pH_{opt})^2}
+{2\sigma_{pH}^2}
+\right)
+$$
+
+Typical parameter values:
+
+-   $pH_{opt} \approx 6.5$\
+-   $\sigma_{pH} \approx 0.8$–1.0
+
+This ensures reduced binding efficiency at high summer pH.
+
+------------------------------------------------------------------------
+
+# Temperature Dependence
+
+A standard Q10 formulation is applied:
+
+$$
+k_{bind}(T) =
+k_{bind,20}
+\cdot Q_{10}^{\frac{T-20}{10}}
+$$
+
+Typical:
+
+-   $Q_{10} = 1.5$–2
+
+------------------------------------------------------------------------
+
+# Settling of Aluminium Flocs
+
+Both $Al_r$ and $P_{Al}$ settle:
+
+$$
+F_{settle} =
+\frac{w_{Al}}{H} \cdot C
+$$
+
+Where:
+
+-   $w_{Al} \approx 10 \ \text{m d}^{-1}$\
+-   $H$ = layer thickness\
+-   $C$ = tracer concentration
+
+Settling can be handled directly using AED tracer mobility routines.
+
+------------------------------------------------------------------------
+
+# Optional: Sorption Capacity Limitation
+
+To prevent unrealistic phosphorus removal at high alum doses, a capacity term may be included:
+
+$$
+R_{bind} =
+k_{bind}
+\cdot f(pH)
+\cdot f(T)
+\cdot Al_r
+\cdot PO_4
+\left(
+1 - \frac{P_{Al}}{\alpha Al_r}
+\right)
+$$
+
+Where:
+
+-   $\alpha$ = maximum P:Al sorption ratio
+
+This introduces a Langmuir-type saturation constraint.
+
+------------------------------------------------------------------------
+
+# Minimal Parameter Set
+
+The simplified model requires only:
+
+-   $k_{bind,20}$ — Binding rate constant at 20°C\
+-   $Q_{10}$ — Temperature scaling factor\
+-   $pH_{opt}$ — Optimal pH for binding\
+-   $\sigma_{pH}$ — Width of pH response curve\
+-   $k_{age}$ — Floc aging rate (optional)\
+-   $w_{Al}$ — Settling velocity (\~10 m d⁻¹)
+
+------------------------------------------------------------------------
+
+# Expected System Behaviour
+
+Under constant dosing:
+
+-   Rapid FRP reduction\
+-   Stronger binding under near-neutral pH\
+-   Reduced effectiveness at high summer pH
+
+Under pulsed dosing:
+
+-   Rapid FRP drawdown events\
+-   Gradual recovery as flocs settle and age
+
+------------------------------------------------------------------------
+
+# Summary
+
+This formulation provides:
+
+✔ Mechanistic defensibility\
+✔ Strong pH control\
+✔ Temperature sensitivity\
+✔ Realistic floc settling\
+✔ Minimal calibration burden
+
+While avoiding:
+
+✘ Explicit aluminium speciation modelling\
+✘ Complex surface complexation chemistry\
+✘ Detailed redox coupling
+
+This makes it well-suited for scenario testing of alum dosing strategies in GLM–AED.
