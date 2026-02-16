@@ -32,31 +32,17 @@ We present both the spatial summary and time series summary for each GCM and sce
 
 ## CMIP6 Variable Plots
 
-![test](www/plots/gcm_ts_tas.png)
+### Air Temperature (2 m above ground level)
 
-::: panel-tabset
-```{r}
-#| label: gcm-variable-plots
-#| echo: false
-#| include: true
+The annual mean 2 m air temperature anomalies show robust warming across all CMIP6 models and emissions scenarios, although the magnitude and rate of warming vary among models. Historical simulations indicate a modest warming of \~0.5–1 °C relative to the mid-20th-century baseline, with relatively small inter-model spread during this period.
 
-library(glue)
+From \~2020 onward, the scenarios diverge and uncertainties increase. Under SSP1-2.6, most models project warming that stabilises at around 1–1.5 °C above the historical mean by mid-century, with limited additional warming thereafter. The ensemble spread remains comparatively narrow in this scenario, reflecting greater model agreement under strong mitigation.
 
-for (i in seq_len(nrow(var_meta))) {
-  var <- var_meta$variable[i]
-  title <- var_meta$variable_name_long[i] %||% var
-  units <- var_meta$units[i]
-  
-  md <- glue("
-### {title} ({units})
+Under SSP2-4.5, temperatures continue to increase throughout the century, reaching approximately 2.5–3 °C by 2100. Inter-model variability broadens slightly over time, but the overall warming trajectory remains consistent across the ensemble.
 
-![](/plots/gcm_ts_{var}.png)
-")
-  
-  # cat(md, "\n")
-  # Or safer: knitr::asis_output(md)
-  knitr::asis_output(md)
-}
+The higher-emission scenarios show both stronger warming and greater uncertainty. SSP3-7.0 produces accelerated warming after 2050, with end-of-century anomalies near 4 °C, although individual model projections span a wider range. SSP5-8.5 exhibits the largest spread and steepest trend, with most models exceeding 5 °C by 2100, but with notable divergence in the upper tails of the ensemble.
 
-```
-:::
+Despite year-to-year variability and differences among models, all scenarios show statistically robust warming relative to the historical period. The increasing separation of scenario trajectories after \~2040 highlights both the importance of emissions pathway choice and the expanding uncertainty associated with long-term climate projections.
+
+![Timeseries of air temperature for scenarios and annual and seasonal projections](www/plots/gcm_ts_tas.png)
+
