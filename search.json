@@ -179,6 +179,66 @@
     ]
   },
   {
+    "objectID": "aed-alum-module.html",
+    "href": "aed-alum-module.html",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "",
+    "text": "To maintain mechanistic defensibility while keeping the implementation simple, we propose a minimal two-state kinetic model representing alum–phosphorus (Al–P) interactions in the water column.\nThe model captures:\n\npH-dependent aluminium hydrolysis and reactivity\n\nPhosphate sorption onto amorphous Al(OH)₃ flocs\n\nTemperature effects on reaction kinetics\n\nRapid settling of aluminium flocs (~10 m d⁻¹)\n\nOptional slow aging (loss of reactivity)\n\nThis structure is designed for scenario testing of alum dosing strategies.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Simplified Alum–Phosphorus Module for GLM-AED"
+    ]
+  },
+  {
+    "objectID": "aed-alum-module.html#water-column",
+    "href": "aed-alum-module.html#water-column",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "Water Column",
+    "text": "Water Column\n\n\\(Al_r\\) — Reactive aluminium floc (g Al m\\(^{-3}\\))\n\n\\(P_{Al}\\) — Phosphorus bound to aluminium floc (g P m\\(^{-3}\\))\n\nCoupled to existing AED variable:\n\n\\(PO_4\\) — Dissolved reactive phosphorus (FRP)",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Simplified Alum–Phosphorus Module for GLM-AED"
+    ]
+  },
+  {
+    "objectID": "aed-alum-module.html#reactive-aluminium",
+    "href": "aed-alum-module.html#reactive-aluminium",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "1. Reactive Aluminium",
+    "text": "1. Reactive Aluminium\nAlum added via inflows is assumed to rapidly hydrolyse to reactive floc.\n\\[\n\\frac{d Al_r}{dt} =\nL_{Al,in}\n- k_{age} Al_r\n- R_{bind}\n- settling\n\\]\nWhere:\n\n\\(L_{Al,in}\\) = alum loading from inflow forcing\n\n\\(k_{age}\\) = first-order aging constant (loss of reactivity)\n\n\\(R_{bind}\\) = phosphate binding rate",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Simplified Alum–Phosphorus Module for GLM-AED"
+    ]
+  },
+  {
+    "objectID": "aed-alum-module.html#phosphate-frp",
+    "href": "aed-alum-module.html#phosphate-frp",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "2. Phosphate (FRP)",
+    "text": "2. Phosphate (FRP)\n\\[\n\\frac{d PO_4}{dt} = - R_{bind}\n\\]",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Simplified Alum–Phosphorus Module for GLM-AED"
+    ]
+  },
+  {
+    "objectID": "aed-alum-module.html#aluminium-bound-phosphorus",
+    "href": "aed-alum-module.html#aluminium-bound-phosphorus",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "3. Aluminium-Bound Phosphorus",
+    "text": "3. Aluminium-Bound Phosphorus\n\\[\n\\frac{d P_{Al}}{dt} =\n+ R_{bind}\n- settling\n\\]",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Simplified Alum–Phosphorus Module for GLM-AED"
+    ]
+  },
+  {
     "objectID": "cmip6-visualisation.html",
     "href": "cmip6-visualisation.html",
     "title": "Visualise CMIP6",
@@ -195,7 +255,7 @@
     "href": "cmip6-visualisation.html#cmip6-variable-plots",
     "title": "Visualise CMIP6",
     "section": "CMIP6 Variable Plots",
-    "text": "CMIP6 Variable Plots\n\n\n\ntest",
+    "text": "CMIP6 Variable Plots\n\nAir Temperature (2 m above ground level)\nThe annual mean 2 m air temperature anomalies show robust warming across all CMIP6 models and emissions scenarios, although the magnitude and rate of warming vary among models. Historical simulations indicate a modest warming of ~0.5–1 °C relative to the mid-20th-century baseline, with relatively small inter-model spread during this period.\nFrom ~2020 onward, the scenarios diverge and uncertainties increase. Under SSP1-2.6, most models project warming that stabilises at around 1–1.5 °C above the historical mean by mid-century, with limited additional warming thereafter. The ensemble spread remains comparatively narrow in this scenario, reflecting greater model agreement under strong mitigation.\nUnder SSP2-4.5, temperatures continue to increase throughout the century, reaching approximately 2.5–3 °C by 2100. Inter-model variability broadens slightly over time, but the overall warming trajectory remains consistent across the ensemble.\nThe higher-emission scenarios show both stronger warming and greater uncertainty. SSP3-7.0 produces accelerated warming after 2050, with end-of-century anomalies near 4 °C, although individual model projections span a wider range. SSP5-8.5 exhibits the largest spread and steepest trend, with most models exceeding 5 °C by 2100, but with notable divergence in the upper tails of the ensemble.\nDespite year-to-year variability and differences among models, all scenarios show statistically robust warming relative to the historical period. The increasing separation of scenario trajectories after ~2040 highlights both the importance of emissions pathway choice and the expanding uncertainty associated with long-term climate projections.\n\n\n\nTimeseries of air temperature for scenarios and annual and seasonal projections",
     "crumbs": [
       "Home",
       "Tasks",

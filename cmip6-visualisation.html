@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-3a01e2046221230fdceeea94b1ec5d67.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1877b88756160f1b1bb155459069adbf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e4c9c0c2230386f28a80fe4330d2c343.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -187,6 +187,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Visualise CMIP6</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum–Phosphorus Module for GLM-AED</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -199,7 +205,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#cmip6-variable-plots" id="toc-cmip6-variable-plots" class="nav-link active" data-scroll-target="#cmip6-variable-plots">CMIP6 Variable Plots</a></li>
+  <li><a href="#cmip6-variable-plots" id="toc-cmip6-variable-plots" class="nav-link active" data-scroll-target="#cmip6-variable-plots">CMIP6 Variable Plots</a>
+  <ul class="collapse">
+  <li><a href="#air-temperature-2-m-above-ground-level" id="toc-air-temperature-2-m-above-ground-level" class="nav-link" data-scroll-target="#air-temperature-2-m-above-ground-level">Air Temperature (2 m above ground level)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -229,20 +238,22 @@ ul.task-list li input[type="checkbox"] {
 <p>We present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.</p>
 <section id="cmip6-variable-plots" class="level2">
 <h2 class="anchored" data-anchor-id="cmip6-variable-plots">CMIP6 Variable Plots</h2>
+<section id="air-temperature-2-m-above-ground-level" class="level3">
+<h3 class="anchored" data-anchor-id="air-temperature-2-m-above-ground-level">Air Temperature (2 m above ground level)</h3>
+<p>The annual mean 2 m air temperature anomalies show robust warming across all CMIP6 models and emissions scenarios, although the magnitude and rate of warming vary among models. Historical simulations indicate a modest warming of ~0.5–1 °C relative to the mid-20th-century baseline, with relatively small inter-model spread during this period.</p>
+<p>From ~2020 onward, the scenarios diverge and uncertainties increase. Under SSP1-2.6, most models project warming that stabilises at around 1–1.5 °C above the historical mean by mid-century, with limited additional warming thereafter. The ensemble spread remains comparatively narrow in this scenario, reflecting greater model agreement under strong mitigation.</p>
+<p>Under SSP2-4.5, temperatures continue to increase throughout the century, reaching approximately 2.5–3 °C by 2100. Inter-model variability broadens slightly over time, but the overall warming trajectory remains consistent across the ensemble.</p>
+<p>The higher-emission scenarios show both stronger warming and greater uncertainty. SSP3-7.0 produces accelerated warming after 2050, with end-of-century anomalies near 4 °C, although individual model projections span a wider range. SSP5-8.5 exhibits the largest spread and steepest trend, with most models exceeding 5 °C by 2100, but with notable divergence in the upper tails of the ensemble.</p>
+<p>Despite year-to-year variability and differences among models, all scenarios show statistically robust warming relative to the historical period. The increasing separation of scenario trajectories after ~2040 highlights both the importance of emissions pathway choice and the expanding uncertainty associated with long-term climate projections.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="www/plots/gcm_ts_tas.png" class="img-fluid figure-img"></p>
-<figcaption>test</figcaption>
+<figcaption>Timeseries of air temperature for scenarios and annual and seasonal projections</figcaption>
 </figure>
 </div>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"></ul>
-<div class="tab-content">
-
-</div>
-</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

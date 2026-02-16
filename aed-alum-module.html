@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Request – Rotorua Lake Modelling</title>
+<title>Simplified Alum–Phosphorus Module for GLM-AED – Rotorua Lake Modelling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="www/styles.css">
 </head>
@@ -123,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./data-request.html">Data Request</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./aed-alum-module.html">Simplified Alum–Phosphorus Module for GLM-AED</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -171,7 +200,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data-request.html" class="sidebar-item-text sidebar-link active">
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Data Request</span></a>
   </div>
 </li>
@@ -189,7 +218,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Simplified Alum–Phosphorus Module for GLM-AED</span></a>
   </div>
 </li>
@@ -205,19 +234,34 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#draft-data-request-list-lake-modelling-project" id="toc-draft-data-request-list-lake-modelling-project" class="nav-link active" data-scroll-target="#draft-data-request-list-lake-modelling-project">Draft Data Request List — Lake Modelling Project</a>
+  <li><a href="#conceptual-overview" id="toc-conceptual-overview" class="nav-link active" data-scroll-target="#conceptual-overview">Conceptual Overview</a></li>
+  <li><a href="#state-variables" id="toc-state-variables" class="nav-link" data-scroll-target="#state-variables">State Variables</a>
   <ul class="collapse">
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
+  <li><a href="#water-column" id="toc-water-column" class="nav-link" data-scroll-target="#water-column">Water Column</a></li>
   </ul></li>
+  <li><a href="#governing-equations" id="toc-governing-equations" class="nav-link" data-scroll-target="#governing-equations">Governing Equations</a>
+  <ul class="collapse">
+  <li><a href="#reactive-aluminium" id="toc-reactive-aluminium" class="nav-link" data-scroll-target="#reactive-aluminium">1. Reactive Aluminium</a></li>
+  <li><a href="#phosphate-frp" id="toc-phosphate-frp" class="nav-link" data-scroll-target="#phosphate-frp">2. Phosphate (FRP)</a></li>
+  <li><a href="#aluminium-bound-phosphorus" id="toc-aluminium-bound-phosphorus" class="nav-link" data-scroll-target="#aluminium-bound-phosphorus">3. Aluminium-Bound Phosphorus</a></li>
+  </ul></li>
+  <li><a href="#binding-kinetics" id="toc-binding-kinetics" class="nav-link" data-scroll-target="#binding-kinetics">Binding Kinetics</a></li>
+  <li><a href="#ph-dependence" id="toc-ph-dependence" class="nav-link" data-scroll-target="#ph-dependence">pH Dependence</a></li>
+  <li><a href="#temperature-dependence" id="toc-temperature-dependence" class="nav-link" data-scroll-target="#temperature-dependence">Temperature Dependence</a></li>
+  <li><a href="#settling-of-aluminium-flocs" id="toc-settling-of-aluminium-flocs" class="nav-link" data-scroll-target="#settling-of-aluminium-flocs">Settling of Aluminium Flocs</a></li>
+  <li><a href="#optional-sorption-capacity-limitation" id="toc-optional-sorption-capacity-limitation" class="nav-link" data-scroll-target="#optional-sorption-capacity-limitation">Optional: Sorption Capacity Limitation</a></li>
+  <li><a href="#minimal-parameter-set" id="toc-minimal-parameter-set" class="nav-link" data-scroll-target="#minimal-parameter-set">Minimal Parameter Set</a></li>
+  <li><a href="#expected-system-behaviour" id="toc-expected-system-behaviour" class="nav-link" data-scroll-target="#expected-system-behaviour">Expected System Behaviour</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./data-request.html">Data Request</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data-request.html">Tasks</a></li><li class="breadcrumb-item"><a href="./aed-alum-module.html">Simplified Alum–Phosphorus Module for GLM-AED</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Data Request</h1>
+<h1 class="title">Simplified Alum–Phosphorus Module for GLM-AED</h1>
 </div>
 
 
@@ -234,159 +278,224 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="draft-data-request-list-lake-modelling-project" class="level1">
-<h1>Draft Data Request List — Lake Modelling Project</h1>
-<p>Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.</p>
-<hr>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Dataset</th>
-<th>Description / Variables</th>
-<th>Purpose in Modelling</th>
-<th>Source</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Inflow volumes</strong></td>
-<td>Daily/hourly flow records for all tributaries and stormwater inputs</td>
-<td>Define hydrological boundary conditions; drive water balance</td>
-<td>BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Inflow chemistry</strong></td>
-<td>Nutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature</td>
-<td>Set up inflow nutrient loads and biogeochemical forcing</td>
-<td>BoPRC</td>
-</tr>
-<tr class="odd">
-<td><strong>Grab samples &amp; rating curve data</strong></td>
-<td>Flow–concentration relationships, historical spot samples</td>
-<td>Improve accuracy of nutrient load estimates</td>
-<td>CM / BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Meteorological data (buoy)</strong></td>
-<td>Wind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall</td>
-<td>Primary atmospheric forcing for lake model</td>
-<td>BoPRC</td>
-</tr>
-<tr class="odd">
-<td><strong>Meteorological data (airport)</strong></td>
-<td>NIWA climate station data (same variables as above)</td>
-<td>Gap filling and long-term climate records</td>
-<td>NIWA Climate Portal</td>
-</tr>
-<tr class="even">
-<td><strong>CMIP6 climate data</strong></td>
-<td>Bias-corrected scenario climate inputs</td>
-<td>Future scenario modelling</td>
-<td>Shared Drive</td>
-</tr>
-<tr class="odd">
-<td><strong>Lake level / stage</strong></td>
-<td>Time series of lake height</td>
-<td>Convert model depths to dynamic hypsography; align inflow/outflow</td>
-<td>BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Outflow data</strong></td>
-<td>Outflow discharge and control structure operations</td>
-<td>Complete hydrological mass balance</td>
-<td>BoPRC</td>
-</tr>
-<tr class="odd">
-<td><strong>Water quality profiles</strong></td>
-<td>Vertical profiles of temperature, DO, chlorophyll-a, nutrients</td>
-<td>Calibration &amp; validation of GLM-AED</td>
-<td>Limnotrack/BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Historical GLM-AED outputs</strong></td>
-<td>Previous model runs and configuration files</td>
-<td>Provide baseline assumptions and compare structure</td>
-<td>BoPRC / CM</td>
-</tr>
-<tr class="odd">
-<td><strong>Old DYRESM-CAEDYM report</strong></td>
-<td>Model description and past findings</td>
-<td>Reference for parameterisation and historical context</td>
-<td>Deniz</td>
-</tr>
-<tr class="even">
-<td><strong>Catchment shapefile</strong></td>
-<td>Full catchment boundary polygon</td>
-<td>Define drainage area for inflow and land-use analysis</td>
-<td>BoPRC</td>
-</tr>
-<tr class="odd">
-<td><strong>Sub-catchment delineations</strong></td>
-<td>Individual subcatchment polygons</td>
-<td>Attribute inflows to specific contributing areas</td>
-<td>BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Land-use data (current)</strong></td>
-<td>Latest regional council land-use dataset</td>
-<td>Estimate nutrient export, identify land-use pressures</td>
-<td>BoPRC</td>
-</tr>
-<tr class="odd">
-<td><strong>Historical land-use (LCDB)</strong></td>
-<td>LCDB time-series land-cover data</td>
-<td>Identify changes over time influencing nutrient loading</td>
-<td>LINZ / LCDB</td>
-</tr>
-<tr class="even">
-<td><strong>ROTAN model outputs</strong></td>
-<td>Rotorua/Taupō nitrate model datasets (flows, loads)</td>
-<td>Cross-check nutrient source estimates; historic nitrate loading</td>
-<td>Rutherford</td>
-</tr>
-<tr class="odd">
-<td><strong>Bathymetry</strong></td>
-<td>High-resolution depth raster or contours</td>
-<td>Build lake hypsography for GLM-AED</td>
-<td>BoPRC</td>
-</tr>
-<tr class="even">
-<td><strong>Sediment parameters</strong></td>
-<td>Sediment P/N fractions, nutrient release data</td>
-<td>Support AED sediment flux and diagenesis modules</td>
-<td>BoPRC / Literature</td>
-</tr>
-<tr class="odd">
-<td><strong>Point-source inputs</strong></td>
-<td>Any wastewater/stormwater discharge records</td>
-<td>Ensure all external loads are captured</td>
-<td>BoPRC</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<section id="notes" class="level2">
-<h2 class="anchored" data-anchor-id="notes">Notes</h2>
+<section id="conceptual-overview" class="level1">
+<h1>Conceptual Overview</h1>
+<p>To maintain mechanistic defensibility while keeping the implementation simple, we propose a minimal two-state kinetic model representing alum–phosphorus (Al–P) interactions in the water column.</p>
+<p>The model captures:</p>
 <ul>
-<li>Begin with highest-priority datasets: <strong>inflow volumes</strong>, <strong>inflow chemistry</strong>, <strong>met data</strong>, <strong>catchment shapefiles</strong>.</li>
-<li>Ask CM specifically for:
-<ul>
-<li>Nutrient loading work (grab samples, rating curves)<br>
+<li>pH-dependent aluminium hydrolysis and reactivity<br>
 </li>
-<li>Any old Rotorua model equations for estimating inflow concentrations.</li>
-</ul></li>
-<li>ROTAN datasets may help fill large data gaps.</li>
+<li>Phosphate sorption onto amorphous Al(OH)₃ flocs<br>
+</li>
+<li>Temperature effects on reaction kinetics<br>
+</li>
+<li>Rapid settling of aluminium flocs (~10 m d⁻¹)<br>
+</li>
+<li>Optional slow aging (loss of reactivity)</li>
+</ul>
+<p>This structure is designed for scenario testing of alum dosing strategies.</p>
+<hr>
+</section>
+<section id="state-variables" class="level1">
+<h1>State Variables</h1>
+<section id="water-column" class="level2">
+<h2 class="anchored" data-anchor-id="water-column">Water Column</h2>
+<ul>
+<li><span class="math inline">\(Al_r\)</span> — Reactive aluminium floc (g Al m<span class="math inline">\(^{-3}\)</span>)<br>
+</li>
+<li><span class="math inline">\(P_{Al}\)</span> — Phosphorus bound to aluminium floc (g P m<span class="math inline">\(^{-3}\)</span>)</li>
+</ul>
+<p>Coupled to existing AED variable:</p>
+<ul>
+<li><span class="math inline">\(PO_4\)</span> — Dissolved reactive phosphorus (FRP)</li>
 </ul>
 <hr>
-
-
 </section>
+</section>
+<section id="governing-equations" class="level1">
+<h1>Governing Equations</h1>
+<section id="reactive-aluminium" class="level2">
+<h2 class="anchored" data-anchor-id="reactive-aluminium">1. Reactive Aluminium</h2>
+<p>Alum added via inflows is assumed to rapidly hydrolyse to reactive floc.</p>
+<p><span class="math display">\[
+\frac{d Al_r}{dt} =
+L_{Al,in}
+- k_{age} Al_r
+- R_{bind}
+- settling
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(L_{Al,in}\)</span> = alum loading from inflow forcing<br>
+</li>
+<li><span class="math inline">\(k_{age}\)</span> = first-order aging constant (loss of reactivity)<br>
+</li>
+<li><span class="math inline">\(R_{bind}\)</span> = phosphate binding rate</li>
+</ul>
+<hr>
+</section>
+<section id="phosphate-frp" class="level2">
+<h2 class="anchored" data-anchor-id="phosphate-frp">2. Phosphate (FRP)</h2>
+<p><span class="math display">\[
+\frac{d PO_4}{dt} = - R_{bind}
+\]</span></p>
+<hr>
+</section>
+<section id="aluminium-bound-phosphorus" class="level2">
+<h2 class="anchored" data-anchor-id="aluminium-bound-phosphorus">3. Aluminium-Bound Phosphorus</h2>
+<p><span class="math display">\[
+\frac{d P_{Al}}{dt} =
++ R_{bind}
+- settling
+\]</span></p>
+<hr>
+</section>
+</section>
+<section id="binding-kinetics" class="level1">
+<h1>Binding Kinetics</h1>
+<p>The core sorption/precipitation reaction is represented as:</p>
+<p><span class="math display">\[
+R_{bind} =
+k_{bind,20}
+\cdot Q_{10}^{\frac{T-20}{10}}
+\cdot f(pH)
+\cdot Al_r
+\cdot PO_4
+\]</span></p>
+<p>This captures:</p>
+<ul>
+<li>Second-order interaction between Al and phosphate<br>
+</li>
+<li>Temperature-dependent reaction rates<br>
+</li>
+<li>Strong pH control</li>
+</ul>
+<hr>
+</section>
+<section id="ph-dependence" class="level1">
+<h1>pH Dependence</h1>
+<p>Binding efficiency is highest near neutral pH.</p>
+<p>A Gaussian response is used:</p>
+<p><span class="math display">\[
+f(pH) =
+\exp\left(
+-\frac{(pH - pH_{opt})^2}
+{2\sigma_{pH}^2}
+\right)
+\]</span></p>
+<p>Typical parameter values:</p>
+<ul>
+<li><span class="math inline">\(pH_{opt} \approx 6.5\)</span><br>
+</li>
+<li><span class="math inline">\(\sigma_{pH} \approx 0.8\)</span>–1.0</li>
+</ul>
+<p>This ensures reduced binding efficiency at high summer pH.</p>
+<hr>
+</section>
+<section id="temperature-dependence" class="level1">
+<h1>Temperature Dependence</h1>
+<p>A standard Q10 formulation is applied:</p>
+<p><span class="math display">\[
+k_{bind}(T) =
+k_{bind,20}
+\cdot Q_{10}^{\frac{T-20}{10}}
+\]</span></p>
+<p>Typical:</p>
+<ul>
+<li><span class="math inline">\(Q_{10} = 1.5\)</span>–2</li>
+</ul>
+<hr>
+</section>
+<section id="settling-of-aluminium-flocs" class="level1">
+<h1>Settling of Aluminium Flocs</h1>
+<p>Both <span class="math inline">\(Al_r\)</span> and <span class="math inline">\(P_{Al}\)</span> settle:</p>
+<p><span class="math display">\[
+F_{settle} =
+\frac{w_{Al}}{H} \cdot C
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(w_{Al} \approx 10 \ \text{m d}^{-1}\)</span><br>
+</li>
+<li><span class="math inline">\(H\)</span> = layer thickness<br>
+</li>
+<li><span class="math inline">\(C\)</span> = tracer concentration</li>
+</ul>
+<p>Settling can be handled directly using AED tracer mobility routines.</p>
+<hr>
+</section>
+<section id="optional-sorption-capacity-limitation" class="level1">
+<h1>Optional: Sorption Capacity Limitation</h1>
+<p>To prevent unrealistic phosphorus removal at high alum doses, a capacity term may be included:</p>
+<p><span class="math display">\[
+R_{bind} =
+k_{bind}
+\cdot f(pH)
+\cdot f(T)
+\cdot Al_r
+\cdot PO_4
+\left(
+1 - \frac{P_{Al}}{\alpha Al_r}
+\right)
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> = maximum P:Al sorption ratio</li>
+</ul>
+<p>This introduces a Langmuir-type saturation constraint.</p>
+<hr>
+</section>
+<section id="minimal-parameter-set" class="level1">
+<h1>Minimal Parameter Set</h1>
+<p>The simplified model requires only:</p>
+<ul>
+<li><span class="math inline">\(k_{bind,20}\)</span> — Binding rate constant at 20°C<br>
+</li>
+<li><span class="math inline">\(Q_{10}\)</span> — Temperature scaling factor<br>
+</li>
+<li><span class="math inline">\(pH_{opt}\)</span> — Optimal pH for binding<br>
+</li>
+<li><span class="math inline">\(\sigma_{pH}\)</span> — Width of pH response curve<br>
+</li>
+<li><span class="math inline">\(k_{age}\)</span> — Floc aging rate (optional)<br>
+</li>
+<li><span class="math inline">\(w_{Al}\)</span> — Settling velocity (~10 m d⁻¹)</li>
+</ul>
+<hr>
+</section>
+<section id="expected-system-behaviour" class="level1">
+<h1>Expected System Behaviour</h1>
+<p>Under constant dosing:</p>
+<ul>
+<li>Rapid FRP reduction<br>
+</li>
+<li>Stronger binding under near-neutral pH<br>
+</li>
+<li>Reduced effectiveness at high summer pH</li>
+</ul>
+<p>Under pulsed dosing:</p>
+<ul>
+<li>Rapid FRP drawdown events<br>
+</li>
+<li>Gradual recovery as flocs settle and age</li>
+</ul>
+<hr>
+</section>
+<section id="summary" class="level1">
+<h1>Summary</h1>
+<p>This formulation provides:</p>
+<p>✔ Mechanistic defensibility<br>
+✔ Strong pH control<br>
+✔ Temperature sensitivity<br>
+✔ Realistic floc settling<br>
+✔ Minimal calibration burden</p>
+<p>While avoiding:</p>
+<p>✘ Explicit aluminium speciation modelling<br>
+✘ Complex surface complexation chemistry<br>
+✘ Detailed redox coupling</p>
+<p>This makes it well-suited for scenario testing of alum dosing strategies in GLM–AED.</p>
+
+
 </section>
 
 </main> <!-- /main -->
