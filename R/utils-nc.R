@@ -28,3 +28,20 @@ calc_pr_mean <- function(r) {
   return(mean_annual_sum)
   
 }
+
+get_nc_time <- function(ncfile) {
+  # nc <- ncdf4::nc_open(ncfile)
+  # on.exit(ncdf4::nc_close(nc))
+  # tvals <- ncdf4::ncvar_get(nc, "time")
+  # tunits <- ncdf4::ncatt_get(nc, "time", "units")$value
+  # cal <- ncdf4::ncatt_get(nc, "time", "calendar")$value
+  s <- stars::read_ncdf(ncfile, var = "time")
+  time <- stars::st_get_dimension_values(s, "time")
+  # Convert posixct
+  
+
+  # Convert using PCICt
+  # pcict <- PCICt::as.PCICt(tvals * 3600, cal = cal, origin = "1970-01-01")
+  return(time)
+}
+
