@@ -1,0 +1,103 @@
+---
+title: "Meeting Notes"
+format: html
+editor: visual
+---
+
+24/3/26
+
+Primary outputs:
+
+-   Flow and nutrient at the node
+
+-   Spatially resolved would be secondary
+
+-   
+
+## 2/02/26
+
+-   SWAT update
+
+    -   2 weeks for getting that running
+
+    -   Meeting next week with BoP
+
+    -   How ready will we be?
+
+    -   Deadline for the end of the March
+
+    -   Meet with Overseer people
+
+    -   Groundwater & streamflow
+
+    -   Will need nutrients by end of March with further calibration
+
+-   Lake modelling
+
+    -   Sediment behaviour over longer time periods
+
+        -   Translate over old parameters
+
+        -   Use AED model
+
+-   Meeting with Matt Hipsey
+
+    -   Discuss ELCOM 3-D model
+
+    -   AED alum module
+
+-   Ethan em190\@students.waikato.ac.nz
+
+    -   Run CMIP6 scenarios - for
+
+    -   CSV data
+
+    -   Fluxes
+
+## 10/11/25
+
+### Summary — 10/11/25
+
+### Key Tasks
+
+-   Prepare a **data request list**.
+-   Gather **lake modelling data**:
+    -   Inflow volume & chemistry
+    -   Meteorological data
+-   Obtain **geospatial datasets**: catchment and sub-catchment shapefiles.
+-   Contact **CM** about older **Rotorua models** and inflow concentration equations.
+-   Use **LERNZmp** as the interim base model.
+
+------------------------------------------------------------------------
+
+### Main Points
+
+#### Data Requirements
+
+-   Prepare a focused **data request to Bay of Plenty Regional Council (BoPRC)**.
+-   Identify **missing datasets**.
+-   Review **previous GLM-AED historical modelling outputs**.
+-   Update model boundary conditions:
+    -   **Flows**
+    -   **Nutrient concentrations**
+    -   **Chemistry inputs**
+-   Obtain the **old DYRESM-CAEDYM report** (from Deniz).
+
+#### Lake Modelling
+
+-   CM has existing work on **nutrient loading** from grab samples and rating curves.
+    -   Follow up and request these datasets.
+-   Start small and **build out the model** as more data becomes available.
+
+#### Meteorological Data
+
+-   Use **buoy meteorological data** wherever possible.
+-   Supplement with **NIWA Airport data**.
+-   Consider adding **CMIP6 climate data**.
+
+#### Geospatial Data
+
+-   RC has **new land-use data** available.
+-   Need **catchment** and **sub-catchment delineations**.
+-   Obtain **historical land-use** from LCDB.
+-   Explore **ROTAN (Rotorua/Taupō nitrate model)** datasets — Rutherford is willing to share.
