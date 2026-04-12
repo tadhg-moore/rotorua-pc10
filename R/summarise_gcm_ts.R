@@ -8,9 +8,9 @@ summarise_gcm_ts <- function(variable, gcm, files) {
                             grepl("ssp", files) & grepl(gcm, files)]
   
   fun <- ifelse(variable == "pr", sum, mean)
-  
   hist_all <- lapply(gcm, \(g) {
     historical_file <- historical_files[grepl(g, historical_files)]
+    message("Processing file: ", basename(historical_file))
     # Load historical data
     hist <- load_nc(historical_file)
     hist_mean <- fun(terra::values(hist), na.rm = TRUE)
@@ -46,7 +46,7 @@ summarise_gcm_ts <- function(variable, gcm, files) {
         gcm = g
       )
     
-    hist_annual_df <- calc_annual_fun(hist_time, hist, fun) |> 
+    hist_annual_df <- calc_annual_fun(time = hist_time, r = hist, fun) |> 
       dplyr::mutate(
         season = "annual",
         scenario = "historical",
@@ -66,17 +66,18 @@ summarise_gcm_ts <- function(variable, gcm, files) {
     # Load scenario data and calculate annual means
     scen_dfs <- lapply(sub_files, function(f) {
       
+      message("Processing file: ", basename(f))
       scen_label <- strsplit(basename(f), "_")[[1]][2]
       scen <- load_nc(f)
       scen_time <- get_nc_time(f)
       
-      scen_seasonal <- calc_seasonal_fun(scen_time, scen, fun) |> 
+      scen_seasonal <- calc_seasonal_fun(time = scen_time, r = scen, fun) |> 
         dplyr::mutate(
           scenario = scen_label,
           gcm = g
         )
 
-      scen_annual <- calc_annual_fun(scen_time, scen, fun) |> 
+      scen_annual <- calc_annual_fun(time = scen_time, r = scen, fun) |> 
         dplyr::mutate(
           season = "annual",
           scenario = scen_label,
@@ -101,8 +102,8 @@ summarise_gcm_ts <- function(variable, gcm, files) {
 }
 
 get_season_year <- function(dates) {
-  m <- as.integer(format(dates, "%m"))
-  y <- as.integer(format(dates, "%Y"))
+  m <- as.integer(format(as.Date(dates), "%m"))
+  y <- as.integer(format(as.Date(dates), "%Y"))
   
   season <- ifelse(m %in% c(12, 1, 2), "DJF",
                    ifelse(m %in% 3:5, "MAM",
@@ -118,6 +119,9 @@ get_season_year <- function(dates) {
 }
 
 calc_seasonal_fun <- function(time, r, fun) {
+  
+  time <- adj_360_day_time(time)
+  
   # Get season + season year
   ts <- get_season_year(time)
   season_groups <- unique(data.frame(
@@ -137,7 +141,7 @@ calc_seasonal_fun <- function(time, r, fun) {
                   season_year > 1960) 
   
   # Calculate seasonal means
-  hist_seasonal_df <- apply(season_groups, 1, function(row) {
+  seasonal_df <- apply(season_groups, 1, function(row) {
     
     s <- row[["season"]]
     sy <- row[["season_year"]]
@@ -170,14 +174,21 @@ calc_seasonal_fun <- function(time, r, fun) {
     )
   }) |> 
     dplyr::bind_rows()
+  return(seasonal_df)
 }
 
 
 calc_annual_fun <- function(time, r, fun) {
-  years <- unique(format(time, "%Y"))
+  
+  time <- adj_360_day_time(time)
+  
+  years <- unique(format(as.Date(time), "%Y"))
+  
+  # remove NA's from NZESM
+  years <- years[!is.na(years)]
   
   annual_means <- sapply(years, function(yr) {
-    time_idx <- which(format(time, "%Y") == yr)
+    time_idx <- which(format(as.Date(time), "%Y") == yr)
     r_subset <- terra::subset(r, time_idx)
     precip <- identical(fun, sum)
     if (precip) {
@@ -196,4 +207,16 @@ calc_annual_fun <- function(time, r, fun) {
   )
   
   return(annual_df)
+}
+
+adj_360_day_time <- function(time) {
+  # Adjust dates 29/2 and 30/2 to 28/2 for non-leap years (NZESM has some leap day issues
+  non_dates <- grepl("02-29|02-30", time)
+  if (any(non_dates)) {
+    upd_yrs <- strsplit(time[non_dates], "-") |> 
+      sapply(function(x) x[1]) |> 
+      as.integer( "")
+    time[non_dates] <- paste0(upd_yrs, "-02-28")
+  }
+  return(time)
 }
