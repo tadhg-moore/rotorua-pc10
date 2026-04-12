@@ -17,11 +17,11 @@ plot_gcm_spatial <- function(df, variable = "tas", gcm = "ACCESS-CM2", metadata,
   
   hist_df <- df |> 
     dplyr::filter(variable == !!variable & gcm == !!gcm &
-                    scenario == "historical")
+                    scenario %in% c("historical", "Historical"))
   
   p1 <- ggplot2::ggplot() +
     ggplot2::geom_raster(data = hist_df, 
-                         ggplot2::aes(x = x, y = y, fill = value)) +
+                         ggplot2::aes(x = lon, y = lat, fill = value)) +
     ggplot2::scale_fill_viridis_c() +
     ggplot2::labs(
       fill = "Value",
@@ -29,14 +29,14 @@ plot_gcm_spatial <- function(df, variable = "tas", gcm = "ACCESS-CM2", metadata,
     ) +
     # Move legend to bottom
     ggplot2::coord_equal() +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = 10) +
     ggplot2::theme(legend.position = "bottom")
   
   ref_value <- mean(hist_df$value, na.rm = TRUE)
   
   scen_df <- df |> 
     dplyr::filter(variable == !!variable & gcm == !!gcm &
-                    scenario != "historical") |> 
+                    !scenario %in% c("historical", "Historical")) |> 
     dplyr::mutate(anom = value - ref_value)
   
   
@@ -62,7 +62,7 @@ plot_gcm_spatial <- function(df, variable = "tas", gcm = "ACCESS-CM2", metadata,
   
   
   p2 <- ggplot2::ggplot() +
-    ggplot2::geom_raster(data = scen_df, ggplot2::aes(x = x, y = y, 
+    ggplot2::geom_raster(data = scen_df, ggplot2::aes(x = lon, y = lat, 
                                                       fill = anom)) +
     ggplot2::facet_grid(cols = ggplot2::vars(period),
                         rows = ggplot2::vars(scenario)) +
@@ -76,7 +76,7 @@ plot_gcm_spatial <- function(df, variable = "tas", gcm = "ACCESS-CM2", metadata,
       fill = expression(Delta~Historical~Mean),
       x = "Longitude", y = "Latitude"
     ) +
-    ggplot2::theme_minimal() 
+    ggplot2::theme_minimal(base_size = 10) 
   p2
   
   if (!is.null(x)) {
@@ -92,12 +92,12 @@ plot_gcm_spatial <- function(df, variable = "tas", gcm = "ACCESS-CM2", metadata,
     p1 <- p1 +
       ggplot2::geom_path(data = shp_df, 
                          ggplot2::aes(x = X, y = Y), 
-                         color = "black", size = 0.5)
+                         color = "black", linewidth = 0.5)
     
     p2 <- p2 +
       ggplot2::geom_path(data = shp_df, 
                          ggplot2::aes(x = X, y = Y), 
-                         color = "black", size = 0.5)
+                         color = "black", linewidth = 0.5)
     
   }
   

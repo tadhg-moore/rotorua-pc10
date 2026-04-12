@@ -23,7 +23,7 @@ plot_var_ts <- function(gcm_ts_df, variable = "tas", metadata, files) {
                     !(scenario %in% c("historical")))
   
   ref <- hist_df |> 
-    dplyr::group_by(gcm) |>
+    dplyr::group_by(gcm, season) |>
     dplyr::summarise(
       ref_val = mean(value, na.rm = TRUE),
       .groups = "drop"
@@ -31,10 +31,15 @@ plot_var_ts <- function(gcm_ts_df, variable = "tas", metadata, files) {
   
   
   all <- dplyr::bind_rows(hist_df, scen_all) |> 
-    dplyr::left_join(ref, by = "gcm") |>
+    dplyr::left_join(ref, by = c("gcm", "season")) |>
     dplyr::mutate(
       anom = value - ref_val,
-      scenario = factor(scenario, levels = c("historical", sort(unique(scen_all$scenario))))
+      scenario = factor(scenario,
+                        levels = c("historical", 
+                                   sort(unique(scen_all$scenario)))),
+      season = factor(season, levels = c("annual", "DJF", "MAM", "JJA", "SON"),
+                      labels = c("Annual", "Summer", "Autumn", "Winter",
+                                 "Spring")),
     )
   
   p <- ggplot2::ggplot() +
@@ -42,7 +47,7 @@ plot_var_ts <- function(gcm_ts_df, variable = "tas", metadata, files) {
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
     ggplot2::geom_line(data = all, ggplot2::aes(x = year, y = anom, 
                                                 color = gcm), alpha = 0.4) +
-    ggplot2::facet_grid(~scenario, scales = "free_x") +
+    ggplot2::facet_grid(season ~ scenario, scales = "free_x") +
     ggplot2::geom_smooth(data = all, 
                          ggplot2::aes(x = year, y = anom, group = scenario),
                          method = "loess", color = "black", se = TRUE) +
@@ -56,6 +61,6 @@ plot_var_ts <- function(gcm_ts_df, variable = "tas", metadata, files) {
     ggplot2::theme_minimal()
   
   p
-  
+  return(p)
   
 }
