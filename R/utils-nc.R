@@ -35,8 +35,16 @@ get_nc_time <- function(ncfile) {
   # tvals <- ncdf4::ncvar_get(nc, "time")
   # tunits <- ncdf4::ncatt_get(nc, "time", "units")$value
   # cal <- ncdf4::ncatt_get(nc, "time", "calendar")$value
-  s <- stars::read_ncdf(ncfile, var = "time")
-  time <- stars::st_get_dimension_values(s, "time")
+  # r <- terra::rast(ncfile)
+  # time <- terra::time(r)
+  # strs <- stars::read_ncdf(ncfile)
+  strs <- stars::read_ncdf(ncfile, var = "time")
+  dims <- stars::st_dimensions(strs)
+  time <- dims$time$values$as_timestamp(format = "date", asPOSIX = FALSE)
+  
+  # time2 <- as.Date(time)
+  # time[is.na(time2)]
+  # time <- stars::st_get_dimension_values(strs, "time")
   # Convert posixct
   
 
