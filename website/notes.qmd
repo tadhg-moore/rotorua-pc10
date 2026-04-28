@@ -4,7 +4,153 @@ format: html
 editor: visual
 ---
 
-24/3/26
+## 28/04/26 - BoP PC10 Meeting
+
+> **Summary:** This PC10 meeting covered the science, monitoring, and economic dimensions of managing water quality in Lake Rotorua under climate change pressures. Key discussions centred on nitrogen reduction targets, groundwater lags, and the costs of mitigation options including constructed wetlands and riparian restoration. Data consistency, groundwater monitoring integration, and the validity of the TLI 4.2 target were debated, alongside updated nutrient accounting, internal loading measurements, and emerging restoration techniques such as ultrasonic cyanobacteria removal. An economic review and spatial planning work are ongoing to identify the most cost-effective pathways to meeting PC10 objectives. TALT engagement (via William) is ongoing with an update to follow, and strong turnout from the Rotorua Pastoral Collective reflects positive MoU partner engagement. A new NZ-based peer reviewer, Mike Scarsbrook (Waikato Regional Council), has been recommended by both LWQS and RPC and is expected to be confirmed within the next few weeks. The review must be completed by March 2027, with draft reports due September–December 2026, an October presentation to LWQS and RPC, and a final draft to council by January 2027.
+
+### Terms of reference Discussion
+
+-   Ohau wall repair & TLI for Lake Rotorua
+    -   Meet N targets, look into impacts as a result of CC on WQ
+    -   Modelling to quantify the magnitude of the impact
+    -   Level of uncertainty around N reductions, 2 stages already reductions but interaction of reductions and climate change
+    -   Primary producers collective - impact of the work they have done so far e.g. riparian and wetland restoration
+    -   Impact of manuka/kanuka plants on intercepting N
+    -   Economic models (regional scale)
+    -   Groundwater lags into the lake
+    -   Engineering targets - 3 sites for constructed/restoration wetlands \$170k / ha
+    -   Mitigations and cost availability e.g \$/ kg, Baylee is working on that, \~3 reports done
+    -   Pressure from MoU partners identify best options
+    -   Identifying areas can affect prices etc. Waiwero stream low lying pasture land
+    -   Spatial planning landscape system currently being developed
+    -   Wait until developers get involved potentially and carving out lands
+    -   Wetland - nutrient reduction & biodiversity impacts components included in costs
+
+### Modules
+
+-   Datasets
+    -   Consistency across all
+
+    -   Current process
+
+        -   Someone shares it around
+
+        -   Lab data is separate to field data
+
+        -   Formatting of data
+
+        -   Long form vs. wide form
+
+        -   EDS and Aquarius database
+
+        -   Phoosphorus data - is it adjusted?
+-   GW Monitoring
+    -   Boreholes around the catchment - quarterly
+
+    -   Frequency of monitoring
+
+    -   Spring monitoring - biannual
+
+    -   Can it be used?
+
+    -   Should it be reporting that somewhere? SOE report on the website
+
+    -   Integrations of stream monitoring & GW monitoring, drivers of variability,
+
+    -   N is being attenuated before it re-enters the streams
+-   TLI 4.2 +/- 0.2
+    -   Target range?
+    -   Can it be calibrated? How many blooms/how long are the blooms?
+    -   TLI vs no. of days it is closed
+    -   Cyano monitoring is not done throughout the year
+    -   Baseline TLI for the lake?
+    -   What does not meeting the TLI mean?
+    -   TLI target came from 1960's water quality level
+    -   Used limited data to estimate that then
+    -   Expectations of algae blooms, and managing alum response, weed to bloom focus etc.
+    -   Eddie White DSIR report early 70's WQ in Rotorua
+-   Internal loading
+    -   Kaylee measuring loading
+        -   Repeat of David Bergen (2004) \~20 years later
+        -   Prioritising for PC10 reporting, then will focus on publication pipeline
+        -   Potential deployment in August
+    -   CM used buoy data for hyplolimnetic estimations in previous reports, offered to repeat this again
+    -   Monitoring data coupled
+-    Lake load report
+    -   conclusion highlights that the 435 target might be higher than the 1960’s estimate
+        -   Old estimations
+    -   J Abell - natural state TLI 2.9 (2.5-3.4; 95% CI)
+        -   Catchment landuse to TLI components
+        -   Assumed equilibrium between contributions
+        -   Accounted for well known factors e.g. Phosphorus
+        -   Richard McDowell
+-   Nutrient accounting work for Land use change - Mark Tomer
+    -   Large scale modelling efforts
+    -   Year end 2026 data (July-Oct)
+    -   Start of December, will get the data -\> geospatial
+    -   Encouragement, warnings of infringements
+    -   Skip 1 year reporting for farms that are well below the limits
+    -   Will have a complete farm dataset, comparable between reviews, trend analysis for N
+    -   For P, don't have any quantifiable data there
+    -   Change in the SMAP data
+        -   Soil sibling polygons have change
+        -   Soil sibling data has changed
+        -   Incorporate new soils or not?
+    -   Overseer has the ability to run this through
+    -   Modelling reaching their targets by 2027
+-   Toxicological effects
+    -   Toxicity of aluminuim of kakahi*,* tolerable up to 20x the loading limit
+    -   influence of pH
+    -   Lab study
+    -   Exposure around the delta
+-   Emerging restoration techniques
+    -   Ultrasonic techniques to remove cyanobacteria
+    -   Progressing a evaluation to assess
+    -   Help them to understand for them to do more work
+    -   Susie memo on what they are doing, outcomes e.g. summary of techniques
+    -   Clarify purpose of current interventions, e.g. alum dosing, constructed wetlands, riparian, Ohau channel
+    -   Updating with that
+    -   Scale, pond, small lake to large lake, also dependent on target e.g. use, goals, cultural, water quality, e.g. irrigation ponds (keep clear, ecology is not important)
+-   Economic review
+-   Model update
+    -   Potential influence of macrophytes
+
+### Cultural Review
+
+-   Talking with TALT (William), will update at a later date
+
+### Engagement with MoU Partners - Rotorua Pastoral Collective and LWQS
+
+-   Very good turnout from RPC about our review
+
+### Peer reviewer
+
+-   Used Warwick from Quebec, relatively smooth
+-   Critical review, author discussions
+-   Approached a NZ guy & recommended by LWQS & RPC, Mike Scarsbrook (Science office at WRC), keen to do it, work through terms of engagement
+-   Update terms of reference
+-   Meeting with community, council
+-   Likely to be confirmed in the next couple of weeks
+
+### Milestones & Delivery
+
+-   Need to complete by March 2027 - includes report to council and summary report
+-   Draft reports by Jan 2027
+-   Oct 2026 draft report presentation to LWQS & RPC - Jan 2027
+-   Farm visits rather than traditional
+-   Sep 30 - Dec 15th Draft reports
+
+## 21/04/26
+
+-   Scott (BoP) - check regards the soil data
+
+    -   Current configuration with Rule 11 - entire PC10, nutrient loads
+
+-   Met ERA5 bias correction
+
+    -   
+
+## 24/3/26
 
 Primary outputs:
 
