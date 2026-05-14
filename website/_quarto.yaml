@@ -20,6 +20,8 @@ website:
         text: Targets
       - href: resources.qmd
         text: Resources
+      - href: notes.qmd
+        text: Notes
       - href: gantt.qmd
         text: GANTT
       - icon: github
