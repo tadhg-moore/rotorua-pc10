@@ -1,0 +1,114 @@
+---
+title: "Alum–phosphorus process representation for GLM-AED application in Lake Rotorua"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    embed-resources: true
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+This document summarises a simple process representation of alum–phosphorus interactions for integration into GLM-AED. The formulation is intended to capture the main management-relevant processes in Lake Rotorua:
+
+-   alum delivery from treated inflows,
+-   SRP uptake in the water column,
+-   settling of remaining reactive material,
+-   continued uptake at the sediment–water interface,
+-   a gradual loss of reactivity through ageing, and
+-   a bell-shaped pH response included as a pragmatic modifier of binding efficiency.
+
+## Conceptual process diagram
+
+The schematic below shows how the simplified module fits together. Treated inflows add effective reactive capacity to the pelagic pool, which removes SRP while suspended. Remaining capacity then settles to the bed, where it continues to suppress SRP in the bottom layer. Ageing reduces reactivity in both compartments.
+
+![Conceptual process diagram of the simplified alum–phosphorus module.](www/alum-model-concep.png){fig-align="center"}
+
+## Core equations
+
+### Equation 1. Water-column SRP uptake
+
+Reactive suspended alum capacity in the water column, $C_w$ (mg P m^−3^), removes dissolved reactive phosphorus, SRP (mg P m^−3^). The uptake rate is controlled by a pelagic kinetic coefficient, $k_w$ (d^−1^), the pH modifier, $f_\text{pH}$ (−), and a saturating uptake term governed by $K_P$ (mg P m^−3^). The saturating form ensures uptake increases with SRP but levels off as SRP becomes small relative to $K_P$.
+
+$$
+\frac{d\mathrm{SRP}}{dt} = -k_w f_\mathrm{pH} C_w \frac{K_P\,\mathrm{SRP}}{K_P + \mathrm{SRP}}
+$$ {#eq-srp-wc}
+
+![](www/sat-uptake.png)
+
+### Equation 2. Water-column reactive capacity
+
+The pelagic reactive-capacity pool, $C_w$ (mg P m^−3^), increases with alum input from the treated inflows, represented by $J_\text{cap}$ (mg P d^−1^), and decreases through three pathways: SRP uptake, settling to the bed, and ageing. The volume term, $V$ (m^3^), converts inflow capacity into a concentration-based state variable. $J_\text{set}$ (mg P m^−3^ d^−1^) is the settling loss from the water column, while $k_{\text{age},w}$ (d^−1^) controls the exponential decline in pelagic reactivity.
+
+$$
+\frac{dC_w}{dt} = \frac{J_\mathrm{cap}}{V} - k_w f_\mathrm{pH} C_w \frac{K_P\,\mathrm{SRP}}{K_P + \mathrm{SRP}} - J_\mathrm{set} - k_{\mathrm{age},w}\,C_w
+$$ {#eq-cw}
+
+### Equation 3. Bottom-water SRP uptake
+
+Once alum settles, the remaining reactive capacity at the bed, $C_s$ (mg P m^−2^), continues to remove SRP from the bottom computational layer, $\text{SRP}_b$ (mg P m^−3^). The benthic uptake rate is controlled by $k_s$ (d^−1^), the same pH modifier, and the same saturating uptake term. The factor $1/h_b$ converts an areal benthic sink into a concentration change in the bottom water layer of thickness $h_b$ (m).
+
+$$
+\frac{d\mathrm{SRP}_b}{dt} = -\frac{1}{h_b}\,k_s f_\mathrm{pH} C_s \frac{K_P\,\mathrm{SRP}_b}{K_P + \mathrm{SRP}_b}
+$$ {#eq-srp-bed}
+
+### Equation 4. Sediment reactive capacity
+
+The benthic reactive-capacity pool, $C_s$ (mg P m^−2^), increases through settling input from the pelagic compartment, $J_\text{set}^\text{area}$ (mg P m^−2^ d^−1^), and decreases through bottom-water uptake, ageing, and burial or permanent isolation from exchange. The terms $k_{\text{age},s}$ (d^−1^) and $k_\text{bur}$ (d^−1^) therefore represent two separate loss pathways: gradual deactivation of reactivity and physical removal from the active sediment–water interface, respectively.
+
+$$
+\frac{dC_s}{dt} = J_\mathrm{set}^\mathrm{area} - k_s f_\mathrm{pH} C_s \frac{K_P\,\mathrm{SRP}_b}{K_P + \mathrm{SRP}_b} - k_{\mathrm{age},s}\,C_s - k_\mathrm{bur}\,C_s
+$$ {#eq-cs}
+
+### Equation 5. Bell-shaped pH response
+
+The pH modifier, $f_\text{pH}$ (−), is represented as a bell-shaped response centred on the optimal pH, $\text{pH}_\text{opt}$ (−). The parameter $\sigma_\text{pH}$ (−) controls the width of the response. This is not a full chemical equilibrium model; it is a practical way of reducing effective uptake when pH moves away from the range where alum is expected to bind phosphorus most efficiently.
+
+$$
+f_\mathrm{pH} = \exp\!\left[-\frac{(\mathrm{pH} - \mathrm{pH_{opt}})^2}{2\,\sigma_\mathrm{pH}^2}\right]
+$$ {#eq-fph}
+
+![](www/ph-response.png)
+
+### Equation 6. Exponential ageing
+
+Ageing is represented as a first-order exponential loss of reactivity. Here, $A(t)$ denotes the remaining reactive fraction at time $t$ and $A_0$ is the initial reactive fraction. For the current implementation, the ageing parameter is chosen so that 95% of reactive uptake capacity is lost after 30 days. This gives $k_\text{age} \approx 0.10$ d^−1^. In practice, this same logic is applied to the pelagic and benthic ageing terms, $k_{\text{age},w}$ and $k_{\text{age},s}$.
+
+$$
+A(t) = A_0\,e^{-k_\mathrm{age}\,t} \qquad k_\mathrm{age} = -\frac{\ln(0.05)}{30} \approx 0.10 \ \mathrm{d}^{-1}
+$$ {#eq-ageing}
+
+## State variables and parameters
+
+The table below lists the state variables, fluxes, and parameters used in the simplified model. All symbols referenced in the equations are included here so the document can be read either as a stand-alone concept note or as a guide for module implementation.
+
+| **Symbol** | **Suggested units** | **Type** | **Interpretation** |
+|------------------|------------------|------------------|------------------|
+| SRP | mg P m^−3^ | State variable | Dissolved reactive phosphorus in the pelagic layer. |
+| SRP~b~ | mg P m^−3^ | State variable | Bottom-water SRP concentration in the bottom computational layer. |
+| C~w~ | mg P m^−3^ | State variable | Remaining effective P-binding capacity of suspended alum. |
+| C~s~ | mg P m^−2^ | State variable | Remaining effective P-binding capacity of settled alum at the bed. |
+| J~cap~ | mg P d^−1^ | Flux | Input rate of effective binding capacity from treated inflows. |
+| V | m^3^ | Scaling term | Receiving layer volume used to convert inflow capacity to concentration. |
+| J~set~ | mg P m^−3^ d^−1^ | Flux | Settling loss of reactive capacity from the water column. |
+| J~set~^area^ | mg P m^−2^ d^−1^ | Flux | Areal settling input of reactive capacity to the bed. |
+| h~b~ | m | Scaling term | Thickness of the bottom computational layer. |
+| k~w~ | d^−1^ | Parameter | Pelagic kinetic coefficient controlling water-column uptake. |
+| k~s~ | d^−1^ | Parameter | Benthic kinetic coefficient controlling bottom-water uptake. |
+| K~P~ | mg P m^−3^ | Parameter | Saturating uptake parameter controlling low-SRP behaviour. |
+| f~pH~ | − | Modifier | Relative efficiency term describing the pH effect on uptake. |
+| pH~opt~ | − | Parameter | Optimal pH for alum–phosphorus uptake. |
+| σ~pH~ | − | Parameter | Width of the bell-shaped pH response. |
+| k~age,w~ | d^−1^ | Parameter | Pelagic ageing coefficient governing exponential loss of reactivity. |
+| k~age,s~ | d^−1^ | Parameter | Benthic ageing coefficient governing exponential loss of reactivity. |
+| k~bur~ | d^−1^ | Parameter | Burial or permanent isolation coefficient for settled reactive capacity. |
+| A(t) | − | Derived quantity | Remaining reactive fraction after time t in the ageing function. |
+| A~0~ | − | Derived quantity | Initial reactive fraction at t = 0 in the ageing function. |
+
+: State variables, fluxes, and parameters {#tbl-params .striped}
+
+## Notes for implementation
+
+A practical first implementation in GLM-AED could introduce two new state variables: a pelagic reactive-capacity pool ($C_w$) and a benthic reactive-capacity pool ($C_s$). The main calibration priorities are likely to be the dose-to-capacity conversion ($J_\text{cap}$), the pelagic and benthic kinetic coefficients ($k_w$ and $k_s$), the settling transfer, and the pH response parameters. For ageing, the intended behaviour is simple exponential loss of reactivity rather than a more complex multi-pool formulation.

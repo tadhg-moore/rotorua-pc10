@@ -34,7 +34,8 @@ website:
         href: index.qmd
         contents:
           - gantt.qmd
-          - alum-model.qmd
+          - href: alum-model.qmd
+            text: "Alum Model"
       - section: "Tasks"
         contents:
           - data-request.qmd
