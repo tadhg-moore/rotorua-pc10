@@ -32,12 +32,13 @@ website:
         href: index.qmd
         contents:
           - gantt.qmd
+          - alum-model.qmd
       - section: "Tasks"
         contents:
           - data-request.qmd
           - cmip6-processing.qmd
           - cmip6-visualisation.qmd
-          - aed-alum-module.qmd
+          # - aed-alum-module.qmd
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 
