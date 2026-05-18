@@ -45,9 +45,9 @@ jobs:
           path: |
             ~/.local/share/renv/cache
             renv/library
-          key: ${{ runner.os }}-renv-${{ hashFiles('renv.lock') }}
+          key: ${{ runner.os }}-renv-v2-${{ hashFiles('renv.lock') }}
           restore-keys: |
-            ${{ runner.os }}-renv-
+            ${{ runner.os }}-renv-v2-
 
       - name: Install renv
         run: Rscript -e 'install.packages("renv")'
