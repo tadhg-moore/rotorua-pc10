@@ -42,16 +42,14 @@ jobs:
       - name: Cache renv packages
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.local/share/renv/cache
-            renv/library
+          path: ~/.local/share/renv/cache
           key: ${{ runner.os }}-renv-v2-${{ hashFiles('renv.lock') }}
           restore-keys: |
-            ${{ runner.os }}-renv-v2-
-
+            ${{ runner.os }}-renv-
+      
       - name: Install renv
         run: Rscript -e 'install.packages("renv")'
-
+      
       - name: Restore renv packages
         run: Rscript -e 'renv::restore(prompt = FALSE)'
           
