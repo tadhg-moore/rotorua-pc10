@@ -36,7 +36,8 @@ jobs:
                 libgeos-dev \
                 libproj-dev \
                 libsecret-1-dev \
-                libglpk40
+                libglpk40 \
+                libnode-dev       # ← add this
           fi
 
       - name: Cache renv packages
