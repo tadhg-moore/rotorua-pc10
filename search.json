@@ -7,6 +7,371 @@
     "text": "This project uses the targets package for pipeline management in R. The targets package helps to automate the workflow by defining a series of steps (targets) that depend on each other. Each target represents a piece of data or a computation, and targets ensures that only the necessary parts of the pipeline are re-executed when changes occur.\nHere is a visual network showing the relationships between the targets in this project:"
   },
   {
+    "objectID": "notes.html",
+    "href": "notes.html",
+    "title": "Meeting Notes",
+    "section": "",
+    "text": "Summary: This PC10 meeting covered the science, monitoring, and economic dimensions of managing water quality in Lake Rotorua under climate change pressures. Key discussions centred on nitrogen reduction targets, groundwater lags, and the costs of mitigation options including constructed wetlands and riparian restoration. Data consistency, groundwater monitoring integration, and the validity of the TLI 4.2 target were debated, alongside updated nutrient accounting, internal loading measurements, and emerging restoration techniques such as ultrasonic cyanobacteria removal. An economic review and spatial planning work are ongoing to identify the most cost-effective pathways to meeting PC10 objectives. TALT engagement (via William) is ongoing with an update to follow, and strong turnout from the Rotorua Pastoral Collective reflects positive MoU partner engagement. A new NZ-based peer reviewer, Mike Scarsbrook (Waikato Regional Council), has been recommended by both LWQS and RPC and is expected to be confirmed within the next few weeks. The review must be completed by March 2027, with draft reports due September–December 2026, an October presentation to LWQS and RPC, and a final draft to council by January 2027.\n\n\n\n\nOhau wall repair & TLI for Lake Rotorua\n\nMeet N targets, look into impacts as a result of CC on WQ\nModelling to quantify the magnitude of the impact\nLevel of uncertainty around N reductions, 2 stages already reductions but interaction of reductions and climate change\nPrimary producers collective - impact of the work they have done so far e.g. riparian and wetland restoration\nImpact of manuka/kanuka plants on intercepting N\nEconomic models (regional scale)\nGroundwater lags into the lake\nEngineering targets - 3 sites for constructed/restoration wetlands $170k / ha\nMitigations and cost availability e.g $/ kg, Baylee is working on that, ~3 reports done\nPressure from MoU partners identify best options\nIdentifying areas can affect prices etc. Waiwero stream low lying pasture land\nSpatial planning landscape system currently being developed\nWait until developers get involved potentially and carving out lands\nWetland - nutrient reduction & biodiversity impacts components included in costs\n\n\n\n\n\n\nDatasets\n\nConsistency across all\nCurrent process\n\nSomeone shares it around\nLab data is separate to field data\nFormatting of data\nLong form vs. wide form\nEDS and Aquarius database\nPhoosphorus data - is it adjusted?\n\n\nGW Monitoring\n\nBoreholes around the catchment - quarterly\nFrequency of monitoring\nSpring monitoring - biannual\nCan it be used?\nShould it be reporting that somewhere? SOE report on the website\nIntegrations of stream monitoring & GW monitoring, drivers of variability,\nN is being attenuated before it re-enters the streams\n\nTLI 4.2 +/- 0.2\n\nTarget range?\nCan it be calibrated? How many blooms/how long are the blooms?\nTLI vs no. of days it is closed\nCyano monitoring is not done throughout the year\nBaseline TLI for the lake?\nWhat does not meeting the TLI mean?\nTLI target came from 1960’s water quality level\nUsed limited data to estimate that then\nExpectations of algae blooms, and managing alum response, weed to bloom focus etc.\nEddie White DSIR report early 70’s WQ in Rotorua\n\nInternal loading\n\nKaylee measuring loading\n\nRepeat of David Bergen (2004) ~20 years later\nPrioritising for PC10 reporting, then will focus on publication pipeline\nPotential deployment in August\n\nCM used buoy data for hyplolimnetic estimations in previous reports, offered to repeat this again\nMonitoring data coupled\n\nLake load report - conclusion highlights that the 435 target might be higher than the 1960’s estimate\n\nOld estimations - J Abell - natural state TLI 2.9 (2.5-3.4; 95% CI)\nCatchment landuse to TLI components\nAssumed equilibrium between contributions\nAccounted for well known factors e.g. Phosphorus\nRichard McDowell\n\nNutrient accounting work for Land use change - Mark Tomer\n\nLarge scale modelling efforts\nYear end 2026 data (July-Oct)\nStart of December, will get the data -&gt; geospatial\nEncouragement, warnings of infringements\nSkip 1 year reporting for farms that are well below the limits\nWill have a complete farm dataset, comparable between reviews, trend analysis for N\nFor P, don’t have any quantifiable data there\nChange in the SMAP data\n\nSoil sibling polygons have change\nSoil sibling data has changed\nIncorporate new soils or not?\n\nOverseer has the ability to run this through\nModelling reaching their targets by 2027\n\nToxicological effects\n\nToxicity of aluminuim of kakahi, tolerable up to 20x the loading limit\ninfluence of pH\nLab study\nExposure around the delta\n\nEmerging restoration techniques\n\nUltrasonic techniques to remove cyanobacteria\nProgressing a evaluation to assess\nHelp them to understand for them to do more work\nSusie memo on what they are doing, outcomes e.g. summary of techniques\nClarify purpose of current interventions, e.g. alum dosing, constructed wetlands, riparian, Ohau channel\nUpdating with that\nScale, pond, small lake to large lake, also dependent on target e.g. use, goals, cultural, water quality, e.g. irrigation ponds (keep clear, ecology is not important)\n\nEconomic review\nModel update\n\nPotential influence of macrophytes\n\n\n\n\n\n\nTalking with TALT (William), will update at a later date\n\n\n\n\n\nVery good turnout from RPC about our review\n\n\n\n\n\nUsed Warwick from Quebec, relatively smooth\nCritical review, author discussions\nApproached a NZ guy & recommended by LWQS & RPC, Mike Scarsbrook (Science office at WRC), keen to do it, work through terms of engagement\nUpdate terms of reference\nMeeting with community, council\nLikely to be confirmed in the next couple of weeks\n\n\n\n\n\nNeed to complete by March 2027 - includes report to council and summary report\nDraft reports by Jan 2027\nOct 2026 draft report presentation to LWQS & RPC - Jan 2027\nFarm visits rather than traditional\nSep 30 - Dec 15th Draft reports"
+  },
+  {
+    "objectID": "notes.html#bop-pc10-meeting",
+    "href": "notes.html#bop-pc10-meeting",
+    "title": "Meeting Notes",
+    "section": "",
+    "text": "Summary: This PC10 meeting covered the science, monitoring, and economic dimensions of managing water quality in Lake Rotorua under climate change pressures. Key discussions centred on nitrogen reduction targets, groundwater lags, and the costs of mitigation options including constructed wetlands and riparian restoration. Data consistency, groundwater monitoring integration, and the validity of the TLI 4.2 target were debated, alongside updated nutrient accounting, internal loading measurements, and emerging restoration techniques such as ultrasonic cyanobacteria removal. An economic review and spatial planning work are ongoing to identify the most cost-effective pathways to meeting PC10 objectives. TALT engagement (via William) is ongoing with an update to follow, and strong turnout from the Rotorua Pastoral Collective reflects positive MoU partner engagement. A new NZ-based peer reviewer, Mike Scarsbrook (Waikato Regional Council), has been recommended by both LWQS and RPC and is expected to be confirmed within the next few weeks. The review must be completed by March 2027, with draft reports due September–December 2026, an October presentation to LWQS and RPC, and a final draft to council by January 2027.\n\n\n\n\nOhau wall repair & TLI for Lake Rotorua\n\nMeet N targets, look into impacts as a result of CC on WQ\nModelling to quantify the magnitude of the impact\nLevel of uncertainty around N reductions, 2 stages already reductions but interaction of reductions and climate change\nPrimary producers collective - impact of the work they have done so far e.g. riparian and wetland restoration\nImpact of manuka/kanuka plants on intercepting N\nEconomic models (regional scale)\nGroundwater lags into the lake\nEngineering targets - 3 sites for constructed/restoration wetlands $170k / ha\nMitigations and cost availability e.g $/ kg, Baylee is working on that, ~3 reports done\nPressure from MoU partners identify best options\nIdentifying areas can affect prices etc. Waiwero stream low lying pasture land\nSpatial planning landscape system currently being developed\nWait until developers get involved potentially and carving out lands\nWetland - nutrient reduction & biodiversity impacts components included in costs\n\n\n\n\n\n\nDatasets\n\nConsistency across all\nCurrent process\n\nSomeone shares it around\nLab data is separate to field data\nFormatting of data\nLong form vs. wide form\nEDS and Aquarius database\nPhoosphorus data - is it adjusted?\n\n\nGW Monitoring\n\nBoreholes around the catchment - quarterly\nFrequency of monitoring\nSpring monitoring - biannual\nCan it be used?\nShould it be reporting that somewhere? SOE report on the website\nIntegrations of stream monitoring & GW monitoring, drivers of variability,\nN is being attenuated before it re-enters the streams\n\nTLI 4.2 +/- 0.2\n\nTarget range?\nCan it be calibrated? How many blooms/how long are the blooms?\nTLI vs no. of days it is closed\nCyano monitoring is not done throughout the year\nBaseline TLI for the lake?\nWhat does not meeting the TLI mean?\nTLI target came from 1960’s water quality level\nUsed limited data to estimate that then\nExpectations of algae blooms, and managing alum response, weed to bloom focus etc.\nEddie White DSIR report early 70’s WQ in Rotorua\n\nInternal loading\n\nKaylee measuring loading\n\nRepeat of David Bergen (2004) ~20 years later\nPrioritising for PC10 reporting, then will focus on publication pipeline\nPotential deployment in August\n\nCM used buoy data for hyplolimnetic estimations in previous reports, offered to repeat this again\nMonitoring data coupled\n\nLake load report - conclusion highlights that the 435 target might be higher than the 1960’s estimate\n\nOld estimations - J Abell - natural state TLI 2.9 (2.5-3.4; 95% CI)\nCatchment landuse to TLI components\nAssumed equilibrium between contributions\nAccounted for well known factors e.g. Phosphorus\nRichard McDowell\n\nNutrient accounting work for Land use change - Mark Tomer\n\nLarge scale modelling efforts\nYear end 2026 data (July-Oct)\nStart of December, will get the data -&gt; geospatial\nEncouragement, warnings of infringements\nSkip 1 year reporting for farms that are well below the limits\nWill have a complete farm dataset, comparable between reviews, trend analysis for N\nFor P, don’t have any quantifiable data there\nChange in the SMAP data\n\nSoil sibling polygons have change\nSoil sibling data has changed\nIncorporate new soils or not?\n\nOverseer has the ability to run this through\nModelling reaching their targets by 2027\n\nToxicological effects\n\nToxicity of aluminuim of kakahi, tolerable up to 20x the loading limit\ninfluence of pH\nLab study\nExposure around the delta\n\nEmerging restoration techniques\n\nUltrasonic techniques to remove cyanobacteria\nProgressing a evaluation to assess\nHelp them to understand for them to do more work\nSusie memo on what they are doing, outcomes e.g. summary of techniques\nClarify purpose of current interventions, e.g. alum dosing, constructed wetlands, riparian, Ohau channel\nUpdating with that\nScale, pond, small lake to large lake, also dependent on target e.g. use, goals, cultural, water quality, e.g. irrigation ponds (keep clear, ecology is not important)\n\nEconomic review\nModel update\n\nPotential influence of macrophytes\n\n\n\n\n\n\nTalking with TALT (William), will update at a later date\n\n\n\n\n\nVery good turnout from RPC about our review\n\n\n\n\n\nUsed Warwick from Quebec, relatively smooth\nCritical review, author discussions\nApproached a NZ guy & recommended by LWQS & RPC, Mike Scarsbrook (Science office at WRC), keen to do it, work through terms of engagement\nUpdate terms of reference\nMeeting with community, council\nLikely to be confirmed in the next couple of weeks\n\n\n\n\n\nNeed to complete by March 2027 - includes report to council and summary report\nDraft reports by Jan 2027\nOct 2026 draft report presentation to LWQS & RPC - Jan 2027\nFarm visits rather than traditional\nSep 30 - Dec 15th Draft reports"
+  },
+  {
+    "objectID": "notes.html#section",
+    "href": "notes.html#section",
+    "title": "Meeting Notes",
+    "section": "21/04/26",
+    "text": "21/04/26\n\nScott (BoP) - check regards the soil data\n\nCurrent configuration with Rule 11 - entire PC10, nutrient loads\n\nMet ERA5 bias correction"
+  },
+  {
+    "objectID": "notes.html#section-1",
+    "href": "notes.html#section-1",
+    "title": "Meeting Notes",
+    "section": "24/3/26",
+    "text": "24/3/26\nPrimary outputs:\n\nFlow and nutrient at the node\nSpatially resolved would be secondary"
+  },
+  {
+    "objectID": "notes.html#section-2",
+    "href": "notes.html#section-2",
+    "title": "Meeting Notes",
+    "section": "2/02/26",
+    "text": "2/02/26\n\nSWAT update\n\n2 weeks for getting that running\nMeeting next week with BoP\nHow ready will we be?\nDeadline for the end of the March\nMeet with Overseer people\nGroundwater & streamflow\nWill need nutrients by end of March with further calibration\n\nLake modelling\n\nSediment behaviour over longer time periods\n\nTranslate over old parameters\nUse AED model\n\n\nMeeting with Matt Hipsey\n\nDiscuss ELCOM 3-D model\nAED alum module\n\nEthan em190@students.waikato.ac.nz\n\nRun CMIP6 scenarios - for\nCSV data\nFluxes"
+  },
+  {
+    "objectID": "notes.html#section-3",
+    "href": "notes.html#section-3",
+    "title": "Meeting Notes",
+    "section": "10/11/25",
+    "text": "10/11/25\n\nSummary — 10/11/25\n\n\nKey Tasks\n\nPrepare a data request list.\nGather lake modelling data:\n\nInflow volume & chemistry\nMeteorological data\n\nObtain geospatial datasets: catchment and sub-catchment shapefiles.\nContact CM about older Rotorua models and inflow concentration equations.\nUse LERNZmp as the interim base model.\n\n\n\n\nMain Points\n\nData Requirements\n\nPrepare a focused data request to Bay of Plenty Regional Council (BoPRC).\nIdentify missing datasets.\nReview previous GLM-AED historical modelling outputs.\nUpdate model boundary conditions:\n\nFlows\nNutrient concentrations\nChemistry inputs\n\nObtain the old DYRESM-CAEDYM report (from Deniz).\n\n\n\nLake Modelling\n\nCM has existing work on nutrient loading from grab samples and rating curves.\n\nFollow up and request these datasets.\n\nStart small and build out the model as more data becomes available.\n\n\n\nMeteorological Data\n\nUse buoy meteorological data wherever possible.\nSupplement with NIWA Airport data.\nConsider adding CMIP6 climate data.\n\n\n\nGeospatial Data\n\nRC has new land-use data available.\nNeed catchment and sub-catchment delineations.\nObtain historical land-use from LCDB.\nExplore ROTAN (Rotorua/Taupō nitrate model) datasets — Rutherford is willing to share."
+  },
+  {
+    "objectID": "gantt.html",
+    "href": "gantt.html",
+    "title": "GANTT Chart",
+    "section": "",
+    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d\n\n    section Lake Model Upgrade\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    GLM-AED model upgrade            :b2, 2025-11-24, 50d\n    GLM-AED model calibration        :b3, 2025-12-08, 50d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "GANTT Chart"
+    ]
+  },
+  {
+    "objectID": "cmip6-visualisation.html",
+    "href": "cmip6-visualisation.html",
+    "title": "Visualise CMIP6",
+    "section": "",
+    "text": "After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.\nWe present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Visualise CMIP6"
+    ]
+  },
+  {
+    "objectID": "cmip6-visualisation.html#cmip6-variable-plots",
+    "href": "cmip6-visualisation.html#cmip6-variable-plots",
+    "title": "Visualise CMIP6",
+    "section": "CMIP6 Variable Plots",
+    "text": "CMIP6 Variable Plots\n\nAir Temperature (2 m above ground level)\nThe annual mean 2 m air temperature anomalies show robust warming across all CMIP6 models and emissions scenarios, although the magnitude and rate of warming vary among models. Historical simulations indicate a modest warming of ~0.5–1 °C relative to the mid-20th-century baseline, with relatively small inter-model spread during this period.\nFrom ~2020 onward, the scenarios diverge and uncertainties increase. Under SSP1-2.6, most models project warming that stabilises at around 1–1.5 °C above the historical mean by mid-century, with limited additional warming thereafter. The ensemble spread remains comparatively narrow in this scenario, reflecting greater model agreement under strong mitigation.\nUnder SSP2-4.5, temperatures continue to increase throughout the century, reaching approximately 2.5–3 °C by 2100. Inter-model variability broadens slightly over time, but the overall warming trajectory remains consistent across the ensemble.\nThe higher-emission scenarios show both stronger warming and greater uncertainty. SSP3-7.0 produces accelerated warming after 2050, with end-of-century anomalies near 4 °C, although individual model projections span a wider range. SSP5-8.5 exhibits the largest spread and steepest trend, with most models exceeding 5 °C by 2100, but with notable divergence in the upper tails of the ensemble.\nDespite year-to-year variability and differences among models, all scenarios show statistically robust warming relative to the historical period. The increasing separation of scenario trajectories after ~2040 highlights both the importance of emissions pathway choice and the expanding uncertainty associated with long-term climate projections.\n\n\n\nTimeseries of air temperature for scenarios and annual and seasonal projections",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Visualise CMIP6"
+    ]
+  },
+  {
+    "objectID": "alum-model.html",
+    "href": "alum-model.html",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "",
+    "text": "Summary\n\n\n\nThis document summarises a simple process representation of alum–phosphorus interactions for integration into GLM-AED. The formulation is intended to capture the main management-relevant processes in Lake Rotorua:\n\nalum delivery from treated inflows,\nSRP uptake in the water column,\nsettling of remaining reactive material,\ncontinued uptake at the sediment–water interface,\na gradual loss of reactivity through ageing, and\na bell-shaped pH response included as a pragmatic modifier of binding efficiency.\n\n\n\n\n\nThe schematic below shows how the simplified module fits together. Treated inflows add effective reactive capacity to the pelagic pool, which removes SRP while suspended. Remaining capacity then settles to the bed, where it continues to suppress SRP in the bottom layer. Ageing reduces reactivity in both compartments.\n\n\n\nConceptual process diagram of the simplified alum–phosphorus module.\n\n\n\n\n\n\n\nReactive suspended alum capacity in the water column, \\(C_w\\) (mg P m−3), removes dissolved reactive phosphorus, SRP (mg P m−3). The uptake rate is controlled by a pelagic kinetic coefficient, \\(k_w\\) (d−1), the pH modifier, \\(f_\\text{pH}\\) (−), and a saturating uptake term governed by \\(K_P\\) (mg P m−3). The saturating form ensures uptake increases with SRP but levels off as SRP becomes small relative to \\(K_P\\).\n\\[\n\\frac{d\\mathrm{SRP}}{dt} = -k_w f_\\mathrm{pH} C_w \\frac{K_P\\,\\mathrm{SRP}}{K_P + \\mathrm{SRP}}\n\\tag{1}\\]\n\n\n\n\nThe pelagic reactive-capacity pool, \\(C_w\\) (mg P m−3), increases with alum input from the treated inflows, represented by \\(J_\\text{cap}\\) (mg P d−1), and decreases through three pathways: SRP uptake, settling to the bed, and ageing. The volume term, \\(V\\) (m3), converts inflow capacity into a concentration-based state variable. \\(J_\\text{set}\\) (mg P m−3 d−1) is the settling loss from the water column, while \\(k_{\\text{age},w}\\) (d−1) controls the exponential decline in pelagic reactivity.\n\\[\n\\frac{dC_w}{dt} = \\frac{J_\\mathrm{cap}}{V} - k_w f_\\mathrm{pH} C_w \\frac{K_P\\,\\mathrm{SRP}}{K_P + \\mathrm{SRP}} - J_\\mathrm{set} - k_{\\mathrm{age},w}\\,C_w\n\\tag{2}\\]\n\n\n\nOnce alum settles, the remaining reactive capacity at the bed, \\(C_s\\) (mg P m−2), continues to remove SRP from the bottom computational layer, \\(\\text{SRP}_b\\) (mg P m−3). The benthic uptake rate is controlled by \\(k_s\\) (d−1), the same pH modifier, and the same saturating uptake term. The factor \\(1/h_b\\) converts an areal benthic sink into a concentration change in the bottom water layer of thickness \\(h_b\\) (m).\n\\[\n\\frac{d\\mathrm{SRP}_b}{dt} = -\\frac{1}{h_b}\\,k_s f_\\mathrm{pH} C_s \\frac{K_P\\,\\mathrm{SRP}_b}{K_P + \\mathrm{SRP}_b}\n\\tag{3}\\]\n\n\n\nThe benthic reactive-capacity pool, \\(C_s\\) (mg P m−2), increases through settling input from the pelagic compartment, \\(J_\\text{set}^\\text{area}\\) (mg P m−2 d−1), and decreases through bottom-water uptake, ageing, and burial or permanent isolation from exchange. The terms \\(k_{\\text{age},s}\\) (d−1) and \\(k_\\text{bur}\\) (d−1) therefore represent two separate loss pathways: gradual deactivation of reactivity and physical removal from the active sediment–water interface, respectively.\n\\[\n\\frac{dC_s}{dt} = J_\\mathrm{set}^\\mathrm{area} - k_s f_\\mathrm{pH} C_s \\frac{K_P\\,\\mathrm{SRP}_b}{K_P + \\mathrm{SRP}_b} - k_{\\mathrm{age},s}\\,C_s - k_\\mathrm{bur}\\,C_s\n\\tag{4}\\]\n\n\n\nThe pH modifier, \\(f_\\text{pH}\\) (−), is represented as a bell-shaped response centred on the optimal pH, \\(\\text{pH}_\\text{opt}\\) (−). The parameter \\(\\sigma_\\text{pH}\\) (−) controls the width of the response. This is not a full chemical equilibrium model; it is a practical way of reducing effective uptake when pH moves away from the range where alum is expected to bind phosphorus most efficiently.\n\\[\nf_\\mathrm{pH} = \\exp\\!\\left[-\\frac{(\\mathrm{pH} - \\mathrm{pH_{opt}})^2}{2\\,\\sigma_\\mathrm{pH}^2}\\right]\n\\tag{5}\\]\n\n\n\n\nAgeing is represented as a first-order exponential loss of reactivity. Here, \\(A(t)\\) denotes the remaining reactive fraction at time \\(t\\) and \\(A_0\\) is the initial reactive fraction. For the current implementation, the ageing parameter is chosen so that 95% of reactive uptake capacity is lost after 30 days. This gives \\(k_\\text{age} \\approx 0.10\\) d−1. In practice, this same logic is applied to the pelagic and benthic ageing terms, \\(k_{\\text{age},w}\\) and \\(k_{\\text{age},s}\\).\n\\[\nA(t) = A_0\\,e^{-k_\\mathrm{age}\\,t} \\qquad k_\\mathrm{age} = -\\frac{\\ln(0.05)}{30} \\approx 0.10 \\ \\mathrm{d}^{-1}\n\\tag{6}\\]\n\n\n\n\nThe table below lists the state variables, fluxes, and parameters used in the simplified model. All symbols referenced in the equations are included here so the document can be read either as a stand-alone concept note or as a guide for module implementation.\n\n\n\nTable 1: State variables, fluxes, and parameters\n\n\n\n\n\n\n\n\n\n\n\nSymbol\nSuggested units\nType\nInterpretation\n\n\n\n\nSRP\nmg P m−3\nState variable\nDissolved reactive phosphorus in the pelagic layer.\n\n\nSRPb\nmg P m−3\nState variable\nBottom-water SRP concentration in the bottom computational layer.\n\n\nCw\nmg P m−3\nState variable\nRemaining effective P-binding capacity of suspended alum.\n\n\nCs\nmg P m−2\nState variable\nRemaining effective P-binding capacity of settled alum at the bed.\n\n\nJcap\nmg P d−1\nFlux\nInput rate of effective binding capacity from treated inflows.\n\n\nV\nm3\nScaling term\nReceiving layer volume used to convert inflow capacity to concentration.\n\n\nJset\nmg P m−3 d−1\nFlux\nSettling loss of reactive capacity from the water column.\n\n\nJsetarea\nmg P m−2 d−1\nFlux\nAreal settling input of reactive capacity to the bed.\n\n\nhb\nm\nScaling term\nThickness of the bottom computational layer.\n\n\nkw\nd−1\nParameter\nPelagic kinetic coefficient controlling water-column uptake.\n\n\nks\nd−1\nParameter\nBenthic kinetic coefficient controlling bottom-water uptake.\n\n\nKP\nmg P m−3\nParameter\nSaturating uptake parameter controlling low-SRP behaviour.\n\n\nfpH\n−\nModifier\nRelative efficiency term describing the pH effect on uptake.\n\n\npHopt\n−\nParameter\nOptimal pH for alum–phosphorus uptake.\n\n\nσpH\n−\nParameter\nWidth of the bell-shaped pH response.\n\n\nkage,w\nd−1\nParameter\nPelagic ageing coefficient governing exponential loss of reactivity.\n\n\nkage,s\nd−1\nParameter\nBenthic ageing coefficient governing exponential loss of reactivity.\n\n\nkbur\nd−1\nParameter\nBurial or permanent isolation coefficient for settled reactive capacity.\n\n\nA(t)\n−\nDerived quantity\nRemaining reactive fraction after time t in the ageing function.\n\n\nA0\n−\nDerived quantity\nInitial reactive fraction at t = 0 in the ageing function.\n\n\n\n\n\n\n\n\n\nA practical first implementation in GLM-AED could introduce two new state variables: a pelagic reactive-capacity pool (\\(C_w\\)) and a benthic reactive-capacity pool (\\(C_s\\)). The main calibration priorities are likely to be the dose-to-capacity conversion (\\(J_\\text{cap}\\)), the pelagic and benthic kinetic coefficients (\\(k_w\\) and \\(k_s\\)), the settling transfer, and the pH response parameters. For ageing, the intended behaviour is simple exponential loss of reactivity rather than a more complex multi-pool formulation.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#conceptual-process-diagram",
+    "href": "alum-model.html#conceptual-process-diagram",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "",
+    "text": "The schematic below shows how the simplified module fits together. Treated inflows add effective reactive capacity to the pelagic pool, which removes SRP while suspended. Remaining capacity then settles to the bed, where it continues to suppress SRP in the bottom layer. Ageing reduces reactivity in both compartments.\n\n\n\nConceptual process diagram of the simplified alum–phosphorus module.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#core-equations",
+    "href": "alum-model.html#core-equations",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "",
+    "text": "Reactive suspended alum capacity in the water column, \\(C_w\\) (mg P m−3), removes dissolved reactive phosphorus, SRP (mg P m−3). The uptake rate is controlled by a pelagic kinetic coefficient, \\(k_w\\) (d−1), the pH modifier, \\(f_\\text{pH}\\) (−), and a saturating uptake term governed by \\(K_P\\) (mg P m−3). The saturating form ensures uptake increases with SRP but levels off as SRP becomes small relative to \\(K_P\\).\n\\[\n\\frac{d\\mathrm{SRP}}{dt} = -k_w f_\\mathrm{pH} C_w \\frac{K_P\\,\\mathrm{SRP}}{K_P + \\mathrm{SRP}}\n\\tag{1}\\]\n\n\n\n\nThe pelagic reactive-capacity pool, \\(C_w\\) (mg P m−3), increases with alum input from the treated inflows, represented by \\(J_\\text{cap}\\) (mg P d−1), and decreases through three pathways: SRP uptake, settling to the bed, and ageing. The volume term, \\(V\\) (m3), converts inflow capacity into a concentration-based state variable. \\(J_\\text{set}\\) (mg P m−3 d−1) is the settling loss from the water column, while \\(k_{\\text{age},w}\\) (d−1) controls the exponential decline in pelagic reactivity.\n\\[\n\\frac{dC_w}{dt} = \\frac{J_\\mathrm{cap}}{V} - k_w f_\\mathrm{pH} C_w \\frac{K_P\\,\\mathrm{SRP}}{K_P + \\mathrm{SRP}} - J_\\mathrm{set} - k_{\\mathrm{age},w}\\,C_w\n\\tag{2}\\]\n\n\n\nOnce alum settles, the remaining reactive capacity at the bed, \\(C_s\\) (mg P m−2), continues to remove SRP from the bottom computational layer, \\(\\text{SRP}_b\\) (mg P m−3). The benthic uptake rate is controlled by \\(k_s\\) (d−1), the same pH modifier, and the same saturating uptake term. The factor \\(1/h_b\\) converts an areal benthic sink into a concentration change in the bottom water layer of thickness \\(h_b\\) (m).\n\\[\n\\frac{d\\mathrm{SRP}_b}{dt} = -\\frac{1}{h_b}\\,k_s f_\\mathrm{pH} C_s \\frac{K_P\\,\\mathrm{SRP}_b}{K_P + \\mathrm{SRP}_b}\n\\tag{3}\\]\n\n\n\nThe benthic reactive-capacity pool, \\(C_s\\) (mg P m−2), increases through settling input from the pelagic compartment, \\(J_\\text{set}^\\text{area}\\) (mg P m−2 d−1), and decreases through bottom-water uptake, ageing, and burial or permanent isolation from exchange. The terms \\(k_{\\text{age},s}\\) (d−1) and \\(k_\\text{bur}\\) (d−1) therefore represent two separate loss pathways: gradual deactivation of reactivity and physical removal from the active sediment–water interface, respectively.\n\\[\n\\frac{dC_s}{dt} = J_\\mathrm{set}^\\mathrm{area} - k_s f_\\mathrm{pH} C_s \\frac{K_P\\,\\mathrm{SRP}_b}{K_P + \\mathrm{SRP}_b} - k_{\\mathrm{age},s}\\,C_s - k_\\mathrm{bur}\\,C_s\n\\tag{4}\\]\n\n\n\nThe pH modifier, \\(f_\\text{pH}\\) (−), is represented as a bell-shaped response centred on the optimal pH, \\(\\text{pH}_\\text{opt}\\) (−). The parameter \\(\\sigma_\\text{pH}\\) (−) controls the width of the response. This is not a full chemical equilibrium model; it is a practical way of reducing effective uptake when pH moves away from the range where alum is expected to bind phosphorus most efficiently.\n\\[\nf_\\mathrm{pH} = \\exp\\!\\left[-\\frac{(\\mathrm{pH} - \\mathrm{pH_{opt}})^2}{2\\,\\sigma_\\mathrm{pH}^2}\\right]\n\\tag{5}\\]\n\n\n\n\nAgeing is represented as a first-order exponential loss of reactivity. Here, \\(A(t)\\) denotes the remaining reactive fraction at time \\(t\\) and \\(A_0\\) is the initial reactive fraction. For the current implementation, the ageing parameter is chosen so that 95% of reactive uptake capacity is lost after 30 days. This gives \\(k_\\text{age} \\approx 0.10\\) d−1. In practice, this same logic is applied to the pelagic and benthic ageing terms, \\(k_{\\text{age},w}\\) and \\(k_{\\text{age},s}\\).\n\\[\nA(t) = A_0\\,e^{-k_\\mathrm{age}\\,t} \\qquad k_\\mathrm{age} = -\\frac{\\ln(0.05)}{30} \\approx 0.10 \\ \\mathrm{d}^{-1}\n\\tag{6}\\]",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#state-variables-and-parameters",
+    "href": "alum-model.html#state-variables-and-parameters",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "",
+    "text": "The table below lists the state variables, fluxes, and parameters used in the simplified model. All symbols referenced in the equations are included here so the document can be read either as a stand-alone concept note or as a guide for module implementation.\n\n\n\nTable 1: State variables, fluxes, and parameters\n\n\n\n\n\n\n\n\n\n\n\nSymbol\nSuggested units\nType\nInterpretation\n\n\n\n\nSRP\nmg P m−3\nState variable\nDissolved reactive phosphorus in the pelagic layer.\n\n\nSRPb\nmg P m−3\nState variable\nBottom-water SRP concentration in the bottom computational layer.\n\n\nCw\nmg P m−3\nState variable\nRemaining effective P-binding capacity of suspended alum.\n\n\nCs\nmg P m−2\nState variable\nRemaining effective P-binding capacity of settled alum at the bed.\n\n\nJcap\nmg P d−1\nFlux\nInput rate of effective binding capacity from treated inflows.\n\n\nV\nm3\nScaling term\nReceiving layer volume used to convert inflow capacity to concentration.\n\n\nJset\nmg P m−3 d−1\nFlux\nSettling loss of reactive capacity from the water column.\n\n\nJsetarea\nmg P m−2 d−1\nFlux\nAreal settling input of reactive capacity to the bed.\n\n\nhb\nm\nScaling term\nThickness of the bottom computational layer.\n\n\nkw\nd−1\nParameter\nPelagic kinetic coefficient controlling water-column uptake.\n\n\nks\nd−1\nParameter\nBenthic kinetic coefficient controlling bottom-water uptake.\n\n\nKP\nmg P m−3\nParameter\nSaturating uptake parameter controlling low-SRP behaviour.\n\n\nfpH\n−\nModifier\nRelative efficiency term describing the pH effect on uptake.\n\n\npHopt\n−\nParameter\nOptimal pH for alum–phosphorus uptake.\n\n\nσpH\n−\nParameter\nWidth of the bell-shaped pH response.\n\n\nkage,w\nd−1\nParameter\nPelagic ageing coefficient governing exponential loss of reactivity.\n\n\nkage,s\nd−1\nParameter\nBenthic ageing coefficient governing exponential loss of reactivity.\n\n\nkbur\nd−1\nParameter\nBurial or permanent isolation coefficient for settled reactive capacity.\n\n\nA(t)\n−\nDerived quantity\nRemaining reactive fraction after time t in the ageing function.\n\n\nA0\n−\nDerived quantity\nInitial reactive fraction at t = 0 in the ageing function.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#notes-for-implementation",
+    "href": "alum-model.html#notes-for-implementation",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "",
+    "text": "A practical first implementation in GLM-AED could introduce two new state variables: a pelagic reactive-capacity pool (\\(C_w\\)) and a benthic reactive-capacity pool (\\(C_s\\)). The main calibration priorities are likely to be the dose-to-capacity conversion (\\(J_\\text{cap}\\)), the pelagic and benthic kinetic coefficients (\\(k_w\\) and \\(k_s\\)), the settling transfer, and the pH response parameters. For ageing, the intended behaviour is simple exponential loss of reactivity rather than a more complex multi-pool formulation.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#kinetic-formulation-aed-units-and-notation",
+    "href": "alum-model.html#kinetic-formulation-aed-units-and-notation",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.1 Kinetic formulation, AED units and notation",
+    "text": "2.1 Kinetic formulation, AED units and notation\nThis document presents a simplified process representation of alum–phosphorus interactions for integration into GLM-AED as the module aed_alum. SRP uptake is represented as a kinetic rate process. Units, variable notation, and parameter conventions follow aed_phosphorus and the AED framework. A sediment resuspension term is included but disabled by default via a logical switch.\nThe module is intended to capture the main management-relevant processes for Lake Rotorua:\n\nalum capacity delivery from treated inflows,\nkinetic uptake of dissolved reactive phosphorus in the water column,\nsettling of remaining reactive material to the bed,\ncontinued kinetic uptake at the sediment–water interface,\na gradual loss of reactivity through ageing,\noptional resuspension of settled alum, and\na bell-shaped pH response as a pragmatic modifier of binding efficiency.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#structural-decisions-and-open-questions",
+    "href": "alum-model.html#structural-decisions-and-open-questions",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.2 Structural decisions and open questions",
+    "text": "2.2 Structural decisions and open questions\nThe formulation below resolves several structural issues identified while reviewing the original concept note against the AED framework and the aed_phosphorus, aed_silica, and aed_tracer modules. The items still requiring confirmation are listed first.\n\n2.2.1 Open — still requiring a decision\n\nNumerical behaviour of kinetic uptake. SRP uptake is represented as a kinetic rate (Equation 1). Alum P-binding is physically fast, so a realistic k_w may be large enough to introduce stiffness and overshoot in an explicit ODE step. This needs to be checked in testing; if it proves unstable, the alternative is an equilibrium partition computed in an equilibrate routine, as aed_phosphorus does for adsorption.\nDoes ageing release or trap bound phosphorus? Ageing reduces binding capacity, but whether it also releases already-bound P depends on the physical interpretation — occlusion (P trapped) versus floc dissolution (P returned to frp). The “trapped” interpretation is adopted here (no ageing term on the bound pools), but should be confirmed against data from Lake Rotorua.\nAlum delivery mechanism. Delivering alum capacity by dividing an inflow load by a fixed receiving-layer volume is fragile, because GLM places inflows by density and the receiving layer changes over time. The recommended approach is to deliver alum as an inflow water-quality concentration and let GLM distribute it, retaining the explicit S_ala term only for direct dosing. This needs to be confirmed against how GLM-AED handles inflow WQ variables.\n\n\n\n2.2.2 Resolved in this formulation\n\nPhosphorus mass closure. Phosphorus removed from frp is tracked in explicit bound-P pools (alp, ben_alp) rather than disappearing from the budget.\nSettling as one coupled flux. Settling is handled by the mobility routine and AED transport, not as separate hand-coded volumetric and areal terms.\nBenthic pools as sheet variables. ben_ala and ben_alp are registered with aed_define_sheet_variable. This deliberately extends beyond the aed_phosphorus template, which carries no benthic adsorbed-P state variable.\npH dependency. pH is sourced from aed_carbon (CAR_pH), with a configurable variable name and an f_pH = 1 fallback when unavailable.\nUnits and rate conventions. Phosphorus is in mmol P m⁻³ / m⁻², matching frp; namelist rates are per-day and converted to per-second on read.\nBottom-water SRP. Bottom-water SRP is frp evaluated in the bottom layer, not a separate state variable.\nResuspension. An optional, switch-gated resuspension term is included (Equation 7), disabled by default.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#notation-and-unit-conventions",
+    "href": "alum-model.html#notation-and-unit-conventions",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.3 Notation and unit conventions",
+    "text": "2.3 Notation and unit conventions\n\nPhosphorus concentrations are in mmol P m⁻³ (pelagic) or mmol P m⁻² (benthic), consistent with aed_phosphorus. Where alum delivery is quoted as a mass dose, convert using a molar mass of P of 30.97 g mol⁻¹.\nAll rate parameters are supplied in the namelist per day and converted to per second on read in aed_define_alum (division by secs_per_day), following the AED convention.\nSettling velocity w_ala is supplied in m day⁻¹ and converted to m s⁻¹ on read.\nFluxes applied to frp are in mmol P m⁻³ s⁻¹ (pelagic) or mmol P m⁻² s⁻¹ (benthic).\nThe equations below are written with rates in per-day units for readability; the implementation uses the per-second equivalents.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#state-variables",
+    "href": "alum-model.html#state-variables",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.4 State variables",
+    "text": "2.4 State variables\n\n\n\n\n\n\n\n\n\n\n\nVariable\nAED name\nUnits\nCompartment\nRegistration\nInterpretation\n\n\n\n\nFRP\nfrp\nmmol P m⁻³\nPelagic\nexternal link\nFilterable reactive phosphorus, owned by aed_phosphorus; located, not redefined.\n\n\nSuspended alum capacity\nala\nmmol P m⁻³\nPelagic\naed_define_variable\nRemaining effective P-binding capacity of suspended alum, expressed as bindable P.\n\n\nSuspended alum-bound P\nalp\nmmol P m⁻³\nPelagic\naed_define_variable\nPhosphorus bound to suspended alum.\n\n\nSettled alum capacity\nben_ala\nmmol P m⁻²\nBenthic\naed_define_sheet_variable\nRemaining effective P-binding capacity of settled alum at the bed.\n\n\nSettled alum-bound P\nben_alp\nmmol P m⁻²\nBenthic\naed_define_sheet_variable\nPhosphorus bound to settled alum at the bed.\n\n\n\nfrp is located with aed_locate_variable and exchanged with; it is not redefined by aed_alum. There is no separate bottom-water FRP variable — benthic processes act on frp evaluated in the bottom layer, which is what aed_calculate_benthic operates on.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#core-equations-1",
+    "href": "alum-model.html#core-equations-1",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.5 Core equations",
+    "text": "2.5 Core equations\n\n2.5.1 Equation 1. Water-column SRP uptake\nReactive suspended alum capacity ala removes dissolved reactive phosphorus frp. The uptake rate U_w is controlled by the pelagic kinetic coefficient k_w, the pH modifier f_pH, and a Michaelis–Menten saturation term governed by the half-saturation constant K_P.\n\\[\n\\frac{d\\,\\mathrm{frp}}{dt} = -\\,U_w\n\\]\n\\[\nU_w = k_w\\, f_\\mathrm{pH}\\, \\mathrm{ala}\\;\\frac{\\mathrm{frp}}{K_P + \\mathrm{frp}}\n\\]\nU_w has units of (d⁻¹)(−)(mmol P m⁻³)(−) = mmol P m⁻³ d⁻¹. The saturation term is linear at low frp and saturates at 1 at high frp. Uptake is linear in ala, so there is no saturation in available binding capacity.\n\n\n2.5.2 Equation 2. Suspended alum capacity\nala is replenished by alum input S_ala, consumed one-to-one as it binds phosphorus, and lost through ageing. Settling is handled by transport via the mobility routine and does not appear as an explicit term.\n\\[\n\\frac{d\\,\\mathrm{ala}}{dt} = S_\\mathrm{ala} - U_w - k_{age,w}\\,\\mathrm{ala}\n\\]\nS_ala (mmol P m⁻³ d⁻¹) is the alum capacity input. It is best delivered as an inflow water-quality concentration so GLM distributes it by density; an explicit S_ala term is only needed for direct (non-inflow) dosing into a named layer.\n\n\n2.5.3 Equation 3. Suspended alum-bound phosphorus\nPhosphorus removed from frp enters the bound pool alp, preserving the phosphorus mass balance. alp settles with the same velocity w_ala as ala.\n\\[\n\\frac{d\\,\\mathrm{alp}}{dt} = U_w\n\\]\nNo ageing term is applied to alp: under the “trapped phosphorus” interpretation, ageing occludes binding sites but does not release already-bound phosphorus. If ageing were instead taken to represent floc dissolution, a term returning phosphorus to frp would be required. The trapped interpretation is the more conservative management assumption and is adopted here.\n\n\n2.5.4 Equation 4. Bottom-water SRP uptake\nSettled alum capacity ben_ala continues to remove frp from the bottom computational layer. The benthic uptake rate U_s is areal because ben_ala is areal; the factor 1/h_b converts it to a concentration change in the bottom layer of thickness h_b.\n\\[\n\\frac{d\\,\\mathrm{frp}_b}{dt} = -\\frac{U_s}{h_b}\n\\]\n\\[\nU_s = k_s\\, f_\\mathrm{pH}\\, \\mathrm{ben\\_ala}\\;\\frac{\\mathrm{frp}_b}{K_P + \\mathrm{frp}_b}\n\\]\nU_s has units of mmol P m⁻² d⁻¹; 1/h_b (m⁻¹) converts it to mmol P m⁻³ d⁻¹. frp_b is frp in the bottom layer, not a separate state variable.\n\n\n2.5.5 Equation 5. Settled alum capacity\nben_ala gains the settling flux F_ala of ala arriving at the bed, and loses capacity through bottom-water uptake, ageing, burial, and optional resuspension.\n\\[\n\\frac{d\\,\\mathrm{ben\\_ala}}{dt} = F_\\mathrm{ala} - U_s - k_{age,s}\\,\\mathrm{ben\\_ala} - k_\\mathrm{bur}\\,\\mathrm{ben\\_ala} - R_\\mathrm{ala}\n\\]\nF_ala (mmol P m⁻² d⁻¹) is supplied by AED’s vertical transport, not hand-coded. R_ala is the resuspension loss defined in Equation 7.\n\n\n2.5.6 Equation 6. Settled alum-bound phosphorus\nben_alp gains the settling flux F_alp of alp, gains phosphorus bound at the bed (U_s), and loses mass through burial and optional resuspension.\n\\[\n\\frac{d\\,\\mathrm{ben\\_alp}}{dt} = F_\\mathrm{alp} + U_s - k_\\mathrm{bur}\\,\\mathrm{ben\\_alp} - R_\\mathrm{alp}\n\\]\nNo ageing term is applied to ben_alp, consistent with the trapped-phosphorus interpretation in Equation 3.\n\n\n2.5.7 Equation 7. Resuspension of settled alum (optional)\nWhen simResuspension is enabled, a fraction of settled alum is returned to the water column. The resuspension fluxes R_ala and R_alp (mmol P m⁻² d⁻¹) are controlled by a resuspension coefficient k_res:\n\\[\nR_\\mathrm{ala} = \\delta_\\mathrm{res}\\;k_\\mathrm{res}\\,\\mathrm{ben\\_ala},\n\\qquad\nR_\\mathrm{alp} = \\delta_\\mathrm{res}\\;k_\\mathrm{res}\\,\\mathrm{ben\\_alp}\n\\]\nwhere δ_res is 1 when simResuspension = .true. and 0 otherwise. The resuspended capacity and bound phosphorus are added back to the pelagic pools ala and alp in the bottom layer (divided by h_b to convert the areal flux to a concentration change). By default simResuspension = .false., so R_ala = R_alp = 0 and Equations 5 and 6 reduce to their non-resuspension form.\nA more physically based option is to scale k_res by bottom shear stress relative to a critical threshold (as in aed_tracer), or to link to an external sediment-resuspension diagnostic (as the resus_link mechanism does in aed_phosphorus). The constant-coefficient form above is the minimal default; either extension can replace k_res later without changing the equation structure.\n\n\n2.5.8 Equation 8. Bell-shaped pH modifier\nThe pH modifier f_pH is a bell-shaped response centred on the optimal pH, pH_opt, with width controlled by sigma_pH. It is a pragmatic efficiency modifier, not a chemical equilibrium model.\n\\[\nf_\\mathrm{pH} = \\exp\\!\\left[-\\frac{(\\mathrm{pH} - \\mathrm{pH_{opt}})^2}{2\\,\\sigma_\\mathrm{pH}^2}\\right]\n\\]\npH is obtained from the AED carbon-chemistry module, by default the variable CAR_pH, located with aed_locate_variable. The variable name is configurable via the namelist (pH_variable).\n\n\n2.5.9 Equation 9. Ageing coefficient\nAgeing is a first-order exponential loss of reactive capacity. Choosing the coefficient so that 95% of capacity is lost after 30 days gives:\n\\[\nA(t) = A_0\\, e^{-k_\\mathrm{age}\\, t},\n\\qquad\nk_\\mathrm{age} = -\\frac{\\ln(0.05)}{30} \\approx 0.0998 \\ \\mathrm{d}^{-1}\n\\]\nThe same logic applies to the pelagic and benthic ageing coefficients k_age_w and k_age_s. The value 0.0998 d⁻¹ is the namelist value; internally it is converted to ≈ 1.16 × 10⁻⁶ s⁻¹.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#phosphorus-mass-balance",
+    "href": "alum-model.html#phosphorus-mass-balance",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.6 Phosphorus mass balance",
+    "text": "2.6 Phosphorus mass balance\nWith the trapped-phosphorus interpretation, total phosphorus is conserved. Every term leaving frp enters a bound pool (alp or ben_alp); settling transfers ala and alp to ben_ala and ben_alp; resuspension transfers them back; and only burial (k_bur) permanently removes phosphorus from the modelled system. Retaining an ageing term on a bound pool without a compensating release term would introduce a silent phosphorus sink and should be avoided.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#proposed-aed_alum-namelist",
+    "href": "alum-model.html#proposed-aed_alum-namelist",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.7 Proposed aed_alum namelist",
+    "text": "2.7 Proposed aed_alum namelist\nThe table below lists candidate namelist parameters for the &aed_alum block, with suggested default values. Rate parameters are in per-day units as supplied in the namelist; the module converts them internally. Defaults are placeholders for calibration, not recommended values.\n\n\n\n\n\n\n\n\n\n\nNamelist parameter\nSymbol\nUnits (namelist)\nSuggested default\nDescription\n\n\n\n\nala_initial\nala₀\nmmol P m⁻³\n0.0\nInitial suspended alum capacity.\n\n\nalp_initial\nalp₀\nmmol P m⁻³\n0.0\nInitial suspended alum-bound P.\n\n\nben_ala_initial\n—\nmmol P m⁻²\n0.0\nInitial settled alum capacity.\n\n\nben_alp_initial\n—\nmmol P m⁻²\n0.0\nInitial settled alum-bound P.\n\n\nfrp_variable\nfrp\n—\n'PHS_frp'\nName of the FRP state variable to link to.\n\n\nk_w\nk_w\nd⁻¹\n0.5\nPelagic kinetic uptake coefficient.\n\n\nk_s\nk_s\nd⁻¹\n0.1\nBenthic kinetic uptake coefficient.\n\n\nK_P\nK_P\nmmol P m⁻³\n0.3\nHalf-saturation constant for SRP uptake.\n\n\nw_ala\nw_ala\nm d⁻¹\n0.5\nSettling velocity of suspended alum pools (ala, alp).\n\n\nk_age_w\nk_age,w\nd⁻¹\n0.0998\nPelagic ageing coefficient (95% loss in 30 d).\n\n\nk_age_s\nk_age,s\nd⁻¹\n0.0998\nBenthic ageing coefficient.\n\n\nk_bur\nk_bur\nd⁻¹\n0.01\nBurial coefficient for settled alum.\n\n\nsimResuspension\nδ_res\nlogical\n.false.\nMaster switch for resuspension of settled alum.\n\n\nk_res\nk_res\nd⁻¹\n0.0\nResuspension coefficient (used only if simResuspension = .true.).\n\n\nads_use_pH\n—\nlogical\n.false.\nSwitch to enable the pH modifier f_pH.\n\n\npH_variable\npH\n—\n'CAR_pH'\nName of the pH variable from aed_carbon.\n\n\npH_opt\npH_opt\n−\n6.0\nOptimal pH for alum–phosphorus uptake.\n\n\nsigma_pH\nσ_pH\n−\n1.0\nWidth of the bell-shaped pH response.\n\n\nS_ala\nS_ala\nmmol P m⁻³ d⁻¹\n0.0\nDirect (non-inflow) alum capacity input; 0 if delivered via inflows.\n\n\ndiag_level\n—\ninteger\n10\nDiagnostic output verbosity, per AED convention.\n\n\n\nExample &aed_alum block:\n&aed_alum\n   ala_initial     = 0.0\n   alp_initial     = 0.0\n   ben_ala_initial = 0.0\n   ben_alp_initial = 0.0\n   frp_variable    = 'PHS_frp'\n   k_w             = 0.5\n   k_s             = 0.1\n   K_P             = 0.3\n   w_ala           = 0.5\n   k_age_w         = 0.0998\n   k_age_s         = 0.0998\n   k_bur           = 0.01\n   simResuspension = .false.\n   k_res           = 0.0\n   ads_use_pH      = .false.\n   pH_variable     = 'CAR_pH'\n   pH_opt          = 6.0\n   sigma_pH        = 1.0\n   S_ala           = 0.0\n   diag_level      = 10\n/",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#module-issues",
+    "href": "alum-model.html#module-issues",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.8 Module Issues",
+    "text": "2.8 Module Issues",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "alum-model.html#calibration-priorities",
+    "href": "alum-model.html#calibration-priorities",
+    "title": "1 Alum–phosphorus process representation for GLM-AED application in Lake Rotorua",
+    "section": "2.9 Calibration priorities",
+    "text": "2.9 Calibration priorities\nThe main calibration targets are likely to be the dose-to-capacity conversion feeding S_ala (or the inflow alum concentration), the pelagic and benthic kinetic coefficients k_w and k_s, the settling velocity w_ala, and — if the pH modifier is enabled — pH_opt and sigma_pH. Ageing is intended as a simple first-order loss rather than a multi-pool formulation, and k_age_w and k_age_s can reasonably be fixed at the 30-day value unless data suggest otherwise. Resuspension is off by default; if enabled, k_res becomes an additional calibration parameter.",
+    "crumbs": [
+      "Home",
+      "Project Overview",
+      "Alum Model"
+    ]
+  },
+  {
+    "objectID": "aed-alum-module.html",
+    "href": "aed-alum-module.html",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "",
+    "text": "To maintain mechanistic defensibility while keeping the implementation simple, we propose a minimal two-state kinetic model representing alum–phosphorus (Al–P) interactions in the water column.\nThe model captures:\n\npH-dependent aluminium hydrolysis and reactivity\n\nPhosphate sorption onto amorphous Al(OH)₃ flocs\n\nTemperature effects on reaction kinetics\n\nRapid settling of aluminium flocs (~10 m d⁻¹)\n\nOptional slow aging (loss of reactivity)\n\nThis structure is designed for scenario testing of alum dosing strategies."
+  },
+  {
+    "objectID": "aed-alum-module.html#water-column",
+    "href": "aed-alum-module.html#water-column",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "Water Column",
+    "text": "Water Column\n\n\\(Al_r\\) — Reactive aluminium floc (g Al m\\(^{-3}\\))\n\n\\(P_{Al}\\) — Phosphorus bound to aluminium floc (g P m\\(^{-3}\\))\n\nCoupled to existing AED variable:\n\n\\(PO_4\\) — Dissolved reactive phosphorus (FRP)"
+  },
+  {
+    "objectID": "aed-alum-module.html#reactive-aluminium",
+    "href": "aed-alum-module.html#reactive-aluminium",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "1. Reactive Aluminium",
+    "text": "1. Reactive Aluminium\nAlum added via inflows is assumed to rapidly hydrolyse to reactive floc.\n\\[\n\\frac{d Al_r}{dt} =\nL_{Al,in}\n- k_{age} Al_r\n- R_{bind}\n- settling\n\\]\nWhere:\n\n\\(L_{Al,in}\\) = alum loading from inflow forcing\n\n\\(k_{age}\\) = first-order aging constant (loss of reactivity)\n\n\\(R_{bind}\\) = phosphate binding rate"
+  },
+  {
+    "objectID": "aed-alum-module.html#phosphate-frp",
+    "href": "aed-alum-module.html#phosphate-frp",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "2. Phosphate (FRP)",
+    "text": "2. Phosphate (FRP)\n\\[\n\\frac{d PO_4}{dt} = - R_{bind}\n\\]"
+  },
+  {
+    "objectID": "aed-alum-module.html#aluminium-bound-phosphorus",
+    "href": "aed-alum-module.html#aluminium-bound-phosphorus",
+    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
+    "section": "3. Aluminium-Bound Phosphorus",
+    "text": "3. Aluminium-Bound Phosphorus\n\\[\n\\frac{d P_{Al}}{dt} =\n+ R_{bind}\n- settling\n\\]"
+  },
+  {
+    "objectID": "cmip6-processing.html",
+    "href": "cmip6-processing.html",
+    "title": "CMIP 6 Processing",
+    "section": "",
+    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#metadata",
+    "href": "cmip6-processing.html#metadata",
+    "title": "CMIP 6 Processing",
+    "section": "Metadata",
+    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#file-access",
+    "href": "cmip6-processing.html#file-access",
+    "title": "CMIP 6 Processing",
+    "section": "File access",
+    "text": "File access\nThe CMIP6 data is stored on a shared drive (Z: drive) accessible within our institutional network. The files are organized by variable, scenario, model, region, timestep, spatial resolution, and bias correction method e.g “hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc”. This corresponds to relative humidity (hurs) for the historical scenario from the ACCESS-CM2 GCM, downscaled using the CCAM model over New Zealand at a daily timestep and 5 km spatial resolution, without bias correction.\nLoading and reading data from these NetCDF files can be done using the ncdf4 package in R. However, reading large datasets can be time-consuming, so we have implemented a function which uses a grid reference system to efficiently extract only the required data points.\nThis provided as the VCSN agent data. This contains a grid of points at 5 km resolution covering New Zealand, with each point having a unique coordinate index. We use this grid to identify which points fall within our area of interest, and then extract only those points from the NetCDF files.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#create-an-area-of-interest",
+    "href": "cmip6-processing.html#create-an-area-of-interest",
+    "title": "CMIP 6 Processing",
+    "section": "Create an area of interest",
+    "text": "Create an area of interest\nIf you do not have a shapefile of your area of interest (AOI), you can easily generate one with the mapedit package.\n\nx &lt;- mapedit::drawFeatures()\n\nSave the drawn features for future use:\n\nsaveRDS(x, here::here(\"data\", \"processed\", \"rotorua_area.rds\"))",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "cmip6-processing.html#processing-function",
+    "href": "cmip6-processing.html#processing-function",
+    "title": "CMIP 6 Processing",
+    "section": "Processing function",
+    "text": "Processing function\nThe process_cmip6 function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.\n\n\n\nFunction Parameters for process_cmip6()\n\n\nParameter\nDescription\n\n\n\n\nx\nsf polygon\n\n\nvcsn_grid_points\nsf points of VCSN grid\n\n\nfile\npath to input netCDF file\n\n\noutfile\npath to output netCDF file\n\n\n\n\n\n\nsource(here::here(\"R\", \"process_cmip6.R\"))\nprocess_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,\n              file = file, outfile = outfile)",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "CMIP 6 Processing"
+    ]
+  },
+  {
+    "objectID": "data-request.html",
+    "href": "data-request.html",
+    "title": "Data Request",
+    "section": "",
+    "text": "Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.\n\n\n\n\n\n\n\n\n\n\nDataset\nDescription / Variables\nPurpose in Modelling\nSource\n\n\n\n\nInflow volumes\nDaily/hourly flow records for all tributaries and stormwater inputs\nDefine hydrological boundary conditions; drive water balance\nBoPRC\n\n\nInflow chemistry\nNutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature\nSet up inflow nutrient loads and biogeochemical forcing\nBoPRC\n\n\nGrab samples & rating curve data\nFlow–concentration relationships, historical spot samples\nImprove accuracy of nutrient load estimates\nCM / BoPRC\n\n\nMeteorological data (buoy)\nWind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall\nPrimary atmospheric forcing for lake model\nBoPRC\n\n\nMeteorological data (airport)\nNIWA climate station data (same variables as above)\nGap filling and long-term climate records\nNIWA Climate Portal\n\n\nCMIP6 climate data\nBias-corrected scenario climate inputs\nFuture scenario modelling\nShared Drive\n\n\nLake level / stage\nTime series of lake height\nConvert model depths to dynamic hypsography; align inflow/outflow\nBoPRC\n\n\nOutflow data\nOutflow discharge and control structure operations\nComplete hydrological mass balance\nBoPRC\n\n\nWater quality profiles\nVertical profiles of temperature, DO, chlorophyll-a, nutrients\nCalibration & validation of GLM-AED\nLimnotrack/BoPRC\n\n\nHistorical GLM-AED outputs\nPrevious model runs and configuration files\nProvide baseline assumptions and compare structure\nBoPRC / CM\n\n\nOld DYRESM-CAEDYM report\nModel description and past findings\nReference for parameterisation and historical context\nDeniz\n\n\nCatchment shapefile\nFull catchment boundary polygon\nDefine drainage area for inflow and land-use analysis\nBoPRC\n\n\nSub-catchment delineations\nIndividual subcatchment polygons\nAttribute inflows to specific contributing areas\nBoPRC\n\n\nLand-use data (current)\nLatest regional council land-use dataset\nEstimate nutrient export, identify land-use pressures\nBoPRC\n\n\nHistorical land-use (LCDB)\nLCDB time-series land-cover data\nIdentify changes over time influencing nutrient loading\nLINZ / LCDB\n\n\nROTAN model outputs\nRotorua/Taupō nitrate model datasets (flows, loads)\nCross-check nutrient source estimates; historic nitrate loading\nRutherford\n\n\nBathymetry\nHigh-resolution depth raster or contours\nBuild lake hypsography for GLM-AED\nBoPRC\n\n\nSediment parameters\nSediment P/N fractions, nutrient release data\nSupport AED sediment flux and diagenesis modules\nBoPRC / Literature\n\n\nPoint-source inputs\nAny wastewater/stormwater discharge records\nEnsure all external loads are captured\nBoPRC",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
+    "objectID": "data-request.html#notes",
+    "href": "data-request.html#notes",
+    "title": "Data Request",
+    "section": "Notes",
+    "text": "Notes\n\nBegin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
+    "crumbs": [
+      "Home",
+      "Tasks",
+      "Data Request"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Rotorua Lake Modelling – PC10 Support",
@@ -92,186 +457,6 @@
     "crumbs": [
       "Home",
       "Project Overview"
-    ]
-  },
-  {
-    "objectID": "data-request.html",
-    "href": "data-request.html",
-    "title": "Data Request",
-    "section": "",
-    "text": "Below is a proposed list of datasets to request from Bay of Plenty Regional Council and collaborators.\n\n\n\n\n\n\n\n\n\n\nDataset\nDescription / Variables\nPurpose in Modelling\nSource\n\n\n\n\nInflow volumes\nDaily/hourly flow records for all tributaries and stormwater inputs\nDefine hydrological boundary conditions; drive water balance\nBoPRC\n\n\nInflow chemistry\nNutrient concentrations (TN, TP, NO3, NH4, DRP), organic fractions, conductivity, temperature\nSet up inflow nutrient loads and biogeochemical forcing\nBoPRC\n\n\nGrab samples & rating curve data\nFlow–concentration relationships, historical spot samples\nImprove accuracy of nutrient load estimates\nCM / BoPRC\n\n\nMeteorological data (buoy)\nWind speed/direction, air temp, humidity, shortwave/longwave radiation, rainfall\nPrimary atmospheric forcing for lake model\nBoPRC\n\n\nMeteorological data (airport)\nNIWA climate station data (same variables as above)\nGap filling and long-term climate records\nNIWA Climate Portal\n\n\nCMIP6 climate data\nBias-corrected scenario climate inputs\nFuture scenario modelling\nShared Drive\n\n\nLake level / stage\nTime series of lake height\nConvert model depths to dynamic hypsography; align inflow/outflow\nBoPRC\n\n\nOutflow data\nOutflow discharge and control structure operations\nComplete hydrological mass balance\nBoPRC\n\n\nWater quality profiles\nVertical profiles of temperature, DO, chlorophyll-a, nutrients\nCalibration & validation of GLM-AED\nLimnotrack/BoPRC\n\n\nHistorical GLM-AED outputs\nPrevious model runs and configuration files\nProvide baseline assumptions and compare structure\nBoPRC / CM\n\n\nOld DYRESM-CAEDYM report\nModel description and past findings\nReference for parameterisation and historical context\nDeniz\n\n\nCatchment shapefile\nFull catchment boundary polygon\nDefine drainage area for inflow and land-use analysis\nBoPRC\n\n\nSub-catchment delineations\nIndividual subcatchment polygons\nAttribute inflows to specific contributing areas\nBoPRC\n\n\nLand-use data (current)\nLatest regional council land-use dataset\nEstimate nutrient export, identify land-use pressures\nBoPRC\n\n\nHistorical land-use (LCDB)\nLCDB time-series land-cover data\nIdentify changes over time influencing nutrient loading\nLINZ / LCDB\n\n\nROTAN model outputs\nRotorua/Taupō nitrate model datasets (flows, loads)\nCross-check nutrient source estimates; historic nitrate loading\nRutherford\n\n\nBathymetry\nHigh-resolution depth raster or contours\nBuild lake hypsography for GLM-AED\nBoPRC\n\n\nSediment parameters\nSediment P/N fractions, nutrient release data\nSupport AED sediment flux and diagenesis modules\nBoPRC / Literature\n\n\nPoint-source inputs\nAny wastewater/stormwater discharge records\nEnsure all external loads are captured\nBoPRC\n\n\n\n\n\n\n\nBegin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Data Request"
-    ]
-  },
-  {
-    "objectID": "data-request.html#notes",
-    "href": "data-request.html#notes",
-    "title": "Data Request",
-    "section": "",
-    "text": "Begin with highest-priority datasets: inflow volumes, inflow chemistry, met data, catchment shapefiles.\nAsk CM specifically for:\n\nNutrient loading work (grab samples, rating curves)\n\nAny old Rotorua model equations for estimating inflow concentrations.\n\nROTAN datasets may help fill large data gaps.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Data Request"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html",
-    "href": "cmip6-processing.html",
-    "title": "CMIP 6 Processing",
-    "section": "",
-    "text": "Currently the CMIP6 data we have is in NetCDF format, which is not directly compatible with our model input requirements. Therefore, we need to preprocess this data to extract the relevant variables and reformat them appropriately.\nAlso there are &gt;4 TB of data for all of New Zealand on a daily timestep, at a 5x5 km resolution. This is too large to process directly, so we will need to subset the data spatially and temporally.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#metadata",
-    "href": "cmip6-processing.html#metadata",
-    "title": "CMIP 6 Processing",
-    "section": "Metadata",
-    "text": "Metadata\nWe have gathered metadata for the CMIP6 datasets available on the shared drive, including information on the variables, scenarios, models, and bias correction methods used.\nFurther details can be found here.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#file-access",
-    "href": "cmip6-processing.html#file-access",
-    "title": "CMIP 6 Processing",
-    "section": "File access",
-    "text": "File access\nThe CMIP6 data is stored on a shared drive (Z: drive) accessible within our institutional network. The files are organized by variable, scenario, model, region, timestep, spatial resolution, and bias correction method e.g “hurs_historical_ACCESS-CM2_CCAM_daily_NZ5km_raw.nc”. This corresponds to relative humidity (hurs) for the historical scenario from the ACCESS-CM2 GCM, downscaled using the CCAM model over New Zealand at a daily timestep and 5 km spatial resolution, without bias correction.\nLoading and reading data from these NetCDF files can be done using the ncdf4 package in R. However, reading large datasets can be time-consuming, so we have implemented a function which uses a grid reference system to efficiently extract only the required data points.\nThis provided as the VCSN agent data. This contains a grid of points at 5 km resolution covering New Zealand, with each point having a unique coordinate index. We use this grid to identify which points fall within our area of interest, and then extract only those points from the NetCDF files.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#create-an-area-of-interest",
-    "href": "cmip6-processing.html#create-an-area-of-interest",
-    "title": "CMIP 6 Processing",
-    "section": "Create an area of interest",
-    "text": "Create an area of interest\nIf you do not have a shapefile of your area of interest (AOI), you can easily generate one with the mapedit package.\n\nx &lt;- mapedit::drawFeatures()\n\nSave the drawn features for future use:\n\nsaveRDS(x, here::here(\"data\", \"processed\", \"rotorua_area.rds\"))",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "cmip6-processing.html#processing-function",
-    "href": "cmip6-processing.html#processing-function",
-    "title": "CMIP 6 Processing",
-    "section": "Processing function",
-    "text": "Processing function\nThe process_cmip6 function takes in a spatial polygon (defining the area of interest), the VCSN grid points, the path to a NetCDF file, and an output file path. It extracts the relevant data points from the NetCDF file based on the area of interest, and saves the processed data to a new NetCDF file.\n\n\n\nFunction Parameters for process_cmip6()\n\n\nParameter\nDescription\n\n\n\n\nx\nsf polygon\n\n\nvcsn_grid_points\nsf points of VCSN grid\n\n\nfile\npath to input netCDF file\n\n\noutfile\npath to output netCDF file\n\n\n\n\n\n\nsource(here::here(\"R\", \"process_cmip6.R\"))\nprocess_cmip6(x = x, vcsn_grid_points = vcsn_grid_points,\n              file = file, outfile = outfile)",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "CMIP 6 Processing"
-    ]
-  },
-  {
-    "objectID": "aed-alum-module.html",
-    "href": "aed-alum-module.html",
-    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
-    "section": "",
-    "text": "To maintain mechanistic defensibility while keeping the implementation simple, we propose a minimal two-state kinetic model representing alum–phosphorus (Al–P) interactions in the water column.\nThe model captures:\n\npH-dependent aluminium hydrolysis and reactivity\n\nPhosphate sorption onto amorphous Al(OH)₃ flocs\n\nTemperature effects on reaction kinetics\n\nRapid settling of aluminium flocs (~10 m d⁻¹)\n\nOptional slow aging (loss of reactivity)\n\nThis structure is designed for scenario testing of alum dosing strategies.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Simplified Alum–Phosphorus Module for GLM-AED"
-    ]
-  },
-  {
-    "objectID": "aed-alum-module.html#water-column",
-    "href": "aed-alum-module.html#water-column",
-    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
-    "section": "Water Column",
-    "text": "Water Column\n\n\\(Al_r\\) — Reactive aluminium floc (g Al m\\(^{-3}\\))\n\n\\(P_{Al}\\) — Phosphorus bound to aluminium floc (g P m\\(^{-3}\\))\n\nCoupled to existing AED variable:\n\n\\(PO_4\\) — Dissolved reactive phosphorus (FRP)",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Simplified Alum–Phosphorus Module for GLM-AED"
-    ]
-  },
-  {
-    "objectID": "aed-alum-module.html#reactive-aluminium",
-    "href": "aed-alum-module.html#reactive-aluminium",
-    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
-    "section": "1. Reactive Aluminium",
-    "text": "1. Reactive Aluminium\nAlum added via inflows is assumed to rapidly hydrolyse to reactive floc.\n\\[\n\\frac{d Al_r}{dt} =\nL_{Al,in}\n- k_{age} Al_r\n- R_{bind}\n- settling\n\\]\nWhere:\n\n\\(L_{Al,in}\\) = alum loading from inflow forcing\n\n\\(k_{age}\\) = first-order aging constant (loss of reactivity)\n\n\\(R_{bind}\\) = phosphate binding rate",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Simplified Alum–Phosphorus Module for GLM-AED"
-    ]
-  },
-  {
-    "objectID": "aed-alum-module.html#phosphate-frp",
-    "href": "aed-alum-module.html#phosphate-frp",
-    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
-    "section": "2. Phosphate (FRP)",
-    "text": "2. Phosphate (FRP)\n\\[\n\\frac{d PO_4}{dt} = - R_{bind}\n\\]",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Simplified Alum–Phosphorus Module for GLM-AED"
-    ]
-  },
-  {
-    "objectID": "aed-alum-module.html#aluminium-bound-phosphorus",
-    "href": "aed-alum-module.html#aluminium-bound-phosphorus",
-    "title": "Simplified Alum–Phosphorus Module for GLM-AED",
-    "section": "3. Aluminium-Bound Phosphorus",
-    "text": "3. Aluminium-Bound Phosphorus\n\\[\n\\frac{d P_{Al}}{dt} =\n+ R_{bind}\n- settling\n\\]",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Simplified Alum–Phosphorus Module for GLM-AED"
-    ]
-  },
-  {
-    "objectID": "cmip6-visualisation.html",
-    "href": "cmip6-visualisation.html",
-    "title": "Visualise CMIP6",
-    "section": "",
-    "text": "After processing the CMIP6 data for the Rotorua catchment, we can visualise the results.\nWe present both the spatial summary and time series summary for each GCM and scenario. This allows us to inspect how the different models and scenarios represent climate variables over the catchment area.",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Visualise CMIP6"
-    ]
-  },
-  {
-    "objectID": "cmip6-visualisation.html#cmip6-variable-plots",
-    "href": "cmip6-visualisation.html#cmip6-variable-plots",
-    "title": "Visualise CMIP6",
-    "section": "CMIP6 Variable Plots",
-    "text": "CMIP6 Variable Plots\n\nAir Temperature (2 m above ground level)\nThe annual mean 2 m air temperature anomalies show robust warming across all CMIP6 models and emissions scenarios, although the magnitude and rate of warming vary among models. Historical simulations indicate a modest warming of ~0.5–1 °C relative to the mid-20th-century baseline, with relatively small inter-model spread during this period.\nFrom ~2020 onward, the scenarios diverge and uncertainties increase. Under SSP1-2.6, most models project warming that stabilises at around 1–1.5 °C above the historical mean by mid-century, with limited additional warming thereafter. The ensemble spread remains comparatively narrow in this scenario, reflecting greater model agreement under strong mitigation.\nUnder SSP2-4.5, temperatures continue to increase throughout the century, reaching approximately 2.5–3 °C by 2100. Inter-model variability broadens slightly over time, but the overall warming trajectory remains consistent across the ensemble.\nThe higher-emission scenarios show both stronger warming and greater uncertainty. SSP3-7.0 produces accelerated warming after 2050, with end-of-century anomalies near 4 °C, although individual model projections span a wider range. SSP5-8.5 exhibits the largest spread and steepest trend, with most models exceeding 5 °C by 2100, but with notable divergence in the upper tails of the ensemble.\nDespite year-to-year variability and differences among models, all scenarios show statistically robust warming relative to the historical period. The increasing separation of scenario trajectories after ~2040 highlights both the importance of emissions pathway choice and the expanding uncertainty associated with long-term climate projections.\n\n\n\nTimeseries of air temperature for scenarios and annual and seasonal projections",
-    "crumbs": [
-      "Home",
-      "Tasks",
-      "Visualise CMIP6"
-    ]
-  },
-  {
-    "objectID": "gantt.html",
-    "href": "gantt.html",
-    "title": "GANTT Chart",
-    "section": "",
-    "text": "Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:\n\n\n\n\n\ngantt\n    title Rotorua Lake Modelling – PC10 Deliverables\n    dateFormat  YYYY-MM-DD\n    axisFormat  %b %Y\n    section Catchment Pilot\n    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d\n\n    section Lake Model Upgrade\n    CMIP6 Data Processing            :b1, 2025-11-07, 30d\n    GLM-AED model upgrade            :b2, 2025-11-24, 50d\n    GLM-AED model calibration        :b3, 2025-12-08, 50d\n\n    section Scenario Testing\n    Initial climate scenarios        :c1, 2026-01-01, 30d\n    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d",
-    "crumbs": [
-      "Home",
-      "Project Overview",
-      "GANTT Chart"
     ]
   },
   {
