@@ -76,14 +76,12 @@ editor: visual
         -   Potential deployment in August
     -   CM used buoy data for hyplolimnetic estimations in previous reports, offered to repeat this again
     -   Monitoring data coupled
--    Lake load report
-    -   conclusion highlights that the 435 target might be higher than the 1960’s estimate
-        -   Old estimations
-    -   J Abell - natural state TLI 2.9 (2.5-3.4; 95% CI)
-        -   Catchment landuse to TLI components
-        -   Assumed equilibrium between contributions
-        -   Accounted for well known factors e.g. Phosphorus
-        -   Richard McDowell
+-   Lake load report - conclusion highlights that the 435 target might be higher than the 1960’s estimate
+    -   Old estimations - J Abell - natural state TLI 2.9 (2.5-3.4; 95% CI)
+    -   Catchment landuse to TLI components
+    -   Assumed equilibrium between contributions
+    -   Accounted for well known factors e.g. Phosphorus
+    -   Richard McDowell
 -   Nutrient accounting work for Land use change - Mark Tomer
     -   Large scale modelling efforts
     -   Year end 2026 data (July-Oct)
