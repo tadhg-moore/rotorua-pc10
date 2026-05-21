@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRP Uptake Visualizer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f8f9fa;
+    color: #2c3e50;
+    padding: 1.5rem;
+  }
+
+  .widget {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #1a1a2e;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 1.25rem;
+    font-family: 'Courier New', monospace;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: #f1f3f5;
+    border-radius: 4px;
+  }
+
+  .controls label {
+    font-size: 0.85rem;
+    color: #495057;
+    white-space: nowrap;
+    min-width: 36px;
+  }
+
+  .controls input[type=range] {
+    flex: 1;
+    height: 4px;
+    cursor: pointer;
+  }
+
+  .ctrl-kp input[type=range] { accent-color: #1971c2; }
+  .ctrl-ph input[type=range] { accent-color: #2f9e44; }
+  .ctrl-kw input[type=range] { accent-color: #e67700; }
+
+  .val-display {
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    min-width: 140px;
+    text-align: right;
+  }
+  .val-kp { color: #1971c2; }
+  .val-ph { color: #2f9e44; }
+  .val-kw { color: #e67700; }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .panel-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 220px;
+  }
+
+  .combined-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    margin-bottom: 0.75rem;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #dee2e6;
+    margin: 0.75rem 0;
+  }
+
+  .combined-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.02em;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-pill {
+    font-size: 0.75rem;
+    font-family: 'Courier New', monospace;
+    background: #f1f3f5;
+    border-radius: 3px;
+    padding: 3px 10px;
+    color: #495057;
+  }
+
+  .stat-pill span { font-weight: 700; }
+
+  .equation {
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.72rem;
+    color: #868e96;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <h3>SRP Uptake Rate</h3>
+  <div class="subtitle">dSRP/dt = −k<sub>w</sub> · f<sub>pH</sub> · C<sub>w</sub> · K<sub>P</sub>·SRP / (K<sub>P</sub> + SRP)</div>
+
+  <div class="controls ctrl-kp">
+    <label for="kp">K<sub>P</sub></label>
+    <input type="range" id="kp" min="0.01" max="0.15" step="0.01" value="0.05">
+    <span class="val-display val-kp" id="kpVal">K<sub>P</sub> = 0.05 mg P m⁻³</span>
+  </div>
+
+  <div class="controls ctrl-ph">
+    <label for="ph">pH</label>
+    <input type="range" id="ph" min="4.0" max="9.0" step="0.1" value="6.0">
+    <span class="val-display val-ph" id="phVal">pH = 6.0 &nbsp;(f<sub>pH</sub> = 1.000)</span>
+  </div>
+
+  <div class="controls ctrl-kw">
+    <label for="kw">k<sub>w</sub></label>
+    <input type="range" id="kw" min="0.05" max="1.0" step="0.05" value="0.5">
+    <span class="val-display val-kw" id="kwVal">k<sub>w</sub> = 0.5</span>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-panel">
+      <div class="panel-label">Michaelis–Menten uptake</div>
+      <div class="chart-wrap">
+        <canvas id="srpChart" role="img" aria-label="Relative SRP uptake rate vs SRP concentration">Michaelis-Menten curve.</canvas>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <div class="panel-label">pH response (f<sub>pH</sub>)</div>
+      <div class="chart-wrap">
+        <canvas id="phChart" role="img" aria-label="Gaussian pH response curve">pH bell curve.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="combined-label">Combined relative uptake &nbsp;= f<sub>pH</sub> · K<sub>P</sub>·SRP / (K<sub>P</sub> + SRP)</div>
+
+  <div class="stats-row">
+    <div class="stat-pill">f<sub>pH</sub> = <span id="fphStat">1.000</span></div>
+    <div class="stat-pill">K<sub>P</sub> = <span id="kpStat">0.05</span> mg P m⁻³</div>
+    <div class="stat-pill">k<sub>w</sub> = <span id="kwStat">0.5</span></div>
+    <div class="stat-pill">Combined max = <span id="combMax">1.000</span></div>
+  </div>
+
+  <div class="combined-wrap">
+    <canvas id="combChart" role="img" aria-label="Combined SRP uptake scaled by pH response">Combined uptake curve.</canvas>
+  </div>
+
+  <div class="equation">
+    f<sub>pH</sub> = exp[−(pH − pH<sub>opt</sub>)² / (2σ²)] &nbsp;|&nbsp; pH<sub>opt</sub> = 6.0, σ = 1.0
+    <br>
+    Relative uptake = K<sub>P</sub>·SRP / (K<sub>P</sub> + SRP), normalised to 1 at SRP = 2.5 mg P m⁻³
+  </div>
+</div>
+
+<script>
+const SRP_MAX = 2.5;
+const N = 250;
+const PH_OPT = 6.0;
+const SIGMA = 1.0;
+
+const xs = Array.from({ length: N + 1 }, (_, i) => (i / N) * SRP_MAX);
+const phXs = Array.from({ length: N + 1 }, (_, i) => 4.0 + (i / N) * 5.0);
+
+function fph(ph) {
+  return Math.exp(-Math.pow(ph - PH_OPT, 2) / (2 * SIGMA * SIGMA));
+}
+
+function mmUptake(srp, kp) {
+  return (kp * srp) / (kp + srp);
+}
+
+function buildMM(kp) {
+  const maxU = mmUptake(SRP_MAX, kp);
+  return xs.map(x => maxU > 0 ? mmUptake(x, kp) / maxU : 0);
+}
+
+function buildVertLine(kp) {
+  const maxU = mmUptake(SRP_MAX, kp);
+  const halfRel = maxU > 0 ? mmUptake(kp, kp) / maxU : 0.5;
+  return xs.map(x => Math.abs(x - kp) < SRP_MAX / N * 3 ? halfRel : null);
+}
+
+function buildHorzLine(kp) {
+  return xs.map(x => x <= kp ? 0.5 : null);
+}
+
+function buildPhCurve() {
+  return phXs.map(p => fph(p));
+}
+
+function buildPhVertLine(ph) {
+  const fVal = fph(ph);
+  return phXs.map(p => Math.abs(p - ph) < 5.0 / N * 3 ? fVal : null);
+}
+
+function buildPhHorzLine(ph) {
+  const fVal = fph(ph);
+  return phXs.map(p => p <= ph ? fVal : null);
+}
+
+function buildCombined(kp, ph, kw) {
+  const maxU = mmUptake(SRP_MAX, kp);
+  const fVal = fph(ph);
+  return xs.map(x => maxU > 0 ? kw * fVal * mmUptake(x, kp) / maxU : 0);
+}
+
+let kp = 0.05;
+let ph = 6.0;
+let kw = 0.5;
+
+const gridColor = 'rgba(0,0,0,0.06)';
+const axisColor = '#6c757d';
+
+// --- SRP / Michaelis-Menten chart ---
+const srpCtx = document.getElementById('srpChart').getContext('2d');
+const srpChart = new Chart(srpCtx, {
+  type: 'line',
+  data: {
+    labels: xs,
+    datasets: [
+      {
+        label: 'Relative uptake',
+        data: buildMM(kp),
+        borderColor: '#1971c2',
+        backgroundColor: 'rgba(25,113,194,0.08)',
+        fill: true, borderWidth: 2, pointRadius: 0, tension: 0.35, spanGaps: false
+      },
+      {
+        data: buildVertLine(kp),
+        borderColor: 'rgba(201,42,42,0.55)', borderWidth: 1.5,
+        borderDash: [4,4], pointRadius: 0, fill: false, spanGaps: false
+      },
+      {
+        data: buildHorzLine(kp),
+        borderColor: 'rgba(201,42,42,0.55)', borderWidth: 1.5,
+        borderDash: [4,4], pointRadius: 0, fill: false, spanGaps: false
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, animation: { duration: 80 },
+    scales: {
+      x: {
+        type: 'linear', min: 0, max: SRP_MAX,
+        title: { display: true, text: 'SRP (mg P m⁻³)', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 6, callback: v => (+v).toFixed(1) },
+        grid: { color: gridColor }
+      },
+      y: {
+        min: 0, max: 1.08,
+        title: { display: true, text: 'Relative uptake', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 5, callback: v => v.toFixed(1) },
+        grid: { color: gridColor }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: i => i.datasetIndex === 0,
+        callbacks: {
+          title: i => 'SRP = ' + (+i[0].label).toFixed(3) + ' mg P m⁻³',
+          label: i => 'Uptake: ' + i.raw.toFixed(3)
+        }
+      }
+    }
+  }
+});
+
+// --- pH chart ---
+const phCtx = document.getElementById('phChart').getContext('2d');
+const phChart = new Chart(phCtx, {
+  type: 'line',
+  data: {
+    labels: phXs,
+    datasets: [
+      {
+        label: 'f_pH',
+        data: buildPhCurve(),
+        borderColor: '#2f9e44',
+        backgroundColor: 'rgba(47,158,68,0.08)',
+        fill: true, borderWidth: 2, pointRadius: 0, tension: 0.35, spanGaps: false
+      },
+      {
+        data: buildPhVertLine(ph),
+        borderColor: 'rgba(201,42,42,0.55)', borderWidth: 1.5,
+        borderDash: [4,4], pointRadius: 0, fill: false, spanGaps: false
+      },
+      {
+        data: buildPhHorzLine(ph),
+        borderColor: 'rgba(201,42,42,0.55)', borderWidth: 1.5,
+        borderDash: [4,4], pointRadius: 0, fill: false, spanGaps: false
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, animation: { duration: 80 },
+    scales: {
+      x: {
+        type: 'linear', min: 4, max: 9,
+        title: { display: true, text: 'pH', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 6, callback: v => (+v).toFixed(1) },
+        grid: { color: gridColor }
+      },
+      y: {
+        min: 0, max: 1.08,
+        title: { display: true, text: 'f_pH', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 5, callback: v => v.toFixed(1) },
+        grid: { color: gridColor }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: i => i.datasetIndex === 0,
+        callbacks: {
+          title: i => 'pH = ' + (+i[0].label).toFixed(1),
+          label: i => 'f_pH: ' + i.raw.toFixed(3)
+        }
+      }
+    }
+  }
+});
+
+// --- Combined chart ---
+const combCtx = document.getElementById('combChart').getContext('2d');
+const combChart = new Chart(combCtx, {
+  type: 'line',
+  data: {
+    labels: xs,
+    datasets: [
+      {
+        label: 'Combined uptake',
+        data: buildCombined(kp, ph, kw),
+        borderColor: '#7048e8',
+        backgroundColor: 'rgba(112,72,232,0.08)',
+        fill: true, borderWidth: 2.5, pointRadius: 0, tension: 0.35
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, animation: { duration: 80 },
+    scales: {
+      x: {
+        type: 'linear', min: 0, max: SRP_MAX,
+        title: { display: true, text: 'SRP (mg P m⁻³)', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 7, callback: v => (+v).toFixed(1) },
+        grid: { color: gridColor }
+      },
+      y: {
+        min: 0, max: 1.08,
+        title: { display: true, text: 'k_w · f_pH · MM (relative)', color: axisColor, font: { size: 11 } },
+        ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 5, callback: v => v.toFixed(1) },
+        grid: { color: gridColor }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: i => 'SRP = ' + (+i[0].label).toFixed(3) + ' mg P m⁻³',
+          label: i => 'Combined: ' + i.raw.toFixed(3)
+        }
+      }
+    }
+  }
+});
+
+function updateStats() {
+  const fVal = fph(ph);
+  document.getElementById('fphStat').textContent = fVal.toFixed(3);
+  document.getElementById('kpStat').textContent = kp.toFixed(2);
+  document.getElementById('kwStat').textContent = kw.toFixed(1);
+  document.getElementById('combMax').textContent = (kw * fVal).toFixed(3);
+}
+
+function updateAll() {
+  srpChart.data.datasets[0].data = buildMM(kp);
+  srpChart.data.datasets[1].data = buildVertLine(kp);
+  srpChart.data.datasets[2].data = buildHorzLine(kp);
+  srpChart.update();
+
+  phChart.data.datasets[1].data = buildPhVertLine(ph);
+  phChart.data.datasets[2].data = buildPhHorzLine(ph);
+  phChart.update();
+
+  combChart.data.datasets[0].data = buildCombined(kp, ph, kw);
+  combChart.options.scales.y.max = Math.max(1.08, kw * 1.08);
+  combChart.update();
+
+  updateStats();
+}
+
+document.getElementById('kp').addEventListener('input', function () {
+  kp = parseFloat(this.value);
+  document.getElementById('kpVal').innerHTML =
+    'K<sub>P</sub> = ' + kp.toFixed(2) + ' mg P m\u207B\u00B3';
+  updateAll();
+});
+
+document.getElementById('ph').addEventListener('input', function () {
+  ph = parseFloat(this.value);
+  const fVal = fph(ph);
+  document.getElementById('phVal').innerHTML =
+    'pH = ' + ph.toFixed(1) + ' &nbsp;(f<sub>pH</sub> = ' + fVal.toFixed(3) + ')';
+  updateAll();
+});
+
+document.getElementById('kw').addEventListener('input', function () {
+  kw = parseFloat(this.value);
+  document.getElementById('kwVal').innerHTML =
+    'k<sub>w</sub> = ' + kw.toFixed(1);
+  updateAll();
+});
+
+updateStats();
+</script>
+</body>
+</html>
