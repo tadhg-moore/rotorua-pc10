@@ -25,6 +25,8 @@ Key enhancements over previous Lake Rotorua models will include:
 One important improvement will be incorporating a **mechanistic representation of Al–P interactions**.\
 Current models do not explicitly simulate alum chemistry or its interaction with phosphorus.
 
+Model description [here](https://tadhg-moore.github.io/rotorua-pc10/alum-model.html).
+
 We are engaging with the **University of Western Australia (UWA)** to explore support for code modification within the AED structure.
 
 The proposed model will simulate:
@@ -77,7 +79,7 @@ If this repository will include R modelling workflows (e.g. using the [`targets`
 
 The following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.
 
-```{mermaid} 
+```{mermaid}
 flowchart TD 
 %% --- Project Overview --- 
 
