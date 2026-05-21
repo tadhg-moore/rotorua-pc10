@@ -1,5 +1,8 @@
 project:
   type: website
+  resources:
+    - assets/
+    - www/
   render:
     - "*.qmd"
     # - "!cmip6-processing.qmd"

@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Proposed Alum Model for AED"
 format:
   html:
     toc: true
@@ -16,8 +16,7 @@ format:
 
 # Alum–phosphorus process representation for GLM-AED application in Lake Rotorua
 
-::: {.callout-note}
-
+::: callout-note
 ## Summary
 
 This document summarises a simple process representation of alum–phosphorus interactions for integration into GLM-AED. The formulation is intended to capture the main management-relevant processes in Lake Rotorua:
@@ -28,7 +27,6 @@ This document summarises a simple process representation of alum–phosphorus in
 -   continued uptake at the sediment–water interface,
 -   a gradual loss of reactivity through ageing, and
 -   a bell-shaped pH response included as a pragmatic modifier of binding efficiency.
-
 :::
 
 ## Conceptual process diagram
@@ -43,11 +41,16 @@ The schematic below shows how the simplified module fits together. Treated inflo
 
 Reactive suspended alum capacity in the water column, $C_w$ (mg P m^−3^), removes dissolved reactive phosphorus, SRP (mg P m^−3^). The uptake rate is controlled by a pelagic kinetic coefficient, $k_w$ (d^−1^), the pH modifier, $f_\text{pH}$ (−), and a saturating uptake term governed by $K_P$ (mg P m^−3^). The saturating form ensures uptake increases with SRP but levels off as SRP becomes small relative to $K_P$.
 
+![](www/sat-uptake.png)
+
 $$
-\frac{d\mathrm{SRP}}{dt} = -k_w f_\mathrm{pH} C_w \frac{K_P\,\mathrm{SRP}}{K_P + \mathrm{SRP}}
+\frac{dSRP}{dt} = -k_w f_{pH} C_w \frac{K_P \, SRP}{K_P + SRP}
 $$ {#eq-srp-wc}
 
-![](www/sat-uptake.png)
+```{=html}
+<iframe width="100%" height="800px" src="assets/srp_uptake_widget.html" 
+  title="SRP Uptake Widget" frameborder="0"></iframe>
+```
 
 ### Equation 2. Water-column reactive capacity
 
@@ -143,52 +146,24 @@ The module is intended to capture the main management-relevant processes for Lak
 -   a bell-shaped pH response as a pragmatic modifier of binding efficiency.
 
 ## Structural decisions and open questions
- 
-The formulation below resolves several structural issues identified while
-reviewing the original concept note against the AED framework and the
-`aed_phosphorus`, `aed_silica`, and `aed_tracer` modules. The items still
-requiring confirmation are listed first.
- 
+
+The formulation below resolves several structural issues identified while reviewing the original concept note against the AED framework and the `aed_phosphorus`, `aed_silica`, and `aed_tracer` modules. The items still requiring confirmation are listed first.
+
 ### Open — still requiring a decision
- 
-- **Numerical behaviour of kinetic uptake.** SRP uptake is represented as a
-  kinetic rate (Equation 1). Alum P-binding is physically fast, so a realistic
-  `k_w` may be large enough to introduce stiffness and overshoot in an explicit
-  ODE step. This needs to be checked in testing; if it proves unstable, the
-  alternative is an equilibrium partition computed in an `equilibrate` routine,
-  as `aed_phosphorus` does for adsorption.
-- **Does ageing release or trap bound phosphorus?** Ageing reduces binding
-  capacity, but whether it also releases already-bound P depends on the physical
-  interpretation — occlusion (P trapped) versus floc dissolution (P returned to
-  `frp`). The "trapped" interpretation is adopted here (no ageing term on the
-  bound pools), but should be confirmed against data from Lake Rotorua.
-- **Alum delivery mechanism.** Delivering alum capacity by dividing an inflow
-  load by a fixed receiving-layer volume is fragile, because GLM places inflows
-  by density and the receiving layer changes over time. The recommended approach
-  is to deliver alum as an inflow water-quality concentration and let GLM
-  distribute it, retaining the explicit `S_ala` term only for direct dosing.
-  This needs to be confirmed against how GLM-AED handles inflow WQ variables.
+
+-   **Numerical behaviour of kinetic uptake.** SRP uptake is represented as a kinetic rate (Equation 1). Alum P-binding is physically fast, so a realistic `k_w` may be large enough to introduce stiffness and overshoot in an explicit ODE step. This needs to be checked in testing; if it proves unstable, the alternative is an equilibrium partition computed in an `equilibrate` routine, as `aed_phosphorus` does for adsorption.
+-   **Does ageing release or trap bound phosphorus?** Ageing reduces binding capacity, but whether it also releases already-bound P depends on the physical interpretation — occlusion (P trapped) versus floc dissolution (P returned to `frp`). The "trapped" interpretation is adopted here (no ageing term on the bound pools), but should be confirmed against data from Lake Rotorua.
+-   **Alum delivery mechanism.** Delivering alum capacity by dividing an inflow load by a fixed receiving-layer volume is fragile, because GLM places inflows by density and the receiving layer changes over time. The recommended approach is to deliver alum as an inflow water-quality concentration and let GLM distribute it, retaining the explicit `S_ala` term only for direct dosing. This needs to be confirmed against how GLM-AED handles inflow WQ variables.
 
 ### Resolved in this formulation
- 
-- **Phosphorus mass closure.** Phosphorus removed from `frp` is tracked in
-  explicit bound-P pools (`alp`, `ben_alp`) rather than disappearing from the
-  budget.
-- **Settling as one coupled flux.** Settling is handled by the `mobility`
-  routine and AED transport, not as separate hand-coded volumetric and areal
-  terms.
-- **Benthic pools as sheet variables.** `ben_ala` and `ben_alp` are registered
-  with `aed_define_sheet_variable`. This deliberately extends beyond the
-  `aed_phosphorus` template, which carries no benthic adsorbed-P state variable.
-- **pH dependency.** pH is sourced from `aed_carbon` (`CAR_pH`), with a
-  configurable variable name and an `f_pH = 1` fallback when unavailable.
-- **Units and rate conventions.** Phosphorus is in mmol P m⁻³ / m⁻², matching
-  `frp`; namelist rates are per-day and converted to per-second on read.
-- **Bottom-water SRP.** Bottom-water SRP is `frp` evaluated in the bottom layer,
-  not a separate state variable.
-- **Resuspension.** An optional, switch-gated resuspension term is included
-  (Equation 7), disabled by default.
 
+-   **Phosphorus mass closure.** Phosphorus removed from `frp` is tracked in explicit bound-P pools (`alp`, `ben_alp`) rather than disappearing from the budget.
+-   **Settling as one coupled flux.** Settling is handled by the `mobility` routine and AED transport, not as separate hand-coded volumetric and areal terms.
+-   **Benthic pools as sheet variables.** `ben_ala` and `ben_alp` are registered with `aed_define_sheet_variable`. This deliberately extends beyond the `aed_phosphorus` template, which carries no benthic adsorbed-P state variable.
+-   **pH dependency.** pH is sourced from `aed_carbon` (`CAR_pH`), with a configurable variable name and an `f_pH = 1` fallback when unavailable.
+-   **Units and rate conventions.** Phosphorus is in mmol P m⁻³ / m⁻², matching `frp`; namelist rates are per-day and converted to per-second on read.
+-   **Bottom-water SRP.** Bottom-water SRP is `frp` evaluated in the bottom layer, not a separate state variable.
+-   **Resuspension.** An optional, switch-gated resuspension term is included (Equation 7), disabled by default.
 
 ## Notation and unit conventions
 
@@ -375,8 +350,6 @@ Example `&aed_alum` block:
 ```
 
 ## Module Issues
-
-
 
 ## Calibration priorities
 
