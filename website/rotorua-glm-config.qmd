@@ -1,0 +1,434 @@
+---
+title: "Lake Rotorua — GLM Configuration"
+subtitle: "General Lake Model (GLM 3.x) setup and simulation outputs"
+author: "Tadhg Moore"
+date: last-modified
+date-format: "DD MMMM YYYY"
+fig-width: 9
+fig-height: 5
+fig-dpi: 150
+---
+
+```{r setup}
+#| include: false
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(patchwork)
+library(AEME)
+library(knitr)
+library(kableExtra)
+glm_ver <- get_model_version("glm_aed")
+glm_version <- regmatches(glm_ver[3], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[3]))
+aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
+cfg <- configuration(aeme)
+glm3_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
+aed_nml <- cfg[["glm_aed"]][["bgc"]][["aed"]]
+
+phyto_cols <- aed_nml$aed_phytoplankton$the_phytos + 1
+
+inflows <- get_inflows(aeme)
+inflow_humurana <- inflows[["Hamurana"]]
+
+inp <- input(aeme)
+met <- readr::read_csv("../LID11133_rotorua/glm_aed/bcs/meteo_glm.csv")
+phyto_pars <- AEME::read_aed_param_csv("../LID11133_rotorua/glm_aed/aed/aed_phyto_pars.csv")
+phyto_pars <- phyto_pars[, c(1, phyto_cols)]
+
+# Model performance
+aeme_time <- time(aeme)
+period <- paste0(format(aeme_time$start, "%Y"), "–", format(aeme_time$stop, "%Y"))
+
+perf <- assess_model(aeme, var_sim = c("HYD_temp","NIT_tn","PHS_tp","PHY_tchla","LKE_lvlwtr")) |> 
+  dplyr::mutate(Period = period) |>
+  dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = r2) |> 
+  dplyr::select(Variable, Period, RMSE, Bias, R2, n)
+
+```
+
+## Overview {#overview}
+
+This page documents the **General Lake Model (GLM `r glm_version`)** configuration used for simulating the lake's thermal dynamics, water balance, and nutrient cycling. The model is coupled to the **Aquatic EcoDynamics (AED)** library for biogeochemical processes.
+
+The [AEME](https://limnotrack.com/AEME/) package was used to retrieve and format lake characteristics, boundary conditions, and monitoring data for model configuration and validation. The `glm3.nml` and `aed.nml` files define the physical and biogeochemical model parameters, respectively, while CSV files provide time series of inflows, meteorological forcing, and phytoplankton parameters.
+
+::: {.callout-note}
+All simulation configuration files, scripts, and outputs documented here correspond to the
+**baseline run** (`run_id: aeme_base`). 
+:::
+
+### Lake characteristics
+
+```{r lake-summary-table}
+#| echo: false
+lake_char <- aeme |> 
+  get_lake() |> 
+  dplyr::mutate(
+    area = area / 1e6, # convert from m2 to km2
+  ) |> 
+  dplyr::rename(
+    Name = name, 
+    ID = id,
+    Lat = latitude,
+    Lon = longitude,
+    `Elevation (m)` = elevation,
+    `Depth (m)` = depth,
+    `Area (km2)` = area
+  ) 
+
+lake_char |>
+  kbl(digits = c(0, 0, 4, 4, 1, 1), caption = "Summary of Lake Rotorua characteristics") |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"),
+                full_width = FALSE)
+
+
+```
+
+---
+
+## Model schematic {#schematic}
+
+The schematic below shows the overall GLM–AED model configuration for Lake Rotorua,
+including the principal inflows, outflow, atmospheric forcing, and the biogeochemical
+modules activated in this simulation.
+
+
+```{r render-html, echo=FALSE}
+plot_glm_config(aeme = aeme, return_widget = TRUE)
+```
+
+::: {.callout-tip collapse="true"}
+## Schematic notes
+
+- **Inflows**: Four principal inflows are configured (Hamurana, Ohau, Waiowhiro, Waiteti streams).
+  Loads are derived from monitored flow and water quality data (BoPRC).
+- **Outflow**: The Ohau Channel is the sole surface outflow; weir crest elevation set at 279.38 m a.s.l.
+- **Meteorology**: Half-hourly data from the Rotorua Airport NIWA station (agent 89894), gap-filled
+  using ERA5 reanalysis where needed.
+- **WWTP**: Treated effluent from Rotorua WWTP is included as a point-source inflow.
+- **AED modules active**: NIT (nitrogen), PHO (phosphorus), OGM (organic matter), PHY (phytoplankton).
+:::
+
+---
+
+## Configuration files {#config-files}
+
+:::{.panel-tabset}
+
+### `glm3.nml`
+
+::: {.callout-note appearance="minimal"}
+Core GLM namelist — controls simulation period, physical parameters, mixing scheme, and I/O.
+:::
+
+```{=html}
+<details open>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  glm3.nml — full file
+</summary>
+```
+
+```{r}
+#| echo: false
+#| label: glm3-nml-preview
+
+glm3_nml
+
+```
+
+```{=html}
+</details>
+```
+
+### `aed.nml`
+
+::: {.callout-note appearance="minimal"}
+AED biogeochemical namelist — enables and configures nutrient, oxygen, organic matter, and phytoplankton modules.
+:::
+
+```{=html}
+<details open>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  aed.nml — full file
+</summary>
+```
+
+```{r}
+#| echo: false
+#| label: aed-nml-preview
+
+aed_nml
+
+```
+
+```{=html}
+</details>
+```
+
+### `inflow_Hamurana.csv`
+
+::: {.callout-note appearance="minimal"}
+Boundary condition file for Hamurana Stream — daily flow, temperature, and nutrient concentrations.
+:::
+
+```{=html}
+<details>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  inflow_hamurana.csv — first 20 rows shown
+</summary>
+```
+
+```{r hamurana-csv-preview}
+#| echo: false
+# Replace with: read_csv("bcs/inflow_hamurana.csv")
+hamurana_preview <- inflow_humurana |> 
+  slice_head(n = 6) 
+
+hamurana_preview |>
+  kbl(digits = 3, caption = "inflow_Hamurana.csv (excerpt)") |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"),
+                full_width = FALSE)
+```
+
+```{=html}
+</details>
+```
+
+### `meteo_glm.csv`
+
+::: {.callout-note appearance="minimal"}
+Daily meteorological forcing file sourced from ERA5: shortwave radiation, longwave radiation,
+cloud cover, air temperature, relative humidity, wind speed (u/v components), and rainfall.
+:::
+
+```{=html}
+<details>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  met_rotorua.csv — column reference
+</summary>
+```
+
+```{r met-col-ref}
+#| echo: false
+met_preview <- met |> 
+  slice_head(n = 6)
+
+met_preview |>
+  kbl(caption = "Preview of GLM met data") |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"),
+                full_width = FALSE)
+```
+
+```{=html}
+</details>
+```
+
+### `aed_phyto_pars.csv`
+
+::: {.callout-note appearance="minimal"}
+Phytoplankton functional group parameters for the three groups configured in AED.
+:::
+
+```{=html}
+<details>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  aed_phyto_pars.csv
+</summary>
+```
+
+```{r phyto-pars}
+#| echo: false
+
+phyto_pars |>
+  kbl(caption = "Phytoplankton group parameters (aed_phyto_pars.csv)") |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"),
+                full_width = TRUE) |>
+  column_spec(1, bold = TRUE)
+```
+
+```{=html}
+</details>
+```
+
+:::
+
+---
+
+## Simulation outputs {#outputs}
+
+
+### Water temperature {#temp}
+
+```{r plot-temperature}
+#| fig-cap: "Simulated surface and bottom water temperature (2020–2022). Dots = observed (example)."
+#| fig-height: 4
+
+plot_output_base(aeme, var_sim = "HYD_temp")
+```
+
+### Thermal stability {#stability}
+
+```{r plot-schmidt}
+#| fig-cap: "Schmidt stability index (J/m²) — indicator of stratification intensity."
+#| fig-height: 3.5
+
+plot_output(aeme, var_sim = "HYD_schstb")
+
+```
+
+### Lake level {#level}
+
+```{r plot-level}
+#| fig-cap: "Simulated lake water level relative to the Ohau Channel weir crest (279.6 m a.s.l.)."
+#| fig-height: 3.5
+
+plot_output(aeme, var_sim = "LKE_lvlwtr")
+
+```
+
+### Nutrients & chlorophyll-a {#nutrients}
+
+```{r plot-nutrients}
+#| fig-cap: "Simulated total phosphorus (TP), total nitrogen (TN), and chlorophyll-a."
+#| fig-height: 8
+
+plot_output_base(aeme, var_sim = c("NIT_tn","PHS_tp","PHY_tchla"))
+
+```
+
+### Model performance summary {#performance}
+
+```{r performance-stats}
+#| echo: false
+
+perf |>
+  kbl(digits = c(0,0,2,2,2,0),
+      col.names = c("Variable","Period","RMSE","Bias","R²","n"),
+      caption = "Summary model performance statistics") |>
+  kable_styling(bootstrap_options = c("striped","hover"),
+                full_width = FALSE) |>
+  column_spec(4, color = ifelse(perf$Bias > 0, "#1565C0", "#B71C1C")) |>
+  footnote(general = "RMSE and Bias in variable units. Observations from BoPRC monitoring programme.",
+           general_title = "Note: ")
+```
+
+---
+
+## Known issues {#issues}
+
+::: {.callout-warning}
+## Active issues with current simulation
+
+The following issues have been identified and are under investigation. See the
+[issue tracker](https://github.com/your-org/rotorua-glm/issues) for details.
+:::
+
+### Issue 1 — Late-summer TP over-prediction
+
+The model systematically over-predicts surface TP concentrations during February–April
+by approximately 8–12 mg/m³. This is likely linked to underestimated internal P loading
+parameterisation under low-oxygen bottom waters. Possible remedies being explored:
+
+- Tighten `Fsed_frp` seasonal dependency on oxygen (see `aed_sedflux.nml`).
+- Implement dynamic sediment release model (AED `sed_model = 1`).
+
+**Priority:** High | **Assigned to:** J. Smith
+
+---
+
+### Issue 2 — Cyanobacteria bloom timing offset
+
+Simulated *Anabaena/Aphanizomenon* blooms (phytoplankton Group 1) peak ~3 weeks early
+relative to monitoring observations. Review of `T_opt`, `KPO4`, and buoyancy regulation
+parameters for Group 1 is underway.
+
+**Priority:** Medium | **Assigned to:** K. Jones
+
+---
+
+### Issue 3 — Wind sheltering in northerly fetch
+
+The current morphometry configuration does not account for wind sheltering by the
+Rotorua township and surrounding hills on the north shore. Adding a directional
+`fetch_sw = .true.` configuration and wind speed correction factor is planned.
+
+**Priority:** Low
+
+---
+
+### Issue 4 — ERA5 longwave gap-fill artefacts
+
+Discontinuities in the gap-filled longwave radiation series (ERA5 substituted for missing
+station data periods) are causing transient surface mixing events. A smoothed blending
+approach is being implemented.
+
+**Priority:** Medium | **Assigned to:** R. Patel
+
+---
+
+## Download configuration {#download}
+
+The button below packages all configuration files (`.nml`, `.csv` boundary conditions,
+`run.R` driver script) into a single zip archive.
+
+```{r download-button}
+#| echo: false
+# This button triggers a shell zip and uses Quarto's downloadthis extension.
+# Ensure `downloadthis` is installed: install.packages("downloadthis")
+# and that the bcs/ folder exists relative to this .qmd
+
+# if (requireNamespace("downloadthis", quietly = TRUE)) {
+#   downloadthis::download_dir(
+#     path        = ".",              # <- replace with config folder path
+#     output_name = "rotorua_glm_config",
+#     button_label = "Download configuration (ZIP)",
+#     button_type  = "primary",
+#     icon         = "fa fa-download",
+#     self_contained = FALSE
+#   )
+# } else {
+#   cat("> Install the `downloadthis` package to enable the download button:
+#   `install.packages('downloadthis')`")
+# }
+```
+
+::: {.callout-note collapse="true"}
+## Archive contents
+
+```
+rotorua_glm_config/
+├── glm3.nml                    # Main GLM namelist
+├── aed.nml                    # AED biogeochemistry namelist
+├── aed_phyto_pars.csv         # Phytoplankton parameters
+├── aed_zoop_pars.csv          # Zooplankton parameters
+├── bcs/
+│   ├── met_rotorua.csv         # Meteorological forcing
+│   ├── inflow_hamurana.csv     # Hamurana Stream inflow
+│   ├── inflow_ohau.csv         # Ohau Stream inflow
+│   ├── inflow_waiowhiro.csv    # Waiowhiro Stream inflow
+│   ├── inflow_waiteti.csv      # Waiteti Stream inflow
+│   └── outflow_ohauchannel.csv # Outflow boundary
+└── run.R                       # Driver script (glmtools)
+```
+:::
+
+---
+
+## Session info {#session}
+
+```{=html}
+<details close>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  R session information
+</summary>
+```
+
+```{r session-info}
+#| code-fold: true
+#| code-summary: "R session information"
+sessionInfo()
+```
+
+```{=html}
+</details>
+```

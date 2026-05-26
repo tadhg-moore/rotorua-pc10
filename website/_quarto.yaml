@@ -1,5 +1,6 @@
 project:
   type: website
+  pre-render: scripts/download_aeme_onedrive.R
   resources:
     - assets/
     - www/
@@ -37,6 +38,10 @@ website:
         href: index.qmd
         contents:
           - gantt.qmd
+      - section: "Lake Models"
+        contents:
+          - href: lake-rotorua-glm.qmd
+            text: "Lake Rotorua — GLM Config"
           - href: alum-model.qmd
             text: "Alum Model"
       - section: "Tasks"
@@ -62,4 +67,7 @@ format:
     theme: cosmo
     css: www/styles.css
     toc: true
+    lightbox: true
+    code-fold: true
+    code-tools: true
     
