@@ -596,7 +596,7 @@
     "href": "rotorua-glm-config.html#inflows",
     "title": "Lake Rotorua — GLM Configuration",
     "section": "Inflows",
-    "text": "Inflows\n\n\nCode\nplot_aeme_loads(aeme)\n\n\n\n\n\nSimulated inflows to Lake Rotorua from the four principal streams (Hamurana, Ohau, Waiowhiro, Waiteti) and treated effluent from Rotorua WWTP.",
+    "text": "Inflows\nThere are fourteen simulated inflows into Lake Rotorua from 1959-2022, work is ongoing to update these with more recent data.\n\n\nCode\nplot_aeme_loads(aeme)\n\n\n\n\n\nSimulated inflows to Lake Rotorua from the fourteen streams.",
     "crumbs": [
       "Home",
       "Lake Models",
@@ -608,31 +608,7 @@
     "href": "rotorua-glm-config.html#outputs",
     "title": "Lake Rotorua — GLM Configuration",
     "section": "Simulation outputs",
-    "text": "Simulation outputs\n\nWater temperature\n\n\nCode\nplot_output_base(aeme, var_sim = \"HYD_temp\")\n\n\n\n\n\nSimulated surface and bottom water temperature (2020–2022). Dots = observed (example).\n\n\n\n\n\n\nCode\nplot_resid(aeme, var_sim = \"HYD_temp\")\n\n\n\n\n\nModel residuals for water temperature.\n\n\n\n\n\n\nThermal stability\n\n\nCode\nplot_output(aeme, var_sim = \"HYD_schstb\")\n\n\n\n\n\nSchmidt stability index (J/m²) — indicator of stratification intensity.\n\n\n\n\n\n\nLake level\n\n\nCode\nplot_output(aeme, var_sim = \"LKE_lvlwtr\", )\n\n\n\n\n\nSimulated lake water level relative to the Ohau Channel weir crest (279.6 m a.s.l.).\n\n\n\n\n\n\nNutrients & chlorophyll-a\n\n\nCode\nplot_output_base(aeme, var_sim = c(\"NIT_tn\",\"PHS_tp\",\"PHY_tchla\"))\n\n\n! Colour bar too narrow — try increasing `plot_width`\n! Colour bar too narrow — try increasing `plot_width`\n! Colour bar too narrow — try increasing `plot_width`\n\n\n\n\n\nSimulated total phosphorus (TP), total nitrogen (TN), and chlorophyll-a.\n\n\n\n\n\n\nPhytoplankton groups\n\n\nCode\nplot_phytos(aeme, remove_spin_up = FALSE)\n\n\nAll requested variables are present in the model output.\n\n\n\n\n\nSimulated phytoplankton group biomass (mg/m³) for the three groups configured in AED.\n\n\n\n\n\n\nModel performance summary\n\n\n\nSummary model performance statistics\n\n\nVariable\nPeriod\nRMSE\nBias\nR²\nn\n\n\n\n\nWater temperature\n2010–2020\n5.65\n-4.47\n0.36\n2715\n\n\nTotal nitrogen\n2010–2020\n113.43\n101.52\n0.00\n586\n\n\nTotal phosphorus\n2010–2020\n0.98\n0.84\n0.03\n553\n\n\nTotal chlorophyll a\n2010–2020\n1295.01\n1122.54\n0.01\n2889\n\n\nWater level\n2010–2020\n0.56\n-0.51\n0.61\n2214\n\n\n\nNote: \n\n\n\n\n\n\n\n RMSE and Bias in variable units. Observations from BoPRC monitoring programme.",
-    "crumbs": [
-      "Home",
-      "Lake Models",
-      "GLM Config"
-    ]
-  },
-  {
-    "objectID": "rotorua-glm-config.html#issues",
-    "href": "rotorua-glm-config.html#issues",
-    "title": "Lake Rotorua — GLM Configuration",
-    "section": "Known issues",
-    "text": "Known issues\n\n\n\n\n\n\nWarningActive issues with current simulation\n\n\n\nThe following issues have been identified and are under investigation. See the issue tracker for details.\n\n\n\nIssue 1 — Late-summer TP over-prediction\nThe model systematically over-predicts surface TP concentrations during February–April by approximately 8–12 mg/m³. This is likely linked to underestimated internal P loading parameterisation under low-oxygen bottom waters. Possible remedies being explored:\n\nTighten Fsed_frp seasonal dependency on oxygen (see aed_sedflux.nml).\nImplement dynamic sediment release model (AED sed_model = 1).\n\nPriority: High | Assigned to: J. Smith\n\n\n\nIssue 2 — Cyanobacteria bloom timing offset\nSimulated Anabaena/Aphanizomenon blooms (phytoplankton Group 1) peak ~3 weeks early relative to monitoring observations. Review of T_opt, KPO4, and buoyancy regulation parameters for Group 1 is underway.\nPriority: Medium | Assigned to: K. Jones\n\n\n\nIssue 3 — Wind sheltering in northerly fetch\nThe current morphometry configuration does not account for wind sheltering by the Rotorua township and surrounding hills on the north shore. Adding a directional fetch_sw = .true. configuration and wind speed correction factor is planned.\nPriority: Low\n\n\n\nIssue 4 — ERA5 longwave gap-fill artefacts\nDiscontinuities in the gap-filled longwave radiation series (ERA5 substituted for missing station data periods) are causing transient surface mixing events. A smoothed blending approach is being implemented.\nPriority: Medium | Assigned to: R. Patel",
-    "crumbs": [
-      "Home",
-      "Lake Models",
-      "GLM Config"
-    ]
-  },
-  {
-    "objectID": "rotorua-glm-config.html#download",
-    "href": "rotorua-glm-config.html#download",
-    "title": "Lake Rotorua — GLM Configuration",
-    "section": "Download configuration",
-    "text": "Download configuration\nThe button below packages all configuration files (.nml, .csv boundary conditions, run.R driver script) into a single zip archive.\n\n\n\n\n\n\nNoteArchive contents\n\n\n\n\n\nrotorua_glm_config/\n├── glm3.nml                    # Main GLM namelist\n├── aed.nml                    # AED biogeochemistry namelist\n├── aed_phyto_pars.csv         # Phytoplankton parameters\n├── aed_zoop_pars.csv          # Zooplankton parameters\n├── bcs/\n│   ├── met_rotorua.csv         # Meteorological forcing\n│   ├── inflow_hamurana.csv     # Hamurana Stream inflow\n│   ├── inflow_ohau.csv         # Ohau Stream inflow\n│   ├── inflow_waiowhiro.csv    # Waiowhiro Stream inflow\n│   ├── inflow_waiteti.csv      # Waiteti Stream inflow\n│   └── outflow_ohauchannel.csv # Outflow boundary\n└── run.R                       # Driver script (glmtools)",
+    "text": "Simulation outputs\n\nWater temperature\n\n\nCode\nplot_output_base(aeme, var_sim = \"HYD_temp\")\n\n\n\n\n\nSimulated surface and bottom water temperature (2020–2022). Dots = observed (example).\n\n\n\n\nCurrently the model is underestimating water temperature overall, but particularly in the lower levels.\n\n\nCode\nplot_resid(aeme, var_sim = \"HYD_temp\")\n\n\n\n\n\nModel residuals for water temperature.\n\n\n\n\n\n\nThermal stability\n\n\nCode\nplot_output(aeme, var_sim = \"HYD_schstb\")\n\n\n\n\n\nSchmidt stability index (J/m²) — indicator of stratification intensity.\n\n\n\n\n\n\nLake level\n\n\nCode\nplot_output(aeme, var_sim = \"LKE_lvlwtr\", )\n\n\n\n\n\nSimulated lake water level relative to the Ohau Channel weir crest (279.6 m a.s.l.).\n\n\n\n\n\n\nNutrients & chlorophyll-a\n\n\nCode\nplot_output_base(aeme, var_sim = c(\"NIT_tn\",\"PHS_tp\",\"PHY_tchla\"))\n\n\n! Colour bar too narrow — try increasing `plot_width`\n! Colour bar too narrow — try increasing `plot_width`\n! Colour bar too narrow — try increasing `plot_width`\n\n\n\n\n\nSimulated total phosphorus (TP), total nitrogen (TN), and chlorophyll-a.\n\n\n\n\n\n\nPhytoplankton groups\n\n\nCode\nplot_phytos(aeme, remove_spin_up = FALSE)\n\n\nAll requested variables are present in the model output.\n\n\n\n\n\nSimulated phytoplankton group biomass (mg/m³) for the three groups configured in AED.\n\n\n\n\n\n\nModel performance summary\n\n\n\nSummary model performance statistics\n\n\nVariable\nPeriod\nRMSE\nBias\nR²\nn\n\n\n\n\nWater temperature\n2010–2020\n5.65\n-4.47\n0.36\n2715\n\n\nTotal nitrogen\n2010–2020\n113.43\n101.52\n0.00\n586\n\n\nTotal phosphorus\n2010–2020\n0.98\n0.84\n0.03\n553\n\n\nTotal chlorophyll a\n2010–2020\n1295.01\n1122.54\n0.01\n2889\n\n\nWater level\n2010–2020\n0.56\n-0.51\n0.61\n2214\n\n\n\nNote: \n\n\n\n\n\n\n\n RMSE and Bias in variable units. Observations from BoPRC monitoring programme.",
     "crumbs": [
       "Home",
       "Lake Models",
