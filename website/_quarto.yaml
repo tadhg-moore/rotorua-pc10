@@ -1,6 +1,8 @@
 project:
   type: website
-  pre-render: scripts/download_aeme_onedrive.R
+  llms-txt: true
+  # pre-render: scripts/download_aeme_onedrive.R
+  pre-render: scripts/download_aeme_api.R
   resources:
     - assets/
     - www/
