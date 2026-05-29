@@ -259,8 +259,11 @@ phyto_pars |>
 
 ## Inflows
 
+There are fourteen simulated inflows into Lake Rotorua from 1959-2022, work is 
+ongoing to update these with more recent data. 
+
 ```{r}
-#| fig-cap: "Simulated inflows to Lake Rotorua from the four principal streams (Hamurana, Ohau, Waiowhiro, Waiteti) and treated effluent from Rotorua WWTP."
+#| fig-cap: "Simulated inflows to Lake Rotorua from the fourteen streams."
 #| fig-height: 8
 
 plot_aeme_loads(aeme)
@@ -279,6 +282,8 @@ plot_aeme_loads(aeme)
 
 plot_output_base(aeme, var_sim = "HYD_temp")
 ```
+
+Currently the model is underestimating water temperature overall, but particularly in the lower levels.
 
 ```{r plot-temperature-residuals}
 #| fig-cap: "Model residuals for water temperature."
@@ -342,106 +347,6 @@ perf |>
   footnote(general = "RMSE and Bias in variable units. Observations from BoPRC monitoring programme.",
            general_title = "Note: ")
 ```
-
----
-
-## Known issues {#issues}
-
-::: {.callout-warning}
-## Active issues with current simulation
-
-The following issues have been identified and are under investigation. See the
-[issue tracker](https://github.com/your-org/rotorua-glm/issues) for details.
-:::
-
-### Issue 1 — Late-summer TP over-prediction
-
-The model systematically over-predicts surface TP concentrations during February–April
-by approximately 8–12 mg/m³. This is likely linked to underestimated internal P loading
-parameterisation under low-oxygen bottom waters. Possible remedies being explored:
-
-- Tighten `Fsed_frp` seasonal dependency on oxygen (see `aed_sedflux.nml`).
-- Implement dynamic sediment release model (AED `sed_model = 1`).
-
-**Priority:** High | **Assigned to:** J. Smith
-
----
-
-### Issue 2 — Cyanobacteria bloom timing offset
-
-Simulated *Anabaena/Aphanizomenon* blooms (phytoplankton Group 1) peak ~3 weeks early
-relative to monitoring observations. Review of `T_opt`, `KPO4`, and buoyancy regulation
-parameters for Group 1 is underway.
-
-**Priority:** Medium | **Assigned to:** K. Jones
-
----
-
-### Issue 3 — Wind sheltering in northerly fetch
-
-The current morphometry configuration does not account for wind sheltering by the
-Rotorua township and surrounding hills on the north shore. Adding a directional
-`fetch_sw = .true.` configuration and wind speed correction factor is planned.
-
-**Priority:** Low
-
----
-
-### Issue 4 — ERA5 longwave gap-fill artefacts
-
-Discontinuities in the gap-filled longwave radiation series (ERA5 substituted for missing
-station data periods) are causing transient surface mixing events. A smoothed blending
-approach is being implemented.
-
-**Priority:** Medium | **Assigned to:** R. Patel
-
----
-
-## Download configuration {#download}
-
-The button below packages all configuration files (`.nml`, `.csv` boundary conditions,
-`run.R` driver script) into a single zip archive.
-
-```{r download-button}
-#| echo: false
-# This button triggers a shell zip and uses Quarto's downloadthis extension.
-# Ensure `downloadthis` is installed: install.packages("downloadthis")
-# and that the bcs/ folder exists relative to this .qmd
-
-# if (requireNamespace("downloadthis", quietly = TRUE)) {
-#   downloadthis::download_dir(
-#     path        = ".",              # <- replace with config folder path
-#     output_name = "rotorua_glm_config",
-#     button_label = "Download configuration (ZIP)",
-#     button_type  = "primary",
-#     icon         = "fa fa-download",
-#     self_contained = FALSE
-#   )
-# } else {
-#   cat("> Install the `downloadthis` package to enable the download button:
-#   `install.packages('downloadthis')`")
-# }
-```
-
-::: {.callout-note collapse="true"}
-## Archive contents
-
-```
-rotorua_glm_config/
-├── glm3.nml                    # Main GLM namelist
-├── aed.nml                    # AED biogeochemistry namelist
-├── aed_phyto_pars.csv         # Phytoplankton parameters
-├── aed_zoop_pars.csv          # Zooplankton parameters
-├── bcs/
-│   ├── met_rotorua.csv         # Meteorological forcing
-│   ├── inflow_hamurana.csv     # Hamurana Stream inflow
-│   ├── inflow_ohau.csv         # Ohau Stream inflow
-│   ├── inflow_waiowhiro.csv    # Waiowhiro Stream inflow
-│   ├── inflow_waiteti.csv      # Waiteti Stream inflow
-│   └── outflow_ohauchannel.csv # Outflow boundary
-└── run.R                       # Driver script (glmtools)
-```
-:::
 
 ---
 
