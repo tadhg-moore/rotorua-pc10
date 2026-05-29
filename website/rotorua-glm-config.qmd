@@ -1,6 +1,6 @@
 ---
 title: "Lake Rotorua — GLM Configuration"
-subtitle: "General Lake Model (GLM 3.x) setup and simulation outputs"
+subtitle: "General Lake Model (GLM 3.3.3) setup and simulation outputs"
 author: "Tadhg Moore"
 date: last-modified
 date-format: "DD MMMM YYYY"
