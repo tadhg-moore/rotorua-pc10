@@ -18,6 +18,9 @@ library(patchwork)
 library(AEME)
 library(knitr)
 library(kableExtra)
+
+source("../R/plot_aeme_loads.R")
+
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[3], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[3]))
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
@@ -253,6 +256,17 @@ phyto_pars |>
 :::
 
 ---
+
+## Inflows
+
+```{r}
+#| fig-cap: "Simulated inflows to Lake Rotorua from the four principal streams (Hamurana, Ohau, Waiowhiro, Waiteti) and treated effluent from Rotorua WWTP."
+#| fig-height: 8
+
+plot_aeme_loads(aeme)
+
+```
+
 
 ## Simulation outputs {#outputs}
 
