@@ -71,7 +71,6 @@
         "tmap"
       ],
       "VignetteBuilder": "knitr",
-      "Remotes": "github::aemon-j/GLM3r, github::aemon-j/GOTMr, github::aemon-j/LakeEnsemblR, github::limnotrack/aemetools",
       "Config/checklist/communities": "limnotrack",
       "Config/checklist/keywords": "ecosystem; modelling",
       "Config/Needs/website": "r-lib/asciicast, rmarkdown",
@@ -82,14 +81,14 @@
       "Config/roxygen2/version": "8.0.0",
       "Roxygen": "list(markdown = TRUE)",
       "RoxygenNote": "8.0.0",
+      "Author": "Tadhg Moore [aut, cre] (ORCID: <https://orcid.org/0000-0002-3834-8868>), Christopher McBride [aut] (ORCID: <https://orcid.org/0000-0001-5784-9767>)",
       "RemoteType": "github",
+      "Remotes": "github::aemon-j/GLM3r, github::aemon-j/GOTMr, github::aemon-j/LakeEnsemblR, github::limnotrack/aemetools",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "AEME",
       "RemoteUsername": "limnotrack",
+      "RemoteRepo": "AEME",
       "RemoteRef": "dev",
-      "RemoteSha": "f00d6b7790774a6c075c81b49d92ea6fdc9698ad",
-      "NeedsCompilation": "no",
-      "Author": "Tadhg Moore [aut, cre] (ORCID: <https://orcid.org/0000-0002-3834-8868>), Christopher McBride [aut] (ORCID: <https://orcid.org/0000-0001-5784-9767>)"
+      "RemoteSha": "bb08663ea675f54bc4ad8e73522522090105ea20"
     },
     "AzureAuth": {
       "Package": "AzureAuth",
