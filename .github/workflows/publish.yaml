@@ -17,6 +17,7 @@ jobs:
       ONEDRIVE_TOKEN_ENCRYPTED: ${{ secrets.ONEDRIVE_TOKEN_ENCRYPTED }}
       ONEDRIVE_TOKEN_PASSWORD: ${{ secrets.ONEDRIVE_TOKEN_PASSWORD }}
       ONEDRIVE_TOKEN_HASH: ${{ secrets.ONEDRIVE_TOKEN_HASH }}
+      LERNZMP_KEY: ${{ secrets.LERNZMP_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
