@@ -1,6 +1,5 @@
 project:
   type: website
-  llms-txt: true
   # pre-render: scripts/download_aeme_onedrive.R
   pre-render: scripts/download_aeme_api.R
   resources:
@@ -15,6 +14,7 @@ execute:
   
 website:
   title: "Rotorua Lake Modelling"
+  llms-txt: true
   site-path: "/rotorua-pc10/"
   favicon: www/favicon.ico
   navbar:
