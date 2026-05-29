@@ -14,7 +14,7 @@ execute:
   
 website:
   title: "Rotorua Lake Modelling"
-  llms-txt: true
+  # llms-txt: true
   site-path: "/rotorua-pc10/"
   favicon: www/favicon.ico
   navbar:
