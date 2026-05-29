@@ -42,8 +42,8 @@ website:
           - gantt.qmd
       - section: "Lake Models"
         contents:
-          - href: lake-rotorua-glm.qmd
-            text: "Lake Rotorua — GLM Config"
+          - href: rotorua-glm-config.qmd
+            text: "GLM Config"
           - href: alum-model.qmd
             text: "Alum Model"
       - section: "Tasks"
