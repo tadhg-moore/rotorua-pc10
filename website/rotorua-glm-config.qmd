@@ -266,6 +266,13 @@ phyto_pars |>
 plot_output_base(aeme, var_sim = "HYD_temp")
 ```
 
+```{r plot-temperature-residuals}
+#| fig-cap: "Model residuals for water temperature."
+#| fig-height: 8
+
+plot_resid(aeme, var_sim = "HYD_temp")
+```
+
 ### Thermal stability {#stability}
 
 ```{r plot-schmidt}
@@ -282,7 +289,7 @@ plot_output(aeme, var_sim = "HYD_schstb")
 #| fig-cap: "Simulated lake water level relative to the Ohau Channel weir crest (279.6 m a.s.l.)."
 #| fig-height: 3.5
 
-plot_output(aeme, var_sim = "LKE_lvlwtr")
+plot_output(aeme, var_sim = "LKE_lvlwtr", )
 
 ```
 
@@ -295,6 +302,16 @@ plot_output(aeme, var_sim = "LKE_lvlwtr")
 plot_output_base(aeme, var_sim = c("NIT_tn","PHS_tp","PHY_tchla"))
 
 ```
+
+### Phytoplankton groups {#phyto-groups}
+
+```{r plot-phytos}
+#| fig-cap: "Simulated phytoplankton group biomass (mg/m³) for the three groups configured in AED."
+#| fig-height: 4
+
+plot_phytos(aeme, remove_spin_up = FALSE)
+```
+
 
 ### Model performance summary {#performance}
 
