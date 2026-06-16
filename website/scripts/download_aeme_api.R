@@ -32,3 +32,5 @@ aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
 
 aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
   AEME::run_aeme()
+
+saveRDS(aeme, "../LID11133_rotorua/aeme_download.rds")
