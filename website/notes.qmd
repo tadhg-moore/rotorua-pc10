@@ -4,6 +4,38 @@ format: html
 editor: visual
 ---
 
+## 17/6/26 - Deniz Check-in
+
+-   Alum dosing data
+
+    -   Data is in L/s, river gauge are nearby to use for calculating concentrations
+
+    -   Background aluminum, naturally abundant
+
+    -   Data for calibrating/validating/developing the model - how can we show this models
+
+    -   Process and state variables
+
+        -   Assess these separately
+
+    -   Reactivity
+
+        -   Inflow or Lake
+
+        -   Inflow reactivity - phosphorus binding, upstream/downstream - discuss with Grant Tempero
+
+        -   Adjust the in-stream phosphorus
+
+        -   CMcB did account for this in his modelling
+
+        -   pH reactivity mostly negligible
+
+-   Visual Studio Tools
+
+    -   Compiling GLM-AED
+
+    -   Is this the most efficient way?
+
 ## 28/04/26 - BoP PC10 Meeting
 
 > **Summary:** This PC10 meeting covered the science, monitoring, and economic dimensions of managing water quality in Lake Rotorua under climate change pressures. Key discussions centred on nitrogen reduction targets, groundwater lags, and the costs of mitigation options including constructed wetlands and riparian restoration. Data consistency, groundwater monitoring integration, and the validity of the TLI 4.2 target were debated, alongside updated nutrient accounting, internal loading measurements, and emerging restoration techniques such as ultrasonic cyanobacteria removal. An economic review and spatial planning work are ongoing to identify the most cost-effective pathways to meeting PC10 objectives. TALT engagement (via William) is ongoing with an update to follow, and strong turnout from the Rotorua Pastoral Collective reflects positive MoU partner engagement. A new NZ-based peer reviewer, Mike Scarsbrook (Waikato Regional Council), has been recommended by both LWQS and RPC and is expected to be confirmed within the next few weeks. The review must be completed by March 2027, with draft reports due September–December 2026, an October presentation to LWQS and RPC, and a final draft to council by January 2027.
