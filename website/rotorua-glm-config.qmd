@@ -266,7 +266,15 @@ ongoing to update these with more recent data.
 #| fig-cap: "Simulated inflows to Lake Rotorua from the fourteen streams."
 #| fig-height: 8
 
-plot_aeme_loads(aeme)
+plot_aeme_loads(aeme, date_filter = FALSE)
+
+```
+
+```{r}
+#| fig-cap: "Estimated annual loads to Lake Rotorua from the fourteen streams."
+#| fig-height: 8
+
+plot_annual_loads_stacked(aeme, date_filter = FALSE)
 
 ```
 

@@ -1,19 +1,98 @@
 plot_aeme_loads <- function(aeme, vars = c("HYD_flow", "NIT_amm", "NIT_nit",
                                            "NIT_don", "NIT_pon", "PHS_frp",
-                                           "PHS_pop", "PHS_pip")) {
+                                           "PHS_pop", "PHS_pip"),
+                            date_filter = TRUE) {
   df <- AEME::get_inflows(aeme, return_df = TRUE)
   
+  if (date_filter) {
+    df <- .filter_date(df, aeme)
+  }
+  plot_loads(df, period = "total", 
+             vars = c("HYD_flow", "NIT_amm", "NIT_nit", "NIT_don", "NIT_pon",
+                      "PHS_frp", "PHS_pop", "PHS_pip"))
+  
+}
+.filter_date <- function(df, aeme) {
   tme <- AEME::time(aeme)
   t0 <- tme$start - lubridate::ddays(max(unlist(tme$spin_up)))
   t0 <- as.Date(t0)
   t1 <- as.Date(tme$stop)
   
-  df <- df |> 
+  df |> 
     dplyr::filter(Date >= t0 & Date <= t1)
-  plot_loads(df, period = "total", 
-             vars = c("HYD_flow", "NIT_amm", "NIT_nit", "NIT_don", "NIT_pon",
-                      "PHS_frp", "PHS_pop", "PHS_pip"))
+}
+
+# =============================================================================
+# Inflow Load Calculation and Plotting Functions
+# =============================================================================
+# Load = Flow (m3/day) * Concentration (g/m3 = mg/L) -> result in kg/day
+# then aggregated to monthly or annual totals (tonnes/period)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 0. Stream colour palette
+#    Fixed colour for each stream (inflow_id), defined once up front so every
+#    stream keeps the same colour across every plot, regardless of which
+#    variables, time period, or subset of streams is being shown.
+#
+#    Source pool: the only three RColorBrewer qualitative palettes flagged
+#    colourblind-safe (Dark2, Paired, Set2 - see colorblind column of
+#    RColorBrewer::brewer.pal.info; Set1, Pastel1/2 and Accent are NOT safe
+#    and are deliberately excluded). Even within that safe pool, picking any
+#    14 colours isn't automatically fine together - e.g. Dark2's purple
+#    (#7570B3) and Paired's blue (#1F78B4) simulate to almost the same colour
+#    under deuteranopia/protanopia despite looking distinct normally. The 14
+#    colours were chosen by simulating both deficiencies (Machado, Oliveira &
+#    Fernandes, 2009) from the pooled 28 candidates and greedily maximising
+#    the worst-case distance between every pair, so the whole set stays
+#    distinguishable under both conditions, not just under normal vision.
+#
+#    Assignment is grouped by category rather than alphabetical:
+#      - Ungauged-Quick / Ungauged-Slow -> the two greys (modelled, not gauged)
+#      - Geothermal                     -> orange (heat-associated)
+#      - WWTP                           -> magenta (the one point source -
+#                                          made to stand out from the streams)
+#      - Rainfall                       -> light blue (direct precipitation)
+#      - the 9 named streams            -> remaining hues, alphabetically
+STREAM_PALETTE <- c(
+  "Rainfall"       = "#A6CEE3",
+  "Awahou"         = "#7570B3",
+  "Hamurana"       = "#8DA0CB",
+  "Ngongotaha"     = "#6A3D9A",
+  "Puarenga"       = "#FC8D62",
+  "Utuhina"        = "#E6AB02",
+  "Waingaehe"      = "#FFD92F",
+  "Waiohewa"       = "#FFFF99",
+  "Waiowhiro"      = "#33A02C",
+  "Waiteti"        = "#E5C494",
+  "Ungauged-Quick" = "#666666",
+  "Ungauged-Slow"  = "#B3B3B3",
+  "Geothermal"     = "#D95F02",
+  "WWTP"           = "#E7298A"
+)
+
+# -----------------------------------------------------------------------------
+# get_stream_colours()
+#    Looks up each stream's fixed colour from STREAM_PALETTE by name. Any
+#    stream not found there (e.g. a new inflow added later, or test data with
+#    different names) falls back to viridis, so the function never errors -
+#    it just won't be colourblind-optimised for that particular stream.
+# -----------------------------------------------------------------------------
+get_stream_colours <- function(stream_names) {
+  stream_names <- unique(stream_names)
+  known        <- stream_names[stream_names %in% names(STREAM_PALETTE)]
+  unknown      <- setdiff(stream_names, known)
   
+  cols <- STREAM_PALETTE[known]
+  
+  if (length(unknown) > 0) {
+    message(length(unknown), " stream(s) not found in STREAM_PALETTE (",
+            paste(unknown, collapse = ", "), ") - using viridis for ",
+            "those instead.")
+    cols <- c(cols, setNames(viridisLite::viridis(length(unknown)), unknown))
+  }
+  
+  cols
 }
 
 # =============================================================================
@@ -284,6 +363,91 @@ plot_loads_by_group <- function(df,
   }
 }
 
+# -----------------------------------------------------------------------------
+# 5. plot_annual_loads_stacked()
+#    Stacked bar chart of annual loads by year, coloured by stream (inflow_id),
+#    with one facet panel per variable - lets you see each stream's
+#    contribution to the total load, and how that contribution shifts
+#    from year to year.
+#    vars: character vector of variable names to include, e.g. c("NIT_amm","NIT_nit")
+#          NULL = all variables
+# -----------------------------------------------------------------------------
+plot_annual_loads_stacked <- function(aeme, vars = c("HYD_flow", "NIT_amm",
+                                                     "NIT_nit", "NIT_don",
+                                                     "NIT_pon", "PHS_frp",
+                                                     "PHS_pop", "PHS_pip"),
+                                      date_filter = TRUE) {
+  
+  df <- AEME::get_inflows(aeme, return_df = TRUE)
+  
+  var_label <- AEME::key_naming |> 
+    dplyr::filter(var_aeme %in% vars) |> 
+    dplyr::select(var_aeme, name_text, name_parse)
+  
+  if (date_filter) {
+    df <- .filter_date(df, aeme)
+  }
+  long <- df |>
+    calculate_loads() |>
+    aggregate_loads(period = "annual")
+  
+  # Order inflow_id factor by descending total HYD_flow, so stacking order
+  # (and legend order) is consistent across all panels
+  flow_order <- long |>
+    dplyr::filter(variable == "HYD_flow") |>
+    dplyr::group_by(inflow_id) |>
+    dplyr::summarise(total_flow = sum(load, na.rm = TRUE), .groups = "drop") |>
+    dplyr::arrange(dplyr::desc(total_flow))
+  
+  long <- long |>
+    dplyr::mutate(inflow_id = factor(inflow_id, levels = flow_order$inflow_id))
+  
+  if (!is.null(vars)) {
+    long <- long |> dplyr::filter(variable %in% vars)
+  }
+  
+
+  # Build facet label: "NIT_amm (tonnes / year)"
+  long <- long |>
+    dplyr::left_join(var_label, by = c("variable" = "var_aeme")) |>
+    dplyr::mutate(facet_label = paste0(name_text, "\n(", units, ")"))
+  
+  # alphabetical order of variable (= var_aeme) becomes the factor level order
+  level_order <- long |>
+    dplyr::distinct(variable, facet_label) |>
+    dplyr::arrange(variable) |>
+    dplyr::pull(facet_label)
+  
+  long <- long |>
+    dplyr::mutate(facet_label = factor(facet_label, levels = level_order))
+  
+  stream_names <- unique(long$inflow_id)
+  stream_cols <- get_stream_colours(stream_names)
+  
+  long |>
+    ggplot2::ggplot(ggplot2::aes(
+      x    = Year,
+      y    = load,
+      fill = inflow_id
+    )) +
+    ggplot2::geom_col(position = "stack") +
+    ggplot2::facet_wrap(~ facet_label, scales = "free_y") +
+    # ggplot2::scale_fill_viridis_d() +
+    ggplot2::scale_fill_manual(values = stream_cols) +
+    ggplot2::labs(
+      title = "Annual Loads by Stream",
+      x     = "Year",
+      y     = NULL,
+      fill  = "Stream"
+    ) +
+    ggplot2::theme_bw(base_size = 11) +
+    ggplot2::theme(
+      strip.background = ggplot2::element_rect(fill = "grey90"),
+      axis.text.x       = ggplot2::element_text(angle = 30, hjust = 1),
+      legend.position   = "bottom"
+    )
+}
+
 
 # =============================================================================
 # Example usage
@@ -313,6 +477,9 @@ if (FALSE) {
     inflow_id = rep("Awahou", 6)
   ), class = c("tbl_df", "tbl", "data.frame"))
   
+  df <- AEME::get_inflows(aeme, return_df = TRUE)
+  
+  
   # Step 1 – calculate loads
   loads <- calculate_loads(df)
   
@@ -324,7 +491,9 @@ if (FALSE) {
   # Step 3 – plot all variables
   plot_loads(df, period = "monthly")
   plot_loads(df, period = "annual")
-  plot_loads(df, period = "total")
+  plot_loads(df, period = "total", 
+             vars = c("HYD_flow", "NIT_amm", "NIT_nit", "NIT_don", "NIT_pon",
+                      "PHS_frp", "PHS_pop", "PHS_pip"))
   
   # Plot only nitrogen variables
   plot_loads(df, period = "monthly", vars = c("NIT_amm", "NIT_nit", "NIT_don", "NIT_pon"))
