@@ -4,37 +4,87 @@ format: html
 editor: visual
 ---
 
-## 17/6/26 - Deniz Check-in
+## 29 Jul 2026 – GLM-AED Alum Module
 
--   Alum dosing data
+### Summary
+MH has an alum module template (based on phosphorus) in libaed-dev. A known issue with
+organic matter parameters affecting light by an order of magnitude is being resolved.
+GLM v4 development starts next week, with Rotorua already running the latest code.
 
-    -   Data is in L/s, river gauge are nearby to use for calculating concentrations
+### Key Points
+- Alum module exists in libaed-dev, based on the phosphorus template
+- Organic matter parameter issue affects light (order of magnitude difference) — fix in progress
+- GLM v4.0 development starts next week; Rotorua running on latest code
+- libaed-dev is under authentication — clone via SSH, build is more complex than usual
+- Two pathways available: libaed-water or libaed-dev
+- Kamilla holds the steps for AED_tools (private)
+- MH to set up a working configuration with constant inflows; TM to follow up with more realistic testing
+- Timeline: couple of weeks
+- Next meeting Aug 12th
 
-    -   Background aluminum, naturally abundant
+### Tasks
+| Owner | Task |
+|-------|------|
+| TM | Compile libaed-dev |
+| TM | Prepare inflow file with variables *a* and *p* |
+| MH | Set up working configuration with constant inflows |
+| TM | Test with more realistic inflow data |
+| MH & KK | Draft and send quote |
 
-    -   Data for calibrating/validating/developing the model - how can we show this models
+---
 
-    -   Process and state variables
+## 17 Jun 2026 – GLM-AED Alum Module Matt Hipsey & Kamilla Kurucz
 
-        -   Assess these separately
+### Summary
+Technical deep-dive into alum model design. Coupling is considered straightforward.
+Key design decisions were made around pH, carbon modelling, alum aging, and resuspension.
+GLM v4 updates were discussed, with TM identified as a Windows tester.
 
-    -   Reactivity
+### Key Points
+- Alum stand-alone model: pH prediction handled elsewhere in the model
+- Carbon model has 3 options; Lake Kinneret used as a testbed example
+- Alum aging tracked across 2 groups (labile/refractory pools); suspended alum capacity
+  involves amorphising/crystallising with different saturation coefficients
+- FRP data available in the sediment; background Al to be ignored
+- Resuspension: wave model available, affects sediment zones, but can be switched off
+- GLM v4 updates: restarting, particle tracking, sediment heating module
+- TM flagged as a useful Windows tester; Kamilla to get Casper to run a Windows compile check
+- Calibration targets: pH, FRP, DOP, TP
+- TSS/NSS data flagged as potentially useful
 
-        -   Inflow or Lake
+### Tasks
+| Owner | Task |
+|-------|------|
+| TM | Set up development environment |
+| TM | Compile GLM |
+| Kamilla | Get Casper to run GLM v4 on Windows and confirm compile |
+| Team | Define Dev phase and Maintenance/Support phase action plan |
+| Team | Source data on FRP/TSS adsorption and particle types around storm events |
 
-        -   Inflow reactivity - phosphorus binding, upstream/downstream - discuss with Grant Tempero
+---
 
-        -   Adjust the in-stream phosphorus
+## 17 Jun 2026 – Deniz Check-in
 
-        -   CMcB did account for this in his modelling
+### Summary
+Discussion of alum dosing data availability and how to demonstrate model performance.
+Phosphorus reactivity from inflows is a key modelling consideration. Visual Studio
+tooling for compiling GLM-AED was raised as a potential efficiency question.
 
-        -   pH reactivity mostly negligible
+### Key Points
+- Alum dosing data in L/s; nearby river gauges available for concentration calculations
+- Background aluminium is naturally abundant and must be accounted for
+- Model validation approach: assess process and state variables separately
+- Inflow reactivity is key — phosphorus binding upstream/downstream to be discussed
+  with Grant Tempero
+- CMcB's prior modelling accounted for in-stream phosphorus adjustment
+- pH reactivity considered mostly negligible
+- Question raised: is Visual Studio the most efficient way to compile GLM-AED?
 
--   Visual Studio Tools
-
-    -   Compiling GLM-AED
-
-    -   Is this the most efficient way?
+### Tasks
+| Owner | Task |
+|-------|------|
+| TM | Discuss inflow phosphorus reactivity with Grant Tempero |
+| Team | Clarify most efficient compile workflow (Visual Studio vs alternatives) |
 
 ## 28/04/26 - BoP PC10 Meeting
 
