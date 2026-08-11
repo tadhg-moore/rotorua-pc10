@@ -4,6 +4,56 @@ format: html
 editor: visual
 ---
 
+## 11 Aug 2026 - Meeting with DO
+
+- Rotorua hypsograph - cut off without the whole
+- Met data from the airport
+  - hourly from NIWA
+- Old inflow data present
+- Calibration historical period, validate contemporary data
+- Water balance assessment with GLM v4 diagnostic residual outflow
+
+Calibration strategy - discuss with Matt
+  - Parameter
+  - Phytoplankton parameters in an old CAEDYM version
+  - Phytoplankton dynamics in Rotorua
+    3 groups:
+      - Cyano - positive buoyancy
+      - Diatoms
+      - Chlorophytes - winter
+  - Integrate buoy data for signal vs noise
+  - 2000-2010
+  - Validation 2011-2026
+  
+Calibration benchmarks
+  - Important because it drives conversation about climate adaptation
+  - TLI estimate
+    - Especially the components - TN, TP, chl-a, Secchi depth
+  - Anoxic durations
+  - Temperature measures
+  - Stratification measures
+  - Phytoplankton timing
+  - Outflow nutrient concentrations into the Ohau channel
+  - Alum module
+    - Account for alum dosing and pH
+    - How does this impact TLI?
+    - Cost!!!
+  - Is there a simplified way to approach this and get a similar response?
+  
+
+Sediment processes
+  - Fixed versus dynamic loading
+  - Looping of spin-up potentially
+  - Trade-offs
+
+Slides for update with MH
+  - Keep for long-term monthly meetings
+  
+LW - estimate using algorithm 
+
+
+
+
 ## 29 Jul 2026 – GLM-AED Alum Module
 
 ### Summary
