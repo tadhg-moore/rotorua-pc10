@@ -53,6 +53,39 @@ Brief summary text here.
 
 </details>
 
+### @dadi2023
+
+Sudden eutrophication of an aluminum sulphate treated lake due to abrupt increase of internal phosphorus loading after three decades of mesotrophy. [PDF](https://doi.org/10.1016/j.watres.2023.119824)
+
+<details>
+<summary>Click to expand: Summary</summary>
+
+*Key Findings*
+- Lake Barleber (Germany), an artificial gravel pit lake successfully remediated with aluminium sulphate in 1986, remained mesotrophic for nearly 30 years before undergoing sudden re-eutrophication in 2016–2017, with TP increasing from ~40 µg L⁻¹ to ~270 µg L⁻¹ and massive cyanobacterial blooms developing.
+- Internal P loading from sediments was identified as the primary driver of re-eutrophication; estimated P release for 2017 was approximately 600 kg for the whole lake, consistent with sediment incubation experiments showing significant P release only under anoxic conditions.
+- The reducible (redox-dependent, Fe/Mn-bound) P fraction (BD-P) constituted 37–58% of total P in surface sediments, indicating high sensitivity to reductive release under anoxia.
+- Temperature and anoxia acted synergistically: anoxic high-temperature incubations produced SRP release rates approximately five times higher than anoxic low-temperature treatments (0.94 ± 0.23 vs ~0.17 mmol m⁻² d⁻¹), confirming temperature as a major amplifying factor.
+- Multiple P-retention indicators (NaOH-Al:NaOH-P, NaOH-Al:(NH₄Cl+BD)-P, and Sum-Al:Sum-Fe ratios) were all below recommended thresholds, demonstrating that the Al adsorption capacity of the sediment had been substantially exhausted after three decades.
+- Sediment focusing and low sedimentation rates (estimated at ~0.9 cm yr⁻¹) in this closed, autochthonous lake are proposed as factors that prolonged initial treatment effectiveness by keeping the Al-rich layer near the sediment surface.
+
+*Aluminium Sulphate Treatment: Results*
+- The 1986 treatment applied 480 tonnes of aluminium sulphate (36 g Al m⁻², 5.7 mg Al L⁻¹ volumetric dosage), which successfully restored the lake to clear water within one year, with macrophytes re-establishing and TP remaining low (173–373 kg lake-wide) for nearly 30 years — well above the mean treatment longevity of ~11 years reported for Al-treated lakes globally.
+- P fractionation of the 40 cm sediment core identified a distinct NaOH-Al and NaOH-P peak at 28–34 cm depth, consistent with the depth expected for the 1986 Al application given the estimated sedimentation rate, confirming that the Al layer persisted in the sediment but had been progressively buried and diluted.
+- NaOH-Al:NaOH-P molar ratios across the sediment column (3–6) were uniformly below the recommended thresholds of 10 (Rydin and Welch 2000) and 12.6 (de Vicente et al. 2008), indicating that Al adsorption capacity had been exhausted relative to the P pool.
+- The Sum-Al:Sum-Fe ratio decreased approximately 5-fold from its value at the time of Al application, falling below the threshold of >3 proposed as necessary to prevent P release, and the NaOH-Al:(NH₄Cl+BD)-P ratio of ~3 in the upper sediment was far below the recommended threshold of >25.
+- High background sulphate concentrations (~500 mg L⁻¹ before treatment, rising after Al addition) promoted sulphide formation, which permanently immobilised Fe as iron sulphides and reduced the active iron pool competing with Al for P binding — a mechanism specific to aluminium sulphate treatment that would not apply to poly-aluminium chloride.
+- Al floc formed during treatment is susceptible to resuspension by wind and benthivorous fish activity (both documented at Lake Barleber), meaning the Al-rich layer was continuously mixed with new, lower-P-binding sediment rather than remaining as a discrete buried stratum, further eroding treatment effectiveness over time.
+- The tipping point towards re-eutrophication followed a three-stage mechanism: (1) gradual exhaustion of Al adsorption capacity causes non-bound P to accumulate in the BD-P pool; (2) the BD-P pool approaches saturation, making the system vulnerable to anoxic release; (3) wind mixing events rapidly transport released P from the hypolimnion to the photic zone, triggering bloom formation that then self-reinforces through elevated sediment oxygen demand and further SRP accumulation.
+
+*Implications & Recommendations*
+- Al treatment of lakes is not a permanent solution; longevity depends on Al dose/area, hydraulic residence time, lake morphology (Osgood index), sedimentation rate, and background sulfate concentrations — the latter promoting sulphide formation that immobilises Fe and reduces the active iron pool available for P binding.
+- Re-eutrophication risk is likely to increase under climate warming, as longer and more intense stratification periods will extend anoxic conditions and raise hypolimnetic temperatures, accelerating organic matter mineralisation and internal P loading.
+- Regular post-treatment monitoring of sediment P fractionation and Al retention molar ratios in the upper 5 cm is essential to detect declining P adsorption capacity before re-eutrophication occurs.
+- Poly-aluminium chloride is recommended in preference to aluminium sulphate, given that the high background sulphate concentration in Lake Barleber contributed to sulphide formation and loss of the active iron P-binding pool.
+- Many treated lakes will require repeated aluminium application to sustain acceptable water quality; this should be planned as part of long-term lake management rather than treated as a one-off intervention.
+
+</details>
+
 --------------------------------------------------------------------------------
 
 ## 2022
@@ -274,6 +307,31 @@ of climate change on hydrological cycles and nutrient dynamics.
     to 80.2% due to climate change.
 -   Climate change is expected to directly affect lake water temperature and
     stratification, altering nutrient dynamics.
+
+</details>
+
+## 2016
+
+### @smith2016
+
+Phosphorus and nitrogen loading restraints are essential for successful eutrophication control of Lake Rotorua, New Zealand. [PDF](https://www.tandfonline.com/doi/abs/10.5268/IW-6.2.998)
+
+<details>
+<summary>Click to expand: Summary</summary>
+
+*Key Findings*
+- Generalised additive models applied to a 14-year (2001–2015) dataset from Lake Rotorua found highly significant (p < 0.001) declines in total phosphorus (TP), total nitrogen (TN), and chlorophyll *a* (Chl-*a*) in surface waters, refuting claims that water quality had continued to decline despite mitigation.
+- Alum dosing in the Utuhina and Puarenga Stream inflows had a highly significant reducing effect on TP and Chl-*a* (p < 0.001), with near 4-fold reductions in Chl-*a* at maximum dosing rates, but no significant effect on TN.
+- Correlations of Chl-*a* with both TP and TN were highly significant, and the difference between the two correlation coefficients was not significant, indicating that algal productivity responds to both nutrients rather than either alone.
+- Bioassay studies in Lake Rotorua consistently demonstrated co-limitation of phytoplankton growth by both N and P, with spatial and temporal variation in which nutrient was more limiting.
+- Policies focused solely on reducing N loads risk stimulating dominance by heterocystous, N₂-fixing cyanobacteria (e.g. *Dolichospermum*, *Aphanizomenon*), whose bloom concentrations are strongly correlated with water column TP.
+
+*Implications & Recommendations*
+- Both N and P loads to Lake Rotorua must be controlled simultaneously for effective eutrophication management; a single-nutrient strategy is insufficient and potentially counterproductive.
+- Alum dosing in tributary inflows is effective for short-term P reduction but is not recommended as a perpetual measure; its continuation should be contingent on progress in catchment-scale land-use change and nutrient runoff mitigation.
+- Achieving the target Trophic Level Index of 4.2 requires TN loads below 435 t y⁻¹ and TP loads below 37 t y⁻¹ — major reductions from current inputs dominated by agricultural land use (~75% of N load, ~45% of P load).
+- "Legacy P" stored in fertilised soils and streambed sediments, and long groundwater residence times (decades to over a century), mean that water quality responses to catchment management will be substantially lagged and require long-term commitment.
+- Continued monitoring of nutrients, Chl-*a*, and cyanobacterial biovolume should be maintained to track restoration trajectories and evaluate the relative contributions of alum dosing versus catchment management.
 
 </details>
 
