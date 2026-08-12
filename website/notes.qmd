@@ -4,55 +4,29 @@ format: html
 editor: visual
 ---
 
-## 11 Aug 2026 - Meeting with DO
+## Meeting with DO – 11 August 2026
 
-- Rotorua hypsograph - cut off without the whole
-- Met data from the airport
-  - hourly from NIWA
-- Old inflow data present
-- Calibration historical period, validate contemporary data
-- Water balance assessment with GLM v4 diagnostic residual outflow
+**Data & Setup**
+The team reviewed data inputs for Lake Rotorua modelling, including a hypsograph (excluding the hole), hourly met data from NIWA (sourced from the airport), and existing inflow data. The plan is to calibrate against the historical period (2000–2010) and validate against contemporary data (2011–2026), with a water balance assessment using GLM v4's diagnostic residual outflow.
 
-Calibration strategy - discuss with Matt
-  - Parameter
-  - Phytoplankton parameters in an old CAEDYM version
-  - Phytoplankton dynamics in Rotorua
-    3 groups:
-      - Cyano - positive buoyancy
-      - Diatoms
-      - Chlorophytes - winter
-  - Integrate buoy data for signal vs noise
-  - 2000-2010
-  - Validation 2011-2026
-  
-Calibration benchmarks
-  - Important because it drives conversation about climate adaptation
-  - TLI estimate
-    - Especially the components - TN, TP, chl-a, Secchi depth
-  - Anoxic durations
-  - Temperature measures
-  - Stratification measures
-  - Phytoplankton timing
-  - Outflow nutrient concentrations into the Ohau channel
-  - Alum module
-    - Account for alum dosing and pH
-    - How does this impact TLI?
-    - Cost!!!
-  - Is there a simplified way to approach this and get a similar response?
-  
+**Calibration Strategy** *(to be discussed further with Matt)*
+Calibration will cover physical and biological parameters, including phytoplankton dynamics modelled across three groups: cyanobacteria (positively buoyant), diatoms, and chlorophytes (winter-dominant). Buoy data will be integrated to separate signal from noise, drawing on parameters from an old CAEDYM version.
 
-Sediment processes
-  - Fixed versus dynamic loading
-  - Looping of spin-up potentially
-  - Trade-offs
+**Calibration Benchmarks**
+Key performance indicators were identified, framed as important for climate adaptation conversations:
+- Trophic Level Index (TLI) and its components — TN, TP, chlorophyll-a, and Secchi depth
+- Anoxic duration, temperature, and stratification metrics
+- Phytoplankton timing
+- Outflow nutrient concentrations to the Ohau Channel
+- Alum dosing module — accounting for pH effects, TLI impact, and cost implications
+- Consideration of whether a simplified approach could achieve comparable results
 
-Slides for update with MH
-  - Keep for long-term monthly meetings
-  
-LW - estimate using algorithm 
+**Sediment Processes**
+Discussion around fixed vs. dynamic sediment loading, potential looping of the spin-up period, and the associated trade-offs.
 
-
-
+**Other**
+- Slides prepared for the MH update — to be retained for ongoing monthly meetings
+- Longwave radiation to be estimated using an algorithm
 
 ## 29 Jul 2026 – GLM-AED Alum Module
 
