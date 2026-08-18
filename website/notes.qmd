@@ -4,6 +4,26 @@ format: html
 editor: visual
 ---
 
+## Meeting with MH 12 Aug
+
+GLM v4 is ready and clean
+
+AED_tools_private
+  GLM
+    libaed-dev
+      aed_alum.F90
+    libaed-riparian
+      
+MH has done a small pass
+ALU added to inflows
+rotorua_glmaed_4.0
+MODFLOW-coupled with GLM-AED
+Chlorophyll-a concentrations are a bit high, double check column alignment in inflows
+ALU_ala = 0
+ALU_alp = models of AlSO4
+
+Update inflows & initial conditions
+
 ## Meeting with DO – 11 August 2026
 
 **Data & Setup**
