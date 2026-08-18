@@ -1,7 +1,7 @@
 project:
   type: website
   # pre-render: scripts/download_aeme_onedrive.R
-  pre-render: scripts/download_aeme_api.R
+  # pre-render: scripts/download_aeme_api.R
   resources:
     - assets/
     - www/
@@ -44,6 +44,8 @@ website:
         contents:
           - href: rotorua-glm-config.qmd
             text: "GLM Config"
+          - href: alum-model.qmd
+            text: "Alum Model"
           - href: alum-model.qmd
             text: "Alum Model"
       - section: "Tasks"
