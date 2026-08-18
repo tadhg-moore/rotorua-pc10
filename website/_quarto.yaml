@@ -46,8 +46,8 @@ website:
             text: "GLM Config"
           - href: alum-model.qmd
             text: "Alum Model"
-          - href: alum-model.qmd
-            text: "Alum Model"
+          - href: glm_aed_alum_stress_tests.qmd
+            text: "GLM-AED aed_alum Stress Tests"
       - section: "Tasks"
         contents:
           - data-request.qmd
