@@ -1,0 +1,3777 @@
+---
+title: "GLM-AED aed_alum Stress Tests"
+format: html
+eval: true
+execute:
+  cache: true
+knitr:
+  opts_chunk:
+    # Bust every chunk's cache whenever the sourced helper functions or the
+    # case's namelist templates change, even though the chunk's own code
+    # text didn't — otherwise a cached chunk would keep serving simulation
+    # results from before the fix.
+    cache.extra: !expr tools::md5sum(c(
+      "R/aed_alum_stress_test_helpers.R",
+      "LakeRotorua/aed/aed_original.nml",
+      "LakeRotorua/glm4_original.nml"))
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+
+library(AEME)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(knitr)
+library(patchwork)
+
+glm_exec <- list.files(pattern = "*.exe", full.names = TRUE, recursive = TRUE)
+glm_exec <- normalizePath(glm_exec)
+options("AEME.glm_exec" = glm_exec)
+
+aed_file <- "LakeRotorua/aed/aed_original.nml"
+aed      <- AEME::read_nml(aed_file)
+
+# use only necessaary models for testing
+aed_models <- c("aed_sedflux", "aed_oxygen", "aed_carbon", "aed_phosphorus", "aed_alum")
+aed$aed_models$models <- aed_models
+
+glm_file <- "LakeRotorua/glm4_original.nml"
+glm_def <- AEME::read_nml(glm_file)
+glm_def$inflow$num_inflows <- 0
+
+# A minimal FRP-maintenance inflow — just enough to hold FRP near K_P
+# Used only for kinetic rate tests (2.2, 2.3, 2.5) and steady-state (5.3)
+INFLOW_KINETIC_FRP  <- 0.3    # mmol/m³ — matches K_P
+INFLOW_KINETIC_FLOW <- 3   # m³/s — small relative to lake volume
+
+# The realistic scenario inflow — used for sections 7 and 9
+INFLOW_SCENARIO_FRP  <- 0.5   # mmol/m³ — realistic stream concentration
+INFLOW_SCENARIO_FLOW <- 1.9 # m³/s — realistic Utuhina-scale flow
+
+# Elevated starting FRP (via init_wq) for tests whose premise is "ample/high
+# FRP available" from t=0 — an inflow alone takes time to build FRP up from
+# the case's near-zero default, which left these effectively untested at
+# t=0. Used by 2.1, 6.1, 6.2, 7.2, 7.3, 8.1.
+INIT_FRP_HIGH <- 50.0   # mmol/m³ — well above K_P (0.3), for saturation/high-FRP scenarios
+
+
+# ── Default aed_alum namelist ─────────────────────────────────────────────────
+nml_def_txt <- "
+&aed_alum
+   ala_initial     = 0.0
+   alp_initial     = 0.0
+   ben_ala_initial = 0.0
+   ben_alp_initial = 0.0
+   frp_variable    = 'PHS_frp'
+   k_w             = 0.5
+   k_s             = 0.1
+   K_P             = 0.3
+   w_ala           = 5.0
+   k_age_w         = 0.0998
+   k_age_s         = 0.0998
+   k_bur           = 0.01
+   simResuspension = .false.
+   k_res           = 0.0
+   ads_use_pH      = .false.
+   pH_variable     = 'CAR_pH'
+   pH_opt          = 6.0
+   sigma_pH        = 1.0
+   S_ala           = 0.0
+   diag_level      = 10
+/
+"
+tmp_nml_file <- tempfile(fileext = ".nml")
+writeLines(nml_def_txt, tmp_nml_file)
+def_alum_nml <- AEME::read_nml(tmp_nml_file)
+
+aed_carbon_nml <- "
+! aed_carbon: dissolved inorganic carbon, pH/alkalinity, and methane dynamics
+&aed_carbon
+   dic_initial         = 1000            !# Initial dissolved inorganic carbon (DIC) concentration (mmol C/m3)
+   pH_initial          = 7.5             !# Initial pH
+   ch4_initial         = 4.5             !# Initial methane (CH4) concentration (mmol C/m3)
+   ionic               = 0               !# Ionic strength, for carbonate speciation (mol/L)
+   Rch4ox              = 0.1E-001        !# Maximum methane oxidation rate (/day)
+   Kch4ox              = 0.1E-001        !# Half-saturation oxygen concentration for methane oxidation (mmol O2/m3)
+   vTch4ox             = 1.05            !# Arrhenius temperature multiplier for methane oxidation
+!  methane_reactant_variable= ''              !# Link to aed_oxygen; required oxygen source for methane oxidation (unset by default)
+   simCH4              = .false.         !# Enable methane (CH4) simulation
+   Fsed_dic            = 0               !# Sediment DIC flux (mmol C/m2/day)
+   Ksed_dic            = 30              !# Half-saturation oxygen concentration for the sediment DIC flux (mmol O2/m3)
+   theta_sed_dic       = 1               !# Arrhenius temperature multiplier for sediment DIC flux
+!  Fsed_dic_variable   = ''              !# Link to aed_sedflux for a spatially/temporally varying Fsed_dic (unset by default)
+   Fsed_ch4            = 0               !# Sediment methane flux (mmol C/m2/day)
+   Ksed_ch4            = 30              !# Half-saturation oxygen concentration for the sediment methane flux (mmol O2/m3)
+   theta_sed_ch4       = 1               !# Arrhenius temperature multiplier for sediment methane flux
+!  Fsed_ch4_variable   = ''              !# Link to aed_sedflux for a spatially/temporally varying Fsed_ch4 (unset by default)
+   atm_co2             = 0.367E-003      !# Atmospheric CO2 partial pressure (atm)
+   atm_ch4             = 0.176E-005      !# Atmospheric CH4 partial pressure (atm)
+   co2_piston_model    = 1               !# Atmospheric CO2 exchange piston velocity model
+   ch4_piston_model    = 1               !# Atmospheric CH4 exchange piston velocity model
+   co2_model           = 1               !# CO2/carbonate system model: 0=diagnostic pCO2 only, 1=full carbonate speciation
+   alk_mode            = 1               !# Alkalinity handling mode
+   ebb_model           = 0               !# Methane ebullition (bubbling) model: 0=off
+   Fsed_ch4_ebb        = 0               !# Sediment methane ebullition flux (mmol C/m2/day)
+!  Fsed_ebb_variable   = ''              !# Link to aed_sedflux for a spatially/temporally varying Fsed_ch4_ebb (unset by default)
+   ch4_bub_aLL         = 42.95127        !# Methane ebullition bubble-size distribution parameter a
+   ch4_bub_cLL         = 0.634           !# Methane ebullition bubble-size distribution parameter c
+   ch4_bub_kLL         = -0.8247         !# Methane ebullition bubble-size distribution parameter k
+   ch4_bub_disf1       = 0.7E-001        !# Methane bubble dissolution fraction, shallow
+   ch4_bub_disf2       = 0.33            !# Methane bubble dissolution fraction, deep
+   ch4_bub_disdp       = 20              !# Methane bubble dissolution reference depth (m)
+   ch4_bub_ws          = 0               !# Methane bubble rise velocity (m/day) (currently unused)
+   ch4_bub_tau0        = 1               !# Methane bubble formation timescale (currently unused)
+   maxMPBProdn         = 40              !# Maximum microphytobenthos production rate (mmol C/m2/day) (currently unused)
+   IkMPB               = 180             !# Microphytobenthos light sensitivity (currently unused)
+   simExposed          = .false.         !# Enable dry/exposed-sediment carbon cycling (auto-enabled when dry_model>0)
+   dry_model           = 0               !# Dry/exposed-sediment carbon model: 0=off
+   theta_sed_dry       = 1               !# Arrhenius temperature multiplier for dry/exposed-sediment flux
+   simStemCH4          = .false.         !# Enable the plant-stem methane transport pathway
+   stem_model          = 0               !# Plant-stem methane transport model: 0=off
+   theta_stm_ch4       = 1               !# Arrhenius temperature multiplier for stem methane transport
+   Fstm_ch4            = 0               !# Stem methane transport flux (mmol C/m2/day)
+!  vegetation_stem_density= ''              !# Link to the vegetation stem-density variable (requires stem_model=2) (unset by default)
+   diag_level          = 10              !# Diagnostic output verbosity: 0=none, 1=basic, 2=flux rates, 3=other metrics, 10=all debug
+!  Fstm_ch4_variable   = ''              !# Link to aed_sedflux for a spatially/temporally varying Fstm_ch4 (unset by default)
+/
+"
+writeLines(aed_carbon_nml, con = tmp_nml_file)
+def_carbon_nml <- AEME::read_nml(tmp_nml_file)
+
+# ── Helper functions ────────────────────────────────────────────────────────
+# write_inflow_glm(), set_outflow_glm(), run_test(), safe_run(), the output
+# extraction helpers (get_var(), surface(), bottom(), col_mean(), col_sum(),
+# wc_mass(), benthic_mass()) and check() live in R/aed_alum_stress_test_helpers.R
+# — see that file for documentation. They rely on `aed`, `aed_models`,
+# `def_alum_nml`, `def_carbon_nml` and `glm_def` (all defined above/below).
+source("R/aed_alum_stress_test_helpers.R")
+
+# ── Tolerances ────────────────────────────────────────────────────────────────
+tol_abs <- 1e-6
+tol_rel <- 1e-3
+
+# ── Non-stopping check infrastructure ────────────────────────────────────────
+.test_results <- data.frame(
+  id = character(), label = character(),
+  status = character(), detail = character(),
+  stringsAsFactors = FALSE
+)
+
+# ── Shared plot theme ─────────────────────────────────────────────────────────
+th <- theme_classic(base_size = 11) +
+  theme(plot.title = element_text(size = 11, face = "bold"),
+        plot.subtitle = element_text(size = 9, colour = "grey40"))
+
+pool_cols <- c(
+  ALU_ala     = "#1f77b4", ALU_alp     = "#ff7f0e",
+  ALU_ben_ala = "#2ca02c", ALU_ben_alp = "#d62728",
+  PHS_frp     = "#9467bd", ALU_uptake_w = "#8c564b",
+  ALU_uptake_s = "#e377c2", ALU_fpH     = "#7f7f7f",
+  expected    = "black"
+)
+
+# set_outflow_glm(glm, enabled = FALSE)
+dir.create("LakeRotorua/output/", showWarnings = FALSE, recursive = TRUE)
+
+cat("Setup complete.\n")
+```
+
+# `aed_alum` Stress Tests
+
+Each section configures the `&aed_alum` namelist, runs GLM-AED, records pass/fail for every assertion, and plots the relevant output variables. The document **always renders to completion**; results are collected in the [Summary](#summary) at the end.
+
+Output variables: `ALU_ala`, `ALU_alp`, `ALU_uptake_w`, `ALU_fpH`, `ALU_ben_ala`, `ALU_ben_alp`, `ALU_uptake_s`, `PHS_frp`
+
+------------------------------------------------------------------------
+
+## 1. Initialisation & Configuration
+
+### 1.1 Null model — all rates zero
+
+All pools initialised to non-zero values; every rate set to zero. **Expect:** all four pools remain exactly constant; all uptake diagnostics = 0; `ALU_fpH = 1.0` throughout.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 1.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 5.0
+   alp_initial          = 2.0
+   ben_ala_initial      = 3.0
+   ben_alp_initial      = 1.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-1-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 5.0, alp_initial = 2.0,
+    ben_ala_initial = 3.0, ben_alp_initial = 1.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, k_res = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  alp      <- col_mean(out, "ALU_alp")
+  ben_ala  <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_mean(out, "ALU_ben_alp_Z")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  uptake_s <- col_mean(out, "ALU_uptake_s_Z")
+  fpH      <- col_mean(out, "ALU_fpH")
+
+  check("1.1a", "ALU_ala total constant (null model)", diff(range(ala)) / (mean(ala) + 1e-12) < 0.01)
+  check("1.1b", "ALU_alp total constant (null model)", diff(range(alp)) / (mean(alp) + 1e-12) < 0.01)
+  check("1.1c", "ALU_ben_ala constant (null model)", diff(range(ben_ala)) < tol_abs)
+  check("1.1d", "ALU_ben_alp constant (null model)", diff(range(ben_alp)) < tol_abs)
+  check("1.1e", "ALU_uptake_w = 0 (null model)",     all(abs(uptake_w)    < tol_abs))
+  check("1.1f", "ALU_uptake_s = 0 (null model)",     all(abs(uptake_s)    < tol_abs))
+  check("1.1g", "ALU_fpH = 1 (pH disabled)",         all(abs(fpH - 1.0)  < tol_abs))
+
+  day <- seq_along(ala)
+  df_pools <- data.frame(day = day, ALU_ala = ala, ALU_alp = alp,
+                         ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+  df_diag <- data.frame(day = day, ALU_uptake_w = uptake_w,
+                        ALU_uptake_s = as.numeric(uptake_s), ALU_fpH = fpH) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  p1 <- ggplot(df_pools, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = pool_cols) +
+    labs(title = "1.1 Pool concentrations (null model)",
+         subtitle = "All should be flat horizontal lines",
+         x = "Day", y = "Concentration (mmol/m³ or mmol/m²)") + th
+
+  p2 <- ggplot(df_diag, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = pool_cols) +
+    labs(title = "1.1 Diagnostics (null model)",
+         subtitle = "uptake_w and uptake_s = 0; fpH = 1",
+         x = "Day", y = "Value") + th
+
+  print(p1 / p2)
+} else {
+  for (id in c("1.1a","1.1b","1.1c","1.1d","1.1e","1.1f","1.1g"))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 1.2 No-dosing baseline — all pools start at zero
+
+`S_ala = 0`, every initial pool = 0. **Expect:** nothing spontaneously appears; all outputs remain 0.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 1.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-1-2
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  # Pelagic vars: check column sum stays near zero (mixing shifts layers)
+  for (v in c("ALU_uptake_w","ALU_ben_ala","ALU_ben_alp","ALU_uptake_s"))
+    check(paste0("1.2-", v), paste(v, "= 0 (zero baseline)"),
+          all(abs(get_var(out, v)) < tol_abs))
+  # For pelagic pool sums, allow tiny mixing noise (< 0.1% of initial if non-zero)
+  for (v in c("ALU_ala","ALU_alp"))
+    check(paste0("1.2-", v), paste(v, "column-sum = 0 (zero baseline)"),
+          max(abs(col_mean(out, v))) < tol_abs)
+
+  day <- seq_along(col_mean(out, "ALU_ala"))
+  df <- data.frame(
+    day          = day,
+    ALU_ala      = col_mean(out, "ALU_ala"),
+    ALU_alp      = col_mean(out, "ALU_alp"),
+    ALU_ben_ala  = col_mean(out, "ALU_ben_ala_Z"),
+    ALU_ben_alp  = col_mean(out, "ALU_ben_alp_Z"),
+    ALU_uptake_w = col_mean(out, "ALU_uptake_w"),
+    ALU_uptake_s = col_mean(out, "ALU_uptake_s_Z")
+  ) |> pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "1.2 Zero baseline — all pools",
+           subtitle = "All lines should lie on y = 0",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("1.2", "Zero baseline (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 1.3 pH modifier disabled — `ALU_fpH` always 1.0
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 1.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-1-3
+#| echo: false
+
+out <- safe_run(list(aed_alum = list(ala_initial = 10.0, ads_use_pH = FALSE, S_ala = 0.0)))
+
+if (!is.null(out)) {
+  fpH <- col_mean(out, "ALU_fpH")
+  check("1.3", "ALU_fpH = 1 when ads_use_pH = FALSE", all(abs(fpH - 1.0) < tol_abs))
+
+  day <- seq_along(fpH)
+  print(
+    ggplot(data.frame(day = day, fpH = fpH), aes(day, fpH)) +
+      geom_line(colour = pool_cols["ALU_fpH"]) +
+      geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+      ylim(0, 1.2) +
+      labs(title = "1.3 ALU_fpH with pH modifier disabled",
+           subtitle = "Should be flat at 1.0",
+           x = "Day", y = "fpH (-)") + th
+  )
+} else {
+  check("1.3", "pH disabled test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 1.4 Resuspension flag suppresses flux
+
+`simResuspension = FALSE` with `k_res = 0.1`; no pelagic initial values. **Expect:** water-column `ALU_ala` and `ALU_alp` remain 0.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 1.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 10.0
+   ben_alp_initial      = 5.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.1
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-1-4
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 10.0, ben_alp_initial = 5.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0,
+    simResuspension = FALSE, k_res = 0.1, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala     <- col_mean(out, "ALU_ala")
+  alp     <- col_mean(out, "ALU_alp")
+  ben_ala <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp <- col_mean(out, "ALU_ben_alp_Z")
+
+  # Mixing can redistribute a tiny amount; check surface layer stays 0
+  ala_surf <- surface(out, "ALU_ala")
+  check("1.4a", "ALU_ala surface = 0 (resuspension flag off)", all(abs(ala_surf) < tol_abs))
+  check("1.4b", "ALU_alp = 0 (resuspension flag off)", all(abs(alp) < tol_abs))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day,
+                   ALU_ala = ala, ALU_alp = alp,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "1.4 Resuspension flag off — pelagic pools",
+           subtitle = "ALU_ala and ALU_alp must stay at 0; benthic pools unchanged",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  check("1.4", "Resuspension flag test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 2. Water-Column Kinetics
+
+### 2.1 Zero capacity → zero uptake
+
+`ALU_ala = 0`; FRP elevated. **Expect:** `ALU_uptake_w = 0`; `ALU_alp` stays 0.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  alp      <- col_mean(out, "ALU_alp")
+  frp      <- col_mean(out, "PHS_frp")
+
+  check("2.1a", "ALU_uptake_w = 0 when ala = 0", all(abs(uptake_w) < tol_abs))
+  check("2.1b", "ALU_alp = 0 when ala = 0",      all(abs(alp)      < tol_abs))
+
+  day <- seq_along(uptake_w)
+  df <- data.frame(day = day, ALU_uptake_w = uptake_w,
+                   ALU_alp = alp, PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "2.1 Zero capacity — uptake and alp",
+           subtitle = "uptake_w and ALU_alp must be 0; FRP unchanged",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("2.1", "Zero capacity test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 2.2 Michaelis-Menten half-maximum
+
+FRP = K_P = 0.3; `ala` = 10; `k_w` = 0.5. **Expect:** `ALU_uptake_w ≈ 2.5 mmol/m³/d` at t = 0.
+
+> Uses the kinetic maintenance inflow (`INFLOW_KINETIC_FRP = 0.3 mmol/m³`) to hold FRP near K_P. Check is evaluated at the first output timestep only.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-2
+#| echo: false
+
+# Kinetic inflow maintains FRP near K_P throughout
+glm_22 <- write_inflow_glm(glm_def, frp_conc = INFLOW_KINETIC_FRP, flow = INFLOW_KINETIC_FLOW, enabled = T)
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.1, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.0, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  ),
+  aed_phosphorus = list(
+    frp_initial = 0.3,
+    ksed_frp = 0,                       # turn off sediment flux
+    fsed_frp_variable = "",             # decouple from sediment flux
+    phosphorus_reactant_variable = ""   # decouple from oxygen too
+  )
+),init_wq = list(PHS_frp = 0.3),
+glm_nml = glm_22)
+
+if (!is.null(out)) {
+  uptake_w  <- col_mean(out, "ALU_uptake_w")
+  ala       <- out[["ALU_ala"]]
+  frp       <- out[["PHS_frp"]]
+  mm_theory_mat <- 0.5 * ala * frp / (0.3 + frp)  # Evaluate at t=0 only before FRP can drift; use actual frp[1] in formula
+  mm_theory <- colMeans((mm_theory_mat))
+  expected_half <- mm_theory[1]
+  rel_err       <- abs(uptake_w[1] - expected_half) / (expected_half + 1e-12)
+
+  check("2.2", "ALU_uptake_w ≈ half-max at FRP = K_P (t=0)",
+        rel_err < 0.05,  # 5% tolerance at t=0
+        sprintf("expected=%.4f observed=%.4f rel_err=%.4f",
+                expected_half, uptake_w[1], rel_err))
+
+  day <- seq_along(uptake_w)
+  # Theoretical MM curve given actual FRP and ala at each timestep
+  # mm_theory <- 0.5 * ala * frp / (0.3 + frp)
+
+  df <- data.frame(day = day, observed = uptake_w, theoretical_MM = mm_theory) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed = "#1f77b4", theoretical_MM = "black")) +
+      scale_linetype_manual(values = c(observed = "solid", theoretical_MM = "dashed")) +
+      geom_vline(xintercept = 1, colour = "grey70", linetype = "dotted") +
+      annotate("text", x = 1.5, y = max(uptake_w, na.rm = TRUE) * 0.9,
+               label = sprintf("t=0: obs=%.3f\nexpected=%.3f", uptake_w[1], expected_half),
+               hjust = 0, size = 3) +
+      labs(title = "2.2 Michaelis-Menten half-maximum check",
+           subtitle = "Observed uptake_w vs. MM theory; should overlap closely",
+           x = "Day", y = "Uptake (mmol/m³/d)") + th
+  )
+} else {
+  check("2.2", "Half-max test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 2.3 Mass conservation — FRP lost = `ALU_alp` gained
+
+No settling, ageing, burial or dosing. Uses the kinetic maintenance inflow to keep FRP above zero throughout. **Expect:** `Δ(ALU_alp) + Δ(PHS_frp) ≈ 0` at every timestep; residual bounded by sediment flux contribution (tolerance relaxed to 5% of mean uptake rate).
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 20.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-3
+#| echo: false
+
+glm_23 <- write_inflow_glm(glm_def, frp_conc = INFLOW_KINETIC_FRP, flow = INFLOW_KINETIC_FLOW)
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 20.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.0, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), glm_nml = glm_23, init_wq = list(PHS_frp = INFLOW_KINETIC_FRP))
+
+if (!is.null(out)) {
+  frp_mass <- wc_mass(out, "PHS_frp")
+  alp_mass <- wc_mass(out, "ALU_alp")
+  residual  <- diff(frp_mass) + diff(alp_mass)
+  max_resid <- max(abs(residual))
+  # Tolerance: sediment flux adds FRP independently; allow 5% of mean uptake flux
+  mean_uptake <- mean(abs(diff(alp_mass)), na.rm = TRUE)
+  tol_mb <- max(tol_abs, 0.05 * mean_uptake)
+
+  check("2.3", "Δ(FRP_mass) + Δ(ALU_alp_mass) ≈ 0 (water-col mass balance, mmol)",
+        max_resid < tol_mb, sprintf("max residual = %.2e mmol  tol = %.2e", max_resid, tol_mb))
+
+  day <- seq_along(frp_mass)
+  # Keep concentration series for plot context
+  frp <- col_mean(out, "PHS_frp")
+  alp <- col_mean(out, "ALU_alp")
+  df_conc <- data.frame(day = day, PHS_frp_mass = frp_mass, ALU_alp_mass = alp_mass,
+                        total_mass = frp_mass + alp_mass) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  df_resid <- data.frame(day = day[-1], residual = residual)
+
+  p1 <- ggplot(df_conc, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = c(PHS_frp_mass = pool_cols["PHS_frp"],
+                                   ALU_alp_mass = pool_cols["ALU_alp"],
+                                   total_mass   = "black")) +
+    labs(title = "2.3 Water-column P mass balance (mmol)",
+         subtitle = "FRP_mass + ALU_alp_mass (total) should be flat",
+         x = "Day", y = "Mass (mmol)") + th
+
+  p2 <- ggplot(df_resid, aes(day, residual)) +
+    geom_line(colour = "firebrick") +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(title = "2.3 Residual Δ(FRP_mass) + Δ(ALU_alp_mass)",
+         subtitle = sprintf("Max = %.2e mmol  (should be ~0)", max_resid),
+         x = "Day", y = "Residual (mmol)") + th
+
+  print(p1 / p2)
+} else {
+  check("2.3", "Water-col mass balance (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 2.4 Ageing — exponential decay of capacity
+
+Only `k_age_w` active; no FRP, no uptake, no settling. **Expect:** `ALU_ala(t) ≈ ala₀ × exp(−k_age_w × t)`; `ALU_alp` stays 0.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-4
+#| echo: false
+
+k_age_w_val <- 0.0998; ala0 <- 10.0
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = ala0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = k_age_w_val, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  alp      <- col_mean(out, "ALU_alp")
+  dt_days  <- if (!is.null(attr(out, "dt_days"))) attr(out, "dt_days") else 1.0
+  day      <- seq(0, (length(ala) - 1) * dt_days, by = dt_days)
+  expected <- ala0 * exp(-k_age_w_val * day)
+  max_rerr <- max(abs(ala - expected) / (expected + 1e-12))
+
+  check("2.4a", "ALU_ala decays exponentially (ageing)",
+        max_rerr < tol_rel, sprintf("max relative error = %.4f", max_rerr))
+  check("2.4b", "ALU_alp stays 0 during ageing", all(abs(alp) < tol_abs))
+
+  df <- data.frame(day = day + 1, observed = ala, expected = expected,
+                   ALU_alp = alp) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed = "#1f77b4",
+                                     expected = "black", ALU_alp = "#ff7f0e")) +
+      scale_linetype_manual(values = c(observed = "solid",
+                                       expected = "dashed", ALU_alp = "solid")) +
+      labs(title = "2.4 Water-column ageing — exponential decay",
+           subtitle = sprintf("ALU_ala vs. ala₀·exp(−k_age_w·t);  max rel err = %.4f",
+                              max_rerr),
+           x = "Day", y = "ALU_ala (mmol/m³)") + th
+  )
+} else {
+  check("2.4", "Ageing decay test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 2.5 Direct dosing — linear increase
+
+`S_ala > 0`, all loss rates zero. Uses the kinetic maintenance inflow to keep FRP non-negative. **Expect:** `ALU_ala` increases linearly at rate `S_ala`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.5</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 200.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-5
+#| echo: false
+
+S_ala_val <- 200.0
+
+glm_25 <- write_inflow_glm(glm_def, frp_conc = INFLOW_KINETIC_FRP, flow = INFLOW_KINETIC_FLOW, enabled = FALSE)
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = S_ala_val
+  )
+), glm_nml = glm_25)
+
+if (!is.null(out)) {
+  ala        <- col_mean(out, "ALU_ala")
+  increments <- diff(ala)
+  max_rerr   <- max(abs(increments - S_ala_val) / S_ala_val)
+
+  check("2.5", "ALU_ala increases linearly with dosing",
+        max_rerr < tol_rel,
+        sprintf("max relative deviation from S_ala = %.4f", max_rerr))
+
+  day      <- seq_along(ala)
+  expected <- S_ala_val * (day - 1)
+
+  df <- data.frame(day = day, observed = ala, expected = expected) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed = "#1f77b4", expected = "black")) +
+      scale_linetype_manual(values = c(observed = "solid", expected = "dashed")) +
+      labs(title = "2.5 Direct dosing — linear increase in ALU_ala",
+           subtitle = sprintf("S_ala = %.0f mmol/m³/d; observed vs. S_ala × t",
+                              S_ala_val),
+           x = "Day", y = "ALU_ala (mmol/m³)") + th
+  )
+} else {
+  check("2.5", "Dosing linear test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 2.6 Dosing + ageing — steady state
+
+**Expect:** `ALU_ala` asymptotes to `S_ala / k_age_w ≈ 2004 mmol/m³`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 2.6</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 200.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-2-6
+#| echo: false
+
+S_ala_val   <- 200.0; k_age_w_val <- 0.0998
+expected_ss <- S_ala_val / k_age_w_val
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = k_age_w_val, k_age_s = 0.0, k_bur = 0.0, S_ala = S_ala_val
+  )
+))
+
+if (!is.null(out)) {
+  ala     <- col_mean(out, "ALU_ala")
+  day     <- seq_along(ala)
+  ss_mean <- mean(tail(ala, 10))
+  ss_err  <- abs(ss_mean - expected_ss) / expected_ss
+
+  check("2.6", "ALU_ala reaches S_ala / k_age_w steady state",
+        ss_err < 0.05,
+        sprintf("expected=%.1f observed=%.1f rel_err=%.4f",
+                expected_ss, ss_mean, ss_err))
+
+  print(
+    ggplot(data.frame(day = day, ALU_ala = ala), aes(day, ALU_ala)) +
+      geom_line(colour = pool_cols["ALU_ala"]) +
+      geom_hline(yintercept = expected_ss, linetype = "dashed", colour = "black") +
+      annotate("text", x = max(day) * 0.6, y = expected_ss * 1.02,
+               label = sprintf("Equilibrium = %.0f", expected_ss),
+               hjust = 0, size = 3) +
+      labs(title = "2.6 Dosing + ageing — approach to steady state",
+           subtitle = sprintf("S_ala/k_age_w = %.1f mmol/m³; observed ss = %.1f",
+                              expected_ss, ss_mean),
+           x = "Day", y = "ALU_ala (mmol/m³)") + th
+  )
+} else {
+  check("2.6", "Dosing steady state test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 3. pH Modifier
+
+### 3.1 `ALU_fpH` with pH_opt = simulated pH
+
+Note that the simulated pH is quite high in this example (≈9.9 for Rotorua). The bell-curve modifier should be near 1.0 when `pH_opt` is set to match the simulated pH.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 3.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .true.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 8.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-3-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, ads_use_pH = TRUE,
+    pH_opt = 8.0, sigma_pH = 1.0,
+    k_w = 0.5, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  fpH <- surface(out, "ALU_fpH")
+  # CAR_pH is dynamic (driven by carbon module); check mean fpH is close to 1
+  # when pH_opt is set to match typical lake pH (~8.0 for Rotorua)
+  ph_sim <- surface(out, "CHM_ph")  # simulated pH
+  fpH_expected <- exp(-((ph_sim - 8.0)^2) / (2 * 1.0^2))
+  fpH_err <- abs(fpH - fpH_expected)
+  check("3.1", "ALU_fpH matches bell-curve given simulated pH",
+        mean(fpH_err, na.rm = TRUE) < 0.05,
+        sprintf("mean |fpH - expected| = %.4f", mean(fpH_err, na.rm = TRUE)))
+  
+  p1 <- ggplot(data.frame(day = seq_along(ph_sim), ph_sim = ph_sim), aes(day, ph_sim)) +
+    geom_line(colour = "steelblue") +
+    geom_hline(yintercept = 8.0, linetype = "dashed", colour = "grey50") +
+    labs(title = "3.1 Simulated pH vs. pH_opt",
+         subtitle = "pH_opt set to 8.0;",
+         x = "Day", y = "Simulated pH") + th
+  
+  p2 <- ggplot(data.frame(day = seq_along(fpH), fpH = fpH, fpH_expected = fpH_expected),
+                aes(day)) +
+    geom_line(aes(y = fpH), colour = pool_cols["ALU_fpH"]) +
+    geom_line(aes(y = fpH_expected), linetype = "dashed", colour = "black") +
+    labs(title = "3.1 ALU_fpH vs. expected from simulated pH",
+         subtitle = "Dashed line is exp(-((pH_sim - pH_opt)^2)/(2*sigma^2))",
+         x = "Day", y = "fpH (-)") + th
+  print(p1 / p2)
+  
+} else {
+  check("3.1", "fpH optimum test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 3.2 `ALU_fpH ≈ exp(−0.5)` at pH_opt ± σ
+
+Run twice — pH_opt is shifted so that the simulated lake pH sits 1σ from optimum. `ALU_fpH` is checked against the bell-curve formula using the actual simulated pH.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 3.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .true.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 9.9 - sign_val * 1.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-3-2
+#| echo: false
+
+expected_fpH <- exp(-0.5)
+results_32   <- list()
+
+for (direction in c("below", "above")) {
+  sign_val <- if (direction == "below") -1 else 1
+  out <- safe_run(list(
+    aed_alum = list(
+      ala_initial = 10.0, ads_use_pH = TRUE,
+      pH_opt   = 9.9 - sign_val * 1.0,
+      sigma_pH = 1.0,
+      k_w = 0.5, w_ala = 0.0, k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+    )
+  ))
+  id  <- paste0("3.2-", direction)
+  lbl <- paste("ALU_fpH ≈ 0.6065 one sigma", direction)
+  if (!is.null(out)) {
+    fpH    <- surface(out, "ALU_fpH")
+    ph_sim <- surface(out, "CHM_ph")
+    ph_opt_used <- 6.0 - sign_val * 1.0
+    fpH_formula <- exp(-((ph_sim - ph_opt_used)^2) / (2 * 1.0^2))
+    err <- mean(abs(fpH - fpH_formula), na.rm = TRUE)
+    check(id, lbl, err < 0.05,
+          sprintf("mean |fpH - formula| = %.4f  (pH_sim mean=%.2f)", err, mean(ph_sim)))
+    results_32[[direction]] <- data.frame(day = seq_along(fpH),
+                                          fpH = fpH, direction = direction)
+  } else {
+    check(id, paste(lbl, "(run failed)"), FALSE, "run_test returned NULL")
+  }
+}
+
+if (length(results_32) > 0) {
+  df32 <- bind_rows(results_32)
+  print(
+    ggplot(df32, aes(day, fpH, colour = direction)) +
+      geom_line() +
+      geom_hline(yintercept = expected_fpH, linetype = "dashed", colour = "black") +
+      geom_hline(yintercept = 1.0,          linetype = "dotted",  colour = "grey60") +
+      annotate("text", x = 2, y = expected_fpH + 0.02,
+               label = sprintf("exp(-0.5) = %.4f", expected_fpH), size = 3) +
+      ylim(0, 1.15) +
+      labs(title = "3.2 ALU_fpH at ±1σ from pH_opt",
+           subtitle = "Both lines should sit near exp(-0.5) ≈ 0.607",
+           x = "Day", y = "fpH (-)") + th
+  )
+}
+
+```
+
+### 3.3 Uptake scales proportionally with `fpH`
+
+Compare `ALU_uptake_w` at optimum vs. one sigma off. **Expect:** ratio ≈ `exp(−0.5)`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 3.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .true.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 9.9
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-3-3
+#| echo: false
+
+out_opt <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, ads_use_pH = TRUE,
+    pH_opt = 9.9, sigma_pH = 1.0,
+    k_w = 0.5, K_P = 0.3, w_ala = 0.0, k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+out_off <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, ads_use_pH = TRUE,
+    pH_opt = 8.9, sigma_pH = 1.0,
+    k_w = 0.5, K_P = 0.3, w_ala = 0.0, k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out_opt) && !is.null(out_off)) {
+  u_opt <- col_mean(out_opt, "ALU_uptake_w")
+  ala_opt <- col_mean(out_opt, "ALU_ala")[1]
+  frp_opt <- col_mean(out_opt, "PHS_frp")[1]
+  
+  u_off <- col_mean(out_off, "ALU_uptake_w")
+  ala_off <- col_mean(out_off, "ALU_ala")[1]
+  frp_off <- col_mean(out_off, "PHS_frp")[1]
+
+  norm_opt <- u_opt[1] / (ala_opt * frp_opt / (0.3 + frp_opt) + 1e-12)  # ≈ k_w * fpH_opt
+  norm_off <- u_off[1] / (ala_off * frp_off / (0.3 + frp_off) + 1e-12)  # ≈ k_w * fpH_off
+
+  ratio <- norm_off / norm_opt   # should now match fpH_off/fpH_opt tightly
+  
+  fpH_opt <- col_mean(out_opt, "ALU_fpH")[1]
+  fpH_off <- col_mean(out_off, "ALU_fpH")[1]
+  # Expected ratio is fpH_off / fpH_opt (both evaluated at t=0)
+  expected_ratio <- fpH_off / (fpH_opt + 1e-12)
+  err   <- abs(ratio - expected_ratio) / (expected_ratio + 1e-12)
+
+  check("3.3", "Uptake ratio matches fpH ratio at 1σ from pH_opt",
+        err < 0.05,
+        sprintf("expected ratio=%.4f (fpH_off/fpH_opt) observed=%.4f", expected_ratio, ratio))
+
+  day <- seq_along(u_opt)
+  df33 <- data.frame(day = day,
+                     "pH = pH_opt" = u_opt,
+                     "pH = pH_opt - 1σ" = u_off,
+                     check.names = FALSE) |>
+    pivot_longer(-day, names_to = "scenario", values_to = "uptake_w")
+
+  print(
+    ggplot(df33, aes(day, uptake_w, colour = scenario)) +
+      geom_line() +
+      annotate("text", x = max(day) * 0.6, y = max(u_opt) * 0.6,
+               label = sprintf("Ratio (t=0) = %.4f\nexp(-0.5) = %.4f",
+                               ratio, exp(-0.5)), size = 3) +
+      labs(title = "3.3 Uptake suppressed by pH offset",
+           subtitle = "Off-optimum uptake should be ~60.7% of optimum",
+           x = "Day", y = "ALU_uptake_w (mmol/m³/d)") + th
+  )
+} else {
+  check("3.3", "Uptake scaling pH test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 3.4 Zero sigma — no divide-by-zero crash
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 3.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .true.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 9.9
+   sigma_pH             = 0.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-3-4
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, ads_use_pH = TRUE,
+    pH_opt = 9.9, sigma_pH = 0.0,
+    k_w = 0.5, w_ala = 0.0, k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  fpH <- col_mean(out, "ALU_fpH")
+  check("3.4", "ALU_fpH finite with sigma_pH = 0 (clamp check)", all(is.finite(fpH)))
+
+  print(
+    ggplot(data.frame(day = seq_along(fpH), fpH = fpH), aes(day, fpH)) +
+      geom_line(colour = pool_cols["ALU_fpH"]) +
+      labs(title = "3.4 fpH with sigma_pH = 0 (clamped to 1e-6)",
+           subtitle = "Must be finite; extreme bell curve expected",
+           x = "Day", y = "fpH (-)") + th
+  )
+} else {
+  check("3.4", "Zero sigma test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 3.5 Bell-curve shape across pH range
+
+> **No model run** — theoretical plot of the bell-curve formula computed analytically from the default `pH_opt = 6.0` and `sigma_pH = 1.0` values.
+
+Sweep `pH_opt` to simulate different pH values and confirm the bell-curve shape of `ALU_fpH`.
+
+```{r}
+#| label: test-3-5
+#| echo: false
+
+sigma_val  <- 1.0
+ph_opt_ref <- 6.0
+ph_sweep   <- seq(3, 10, by = 0.5)
+
+fpH_theory <- exp(-((ph_sweep - ph_opt_ref)^2) / (2 * sigma_val^2))
+
+print(
+  ggplot(data.frame(pH = ph_sweep, fpH = fpH_theory), aes(pH, fpH)) +
+    geom_line(colour = pool_cols["ALU_fpH"], linewidth = 1) +
+    geom_vline(xintercept = ph_opt_ref, linetype = "dashed", colour = "grey50") +
+    geom_hline(yintercept = exp(-0.5),  linetype = "dotted", colour = "grey50") +
+    annotate("text", x = ph_opt_ref + 0.2, y = 0.05,
+             label = sprintf("pH_opt = %.1f", ph_opt_ref), size = 3) +
+    annotate("text", x = 3.2, y = exp(-0.5) + 0.03,
+             label = sprintf("exp(-0.5) = %.3f", exp(-0.5)), size = 3) +
+    labs(title = "3.5 Theoretical bell-curve shape of fpH modifier",
+         subtitle = sprintf("sigma_pH = %.1f; shows expected alum efficiency vs pH",
+                            sigma_val),
+         x = "pH", y = "fpH (-)") + th
+)
+
+```
+
+------------------------------------------------------------------------
+
+## 4. Benthic Processes
+
+### 4.1 Settling only — deposition to bed
+
+`w_ala > 0`; all uptake, ageing, burial zero. **Expect:** pelagic pools decline; benthic pools rise; `ALU_uptake_w = 0`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 5.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, alp_initial = 5.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 5.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala_bot  <- bottom(out, "ALU_ala")  # bottom layer loses to deposition
+  alp_bot  <- bottom(out, "ALU_alp")
+  ala      <- col_mean(out, "ALU_ala")  # column sum for plot
+  alp      <- col_mean(out, "ALU_alp")
+  ben_ala  <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_mean(out, "ALU_ben_alp_Z")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+
+  check("4.1a", "ALU_ala (bottom) declines with settling",  all(diff(ala_bot) <= tol_abs))
+  check("4.1b", "ALU_alp (bottom) declines with settling",  all(diff(alp_bot) <= tol_abs))
+  check("4.1c", "ALU_ben_ala increases with settling", all(diff(ben_ala) >= -tol_abs))
+  check("4.1d", "ALU_ben_alp increases with settling", all(diff(ben_alp) >= -tol_abs))
+  check("4.1e", "ALU_uptake_w = 0 (settling only)",   all(abs(uptake_w)  < tol_abs))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day, ALU_ala = ala, ALU_alp = alp,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "4.1 Settling only — pelagic decline, benthic rise",
+           subtitle = "Pelagic pools decline; benthic pools accumulate",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  for (id in paste0("4.1", letters[1:5]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.2 Zero settling velocity — benthic pools unchanged
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 5.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-2
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, alp_initial = 5.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala     <- col_mean(out, "ALU_ala")
+  alp     <- col_mean(out, "ALU_alp")
+  ben_ala <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp <- col_mean(out, "ALU_ben_alp_Z")
+
+  check("4.2a", "ALU_ben_ala = 0 with w_ala = 0", all(abs(ben_ala) < tol_abs))
+  check("4.2b", "ALU_ben_alp = 0 with w_ala = 0", all(abs(ben_alp) < tol_abs))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day, ALU_ala = ala, ALU_alp = alp,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "4.2 Zero settling — benthic pools remain 0",
+           subtitle = "ALU_ben_ala and ALU_ben_alp must stay at zero",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  check("4.2", "Zero settling test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.3 Benthic uptake — zero capacity gives zero uptake
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-3
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.1, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  uptake_s <- get_var(out, "ALU_uptake_s")
+  ben_alp  <- get_var(out, "ALU_ben_alp")
+  frp      <- col_mean(out, "PHS_frp")
+
+  check("4.3a", "ALU_uptake_s = 0 when ben_ala = 0", all(abs(uptake_s) < tol_abs))
+  check("4.3b", "ALU_ben_alp = 0 when ben_ala = 0",  all(abs(ben_alp) < tol_abs))
+
+  day <- seq_along(frp)
+  df <- data.frame(day = day,
+                   PHS_frp = frp,
+                   ALU_uptake_s = as.numeric(uptake_s),
+                   ALU_ben_alp  = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "4.3 Benthic uptake — zero capacity",
+           subtitle = "uptake_s and ben_alp must be 0; FRP unaffected",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("4.3", "Benthic zero capacity test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.4 Benthic uptake — mass conservation
+
+Only `k_s` active; no settling, pelagic uptake, ageing or burial. **Expect:** FRP declines at the bed; `ALU_ben_alp` grows.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 10.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-4
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 10.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.1, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  frp      <- bottom(out, "PHS_frp")
+  ben_ala  <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_mean(out, "ALU_ben_alp_Z")
+  uptake_s <- get_var(out, "ALU_uptake_s")
+
+  check("4.4a", "FRP declines at bed (benthic uptake)", all(diff(frp)     <= tol_abs))
+  check("4.4b", "ALU_ben_alp grows (benthic uptake)",   all(diff(ben_alp) >= -tol_abs))
+  check("4.4c", "ALU_ben_alp > 0 after benthic uptake", tail(ben_alp, 1)   > 0)
+
+  day <- seq_along(frp)
+  df <- data.frame(day = day,
+                   PHS_frp_bottom = frp,
+                   ALU_ben_ala    = ben_ala,
+                   ALU_ben_alp    = ben_alp,
+                   ALU_uptake_s   = as.numeric(uptake_s)) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+  sel_cols <- c(pool_cols["PHS_frp"], pool_cols["ALU_ben_ala"],
+                pool_cols["ALU_ben_alp"], pool_cols["ALU_uptake_s"])
+  names(sel_cols) <- c("PHS_frp_bottom", "ALU_ben_ala", "ALU_ben_alp", "ALU_uptake_s")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = sel_cols) +
+      labs(title = "4.4 Benthic uptake mass conservation",
+           subtitle = "FRP(bed) declines; ben_alp grows; ben_ala unchanged",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("4.4", "Benthic mass balance test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.5 Benthic ageing — exponential decay, true sink
+
+Only `k_age_s` active. **Expect:** `ALU_ben_ala(t) ≈ ben_ala₀ × exp(−k_age_s × t)`; `ALU_ben_alp` and water column unaffected.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.5</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 10.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-5
+#| echo: false
+
+k_age_s_val <- 0.0998
+ben_ala0 <- 10.0
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = ben_ala0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = k_age_s_val, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ben_ala  <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_mean(out, "ALU_ben_alp_Z")
+  ala      <- col_mean(out, "ALU_ala")
+  # Infer output timestep from GLM output metadata (days)
+  dt_days  <- if (!is.null(attr(out, "dt_days"))) attr(out, "dt_days") else 1.0
+  day      <- seq(0, (length(ben_ala) - 1) * dt_days, by = dt_days)
+  expected <- ben_ala0 * exp(-k_age_s_val * day)
+  max_rerr <- max(abs(ben_ala - expected) / (expected + 1e-12))
+
+  check("4.5a", "ALU_ben_ala decays exponentially (benthic ageing)",
+        max_rerr < tol_rel, sprintf("max rel error = %.4f", max_rerr))
+  check("4.5b", "ALU_ben_alp unchanged during benthic ageing", all(abs(ben_alp) < tol_abs))
+  check("4.5c", "ALU_ala column-sum ≈ 0 during benthic ageing", max(abs(ala)) < 0.01)
+
+  df <- data.frame(day = day + 1, observed = ben_ala, expected = expected) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed = pool_cols["ALU_ben_ala"],
+                                     expected = "black")) +
+      scale_linetype_manual(values = c(observed = "solid", expected = "dashed")) +
+      labs(title = "4.5 Benthic ageing — exponential decay",
+           subtitle = sprintf("Observed vs. ben_ala₀·exp(−k_age_s·t); max rel err = %.4f",
+                              max_rerr),
+           x = "Day", y = "ALU_ben_ala (mmol/m²)") + th
+  )
+} else {
+  check("4.5", "Benthic ageing test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.6 Burial — both benthic pools decline, no water-column effect
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.6</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 10.0
+   ben_alp_initial      = 5.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-6
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 10.0, ben_alp_initial = 5.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.01, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ben_ala  <- col_mean(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_mean(out, "ALU_ben_alp_Z")
+  ala     <- col_mean(out, "ALU_ala")
+  alp     <- col_mean(out, "ALU_alp")
+
+  check("4.6a", "ALU_ben_ala declines with burial",  all(diff(ben_ala) <= tol_abs))
+  check("4.6b", "ALU_ben_alp declines with burial",  all(diff(ben_alp) <= tol_abs))
+  check("4.6c", "ALU_ala column-sum ≈ 0 (burial)",  max(abs(ala)) < 0.01)
+  check("4.6d", "ALU_alp unchanged by burial",       all(abs(alp)       < tol_abs))
+
+  day <- seq_along(ben_ala)
+  df <- data.frame(day = day,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp,
+                   ALU_ala = ala, ALU_alp = alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "4.6 Burial — benthic pools decline, pelagic unchanged",
+           subtitle = "ben_ala and ben_alp decay; ALU_ala and ALU_alp stay at 0",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  for (id in paste0("4.6", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 4.7 Resuspension — mass conservation
+
+`simResuspension = TRUE`, `k_res = 0.1`; no other processes. **Expect:** benthic pools decline; pelagic pools grow.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 4.7</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 10.0
+   ben_alp_initial      = 5.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .true.
+   k_res                = 0.1
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-4-7
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 10.0, ben_alp_initial = 5.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0,
+    simResuspension = TRUE, k_res = 0.1, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ben_ala  <- col_sum(out, "ALU_ben_ala_Z")
+  ben_alp  <- col_sum(out, "ALU_ben_alp_Z")
+  ala      <- col_sum(out, "ALU_ala")   # for plot
+  alp      <- col_sum(out, "ALU_alp")
+  ala_bot  <- bottom(out, "ALU_ala")     # resuspension adds to bottom cell
+  alp_bot  <- bottom(out, "ALU_alp")
+
+  check("4.7a", "ALU_ben_ala declines with resuspension",      all(diff(ben_ala) <= tol_abs))
+  check("4.7b", "ALU_ben_alp declines with resuspension",      all(diff(ben_alp) <= tol_abs))
+  check("4.7c", "ALU_ala (bottom) grows with resuspension",    all(diff(ala_bot) >= -tol_abs))
+  check("4.7d", "ALU_alp (bottom) grows with resuspension",    all(diff(alp_bot) >= -tol_abs))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day,
+                   ALU_ala = ala, ALU_alp = alp,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "4.7 Resuspension — benthic to pelagic transfer",
+           subtitle = "Benthic pools decline; pelagic pools grow by equal amount",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  for (id in paste0("4.7", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 5. Mass Balance Tests
+
+### 5.1 Full phosphorus mass balance — no dosing, no burial
+
+`Δ(PHS_frp) + Δ(ALU_alp) + Δ(ALU_ben_alp) ≈ 0` at every timestep.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 5.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 20.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-5-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 20.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  frp_mass <- wc_mass(out, "PHS_frp")
+  alp_mass <- wc_mass(out, "ALU_alp")
+  ben_mass <- benthic_mass(out, "ALU_ben_alp_Z")
+  total_p  <- frp_mass + alp_mass + ben_mass
+  residual <- diff(total_p)
+  max_resid <- max(abs(residual))
+
+  # Sediment flux adds FRP independently — tolerance 5% of mean total-P flux (mmol)
+  mean_flux <- mean(abs(diff(total_p)), na.rm = TRUE)
+  tol_mb5   <- max(tol_abs, 0.05 * mean_flux)
+  check("5.1", "Δ(FRP_mass+ALU_alp_mass+ALU_ben_alp_mass) ≈ 0 (total P conserved, mmol)",
+        max_resid < tol_mb5, sprintf("max residual = %.2e mmol  tol = %.2e", max_resid, tol_mb5))
+
+  day <- seq_along(frp_mass)
+  df_conc <- data.frame(day = day,
+                        FRP_mass = frp_mass, ALU_alp_mass = alp_mass,
+                        ALU_ben_alp_mass = ben_mass, Total_P_mass = total_p) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  df_resid <- data.frame(day = day[-1], residual = residual)
+  
+  sel_cols <- c(pool_cols["PHS_frp"], pool_cols["ALU_alp"],
+                pool_cols["ALU_ben_alp"], "black")
+  names(sel_cols) <- c("FRP_mass", "ALU_alp_mass", "ALU_ben_alp_mass", "Total_P_mass")
+
+  p1 <- ggplot(df_conc, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = sel_cols) +
+    labs(title = "5.1 Total P mass balance (mmol)",
+         subtitle = "Total_P_mass (black) should be flat",
+         x = "Day", y = "Mass (mmol)") + th
+
+  p2 <- ggplot(df_resid, aes(day, residual)) +
+    geom_line(colour = "firebrick") +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(title = "5.1 Residual Δ(total P) per timestep",
+         subtitle = sprintf("Max = %.2e  (should be ~machine precision)", max_resid),
+         x = "Day", y = "Residual") + th
+
+  # ── Cross-check against GLM's own internal mass-balance accounting ─────────
+  # Independent of the netcdf-reconstructed masses above: glm_balance.c tracks
+  # inflow/outflow/lake totals itself. mass_balance only covers water-column
+  # vars (no benthic pools), so compare against the pelagic portion only
+  # (FRP + ALU_alp; ALU_ala is alum binding *capacity*, not phosphorus mass,
+  # and is excluded from total_p above for the same reason).
+  mb <- out[["mass_balance"]]
+  if (!is.null(mb) && nrow(mb) == length(day)) {
+    wc_recon   <- frp_mass + alp_mass
+    wc_native  <- mb$lake_PHS_frp + mb$lake_ALU_alp
+    mb_resid   <- max(abs(wc_recon - wc_native), na.rm = TRUE)
+    mb_tol     <- max(tol_abs, 0.05 * mean(abs(wc_recon), na.rm = TRUE))
+
+    check("5.1-mb", "Reconstructed water-column P mass matches GLM's own mass_balance accounting",
+          mb_resid < mb_tol,
+          sprintf("max |reconstructed - native| = %.2e mmol  tol = %.2e", mb_resid, mb_tol))
+
+    df_cross <- data.frame(day = day,
+                           reconstructed_netcdf    = wc_recon,
+                           glm_native_mass_balance = wc_native) |>
+      pivot_longer(-day, names_to = "source", values_to = "value")
+
+    p3 <- ggplot(df_cross, aes(day, value, colour = source, linetype = source)) +
+      geom_line() +
+      scale_colour_manual(values = c(reconstructed_netcdf    = pool_cols["PHS_frp"],
+                                     glm_native_mass_balance = "black")) +
+      scale_linetype_manual(values = c(reconstructed_netcdf    = "solid",
+                                       glm_native_mass_balance = "dashed")) +
+      labs(title = "5.1 Water-column P — netcdf reconstruction vs. GLM's own mass_balance",
+           subtitle = "Two independently-computed sources; should overlap if mass is truly conserved",
+           x = "Day", y = "Mass (mmol)") + th
+
+    print(p1 / p2 / p3)
+  } else {
+    if (!is.null(mb)) {
+      message(sprintf("5.1: mass_balance rows (%d) != netcdf timesteps (%d); skipping cross-check plot",
+                      nrow(mb), length(day)))
+    }
+    print(p1 / p2)
+  }
+} else {
+  check("5.1", "Full P mass balance (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 5.2 Cumulative uptake matches `ALU_alp` accumulation
+
+Water-column only (no settling). `Σ ALU_uptake_w ≈ ALU_alp` at end.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 5.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 50.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-5-2
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 50.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.0, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  # Use mass (mmol) for both sides so units match
+  uptake_mass <- wc_mass(out, "ALU_uptake_w")   # mmol/d at each timestep
+  alp_mass    <- wc_mass(out, "ALU_alp")        # mmol (stock)
+  cum_uptake  <- cumsum(uptake_mass)             # cumulative mmol removed
+  final_alp   <- tail(alp_mass, 1)
+  final_upk   <- tail(cum_uptake, 1)
+  rel_err     <- abs(final_alp - final_upk) / (final_alp + 1e-12)
+
+  check("5.2", "Σ ALU_uptake_w_mass ≈ ALU_alp_mass (cumulative integral, 1% tolerance)",
+        rel_err < 0.01,
+        sprintf("alp_mass=%.2f mmol  Σuptake_mass=%.2f mmol  rel_err=%.4f",
+                final_alp, final_upk, rel_err))
+
+  day <- seq_along(alp_mass)
+  df <- data.frame(day = day, ALU_alp_mass = alp_mass,
+                   cumulative_uptake_mass = cum_uptake) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+  
+  sel_cols <- c(pool_cols["ALU_alp"], "black")
+  names(sel_cols) <- c("ALU_alp_mass", "cumulative_uptake_mass")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = sel_cols) +
+      scale_linetype_manual(values = c(ALU_alp_mass = "solid",
+                                       cumulative_uptake_mass = "dashed")) +
+      labs(title = "5.2 Cumulative uptake mass vs. ALU_alp mass (mmol)",
+           subtitle = sprintf("Should overlap; rel error = %.4f", rel_err),
+           x = "Day", y = "Mass (mmol)") + th
+  )
+} else {
+  check("5.2", "Uptake integral test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 5.3 Steady state with all processes active
+
+**Expect:** pool CVs \< 5 % in the final 10 % of timesteps.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 5.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .true.
+   k_res                = 0.05
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 200.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-5-3
+#| echo: false
+
+glm_53 <- write_inflow_glm(glm_def, frp_conc = INFLOW_SCENARIO_FRP, flow = INFLOW_SCENARIO_FLOW)
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = TRUE, k_res = 0.05, S_ala = 200.0
+  )
+), glm_nml = glm_53)
+
+if (!is.null(out)) {
+  ala     <- col_mean(out, "ALU_ala")
+  ben_ala <- get_var(out, "ALU_ben_ala")
+  frp     <- col_mean(out, "PHS_frp")
+  n       <- length(ala)
+  ss_idx  <- tail(seq_len(n), max(10L, round(n * 0.1)))
+  ala_cv  <- sd(ala[ss_idx])     / (mean(ala[ss_idx])     + 1e-12)
+  ben_cv  <- sd(ben_ala[ss_idx]) / (mean(ben_ala[ss_idx]) + 1e-12)
+
+  check("5.3a", "ALU_ala at steady state (CV < 5%)",
+        ala_cv < 0.05, sprintf("CV = %.4f", ala_cv))
+  check("5.3b", "ALU_ben_ala at steady state (CV < 5%)",
+        ben_cv < 0.05, sprintf("CV = %.4f", ben_cv))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day, ALU_ala = ala,
+                   ALU_ben_ala = ben_ala, PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      geom_vline(xintercept = day[min(ss_idx)],
+                 linetype = "dashed", colour = "grey50") +
+      annotate("text", x = day[min(ss_idx)] + 1,
+               y = max(ala, na.rm = TRUE) * 0.9,
+               label = "SS window →", hjust = 0, size = 3) +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "5.3 Steady state — all processes active",
+           subtitle = sprintf("ALU_ala CV=%.3f  ALU_ben_ala CV=%.3f (target <0.05)",
+                              ala_cv, ben_cv),
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  check("5.3", "Steady state test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 6. Stress & Edge Cases
+
+### 6.1 Very high FRP — saturation, no overflow
+
+**Expect:** no NaN; `ALU_uptake_w ≤ k_w × ala`; `PHS_frp ≥ 0`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 6.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-6-1
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.0, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  frp      <- col_mean(out, "PHS_frp")
+  alp      <- col_mean(out, "ALU_alp")
+  ala      <- col_mean(out, "ALU_ala")
+
+  check("6.1a", "No NaN in ALU_uptake_w (high FRP)",   all(is.finite(uptake_w)))
+  check("6.1b", "No NaN in ALU_alp (high FRP)",        all(is.finite(alp)))
+  check("6.1c", "PHS_frp >= 0 (high FRP)",             all(frp >= -tol_abs))
+  check("6.1d", "ALU_uptake_w <= k_w × ala (saturation cap)",
+        all(uptake_w <= 0.5 * 10.0 + tol_abs))
+
+  day <- seq_along(uptake_w)
+  saturation_limit <- 0.5 * ala   # k_w * ala at each timestep
+  df <- data.frame(day = day, observed_uptake_w = uptake_w,
+                   saturation_ceiling = saturation_limit) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed_uptake_w = pool_cols["ALU_uptake_w"],
+                                     saturation_ceiling = "black")) +
+      scale_linetype_manual(values = c(observed_uptake_w = "solid",
+                                       saturation_ceiling = "dashed")) +
+      labs(title = "6.1 High FRP — uptake vs. saturation ceiling",
+           subtitle = "Observed uptake must stay below k_w × ALU_ala",
+           x = "Day", y = "ALU_uptake_w (mmol/m³/d)") + th
+  )
+} else {
+  for (id in paste0("6.1", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 6.2 Capacity exhaustion — no negatives, uptake ceases
+
+Limited capacity, high FRP.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 6.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 1.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.5
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-6-2
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 1.0, alp_initial = 0.0,
+    ben_ala_initial = 0.5, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  ben_ala  <- get_var(out, "ALU_ben_ala")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  uptake_s <- get_var(out, "ALU_uptake_s")
+  frp      <- col_mean(out, "PHS_frp")
+
+  check("6.2a", "ALU_ala >= 0 (exhaustion)",     all(ala     >= -tol_abs))
+  check("6.2b", "ALU_ben_ala >= 0 (exhaustion)", all(ben_ala >= -tol_abs))
+  check("6.2c", "PHS_frp >= 0 (exhaustion)",     all(frp     >= -tol_abs))
+  check("6.2d", "ALU_uptake_w >= 0",             all(uptake_w >= -tol_abs))
+  check("6.2e", "ALU_uptake_s >= 0",             all(uptake_s >= -tol_abs))
+  check("6.2f", "ALU_uptake_w ceases near end",  mean(tail(uptake_w, 5)) < 1e-3)
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day,
+                   ALU_ala = ala, ALU_ben_ala = ben_ala,
+                   ALU_uptake_w = uptake_w,
+                   ALU_uptake_s = as.numeric(uptake_s)) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "6.2 Capacity exhaustion",
+           subtitle = "All pools and uptakes must stay ≥ 0; uptake should cease",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  for (id in paste0("6.2", letters[1:6]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 6.3 Aggressive settling — numerical stability
+
+`w_ala = 50 m/d`. **Expect:** `ALU_ala ≥ 0`; no NaN.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 6.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 100.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.0
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 50.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-6-3
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 100.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.0, k_s = 0.0, w_ala = 50.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  ala     <- col_mean(out, "ALU_ala")
+  ben_ala <- get_var(out, "ALU_ben_ala")
+
+  check("6.3a", "ALU_ala non-negative (settling stability)", all(ala     >= -tol_abs))
+  check("6.3b", "No NaN in ALU_ala (settling stability)",   all(is.finite(ala)))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day, ALU_ala = ala, ALU_ben_ala = ben_ala) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "6.3 Aggressive settling (w_ala = 50 m/d) — stability check",
+           subtitle = sprintf("ALU_ala min = %.4f (must be ≥ 0)", min(ala)),
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  check("6.3", "Aggressive settling test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 6.4 All processes simultaneously — kitchen sink
+
+Every flag on, every rate positive. **Expect:** no pool negative; all diagnostics finite.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 6.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 2.0
+   ben_ala_initial      = 5.0
+   ben_alp_initial      = 1.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .true.
+   k_res                = 0.05
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 200.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-6-4
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, alp_initial = 2.0,
+    ben_ala_initial = 5.0, ben_alp_initial = 1.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = TRUE, k_res = 0.05,
+    ads_use_pH = FALSE, S_ala = 200.0
+  )
+))
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  alp      <- col_mean(out, "ALU_alp")
+  ben_ala  <- get_var(out, "ALU_ben_ala")
+  ben_alp  <- get_var(out, "ALU_ben_alp")
+  frp      <- col_mean(out, "PHS_frp")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  uptake_s <- get_var(out, "ALU_uptake_s")
+  fpH      <- col_mean(out, "ALU_fpH")
+
+  check("6.4a", "ALU_ala >= 0 (kitchen sink)",     all(ala     >= -tol_abs))
+  check("6.4b", "ALU_alp >= 0 (kitchen sink)",     all(alp     >= -tol_abs))
+  check("6.4c", "ALU_ben_ala >= 0 (kitchen sink)", all(ben_ala >= -tol_abs))
+  check("6.4d", "ALU_ben_alp >= 0 (kitchen sink)", all(ben_alp >= -tol_abs))
+  check("6.4e", "PHS_frp >= 0 (kitchen sink)",     all(frp     >= -tol_abs))
+  check("6.4f", "ALU_uptake_w finite",              all(is.finite(uptake_w)))
+  check("6.4g", "ALU_uptake_s finite",              all(is.finite(uptake_s)))
+  check("6.4h", "ALU_fpH finite",                   all(is.finite(fpH)))
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day, ALU_ala = ala, ALU_alp = alp,
+                   ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp,
+                   PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "6.4 Kitchen sink — all processes active",
+           subtitle = "All pools must remain ≥ 0 throughout",
+           x = "Day", y = "Concentration") + th
+  )
+} else {
+  for (id in paste0("6.4", letters[1:8]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 7. Scenario Tests
+
+### 7.1 Alum pulse dose — full lifecycle
+
+Large single pulse at t=0, no further dosing. Tracks: water-column uptake → settling → benthic binding → ageing → burial.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 7.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 500.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-7-1
+#| echo: false
+
+glm_71 <- write_inflow_glm(glm_def, frp_conc = INFLOW_SCENARIO_FRP, flow = INFLOW_SCENARIO_FLOW)
+# No-dosing baseline for comparison
+out_71_nd <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), glm_nml = glm_71)
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 500.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), glm_nml = glm_71)
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  alp      <- col_mean(out, "ALU_alp")
+  ben_ala  <- get_var(out, "ALU_ben_ala")
+  ben_alp  <- get_var(out, "ALU_ben_alp")
+  frp      <- col_mean(out, "PHS_frp")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  frp_nd   <- if (!is.null(out_71_nd)) col_mean(out_71_nd, "PHS_frp") else frp * NA
+
+  check("7.1a", "ALU_ala declines after pulse",    ala[length(ala)]  < ala[1])
+  check("7.1b", "PHS_frp lower than no-dosing baseline (pulse effect)",
+        mean(tail(frp, 10)) < mean(tail(frp_nd, 10)))
+  check("7.1c", "ALU_ben_alp > 0 after settling",  max(ben_alp)      > 0)
+  check("7.1d", "ALU_ala >= 0 throughout",          all(ala     >= -tol_abs))
+  check("7.1e", "ALU_ben_ala >= 0 throughout",      all(ben_ala >= -tol_abs))
+  check("7.1f", "PHS_frp >= 0 throughout",          all(frp     >= -tol_abs))
+
+  day <- seq_along(ala)
+  df_pools <- data.frame(day = day, ALU_ala = ala, ALU_alp = alp,
+                         ALU_ben_ala = ben_ala, ALU_ben_alp = ben_alp,
+                         PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  df_upk <- data.frame(day = day, ALU_uptake_w = uptake_w)
+
+  p1 <- ggplot(df_pools, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = pool_cols) +
+    labs(title = "7.1 Pulse lifecycle — pool trajectories",
+         subtitle = "ALU_ala → settles → ben_ala → ben_alp → buried",
+         x = "Day", y = "Concentration") + th
+
+  p2 <- ggplot(df_upk, aes(day, ALU_uptake_w)) +
+    geom_line(colour = pool_cols["ALU_uptake_w"]) +
+    labs(title = "7.1 Water-column uptake rate over time",
+         subtitle = "Should peak early then decline as ALU_ala is exhausted",
+         x = "Day", y = "ALU_uptake_w (mmol/m³/d)") + th
+
+  print(p1 / p2)
+} else {
+  for (id in paste0("7.1", letters[1:6]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 7.2 High-FRP lake recovery
+
+Elevated FRP, continuous dosing. Examines FRP trajectory and relative contribution of water-column vs. benthic uptake.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 7.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 50.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 200.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-7-2
+#| echo: false
+
+glm_72 <- write_inflow_glm(glm_def, frp_conc = INFLOW_SCENARIO_FRP, flow = INFLOW_SCENARIO_FLOW)
+out_72_nd <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 50.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), glm_nml = glm_72, init_wq = list(PHS_frp = INIT_FRP_HIGH))
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 50.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE, S_ala = 200.0
+  )
+), glm_nml = glm_72, init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  frp      <- col_mean(out, "PHS_frp")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  uptake_s <- as.numeric(get_var(out, "ALU_uptake_s"))
+  ala      <- col_mean(out, "ALU_ala")
+  ben_ala  <- get_var(out, "ALU_ben_ala")
+  frp_nd   <- if (!is.null(out_72_nd)) col_mean(out_72_nd, "PHS_frp") else frp * NA
+
+  check("7.2a", "PHS_frp lower than no-dosing baseline (dosing effect)",
+        mean(tail(frp, 10)) < mean(tail(frp_nd, 10)))
+  check("7.2b", "PHS_frp >= 0 throughout",          all(frp >= -tol_abs))
+
+  total_w <- sum(uptake_w, na.rm = TRUE)
+  total_s <- sum(uptake_s, na.rm = TRUE)
+
+  day <- seq_along(frp)
+  df_frp <- data.frame(day = day, PHS_frp = frp)
+  df_upk <- data.frame(day = day,
+                       water_column = uptake_w,
+                       benthic      = uptake_s) |>
+    pivot_longer(-day, names_to = "compartment", values_to = "uptake")
+  df_cap <- data.frame(day = day, ALU_ala = ala, ALU_ben_ala = ben_ala) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  p1 <- ggplot(df_frp, aes(day, PHS_frp)) +
+    geom_line(colour = pool_cols["PHS_frp"]) +
+    labs(title = "7.2 FRP recovery trajectory",
+         subtitle = "Should decline monotonically",
+         x = "Day", y = "PHS_frp (mmol/m³)") + th
+
+  p2 <- ggplot(df_upk, aes(day, uptake, colour = compartment)) +
+    geom_line() +
+    annotate("text", x = max(day) * 0.5, y = max(uptake_w) * 0.8,
+             label = sprintf("Total water : benthic = %.1f : %.1f\nratio = %.2f",
+                             total_w, total_s, total_w / (total_s + 1e-12)),
+             size = 3, hjust = 0) +
+    labs(title = "7.2 Uptake by compartment",
+         subtitle = "Relative contribution of water-column vs. benthic removal",
+         x = "Day", y = "Uptake (mmol/m³ or /m² per d)") + th
+
+  p3 <- ggplot(df_cap, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = pool_cols) +
+    labs(title = "7.2 Capacity pools over time",
+         x = "Day", y = "Concentration") + th
+
+  print(p1 / p2 / p3)
+} else {
+  for (id in c("7.2a","7.2b"))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 7.3 Capacity exhaustion — graceful cessation
+
+Finite capacity into a high-FRP system.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 7.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 1.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.5
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-7-3
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 1.0, alp_initial = 0.0,
+    ben_ala_initial = 0.5, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0, k_age_s = 0.0, k_bur = 0.0,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  ala      <- col_mean(out, "ALU_ala")
+  ben_ala  <- get_var(out, "ALU_ben_ala")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  frp      <- col_mean(out, "PHS_frp")
+
+  check("7.3a", "ALU_ala >= 0 (exhaustion scenario)",        all(ala     >= -tol_abs))
+  check("7.3b", "ALU_ben_ala >= 0 (exhaustion scenario)",    all(ben_ala >= -tol_abs))
+  check("7.3c", "PHS_frp >= 0 (exhaustion scenario)",        all(frp     >= -tol_abs))
+  check("7.3d", "ALU_uptake_w ceases near end",              mean(tail(uptake_w, 5)) < 1e-3)
+
+  day <- seq_along(ala)
+  df <- data.frame(day = day,
+                   ALU_ala = ala, ALU_ben_ala = ben_ala,
+                   ALU_uptake_w = uptake_w, PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "7.3 Capacity exhaustion — graceful cessation",
+           subtitle = "Uptake declines to 0 as capacity is consumed; FRP stabilises",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  for (id in paste0("7.3", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 8. Diagnostic Output Tests
+
+### 8.1 `ALU_uptake_w` scaling at saturation
+
+At FRP \>\> K_P, `ALU_uptake_w` should approach `k_w × ALU_ala`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 8.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.0
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-8-1
+#| echo: false
+
+k_w_val <- 0.5; ala0 <- 10.0
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = ala0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = k_w_val, k_s = 0.0, K_P = 0.3, w_ala = 0.0,
+    k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+), init_wq = list(PHS_frp = INIT_FRP_HIGH))
+
+if (!is.null(out)) {
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  ala      <- col_mean(out, "ALU_ala")
+  frp      <- col_mean(out, "PHS_frp")
+  expected <- k_w_val * ala0
+  rel_err  <- abs(uptake_w[1] - expected) / expected
+  ceiling  <- k_w_val * ala   # theoretical max at each timestep
+
+  check("8.1", "ALU_uptake_w ≤ k_w × ala at saturation (≤5% margin)",
+        rel_err < 0.05,
+        sprintf("expected≤%.2f  observed=%.4f  rel_err=%.4f",
+                expected, uptake_w[1], rel_err))
+
+  day <- seq_along(uptake_w)
+  df <- data.frame(day = day, observed = uptake_w,
+                   saturation_ceiling = ceiling) |>
+    pivot_longer(-day, names_to = "series", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = series, linetype = series)) +
+      geom_line() +
+      scale_colour_manual(values = c(observed = pool_cols["ALU_uptake_w"],
+                                     saturation_ceiling = "black")) +
+      scale_linetype_manual(values = c(observed = "solid",
+                                       saturation_ceiling = "dashed")) +
+      annotate("text", x = 2, y = expected * 0.95,
+               label = sprintf("t=0: observed=%.3f\nceiling=%.3f",
+                               uptake_w[1], expected),
+               size = 3, hjust = 0) +
+      labs(title = "8.1 uptake_w vs. saturation ceiling (k_w × ALU_ala)",
+           subtitle = "Observed must lie at or below the dashed ceiling",
+           x = "Day", y = "ALU_uptake_w (mmol/m³/d)") + th
+  )
+} else {
+  check("8.1", "Uptake_w scaling test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 8.2 `ALU_uptake_s = 0` when `ben_ala = 0`
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 8.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-8-2
+#| echo: false
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_s = 0.1, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  uptake_s <- get_var(out, "ALU_uptake_s")
+  frp      <- col_mean(out, "PHS_frp")
+
+  check("8.2", "ALU_uptake_s = 0 when ben_ala = 0", all(abs(uptake_s) < tol_abs))
+
+  day <- seq_along(as.numeric(uptake_s))
+  df <- data.frame(day = day, ALU_uptake_s = as.numeric(uptake_s), PHS_frp = frp) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "8.2 uptake_s = 0 when ben_ala = 0",
+           subtitle = "uptake_s must be flat at zero; FRP unchanged",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("8.2", "uptake_s zero capacity (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 8.3 `ALU_fpH` diagnostic matches bell-curve formula
+
+At pH_opt shifted by 1σ, `ALU_fpH` must equal `exp(−0.5) ≈ 0.6065`.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 8.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 0.0
+   k_age_w              = 0.0
+   k_age_s              = 0.0998
+   k_bur                = 0.0
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .true.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 5.5
+   sigma_pH             = 1.5
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-8-3
+#| echo: false
+
+pH_opt_val <- 7.0; sigma_val <- 1.5
+
+out <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 10.0, ads_use_pH = TRUE,
+    pH_opt   = pH_opt_val - sigma_val,
+    sigma_pH = sigma_val,
+    k_w = 0.5, w_ala = 0.0, k_age_w = 0.0, k_bur = 0.0, S_ala = 0.0
+  )
+))
+
+if (!is.null(out)) {
+  fpH      <- col_mean(out, "ALU_fpH")
+  expected <- exp(-0.5)
+  rel_err  <- abs(fpH[1] - expected) / expected
+
+  check("8.3", "ALU_fpH matches bell-curve formula at 1σ",
+        rel_err < tol_rel,
+        sprintf("expected=%.4f  observed=%.4f  rel_err=%.4f",
+                expected, fpH[1], rel_err))
+
+  day <- seq_along(fpH)
+  print(
+    ggplot(data.frame(day = day, ALU_fpH = fpH), aes(day, ALU_fpH)) +
+      geom_line(colour = pool_cols["ALU_fpH"]) +
+      geom_hline(yintercept = expected, linetype = "dashed", colour = "black") +
+      geom_hline(yintercept = 1.0,      linetype = "dotted", colour = "grey60") +
+      annotate("text", x = max(day) * 0.5, y = expected + 0.03,
+               label = sprintf("exp(-0.5) = %.4f", expected), size = 3) +
+      ylim(0, 1.15) +
+      labs(title = "8.3 ALU_fpH diagnostic vs. bell-curve formula",
+           subtitle = sprintf("pH_opt shifted by 1σ; expected fpH = %.4f, observed = %.4f",
+                              expected, fpH[1]),
+           x = "Day", y = "fpH (-)") + th
+  )
+} else {
+  check("8.3", "fpH diagnostic formula (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+### 8.4 `ALU_fpH = 1.0` when pH modifier disabled
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 8.4</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 10.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-8-4
+#| echo: false
+
+out <- safe_run(list(aed_alum = list(ala_initial = 10.0, ads_use_pH = FALSE, S_ala = 0.0)))
+
+if (!is.null(out)) {
+  fpH      <- col_mean(out, "ALU_fpH")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+
+  check("8.4", "ALU_fpH = 1 when ads_use_pH = FALSE", all(abs(fpH - 1.0) < tol_abs))
+
+  day <- seq_along(fpH)
+  df <- data.frame(day = day, ALU_fpH = fpH, ALU_uptake_w = uptake_w) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+      labs(title = "8.4 ALU_fpH = 1 when pH modifier disabled",
+           subtitle = "fpH must be flat at 1.0 regardless of water-column pH",
+           x = "Day", y = "Value") + th
+  )
+} else {
+  check("8.4", "fpH disabled test (run failed)", FALSE, "run_test returned NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## 9. Inflow Tests
+
+Section 9 introduces a continuous FRP inflow to the lake, which is more realistic than a closed system and directly mirrors the Rotorua setup where streams (Utuhina, Puarenga) supply FRP continuously. Three scenarios are tested: a no-dosing baseline to confirm the inflow load is represented correctly, S_ala surface dosing to quantify removal efficiency against the inflowing load, and alum dosed via the inflow concentration rather than `S_ala` to check whether the spatial entry point matters.
+
+All three tests share the same inflow file and GLM configuration. Substitute the placeholder values below with your actual inflow data before running.
+
+```{r}
+#| label: inflow-setup
+#| echo: false
+
+# ── PLACEHOLDERS — substitute with your actual values ────────────────────────
+
+# Path to your GLM inflow file (CSV with Date column + variable columns).
+# The file must already contain a PHS_frp column.  For test 9.3 it must
+# also contain an ALU_ala column.
+INFLOW_FILE <- "LakeRotorua/bcs/inflow_Utuhina.csv"
+inflow <- read.csv(INFLOW_FILE)
+inflow$flow <- mean(inflow$flow, na.rm = TRUE)  # placeholder if flow column missing
+INFLOW_FRP_CONC <- 0.5
+INFLOW_ALA_CONC <- 1.2
+
+inflow_ex_file <- "LakeRotorua/bcs/inflow_example.csv"
+write.csv(inflow, inflow_ex_file, row.names = FALSE, quote = FALSE)
+
+glm_file <- "LakeRotorua/glm4.nml"
+glm <- read_nml(glm_file)
+glm$inflow$num_inflows <- 1
+glm$inflow$names_of_strms <- "Utuhina"
+glm$inflow$inflow_fl <- "bcs/inflow_example.csv"
+
+write_nml(glm, "LakeRotorua/glm4.nml")
+
+hyps <- AEME::read_model_hypsograph(model = "glm_aed", file = glm_file)
+hyps <- hyps |> 
+  dplyr::filter(depth <= 0)
+
+INFLOW_FLOW_M3D <- mean(inflow$flow, na.rm = TRUE) * 86400
+
+# ALU_ala concentration to write into the inflow for test 9.3 (mmol P/m³).
+# Derived from field alum dose rate and stream flow:
+#   dose_mg_Al_L × (1 mmol Al / 26.98 mg) × binding_stoichiometry / 1000
+INFLOW_ALA_CONC <- 1.2            # PLACEHOLDER — mmol P/m³
+
+# Lake surface area (m²) — used to convert areal benthic fluxes to totals.
+LAKE_AREA_M2 <- max(hyps$area)               # PLACEHOLDER — e.g. Lake Rotorua ~80 km²
+
+# Lake volume (m³) — used to convert volumetric concentrations to totals.
+LAKE_VOL_M3  <- calc_lake_vol(hyps = hyps)               # PLACEHOLDER
+
+# ── Helper: write an inflow CSV with specified PHS_frp and ALU_ala columns ───
+# `frp_conc`  constant FRP concentration (mmol P/m³)
+# `ala_conc`  ALU_ala concentration (mmol P/m³); NA omits the column
+write_inflow <- function(frp_conc, ala_conc = NA) {
+  base <- read.csv(INFLOW_FILE)   # read existing inflow (must have Date + flow cols)
+  base[["PHS_frp"]] <- frp_conc
+  if (!is.na(ala_conc)) base[["ALU_ala"]] <- ala_conc
+  write.csv(base, inflow_ex_file, row.names = FALSE, quote = FALSE)
+  inflow_ex_file
+}
+
+# ── Helper: compute total FRP load delivered by the inflow (mmol P) ──────────
+# Assumes constant flow and concentration for simplicity; extend as needed.
+frp_load_total <- function(flow_m3s, frp_conc, n_days) {
+  flow_m3s * 86400 * frp_conc * n_days
+}
+
+cat("Inflow setup complete — check PLACEHOLDER values before running.\n")
+
+```
+
+### 9.1 Constant FRP inflow — no dosing baseline
+
+FRP enters via the inflow at a constant concentration; no alum applied. **Expect:** lake FRP rises toward a new equilibrium set by inflow load vs. outflow; `ALU_uptake_w` and `ALU_uptake_s` remain 0; all alum pools stay 0.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 9.1</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-9-1
+#| echo: false
+
+# No-dosing baseline — use scenario inflow; stored as out_91 for reuse in 9.4
+glm_91 <- write_inflow_glm(glm_def, frp_conc = INFLOW_SCENARIO_FRP,
+                           flow = INFLOW_SCENARIO_FLOW)
+
+out_91 <- safe_run(list(
+  aed_alum = list(
+    ala_initial     = 0.0,
+    alp_initial     = 0.0,
+    ben_ala_initial = 0.0,
+    ben_alp_initial = 0.0,
+    k_w             = 0.5,
+    k_s             = 0.1,
+    K_P             = 0.3,
+    w_ala           = 5.0,
+    k_age_w         = 0.0998,
+    k_age_s         = 0.0998,
+    k_bur           = 0.01,
+    simResuspension = FALSE,
+    S_ala           = 0.0
+  )
+), glm_nml = glm_91)
+out <- out_91   # alias for check/plot infrastructure below
+
+if (!is.null(out)) {
+  frp      <- col_mean(out, "PHS_frp")
+  ala      <- col_mean(out, "ALU_ala")
+  uptake_w <- col_mean(out, "ALU_uptake_w")
+  uptake_s <- as.numeric(get_var(out, "ALU_uptake_s"))
+
+  check("9.1a", "ALU_ala = 0 (no dosing, inflow baseline)",
+        all(abs(ala) < tol_abs))
+  check("9.1b", "ALU_uptake_w = 0 (no dosing, inflow baseline)",
+        all(abs(uptake_w) < tol_abs))
+  check("9.1c", "ALU_uptake_s = 0 (no dosing, inflow baseline)",
+        all(abs(uptake_s) < tol_abs))
+  check("9.1d", "PHS_frp rises with FRP inflow (no dosing)",
+        frp[length(frp)] > frp[1])
+
+  day <- seq_along(frp)
+  df  <- data.frame(day = day, PHS_frp = frp,
+                    ALU_uptake_w = uptake_w,
+                    ALU_uptake_s = uptake_s) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  print(
+    ggplot(df, aes(day, value, colour = variable)) +
+      geom_line() +
+      scale_colour_manual(values = pool_cols) +
+      labs(title = "9.1 Inflow baseline — no alum dosing",
+           subtitle = paste0("FRP should rise; uptake_w and uptake_s must be 0\n",
+                             sprintf("Inflow FRP = %.3f mmol/m³  |  Flow = %.0f m³/d",
+                                     INFLOW_SCENARIO_FRP, INFLOW_SCENARIO_FLOW)),
+           x = "Day", y = "Value") + th
+  )
+} else {
+  for (id in paste0("9.1", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 9.2 Constant FRP inflow + surface dosing (`S_ala`)
+
+Same inflow as 9.1; alum applied via `S_ala` at the lake surface. **Expect:** lake FRP reaches a lower steady state than 9.1; cumulative `ALU_uptake_w + ALU_uptake_s` accounts for the FRP reduction relative to the no-dosing baseline; removal efficiency is quantified as a fraction of inflowing load.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 9.2</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-9-2
+#| echo: false
+#| dependson: "inflow-setup"
+
+inflow_92 <- write_inflow_glm(glm_nml = glm_def, frp_conc = INFLOW_KINETIC_FRP,
+                              flow = INFLOW_KINETIC_FLOW,
+                              ala_conc = 0)
+
+out_nodose <- safe_run(list(          # re-use 9.1 result if already in env
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE, S_ala = 0.0
+  )
+), glm_nml = inflow_92)
+
+out_dose <- safe_run(list(
+  aed_alum = list(
+    ala_initial = 0.0, alp_initial = 0.0,
+    ben_ala_initial = 0.0, ben_alp_initial = 0.0,
+    k_w = 0.5, k_s = 0.1, K_P = 0.3, w_ala = 5.0,
+    k_age_w = 0.0998, k_age_s = 0.0998, k_bur = 0.01,
+    simResuspension = FALSE,
+    S_ala = 200.0                       # PLACEHOLDER — replace with target dose
+  )
+), glm_nml = inflow_92)
+
+if (!is.null(out_nodose) && !is.null(out_dose)) {
+  frp_nd   <- wc_mass(out_nodose, "PHS_frp")
+  frp_d    <- wc_mass(out_dose, "PHS_frp")
+  uptake_w <- wc_mass(out_dose, "ALU_uptake_w")
+  uptake_s <- get_var(out_dose, "ALU_uptake_s")
+
+  # wc_mass / benthic_mass handle volume/area weighting automatically
+  uptake_w_mass <- wc_mass(out_dose, "ALU_uptake_w")        # mmol/d per timestep
+  uptake_s_mass <- benthic_mass(out_dose, "ALU_uptake_s_Z") # mmol/d per timestep
+  removed_total <- sum(uptake_w_mass + uptake_s_mass, na.rm = TRUE)  # total mmol P
+  load_total    <- frp_load_total(flow_m3s = INFLOW_KINETIC_FLOW,
+                                  frp_conc = INFLOW_KINETIC_FRP, 
+                                  n_days = length(frp_d))             # total mmol P delivered
+  efficiency    <- removed_total / (load_total + 1e-12)
+
+  check("9.2a", "PHS_frp lower with dosing than without",
+        mean(tail(frp_d, 10)) < mean(tail(frp_nd, 10)))
+  check("9.2b", "PHS_frp >= 0 with inflow + dosing",
+        all(frp_d >= -tol_abs))
+  check("9.2c", "Removal efficiency between 0 and 1",
+        efficiency >= 0 & efficiency <= 1,
+        sprintf("efficiency = %.3f", efficiency))
+
+  day <- seq_along(frp_d)
+  df_frp <- data.frame(day = day,
+                       no_dosing = frp_nd,
+                       S_ala_dosing = frp_d) |>
+    pivot_longer(-day, names_to = "scenario", values_to = "PHS_frp")
+
+  df_upk <- data.frame(day = day,
+                       water_column_mass = uptake_w_mass,
+                       benthic_mass      = uptake_s_mass) |>
+    pivot_longer(-day, names_to = "compartment", values_to = "uptake_mmol_d")
+
+  p1 <- ggplot(df_frp, aes(day, PHS_frp, colour = scenario)) +
+    geom_line() +
+    labs(title = "9.2 FRP trajectory: no dosing vs. S_ala dosing",
+         subtitle = sprintf("Removal efficiency = %.1f%% of inflowing FRP load",
+                            efficiency * 100),
+         x = "Day", y = "PHS_frp (mmol/m³)") + th
+
+  p2 <- ggplot(df_upk, aes(day, uptake_mmol_d, colour = compartment)) +
+    geom_line() +
+    labs(title = "9.2 Uptake by compartment — mass basis (mmol/d)",
+         subtitle = "Relative contribution of water-column vs. benthic removal",
+         x = "Day", y = "Uptake (mmol P/d)") + th
+
+  print(p1 / p2)
+
+  cat(sprintf(
+    "\n9.2 Summary:\n  Inflow FRP load (total) : %.2e mmol P\n  Total removed by alum   : %.2e mmol P\n  Removal efficiency      : %.1f%%\n",
+    load_total, removed_total, efficiency * 100
+  ))
+} else {
+  for (id in c("9.2a","9.2b","9.2c"))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 9.3 Alum dosed via inflow concentration
+
+Alum enters the lake through the inflow as `ALU_ala` rather than via `S_ala`. This mirrors the real Rotorua dosing where alum is injected into the stream before it enters the lake. `S_ala = 0` throughout. **Expect:** FRP removal occurs; compare removal efficiency against test 9.2 to assess whether the spatial entry point (stream vs. surface) matters.
+
+<details>
+
+<summary>📋 `&aed_alum` namelist for test 9.3</summary>
+
+``` fortran
+&aed_alum
+   ala_initial          = 0.0
+   alp_initial          = 0.0
+   ben_ala_initial      = 0.0
+   ben_alp_initial      = 0.0
+   frp_variable         = 'PHS_frp'
+   k_w                  = 0.5
+   k_s                  = 0.1
+   K_P                  = 0.3
+   w_ala                = 5.0
+   k_age_w              = 0.0998
+   k_age_s              = 0.0998
+   k_bur                = 0.01
+   simResuspension      = .false.
+   k_res                = 0.0
+   ads_use_pH           = .false.
+   pH_variable          = 'CAR_pH'
+   pH_opt               = 6.0
+   sigma_pH             = 1.0
+   S_ala                = 0.0
+   diag_level           = 10
+/
+```
+
+</details>
+
+```{r}
+#| label: test-9-3
+#| echo: false
+#| dependson: "inflow-setup"
+
+# Inflow file must have both PHS_frp and ALU_ala columns
+inflow_93 <- write_inflow_glm(glm_def, frp_conc = INFLOW_KINETIC_FRP,
+                              flow = INFLOW_KINETIC_FLOW,
+                              ala_conc = INFLOW_ALA_CONC)
+
+out_inflow_dosed <- safe_run(list(
+  aed_alum = list(
+    ala_initial     = 0.0,
+    alp_initial     = 0.0,
+    ben_ala_initial = 0.0,
+    ben_alp_initial = 0.0,
+    k_w             = 0.5,
+    k_s             = 0.1,
+    K_P             = 0.3,
+    w_ala           = 5.0,
+    k_age_w         = 0.0998,
+    k_age_s         = 0.0998,
+    k_bur           = 0.01,
+    simResuspension = FALSE,
+    S_ala           = 0.0          # dosing via inflow only
+    # inflow file is set in glm4.nml; point it to inflow_93 before running
+  )
+), glm_nml = glm)
+
+if (!is.null(out_inflow_dosed)) {
+  frp      <- col_mean(out_inflow_dosed, "PHS_frp")
+  ala      <- col_mean(out_inflow_dosed, "ALU_ala")
+  ben_ala  <- col_mean(out_inflow_dosed, "ALU_ben_ala_Z")
+  uptake_w <- col_mean(out_inflow_dosed, "ALU_uptake_w")
+  uptake_s <- as.numeric(get_var(out_inflow_dosed, "ALU_uptake_s"))
+
+  uptake_w_mass_93 <- wc_mass(out_inflow_dosed, "ALU_uptake_w")
+  uptake_s_mass_93 <- benthic_mass(out_inflow_dosed, "ALU_uptake_s_Z")
+  removed_total    <- sum(uptake_w_mass_93 + uptake_s_mass_93, na.rm = TRUE)
+  load_total       <- frp_load_total(flow_m3s = INFLOW_KINETIC_FLOW,
+                                     frp_conc = INFLOW_KINETIC_FRP, 
+                                     n_days = length(frp))
+  efficiency_93    <- removed_total / (load_total + 1e-12)
+
+  check("9.3a", "ALU_ala > 0 (alum enters via inflow)",
+        any(ala > tol_abs))
+  check("9.3b", "PHS_frp >= 0 (inflow-dosed scenario)",
+        all(frp >= -tol_abs))
+  check("9.3c", "ALU_uptake_w > 0 (binding occurs)",
+        any(uptake_w > tol_abs))
+  check("9.3d", "Removal efficiency between 0 and 1",
+        efficiency_93 >= 0 & efficiency_93 <= 1,
+        sprintf("efficiency = %.3f", efficiency_93))
+
+  day <- seq_along(frp)
+  df_pools <- data.frame(day = day,
+                         PHS_frp = frp, ALU_ala = ala,
+                         ALU_ben_ala = ben_ala) |>
+    pivot_longer(-day, names_to = "variable", values_to = "value")
+
+  df_upk <- data.frame(day = day,
+                       water_column_mass = uptake_w_mass_93,
+                       benthic_mass      = uptake_s_mass_93) |>
+    pivot_longer(-day, names_to = "compartment", values_to = "uptake_mmol_d")
+
+  p1 <- ggplot(df_pools, aes(day, value, colour = variable)) +
+    geom_line() +
+    scale_colour_manual(values = pool_cols) +
+    labs(title = "9.3 Inflow-dosed alum — pool trajectories",
+         subtitle = sprintf("ALU_ala_inflow = %.3f mmol/m³  |  Removal = %.1f%%",
+                            INFLOW_ALA_CONC, efficiency_93 * 100),
+         x = "Day", y = "Concentration (mmol/m³)") + th
+
+  p2 <- ggplot(df_upk, aes(day, uptake_mmol_d, colour = compartment)) +
+    geom_line() +
+    labs(title = "9.3 Uptake by compartment — mass basis (mmol/d)",
+         x = "Day", y = "Uptake (mmol P/d)") + th
+
+  print(p1 / p2)
+
+  cat(sprintf(
+    "\n9.3 Summary:\n  Inflow ALU_ala conc     : %.3f mmol/m³\n  Total removed by alum   : %.2e mmol P\n  Removal efficiency      : %.1f%%\n",
+    INFLOW_ALA_CONC, removed_total, efficiency_93 * 100
+  ))
+} else {
+  for (id in paste0("9.3", letters[1:4]))
+    check(id, paste(id, "(run failed)"), FALSE, "run_test returned NULL")
+}
+
+```
+
+### 9.4 Entry-point comparison — inflow dosing vs. `S_ala`
+
+> **No separate namelist** — this test reuses `out_dose` from test 9.2 and `out_inflow_dosed` from test 9.3. Run those two tests first.
+
+Directly compare removal efficiency between test 9.2 (`S_ala` surface dosing) and test 9.3 (inflow-concentration dosing) at equivalent total alum loads. **Expect:** both approaches remove FRP; any efficiency difference reflects the importance of where in the water column alum is introduced.
+
+```{r}
+#| label: test-9-4
+#| echo: false
+#| dependson: ["test-9-1", "test-9-2", "test-9-3"]
+
+# This test requires both out_dose (from 9.2) and out_inflow_dosed (from 9.3)
+# to be present in the environment.
+if (!is.null(out_dose) && !is.null(out_inflow_dosed)) {
+
+  frp_s_ala   <- col_mean(out_dose, "PHS_frp")
+  frp_inflow  <- col_mean(out_inflow_dosed, "PHS_frp")
+  ala_s_ala   <- col_mean(out_dose, "ALU_ala")
+  ala_inflow  <- col_mean(out_inflow_dosed, "ALU_ala")
+
+  frp_end_s_ala  <- mean(tail(frp_s_ala,  10))
+  frp_end_inflow <- mean(tail(frp_inflow, 10))
+
+  frp_baseline   <- if (!is.null(out_91)) col_mean(out_91, "PHS_frp") else frp_s_ala * NA
+  frp_end_nd     <- mean(tail(frp_baseline, 10), na.rm = TRUE)
+  check("9.4a", "Both scenarios achieve FRP below no-dosing baseline (9.1)",
+        frp_end_s_ala  < frp_end_nd &&
+        frp_end_inflow < frp_end_nd,
+        sprintf("no-dosing=%.4f  S_ala=%.4f  inflow=%.4f",
+                frp_end_nd, frp_end_s_ala, frp_end_inflow))
+  check("9.4b", "FRP >= 0 in both scenarios",
+        all(frp_s_ala >= -tol_abs) && all(frp_inflow >= -tol_abs))
+
+  day <- seq_along(frp_s_ala)
+  df_comp <- data.frame(
+    day              = day,
+    "S_ala (surface)"  = frp_s_ala,
+    "ALU_ala (inflow)" = frp_inflow,
+    "No dosing"        = frp_nd,
+    check.names = FALSE
+  ) |> pivot_longer(-day, names_to = "scenario", values_to = "PHS_frp")
+
+  df_ala <- data.frame(
+    day              = day,
+    "S_ala (surface)"  = ala_s_ala,
+    "ALU_ala (inflow)" = ala_inflow,
+    check.names = FALSE
+  ) |> pivot_longer(-day, names_to = "scenario", values_to = "ALU_ala")
+
+  p1 <- ggplot(df_comp, aes(day, PHS_frp, colour = scenario)) +
+    geom_line() +
+    labs(title = "9.4 FRP comparison: S_ala vs. inflow dosing vs. no dosing",
+         subtitle = sprintf(
+           "S_ala endpoint: %.4f | Inflow endpoint: %.4f | No dosing: %.4f mmol/m³",
+           frp_end_s_ala, frp_end_inflow, mean(tail(frp_nd, 10))),
+         x = "Day", y = "PHS_frp (mmol/m³)") + th
+
+  p2 <- ggplot(df_ala, aes(day, ALU_ala, colour = scenario)) +
+    geom_line() +
+    labs(title = "9.4 ALU_ala in water column: S_ala vs. inflow dosing",
+         subtitle = "Distribution of suspended capacity differs by entry point",
+         x = "Day", y = "ALU_ala (mmol/m³)") + th
+
+  print(p1 / p2)
+
+  cat(sprintf(
+    "\n9.4 Entry-point comparison:\n  Final FRP — S_ala dosing  : %.4f mmol/m³\n  Final FRP — inflow dosing : %.4f mmol/m³\n  Difference               : %.4f mmol/m³ (%.1f%%)\n",
+    frp_end_s_ala, frp_end_inflow,
+    abs(frp_end_s_ala - frp_end_inflow),
+    abs(frp_end_s_ala - frp_end_inflow) / (frp_end_s_ala + 1e-12) * 100
+  ))
+} else {
+  for (id in c("9.4a","9.4b"))
+    check(id, paste(id, "(run failed — requires 9.2 and 9.3 outputs)"),
+          FALSE, "out_dose or out_inflow_dosed is NULL")
+}
+
+```
+
+------------------------------------------------------------------------
+
+## Summary {#summary}
+
+```{r}
+#| label: summary
+#| echo: false
+
+results <- .test_results
+
+n_pass  <- sum(results$status == "PASS")
+n_fail  <- sum(results$status == "FAIL")
+n_error <- sum(results$status == "ERROR")
+n_total <- nrow(results)
+
+cat(sprintf("\n%d tests run:  %d PASS  |  %d FAIL  |  %d ERROR\n\n",
+            n_total, n_pass, n_fail, n_error))
+
+results$Result <- ifelse(results$status == "PASS", "\u2705 PASS",
+                  ifelse(results$status == "FAIL", "\u274c FAIL", "\u26a0\ufe0f ERROR"))
+
+kable(
+  results[, c("id","label","Result","detail")],
+  col.names = c("ID", "Test label", "Result", "Detail"),
+  align     = c("l","l","c","l"),
+  caption   = "aed_alum stress test results"
+)
+```
+
+```{r}
+#| label: summary-plot
+#| echo: false
+
+if (n_total > 0) {
+  summary_df <- data.frame(
+    Status = c("PASS","FAIL","ERROR"),
+    Count  = c(n_pass, n_fail, n_error)
+  ) |> filter(Count > 0)
+
+  print(
+    ggplot(summary_df, aes(x = "", y = Count, fill = Status)) +
+      geom_col(width = 0.4) +
+      scale_fill_manual(values = c(PASS  = "#4caf50",
+                                   FAIL  = "#f44336",
+                                   ERROR = "#ff9800")) +
+      coord_flip() +
+      labs(title = "aed_alum test summary",
+           x = NULL, y = "Number of checks") +
+      theme_minimal() +
+      theme(legend.position = "right")
+  )
+}
+```

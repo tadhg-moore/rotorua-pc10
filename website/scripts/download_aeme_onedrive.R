@@ -18,6 +18,19 @@ od$download_file(src = "rotorua-pc10/LID11133_rotorua/aeme.rds",
                  dest = "../LID11133_rotorua/aeme_download.rds",
                   overwrite = TRUE)
 
+od$download_folder(src = "rotorua-pc10/LakeRotorua", 
+                   dest = "LakeRotorua",
+                   overwrite = TRUE, recursive = TRUE, parallel = TRUE)
+
+od$download_folder(src = "rotorua-pc10/bin", 
+                   dest = "bin",
+                   overwrite = TRUE, recursive = TRUE, parallel = TRUE)
+od$download_folder(src = "rotorua-pc10/R", 
+                   dest = "R",
+                   overwrite = TRUE, recursive = TRUE, parallel = TRUE)
+
+
+
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
 
 aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
