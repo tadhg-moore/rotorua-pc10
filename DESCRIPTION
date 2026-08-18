@@ -17,6 +17,7 @@ Imports:
     DT,
     here,
     Microsoft365R,
+    roxygen2,
     visNetwork
 Remotes: 
     limnotrack/AEME,
