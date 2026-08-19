@@ -19,6 +19,7 @@ Imports:
     kableExtra,
     Microsoft365R,
     roxygen2,
+    targets,
     visNetwork
 Remotes: 
     limnotrack/AEME,
