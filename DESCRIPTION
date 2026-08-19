@@ -16,6 +16,7 @@ Imports:
     bathytools (>= 0.0.0.9000),
     DT,
     here,
+    kableExtra,
     Microsoft365R,
     roxygen2,
     visNetwork
