@@ -1,3 +1,5 @@
+AEME::install_glm_aed()
+
 # Decrypt and restore cache file
 bundle    <- openssl::base64_decode(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))
 iv        <- bundle[1:16]
