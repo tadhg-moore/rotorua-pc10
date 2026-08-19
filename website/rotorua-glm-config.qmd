@@ -11,6 +11,7 @@ fig-dpi: 150
 
 ```{r setup}
 #| include: false
+#| echo: false
 library(dplyr)
 library(ggplot2)
 library(scales)
@@ -19,11 +20,17 @@ library(AEME)
 library(knitr)
 library(kableExtra)
 
+install_glm_aed(version = "3.9.108")
+options(AEME.glm_version = "3.9.108")
+
 source("../R/plot_aeme_loads.R")
 
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[3], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[3]))
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
+aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
+  AEME::run_aeme()
+
 cfg <- configuration(aeme)
 glm3_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
 aed_nml <- cfg[["glm_aed"]][["bgc"]][["aed"]]
