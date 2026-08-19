@@ -19,6 +19,7 @@ Imports:
     kableExtra,
     Microsoft365R,
     roxygen2,
+    tarchetypes,
     targets,
     visNetwork
 Remotes: 
