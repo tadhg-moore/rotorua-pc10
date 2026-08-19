@@ -35,8 +35,5 @@ od$download_folder(src = "rotorua-pc10/R",
 
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
 
-aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
-  AEME::run_aeme()
-
 # AEME::plot_output_base(aeme, var_sim = c("temp", "oxy", "tchla"))
 
