@@ -1,19 +1,31 @@
-buoy_to_aeme_met <- function(met) {
+buoy_to_aeme_met <- function(met, unit = c("day", "hour")) {
   met_aeme <- met |> 
     dplyr::mutate(
-      Date = as.Date(DateTime),
+      DateTime = lubridate::as_datetime(met$DateTime, tz = "Pacific/Auckland"),
+      Date = lubridate::round_date(DateTime, unit = unit),
       PpRain = PpRain / 1000
     ) |>
     dplyr::group_by(Date) |>
     dplyr::summarise(
       MET_tmpair = mean(TmpAir, na.rm = TRUE),
-      # MET_wnddir = mean(WndDir, na.rm = TRUE),
+      MET_wnddir = atan2(
+        mean(sin(WndDir * pi / 180), na.rm = TRUE),
+        mean(cos(WndDir * pi / 180), na.rm = TRUE)
+      ) * 180 / pi %% 360,
+      MET_wnddir_Rbar = sqrt(
+        mean(sin(WndDir * pi / 180), na.rm = TRUE)^2 +
+          mean(cos(WndDir * pi / 180), na.rm = TRUE)^2
+      ),
       MET_prsttn = mean(PrBaro, na.rm = TRUE),
       MET_wndspd = mean(WndSpd, na.rm = TRUE),
       MET_humrel = mean(HumRel, na.rm = TRUE),
       MET_radswd = mean(RadSWD, na.rm = TRUE),
-      MET_pprain = sum(PpRain, na.rm = TRUE)
-    )
+      MET_pprain = sum(PpRain, na.rm = TRUE), 
+      .groups = "drop"
+    ) |> 
+    dplyr::arrange(Date) |> 
+    dplyr::filter(!is.na(Date))
+    
   # met_aeme |> 
   #   dplyr::filter(is.na(MET_tmpair)) 
   # summary(met_aeme)
