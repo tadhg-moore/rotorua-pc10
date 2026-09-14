@@ -109,14 +109,12 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
   print(tdiff)
   
   # Combine chunks
-  out <- abind::abind(out, along = 3)
+  out_array <- abind::abind(out, along = 3)
   
   # Define new dimensions
   lon_idx <- x_start:x_end
   lat_idx <- y_start:y_end
 
-  lon_new <- lon[lon_idx]
-  lat_new <- lat[lat_idx]
   time_new <- time_raw
   
   # Define new dimensions and variable
@@ -134,7 +132,7 @@ process_cmip6 <- function(x, vcsn_grid_points, file, outfile) {
                               chunksizes = c(1, 1, 100))
   # Create new netCDF file with compressed variable
   dst <- ncdf4::nc_create(outfile, var_def)
-  ncdf4::ncvar_put(dst, varid = varid, vals = out)
+  ncdf4::ncvar_put(dst, varid = varid, vals = out_array)
   ncdf4::nc_close(dst)
   
   # Return output file path
