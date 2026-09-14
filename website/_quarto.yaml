@@ -50,6 +50,7 @@ website:
             text: "GLM-AED aed_alum Stress Tests"
       - section: "Tasks"
         contents:
+          - data.qmd
           - data-request.qmd
           - cmip6-processing.qmd
           - cmip6-visualisation.qmd

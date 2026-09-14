@@ -1,0 +1,67 @@
+---
+title: "Data Inputs"
+format: html
+editor: visual
+---
+
+This page summarises the data inputs used in the [`targets`](targets.qmd) pipeline for the Lake Rotorua modelling project (`_targets.R`), where each dataset comes from, and where it can be obtained.
+
+A live, searchable version of this inventory (generated automatically from the pipeline) is available at [`data_inventory.html`](www/data_inventory.html), built by the `data_inventory_html` target using [`render_data_inventory.R`](https://github.com/tadhg-moore/rotorua-pc10/blob/main/R/render_data_inventory.R).
+
+## Lake observations
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **Lake level** | Lake Rotorua water level (m AMSL), sub-daily, QC-coded. Read from a bulk-export zip via `extract_lake_level()` | Bay of Plenty Regional Council (BoPRC) hydrometric network | BoPRC data request / bulk export (`data/raw/BulkExport-FL150407-*.zip`) |
+| **Lake buoy — water column profiler** | Vertical profiles from the on-lake water-quality buoy (temperature, DO, chlorophyll, etc.), lake_id 11133. Retrieved via `get_lake_wqprofiler(type = "pro")` | LERNZMP monitoring buoy network | [LERNZMP API](https://api.limnotrack.com) (Limnotrack), requires `LERNZMP_KEY`/`LERNZMP_API` token |
+| **Lake buoy — meteorological station** | On-lake meteorological observations (wind, air temp, humidity, radiation, rain) from the buoy met station. Retrieved via `get_lake_wqprofiler(type = "met")` | LERNZMP monitoring buoy network | [LERNZMP API](https://api.limnotrack.com), requires API key |
+| **CTD depth profiles** | Full-record CTD casts (temperature, DO, chlorophyll, etc. by depth), read via `read_ctd()` | Bay of Plenty Regional Council | BoPRC Excel export (`data/raw/bop_wq/Lake Rotorua CTD Profile Data - Full Record.xlsx`) |
+| **Lake chemistry** | Lakes water chemistry 1989–2025 (nutrients, chlorophyll-a, turbidity, Secchi, etc.), plus site metadata, read via `readxl` from the `Sites` and `All_data` sheets | Bay of Plenty Regional Council | BoPRC Excel export (`data/raw/bop_wq/Lakes Data 1989_2025.xlsx`) |
+
+## Catchment inflows
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **Inflow flows & water quality** | Daily tributary inflow volumes and water quality (converted to DYRESM-style format), formatted via `format_dyresm_inflow()` | Chris McBride — previous DYRESM/CAEDYM catchment-load modelling for Lake Rotorua | Shared directly by collaborator (`data/raw/flows/Rotorua_inf_final.csv`, `Rotorua_infID.csv`, `rotorua_inflow_key.csv`) |
+| **Alum dosing records** | Daily alum dose (L/day) applied to the Utuhina and Puarenga streams, read via `read_alum_dosing()` and converted to an Al load (`calc_alum_inflow()`) for the AED alum module | Bay of Plenty Regional Council / stream dosing plant operational records | BoPRC data request (`data/raw/alum_dosing/Rotorua alum dose data February 2026.xlsx`) |
+
+## Meteorology
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **NIWA climate station data (daily)** | Daily evaporation (3 methods), global radiation, rainfall, temperature and wind at NIWA station 1770, parsed via `read_niwa_climate_file()` | NIWA National Climate Database, station #1770 | [NIWA Climate Data Portal / CliFlo](https://cliflo.niwa.co.nz/) (`data/raw/niwa_climate/1770__*__daily.csv`) |
+| **NIWA climate station data (hourly)** | Hourly equivalents of the above variables plus pressure, used for gap-filling and finer-resolution forcing | NIWA National Climate Database, station #1770 | [NIWA Climate Data Portal / CliFlo](https://cliflo.niwa.co.nz/) (`data/raw/niwa_climate/1770__*__hourly.csv`) |
+
+## GCM / CMIP6 climate projections
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **CMIP6 NetCDF archive** | Downscaled, bias-corrected daily climate projections (air temperature `tas`, relative humidity `hurs`, precipitation `pr`, shortwave radiation `rsds`, wind speed `sfcWind`) for 7 GCMs (ACCESS-CM2, AWI-CM-1-1-MR, CNRM-CM6-1, EC-Earth3, GFDL-ESM4, NZESM, NorESM2-MM) across 4 SSP scenarios (ssp126/245/370/585) plus historical, at \~5 km resolution over NZ | MfE / NIWA statistically-downscaled CMIP6 dataset — see Dynamical downscaling CMIP6 models over New Zealand ([Sood et al. 2024](https://link.springer.com/article/10.1007/s00382-024-07337-5)) | [MfE Climate Data Portal](https://climatedata.environment.govt.nz/) — bulk NetCDF files staged on an institutional shared drive (`Z:`); subset per lake via `process_cmip6_shp()` |
+| **CMIP6 file/variable manifest** | Metadata describing available variables, units and file-naming convention, scraped/read via `gather_cmip6_metadata()` | MfE Climate Data Portal | [`netcdf_file_manifest.csv`](https://climatedata.environment.govt.nz/data/core_public_data/netcdf_file_manifest.csv) and the [daily data variable tables](https://climatedata.environment.govt.nz/daily-data.html) |
+| **VCSN grid points** | 5 km Virtual Climate Station Network grid used to spatially index and extract CMIP6 NetCDF cells for the lake catchment, loaded via `get_vcsn_grid_points()` | NIWA Virtual Climate Station Network (VCSN), served through MfE | [VCSN agent data](https://climatedata.environment.govt.nz/core-public-dataset.html#vcsn-agent-data) — [grid points GeoPackage](https://climatedata.environment.govt.nz/data/core_public_data/geospatial/index_grid_points_vcsn_filtered_2193.gpkg) |
+
+## Spatial / lake metadata
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **Lake polygon & metadata** | Lake Rotorua outline (`sf` polygon, WGS84) and metadata (name, lat/lon, elevation), via `aemetools::get_lake_shape()` / `AEME::lake()` | LERNZMP lake database (lake_id 11133) | [LERNZMP API](https://api.limnotrack.com), requires `LERNZMP_API` token |
+| **Depth contours & hypsography** | Bathymetric depth contours and the AEME lake object used to build the model hypsograph, via `aemetools::get_depth_contours()` and `update_hyps()` | LERNZMP lake database (lake_id 11133) | [LERNZMP API](https://api.limnotrack.com) |
+| **Rotorua catchment bounding box** | Processed catchment/lake-area polygon used to clip CMIP6 rasters | Derived locally (digitised/processed once, cached as RDS) | `data/processed/rotorua_lakes_area.rds` |
+| **Tutira catchment bounding box** | Hard-coded bounding box for a secondary comparison catchment | Manually specified in `_targets.R` (`tutira_bbox_coords`) | N/A (constant) |
+
+## Model configuration (AEME / GLM-AED)
+
+| Dataset | Description | Source | Access |
+|------------------|------------------|------------------|------------------|
+| **Base AEME model object** | Core lake model configuration (physical setup, existing parameterisation) for Lake Rotorua, via `aemetools::get_aeme()` | LERNZMP model database (lake_id 11133) | [LERNZMP API](https://api.limnotrack.com), requires `LERNZMP_API` token |
+| **Sediment zone heights & temperature parameters** | GLM sediment zone heights (`glm_sed_param_meas`) and per-zone temperature/moisture parameters, statistically derived from buoy/CTD observed water temperature via `estimate_sed_zones()` / `AEME::glm_sed_params()` | Derived from bathymetry + observed lake temperature profiles | N/A (derived / hard-coded in `_targets.R`) |
+| **Measured sediment nutrient & oxygen flux (`meas_param`)** | Per-zone measured sediment flux rates (`fsed_oxy`, `fsed_amm`, `fsed_nit`, `fsed_frp`) for the AED sediment diagenesis module — an internal loading study repeating David Bergen's (2004) work \~20 years on | Kaylee Campbell — internal loading measurements *(source attribution unconfirmed in code; verify before citing)* | Hard-coded in `_targets.R` (`meas_param`); see [project notes](notes.qmd) |
+| **AED alum module parameters** | Alum-dosing process parameters (settling velocity, binding rate, pH optimum, etc.) for the `aed_alum` module | Sanila (2026) MSc thesis, University of Waikato — jar tests and video settling measurements | Hard-coded in `_targets.R` (`aed_alum_params`); see [alum dosing MSc thesis notes](alum-dosing-sanila-msc-thesis.qmd) |
+
+## Access notes
+
+-   **LERNZMP API** (`https://api.limnotrack.com`) — used for lake buoy data, lake shape/metadata, depth contours and the base AEME model object. Requires an API key stored in the `LERNZMP_API` (or `LERNZMP_KEY`) environment variable (see `.Renviron`, not committed to the repository).
+-   **BoPRC datasets** (lake level, CTD, chemistry, alum dosing) are supplied directly by Bay of Plenty Regional Council as Excel/CSV exports and stored under `data/raw/` (not version-controlled — see [`data-request.qmd`](data-request.qmd) for the running list of requested datasets).
+-   **NIWA climate data** is downloaded from the [NIWA Climate Data Portal (CliFlo)](https://cliflo.niwa.co.nz/) for station #1770 and stored under `data/raw/niwa_climate/`.
+-   **CMIP6 / VCSN data** is sourced from the [Ministry for the Environment Climate Data Portal](https://climatedata.environment.govt.nz/), with the bulk NetCDF archive mirrored on an institutional shared drive (`Z:`) due to its size (\>4 TB nationally).
+-   Processed/derived outputs (e.g. `gcm_point_data_lake_11133.csv`, `cmip6_gcm_metadata.csv`, `rotorua_light_data.csv`) are written to `data/processed/` by the pipeline and are reproducible from the raw inputs above.

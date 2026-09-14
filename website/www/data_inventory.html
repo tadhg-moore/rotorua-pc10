@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Inventory — Rotorua Lake Modelling</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;font-size:14px;color:#1a1a1a;background:#f5f5f3;padding:2rem 1rem}
+h1{font-size:20px;font-weight:500;margin-bottom:0.25rem}
+.meta{font-size:12px;color:#777;margin-bottom:1.25rem}
+.stats{display:flex;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap}
+.stat{background:#fff;border:0.5px solid #d8d6cf;border-radius:10px;padding:10px 16px;min-width:110px}
+.stat-val{font-size:22px;font-weight:500;line-height:1.2}
+.stat-lbl{font-size:11px;color:#888;margin-top:2px}
+.card{background:#fff;border:0.5px solid #d8d6cf;border-radius:12px;padding:1.25rem}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+input[type=search]{padding:5px 10px;font-size:13px;border-radius:8px;border:0.5px solid #bbb;flex:1;min-width:160px;max-width:260px;background:#fff;color:#1a1a1a}
+.filter-btn{padding:4px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#555;cursor:pointer;font-size:12px}
+.filter-btn.active,.filter-btn:hover{background:#f0eeea;color:#1a1a1a;border-color:#999}
+.filter-btn.active{font-weight:500}
+.count{font-size:12px;color:#777;margin-bottom:8px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;font-size:11px;color:#888;padding:6px 10px;border-bottom:0.5px solid #e0ddd6;text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#444}
+th .si{margin-left:3px;opacity:0.35}
+th.sorted .si{opacity:1}
+td{padding:8px 10px;border-bottom:0.5px solid #eeece6;vertical-align:top;line-height:1.45}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#faf9f6}
+.tname{font-weight:500;font-size:13px}
+.note{font-size:11px;color:#777;margin-top:2px}
+.cols{font-size:10px;color:#bbb;margin-top:3px;font-family:ui-monospace,monospace;line-height:1.5}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap}
+.sp-yes{background:#eaf3de;color:#3b6d11}
+.sp-no{background:#f1efe8;color:#5f5e5a}
+.cls-pill{background:#f1efe8;color:#888;font-family:ui-monospace,monospace;font-size:10px;padding:1px 6px;border-radius:6px;display:inline-block;margin-top:3px}
+@media(prefers-color-scheme:dark){
+  body{background:#1c1c1a;color:#e8e6df}
+  .stat,.card{background:#252523;border-color:#3a3835}
+  input[type=search]{background:#1c1c1a;color:#e8e6df;border-color:#555}
+  .filter-btn{background:#252523;color:#aaa;border-color:#444}
+  .filter-btn.active,.filter-btn:hover{background:#333;color:#e8e6df}
+  th{color:#666;border-color:#333}
+  td{border-color:#2e2c28}
+  tr:hover td{background:#2e2c28}
+  .note{color:#888}
+  .cols{color:#444}
+  .stat-lbl{color:#666}
+  .sp-yes{background:#27500a;color:#c0dd97}
+  .sp-no{background:#3a3835;color:#888780}
+  .cls-pill{background:#3a3835;color:#666}
+}
+</style>
+</head>
+<body>
+<h1>Data Inventory — Rotorua Lake Modelling</h1>
+<p class="meta">Generated 2026-09-15 11:01 NZST</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">18</div><div class="stat-lbl">Datasets</div></div>
+  <div class="stat"><div class="stat-val">4</div><div class="stat-lbl">Spatial</div></div>
+  <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Categories</div></div>
+</div>
+
+<div class="card">
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Search…" oninput="doFilter()">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('Observations',this)">Observations</button>
+    <button class="filter-btn" onclick="setFilter('Climate',this)">Climate</button>
+    <button class="filter-btn" onclick="setFilter('GCM / CMIP6',this)">GCM / CMIP6</button>
+    <button class="filter-btn" onclick="setFilter('Spatial',this)">Spatial</button>
+    <button class="filter-btn" onclick="setFilter('Model config',this)">Model config</button>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="sortBy('name')">Target <span class="si">⇅</span></th>
+        <th onclick="sortBy('cat')">Category <span class="si">⇅</span></th>
+        <th>Source</th>
+        <th onclick="sortBy('temporal')">Temporal <span class="si">⇅</span></th>
+        <th>Date range</th>
+        <th onclick="sortBy('dims')">Dimensions <span class="si">⇅</span></th>
+        <th onclick="sortBy('spatial')">Spatial <span class="si">⇅</span></th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const DATA = [
+{name:'lake_level',cat:'Observations',source:'Bay of Plenty RC – bulk export zip',temporal:'Daily',period:'1952-09-01 to 2025-10-15',spatial:false,dims:'2,582,373 rows x 6 cols',cols:'DateTime, Lake_Level_m, qc_code, X4, X5, Date',cls:'tbl_df, tbl, data.frame',notes:'Lake Rotorua water level (m AMSL); QC-filtered (qc_code > 200)'},
+{name:'rotorua_inflow',cat:'Observations',source:'Chris McBride – previous DYRESM load modelling',temporal:'Daily',period:'1959-07-01 to 2022-06-30',spatial:false,dims:'322,154 rows x 21 cols',cols:'name, Date, HYD_flow, HYD_temp, CHM_salt, CHM_oxy, CHM_ph, NIT_amm ... (+13 more)',cls:'tbl_df, tbl, data.frame',notes:'Catchment inflow (Rotorua_inf_final.csv); converted from DYRESM format'},
+{name:'rotorua_buoy_pro_data',cat:'Observations',source:'LERNZMP API – lake WQ profiler (lake_id 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'394,821 rows x 15 cols',cols:'DateTime, DptSns, TmpWtr, Cond, SpCond, TurbRT, FlChlr, DOconc ... (+7 more)',cls:'data.frame',notes:'Lake Rotorua water-column profiler (temperature, DO, etc.)'},
+{name:'rotorua_buoy_met_data',cat:'Observations',source:'LERNZMP API – lake met station (lake_id 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'414,688 rows x 9 cols',cols:'DateTime, RadSWD, TmpAir, HumRel, PrBaro, WndSpd, PpRain, RadClr ... (+1 more)',cls:'data.frame',notes:'Meteorological observations from the on-lake buoy'},
+{name:'ctd_data',cat:'Observations',source:'Bay of Plenty RC – Excel (bop_wq/)',temporal:'Monthly',period:'2003-03-19 to 2025-12-16',spatial:false,dims:'85,039 rows x 5 cols',cols:'Site, Depth (m), Date, variable, value',cls:'tbl_df, tbl, data.frame',notes:'Lake Rotorua CTD depth profiles – full record'},
+{name:'niwa_met_daily',cat:'Climate',source:'NIWA climate station #1770',temporal:'Hourly',period:'1981-12-31 to 2026-02-27',spatial:false,dims:'170,649 rows x 9 cols',cols:'station_id, file_variable, file_subtype, file_frequency, datetime_utc, date, variable_raw, value ... (+1 more)',cls:'tbl_df, tbl, data.frame',notes:'Evaporation (3 methods), radiation, rainfall, temperature, wind'},
+{name:'niwa_met_hourly_files',cat:'Climate',source:'NIWA climate station #1770',temporal:'Static',period:'N/A',spatial:false,dims:'5 file paths',cols:'',cls:'character',notes:'Hourly met file paths – auto-listed from data/raw/niwa_climate/'},
+{name:'cmip6_metadata',cat:'GCM / CMIP6',source:'CMIP6 archive – gather_cmip6_metadata()',temporal:'Static',period:'N/A',spatial:false,dims:'332 rows x 14 cols',cols:'filename, basename, variable, scenario, gcm, model, timestep, spatial_res ... (+6 more)',cls:'tbl_df, tbl, data.frame',notes:'7 GCMs x 5 scenarios; spatial resolution and calendar per model'},
+{name:'gcm_point_data_df',cat:'GCM / CMIP6',source:'Derived – point extraction from cmip6_files at lake centroid',temporal:'Static',period:'N/A',spatial:false,dims:'4,907,530 rows x 5 cols',cols:'gcm, scenario, variable, date, value',cls:'data.frame',notes:'Daily met series: tas, hurs, pr, rsds, sfcWind'},
+{name:'gcm_point_data_std_df',cat:'GCM / CMIP6',source:'Derived – Gregorian-standardised gcm_point_data_df',temporal:'Daily',period:'1960-01-01 to 2100-12-31',spatial:false,dims:'986,961 rows x 8 cols',cols:'date, hurs, pr, rsds, sfcWind, tas, gcm, scenario',cls:'data.frame',notes:'Gregorian-calendar standardised version of gcm_point_data_df'},
+{name:'gcm_ts_df',cat:'GCM / CMIP6',source:'Derived – time-series summaries from cmip6_files',temporal:'Static',period:'N/A',spatial:false,dims:'67,207 rows x 6 cols',cols:'gcm, scenario, year, season, variable, value',cls:'data.frame',notes:'Per-variable x GCM summary stats for visualisation'},
+{name:'lake_shape',cat:'Spatial',source:'LERNZMP API (lake_id = 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'1 rows x 15 cols',cols:'z_max, source, v, id, depth_meas, region, area_ha, elevation ... (+7 more)',cls:'sf, data.frame',notes:'Lake polygon as sf object (WGS84)'},
+{name:'lake_meta',cat:'Spatial',source:'LERNZMP API (lake_id = 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'1 rows x 7 cols',cols:'name, id, latitude, longitude, elevation, depth, area',cls:'data.frame',notes:'Lake metadata: name, lat, lon, elevation'},
+{name:'rotorua_catchment_bbox',cat:'Spatial',source:'Processed RDS – rotorua_lakes_area.rds',temporal:'Static',period:'N/A',spatial:false,dims:'1 rows x 4 cols',cols:'_leaflet_id, layerId, edit_id, geometry',cls:'sf, data.frame',notes:'Bounding box / area polygon for the Rotorua lakes catchment'},
+{name:'tutira_catchment_bbox',cat:'Spatial',source:'Hard-coded bbox coords in _targets.R',temporal:'Static',period:'N/A',spatial:false,dims:'1 rows x 1 cols',cols:'geometry',cls:'sf, data.frame',notes:'xmin=176.75, ymin=-39.29, xmax=177.00, ymax=-39.16 (EPSG:4326)'},
+{name:'vcsn_grid_points',cat:'Spatial',source:'VCSN – NZ Virtual Climate Station Network',temporal:'Static',period:'N/A',spatial:false,dims:'11,491 rows x 7 cols',cols:'longitude, latitude, spatial_ref, coord_index, AGENT_NO, NETWORK, geom',cls:'sf, data.frame',notes:'Grid of VCSN station points for spatial matching of CMIP6 data'},
+{name:'aeme_base_hyps',cat:'Model config',source:'Derived – corrected hypsograph applied to lernzmp_aeme',temporal:'Static',period:'N/A',spatial:false,dims:'Aeme',cols:'',cls:'Aeme',notes:'Base AEME object with fixed hypsograph; foundation for all model runs'},
+{name:'glm_sed_param',cat:'Model config',source:'Derived – estimate_sed_zones(aeme_base_hyps)',temporal:'Static',period:'N/A',spatial:false,dims:'26 rows x 9 cols',cols:'model, file, name, value, min, max, group, index ... (+1 more)',cls:'data.frame',notes:'GLM-AED sediment zone estimates from the corrected hypsograph'}
+];
+const PALETTE = [
+  {bg:"#e1f5ee",tx:"#0f6e56",dbg:"#085041",dtx:"#9fe1cb"},
+  {bg:"#e6f1fb",tx:"#185fa5",dbg:"#0c447c",dtx:"#b5d4f4"},
+  {bg:"#eeedfe",tx:"#534ab7",dbg:"#3c3489",dtx:"#cecbf6"},
+  {bg:"#faeeda",tx:"#854f0b",dbg:"#633806",dtx:"#fac775"},
+  {bg:"#faece7",tx:"#993c1d",dbg:"#71200d",dtx:"#f5c4b3"},
+  {bg:"#fbeaf0",tx:"#993556",dbg:"#72243e",dtx:"#f4c0d1"}
+];
+const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const cats = [...new Set(DATA.map(d => d.cat))];
+const catColor = Object.fromEntries(cats.map((c,i) => {
+  const p = PALETTE[i % PALETTE.length];
+  return [c, dark ? {bg:p.dbg,tx:p.dtx} : {bg:p.bg,tx:p.tx}];
+}));
+
+let activeFilter = "all", sortCol = null, sortDir = 1;
+
+function catBadge(cat) {
+  const {bg,tx} = catColor[cat]||{bg:"#eee",tx:"#333"};
+  return `<span class="badge" style="background:${bg};color:${tx}">${cat}</span>`;
+}
+
+function render(rows) {
+  document.getElementById("tbody").innerHTML = rows.map(r => `<tr>
+    <td>
+      <div class="tname">${r.name}</div>
+      ${r.notes ? `<div class="note">${r.notes}</div>` : ""}
+      ${r.cols  ? `<div class="cols">${r.cols}</div>`  : ""}
+    </td>
+    <td>${catBadge(r.cat)}<br><span class="cls-pill">${r.cls}</span></td>
+    <td style="font-size:12px">${r.source}</td>
+    <td style="white-space:nowrap">${r.temporal}</td>
+    <td style="font-size:12px">${r.period}</td>
+    <td style="white-space:nowrap;font-size:12px">${r.dims}</td>
+    <td><span class="badge ${r.spatial?"sp-yes":"sp-no"}">${r.spatial?"Yes":"No"}</span></td>
+  </tr>`).join("");
+  document.getElementById("count").textContent =
+    rows.length + " of " + DATA.length + " datasets shown";
+}
+
+function getFiltered() {
+  const q = document.getElementById("search").value.toLowerCase();
+  return DATA.filter(r => {
+    const matchCat = activeFilter === "all" || r.cat === activeFilter;
+    const matchQ   = !q || [r.name,r.source,r.notes,r.cat,r.cols,r.cls,r.dims]
+      .some(s => s && s.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+}
+
+function doFilter() { render(getSorted(getFiltered())); }
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  doFilter();
+}
+
+function getSorted(rows) {
+  if (!sortCol) return rows;
+  return [...rows].sort((a,b) => {
+    const av = String(a[sortCol]||"").toLowerCase();
+    const bv = String(b[sortCol]||"").toLowerCase();
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+}
+
+function sortBy(col) {
+  sortDir = sortCol === col ? -sortDir : 1;
+  sortCol = col;
+  document.querySelectorAll("th").forEach(th => th.classList.remove("sorted"));
+  event.currentTarget.classList.add("sorted");
+  doFilter();
+}
+
+render(DATA);
+</script>
+</body>
+</html>

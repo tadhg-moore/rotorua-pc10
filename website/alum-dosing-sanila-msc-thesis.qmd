@@ -1,0 +1,128 @@
+---
+title: "Alum Dosing in Lake Rotorua"
+format: html
+---
+
+# Alum Dosing in Lake Rotorua: Thesis Summary and Model Parameterisation Notes
+
+**Source:** Sanila, S. (2026). *Evaluation of Aluminium–Phosphorus Binding and pH Responses to Alum Dosing of Three New Zealand Lakes.* MSc thesis, University of Waikato.
+
+---
+
+## 1. Thesis Overview
+
+This thesis evaluates the effectiveness of alum (aluminium sulphate, Al₂(SO₄)₃) as a tool for reducing dissolved reactive phosphorus (DRP) across five New Zealand waters: Lake Rotorua, the Utuhina and Puarenga Streams, Lake Ōkaro, and Lake Moawhitu. The study was motivated by a recognised gap in site-specific, controlled evidence for Al:P binding behaviour across the Rotorua catchment lakes, despite many years of operational dosing.
+
+The methodology centred on standardised 3-hour jar tests, with acid titrations used to quantify buffering capacity at each site. For Lake Rotorua specifically, video-based settling measurements and stereomicroscopy were used to characterise the physical properties of alum floc — providing the most detailed floc data available for this lake.
+
+Across all sites, alum reduced DRP, but the magnitude of removal and pH response varied considerably. Al:P molar ratios ranged from 0.7:1 to 15.1:1 depending on site chemistry, and pH behaviour was governed primarily by alkalinity rather than dose rate. Lake Rotorua and the Puarenga Stream had the lowest alkalinity (~19 mg CaCO₃ L⁻¹) and showed the weakest pH recovery after dosing. Lake Moawhitu, with the highest alkalinity (~67 mg CaCO₃ L⁻¹), recovered most strongly.
+
+---
+
+## 2. Relevance to `&aed_alum` Model Parameters
+
+The following sections draw directly on thesis findings to inform parameterisation of the `&aed_alum` module for Lake Rotorua. Parameters are addressed in thematic groups.
+
+---
+
+### 2.1 Binding Stoichiometry and Efficiency (`K_P`, `k_w`)
+
+The jar-test Al:P molar ratio for Lake Rotorua was **0.7:1** (mass ratio 0.6:1), based on a dose of 1.0 mg Al L⁻¹ and a measured DRP removal of 1.60 ± 0.008 mg L⁻¹ from a pre-treatment spiked concentration of 1.62 mg L⁻¹. This near 1:1 molar performance is consistent with the lake's characteristically low dissolved organic carbon (~2 mg L⁻¹), which reduces competition for Al(OH)₃ surface sites and allows a high proportion of added aluminium to remain available for phosphate binding.
+
+It is important to note that this represents a best-case, laboratory-derived estimate. Operational field dosing on the Utuhina and Puarenga inflows has historically required substantially higher effective ratios (~7:1 Al:P; McDowell & Hawke, 2006), reflecting the effects of turbulence, short flocculation contact times, and hydrodynamic losses in the stream environment.
+
+Regarding binding kinetics, DRP removal appeared rapid under jar-test conditions — pH dropped within the first five minutes of dosing, and most removal was complete within the first 20 minutes of the 3-hour experiment. This is qualitatively consistent with a fast water-column binding rate (`k_w`), though no explicit first-order rate constant was fitted in the thesis. The near-complete removal of 1.62 mg P L⁻¹ (~52 mmol P m⁻³) at a 1 mg Al L⁻¹ dose suggests binding was not substrate-limited at that concentration, which is consistent with a relatively low half-saturation constant (`K_P`). The default value of 0.3 mmol P m⁻³ is not contradicted by the data, though it cannot be independently confirmed from this study.
+
+---
+
+### 2.2 Settling Velocity (`w_ala`)
+
+The thesis provides the most quantitatively useful constraints for this parameter. Settling velocities were measured for 89 individually tracked flocs under low-turbulence conditions:
+
+| Floc size class | Typical settling velocity |
+|---|---|
+| < 1,000 µm | < 40 m day⁻¹ |
+| 1,500–2,500 µm | 50–80 m day⁻¹ |
+| > 3,000 µm | ~100 m day⁻¹ |
+
+The fitted linear regression across all flocs was: velocity (m day⁻¹) = 0.0324 × diameter (µm) − 0.94, with R² = 0.69. The median Martin diameter was 1,290 µm and the mean was 1,442 µm. Applying the fitted relationship to Lake Rotorua's bathymetry, settling through the **mean depth (10.8 m) is estimated at 0.2–0.7 days** (5–17 hours), and through the **maximum depth (45 m) at 0.9–3.0 days** under quiescent conditions.
+
+The bulk of the floc population clustered in the 20–60 m day⁻¹ range. A representative central estimate for `w_ala` of **~0.5 m day⁻¹** (the current default) is physically defensible and consistent with median floc behaviour. A range of 0.3–1.5 m day⁻¹ could be justified depending on whether conservative or mean settling is targeted. These estimates should be treated as upper bounds, as wind-driven mixing in the lake is expected to interrupt settling and prolong suspension.
+
+---
+
+### 2.3 Floc Size Distribution (context for settling and resuspension)
+
+Microscopic image analysis of 1,094 fine floc particles revealed:
+
+- Equivalent diameters ranged from **25 to 240 µm**
+- **87% of particles were below 120 µm**; only 13% exceeded this
+- Mean equivalent diameter: **77.5 µm**; median: **69.3 µm**
+- Distribution was right-skewed (skewness = 0.95), dominated by small aggregates
+
+The larger settling aggregates tracked in video (median ~1,290 µm) are composite structures built from these fine sub-units. The thesis notes that alum flocs are inherently fragile and can release stable fine particles under gentle shear — a characteristic relevant to resuspension behaviour under wave action in the lake.
+
+---
+
+### 2.4 Resuspension (`simResuspension`, `k_res`)
+
+The thesis provides strong qualitative support for enabling resuspension in Lake Rotorua models. Sediment surveys (Tempero & Hamilton, 2016; Tempero, 2019) consistently show that amorphous Al(OH)₃ is concentrated in **near-shore areas** close to the Utuhina and Puarenga discharge zones, with limited accumulation in the deeper basin sediments. The thesis interprets this pattern as a consequence of fast near-shore settling (consistent with the 0.2–0.7 day estimate to mean depth) combined with subsequent wind-driven resuspension that prevents widespread offshore redistribution.
+
+On this basis, **`simResuspension = .true.` is recommended** for Lake Rotorua, particularly in models that resolve spatial differences between near-shore and offshore zones. No quantitative value for `k_res` is derivable from the thesis; the authors recommend future wave-flume experiments to constrain this parameter.
+
+---
+
+### 2.5 pH Efficiency Modifier (`ads_use_pH`, `pH_opt`, `sigma_pH`)
+
+The thesis provides directly relevant pH observations for Lake Rotorua:
+
+- Pre-treatment pH ranged from **6.9 to 7.9** across sites, with Lake Rotorua at the lower end
+- Following alum addition, pH dropped by up to **2.11 units within 10–20 minutes**, then stabilised with minimal recovery (< 0.1 units over 3 hours)
+- Post-treatment pH in jar tests therefore sat persistently in the **~5–6 range**
+- Alkalinity was the lowest of all sites at **19.20 mg CaCO₃ L⁻¹**, providing very limited buffering against acidification
+- Al(OH)₃ is most stable and P-binding most effective in the **pH 6–8 window**; efficiency declines below pH 6 and Al³⁺ toxicity becomes a concern below pH 4.5
+
+Since operational dosing is applied via the Utuhina and Puarenga inflows rather than directly to the open lake, pH in the lake body should remain close to ambient (~7–8) rather than dropping to the jar-test minimum. Under open-lake conditions, the pH efficiency modifier is therefore less critical than it would be for a direct-dosing scenario.
+
+If `ads_use_pH` is activated, a `pH_opt` of **7.0** would better represent open-lake conditions than the default of 6.0. A `sigma_pH` of **1.0** is consistent with the observed ±1–2 unit swings recorded during dosing events.
+
+---
+
+### 2.6 Dosing Rate (`S_ala`)
+
+Operational alum dosing has been applied continuously to the Utuhina Stream since 2006 and the Puarenga Stream since 2010, at a target rate of approximately **1 mg Al L⁻¹**, adjusted automatically to stream flow. Cumulative aluminium applied reached **1,071 tonnes by end of 2024**, at a long-term mean rate of **158.1 kg Al day⁻¹**. Peak application occurred during 2011–2012 when more than 2,000 tonnes per year were applied.
+
+Converting the mean operational rate to a whole-lake surface dose: 158.1 kg Al day⁻¹ ÷ 26.98 g mol⁻¹ = ~5,860 mol Al day⁻¹. At the observed 0.7:1 Al:P molar ratio, this binds approximately 8,370 mol P day⁻¹, or ~8.37 × 10⁶ mmol P day⁻¹. Distributed over Lake Rotorua's surface area (80.6 km² = 80.6 × 10⁶ m²), this gives an indicative whole-lake mean of:
+
+> **S_ala ≈ 0.10 mmol P m⁻² day⁻¹**
+
+Peak dosing years would yield approximately double this value. Note that this is a spatially averaged estimate; in practice, alum enters via discrete inflow points and is not uniformly distributed across the lake surface.
+
+---
+
+### 2.7 Ageing and Burial (`k_age_w`, `k_age_s`, `k_bur`)
+
+The thesis does not report explicit rate constants for the loss of binding capacity or burial of settled floc. It does confirm that sediment aluminium persists in near-shore zones over multi-year timescales, implying some long-term retention, but quantitative ageing or burial rates are not derivable from this study. The default values (`k_age` ~0.0998 day⁻¹, `k_bur` = 0.01 day⁻¹) cannot be validated or refuted from the available data and should be drawn from the broader literature or calibrated against monitoring data.
+
+---
+
+## 3. Parameter Summary
+
+| Parameter | Recommended value / range | Confidence | Basis |
+|---|---|---|---|
+| `w_ala` | 0.5 m day⁻¹ (range 0.3–1.5) | Good | Video settling measurements, 89 flocs |
+| Al:P molar ratio | 0.7:1 (jar test); ~7:1 (field) | Good | Jar test DRP removal data |
+| `K_P` | 0.3 mmol P m⁻³ (not contradicted) | Low | Indirect inference only |
+| `k_w` | Fast (< 20 min); value not fitted | Qualitative | pH and DRP time-series |
+| `simResuspension` | `.true.` recommended | Strong (qualitative) | Sediment surveys, floc fragility |
+| `k_res` | Not quantified | Not available | Recommended for future work |
+| `pH_opt` | 7.0 (open-lake conditions) | Moderate | Jar-test pH observations |
+| `sigma_pH` | 1.0 | Moderate | Observed pH swing magnitude |
+| `S_ala` | ~0.10 mmol P m⁻² day⁻¹ (mean) | Derived estimate | Operational dosing records |
+| `k_age_w/s`, `k_bur` | Not constrained by this study | Not available | Requires literature or calibration |
+
+---
+
+## 4. Key Caveats
+
+The jar-test Al:P ratios are best treated as site-specific indicators of performance under idealised, controlled conditions, not as fixed stoichiometric targets for field dosing. Operational experience consistently shows higher effective Al:P requirements in flowing systems due to turbulence and incomplete flocculation. Settling velocity estimates are similarly best-case figures derived under low-turbulence laboratory conditions; wind-driven mixing in Lake Rotorua will extend effective settling times and promote near-shore deposition over basin-wide distribution. Periodic re-evaluation of jar-test response and alkalinity is recommended, as water chemistry can shift over time and alter both treatment performance and operational risk.

@@ -1,0 +1,277 @@
+---
+title: "GLM-AED Sensitivity Analysis and Calibration Plan"
+subtitle: "Oxygen, ammonium, filterable reactive phosphorus, and phytoplankton growth"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    df-print: paged
+  # gfm:
+  #   toc: true
+  #   number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Purpose
+
+This document explains which AED parameters are proposed for **sensitivity
+analysis (SA)** and **calibration**, why they were chosen, and the model
+configuration switches that must be enabled for them to have any effect.
+
+It covers four target outputs:
+
+| Target | AED state variable(s) | Primary observation used to constrain it |
+|---|---|---|
+| Dissolved oxygen | `OXY_oxy` | DO profiles / hypolimnetic depletion rate |
+| Ammonium | `NIT_amm` (`NIT_tn`) | NH~4~ profiles, hypolimnetic accumulation |
+| Filterable reactive phosphorus | `PHS_frp` (`PHS_tp`) | FRP profiles, timing of the anoxic P pulse |
+| Phytoplankton growth | `PHY_<group>`, `PHY_tchla` | Chlorophyll-*a*, group biomass, bloom timing |
+
+The parameter list and switch list are maintained as companion CSV files:
+
+- `aed_sa_calib_params.csv` — the parameters, default values and screening ranges
+- `aed_sa_calib_switches.csv` — the configuration flags that gate them
+
+## Model configuration assumed
+
+The plan targets a GLM-AED setup with the following modules active:
+`aed_sedflux`, `aed_oxygen`, `aed_carbon`, `aed_organic_matter`,
+`aed_nitrogen`, `aed_phosphorus`, `aed_silica`, `aed_phytoplankton`.
+
+Sediment fluxes are supplied by **zoned constant fluxes** rather than the
+per-module scalar values:
+
+```fortran
+&aed_sedflux
+   sedflux_model = 'Constant2d'
+/
+&aed_sed_const2d
+   n_zones = 3
+   active_zones = 1, 2, 3
+   fsed_oxy = -300, -200, -100
+   fsed_amm = 3.402, 0.66, 0.33
+   fsed_nit = -0.4, 0.1, 0.05
+   fsed_frp = 0.0417, 0.0583, 0.06
+/
+```
+
+In the parameter table these fluxes appear as `aed_sed_const2d/fsed_*` with the
+`index` column holding the **zone number** (index 1 = zone 1). The companion
+CSV lists zone 1 only; extend to zones 2–3 by duplicating each row with the
+matching value.
+
+Three phytoplankton groups are assumed, mapped to columns of
+`aed_phyto_pars.csv` via `the_phytos`, with the `index` column giving the group
+order:
+
+| index | group | notes |
+|---|---|---|
+| 1 | cyano | buoyant / non-sinking, warm optimum |
+| 2 | diatom | fast growth, sinks, Si-limited |
+| 3 | green | slower growth, intermediate traits |
+
+## How SA and calibration relate
+
+1. **Screening SA (e.g. Morris / elementary effects).** Run over the *full*
+   parameter union below with wide ranges. Fix stoichiometry and most Arrhenius
+   (`theta_*`) terms. Goal: discard parameters with negligible influence on the
+   four targets.
+
+2. **Variance-based SA (e.g. Sobol) — optional.** Run on the ~10–15 survivors
+   with ranges tightened to roughly ±25–50 % of the expected value. Goal:
+   rank interactions and first-order effects per target metric.
+
+3. **Calibration.** Tune only the high-ranking, poorly-constrained,
+   *identifiable* subset (Section 5). Typically 12–18 parameters.
+
+**Order matters.** Get temperature/stratification and DO right first: the
+redox switches controlling NH~4~ and FRP sediment release
+(`ksed_amm`, `ksed_frp`) are gated on the simulated O~2~ field, so calibrating
+them before DO is closed will bias them.
+
+## Parameters by target
+
+### Dissolved oxygen
+
+Oxygen is a balance term; its drivers span several modules.
+
+| Parameter | Module | Default | SA range | Role |
+|---|---|---|---|---|
+| `aed_sed_const2d/fsed_oxy` (per zone) | sedflux | −300 | −450 … −150 | Sediment oxygen demand — usually the dominant sink for hypolimnetic DO |
+| `aed_oxygen/ksed_oxy` | oxygen | 30 | 10 … 100 | DO half-saturation of SOD |
+| `aed_oxygen/theta_sed_oxy` | oxygen | 1.08 | 1.04 … 1.12 | Temperature sensitivity of SOD |
+| `aed_organic_matter/rpoc_hydrol` | organic_matter | 0.03 | 0.001 … 0.1 | POC breakdown feeding the DOC pool |
+| `aed_organic_matter/rdoc_minerl` | organic_matter | 0.01 | 0.001 … 0.05 | Pelagic mineralisation O~2~ sink |
+| `aed_organic_matter/theta_hydrol`, `theta_minerl` | organic_matter | 1.07 | 1.04 … 1.10 | Temperature sensitivity of OM decay |
+| `aed_organic_matter/kdom_minerl`, `kpom_hydrol` | organic_matter | 20 | 2 … 30 | O~2~ half-saturation for aerobic decay |
+| `aed_organic_matter/f_an` | organic_matter | 1.0 | 0.1 … 1.0 | Anaerobic mineralisation fraction |
+| `aed_nitrogen/rnitrif` | nitrogen | 0.1 | 0.01 … 0.5 | Nitrification O~2~ demand (2 mol O~2~ / mol N) |
+| phyto `R_growth`, `R_resp` | phytoplankton | group | — | Photosynthetic source / respiration sink |
+
+**Calibrate:** `fsed_oxy` (per zone), `theta_sed_oxy`, and **one** pelagic
+mineralisation rate (`rdoc_minerl` *or* `rpoc_hydrol`, not both — they are
+confounded when fitting DO alone). Choose `oxy_piston_model` by waterbody type
+*before* calibration rather than treating it as a free knob.
+
+**Fix from literature:** `ksed_oxy`, `kdom_minerl`, `altitude` (known),
+Schmidt-number choice.
+
+### Ammonium
+
+| Parameter | Module | Default | SA range | Role |
+|---|---|---|---|---|
+| `aed_sed_const2d/fsed_amm` (per zone) | sedflux | 3.402 | 1.70 … 5.10 | Benthic NH~4~ release — dominant internal load when stratified |
+| `aed_nitrogen/ksed_amm` | nitrogen | 30 | 10 … 100 | O~2~ control on the NH~4~ flux |
+| `aed_nitrogen/theta_sed_amm` | nitrogen | 1.08 | 1.04 … 1.10 | Temperature sensitivity of the flux |
+| `aed_nitrogen/rnitrif` | nitrogen | 0.1 | 0.01 … 0.5 | NH~4~ → NO~2~/NO~3~ — main water-column sink |
+| `aed_nitrogen/knitrif` | nitrogen | 150 | 20 … 300 | O~2~ half-saturation for nitrification |
+| `aed_nitrogen/theta_nitrif` | nitrogen | 1.08 | 1.04 … 1.10 | Temperature sensitivity of nitrification |
+| phyto `K_N`, `R_nuptake`, `X_nmin/X_nmax` | phytoplankton | group | — | Algal DIN uptake — large NH~4~ sink in the growing season |
+
+**Calibrate:** `fsed_amm` (per zone), `rnitrif`, and **one** temperature term
+(`theta_nitrif` *or* `theta_sed_amm`). If phytoplankton is active, the dominant
+group's `K_N` / `R_nuptake` shape the growing-season NH~4~ minimum.
+
+**Fix:** `knitrif`, `ksed_amm`; anammox / DNRA rates left at zero unless those
+pathways are explicitly modelled.
+
+**Confounding:** `fsed_amm` (source) trades off directly against `rnitrif`
+(sink) for the hypolimnetic accumulation rate; the DO profile and NO~3~ data
+help constrain `rnitrif` independently.
+
+### Filterable reactive phosphorus
+
+| Parameter | Module | Default | SA range | Role |
+|---|---|---|---|---|
+| `aed_sed_const2d/fsed_frp` (per zone) | sedflux | 0.0417 | 0.021 … 0.063 | Benthic P release — primary internal load |
+| `aed_phosphorus/ksed_frp` | phosphorus | 30 | 10 … 100 | O~2~ dependence of the P flux (redox switch) |
+| `aed_phosphorus/theta_sed_frp` | phosphorus | 1.05 | 1.04 … 1.12 | Temperature sensitivity of the P flux |
+| `aed_phosphorus/kpo4p` | phosphorus | 1.05 | 0.1 … 10 | Partition coefficient (adsorption model 1) |
+| `aed_phosphorus/kadsratio`, `qmax` | phosphorus | 1.05 | 0.1 … 10 | Langmuir affinity / capacity (adsorption model 2) |
+| `aed_phosphorus/w_po4ads` | phosphorus | 0 | 0 … 0.5 | Settling of particulate-bound P |
+| phyto `K_P`, `R_puptake`, `X_pmin/X_pmax` | phytoplankton | group | — | Algal uptake — dominant epilimnetic FRP sink |
+
+**Calibrate:** `fsed_frp` (per zone), `ksed_frp` (sets the O~2~ threshold at
+which release switches on — calibrate *jointly* with the DO model),
+`theta_sed_frp`. Calibrate adsorption parameters **only** with particulate-P or
+TSS data; otherwise they are unidentifiable.
+
+**Fix:** phyto `K_P` (well below typical FRP), `P_0`.
+
+**Confounding:** epilimnetic FRP is mostly set by algal uptake, so a
+phosphorus-only calibration is biased if phytoplankton parameters are still off.
+
+### Phytoplankton growth
+
+Growth = `R_growth · fT · fI · min(fN, fP, fSi) · fSal − respiration − losses`.
+Parameters are **per group** — calibrate the 1–3 groups that carry biomass.
+
+**Tier 1 — almost always calibrate (per dominant group):**
+
+| Parameter | Role |
+|---|---|
+| `R_growth` | Maximum growth rate — top sensitivity for bloom magnitude |
+| `I_K` (or `I_S` if `lightModel = 1`) | Light half-saturation — depth of production, spring onset |
+| `T_opt` | Optimum temperature — seasonal timing and succession |
+| `R_resp` | Metabolic loss — controls biomass decline and net growth |
+| `w_p` | Settling velocity — loss term, strong on standing stock |
+
+**Tier 2 — include in SA, calibrate if Tier 1 cannot close the fit:**
+`T_std`, `T_max`, `theta_growth`, `K_N`, `K_P`, `X_nmin/X_nmax`,
+`X_pmin/X_pmax`, `R_nuptake`, `R_puptake`, `f_pr`, `k_fres`, `k_fdom`, `Xcc`,
+`KePHY`, `p0`. Diatom only: `K_Si`, `X_sicon`.
+
+**Per-group starting values (from `aed_phyto_pars.csv` example columns):**
+
+| Parameter | cyano | diatom | green |
+|---|---|---|---|
+| `R_growth` (/d) | 1.1 [0.55–1.65] | 2.8 [1.4–4.2] | 0.7 [0.35–1.05] |
+| `I_K` (µE m^−2^ s^−1^) | 25 [10–60] | 10 [4–25] | 25 [10–60] |
+| `T_opt` (°C) | 28 [24–32] | 20 [16–26] | 27 [23–31] |
+| `T_std` / `T_max` (°C) | 20 / 35 | 15 / 32 | 20 / 33 |
+| `R_resp` (/d) | 0.08 [0.04–0.12] | 0.12 [0.06–0.2] | 0.012 [0.006–0.05] |
+| `w_p` (m/d) | 0 [−0.1–0.05] | −0.104 [−0.5–0] | −0.01 [−0.2–0.05] |
+| `K_N` / `K_P` (mmol m^−3^) | 4 / 0.15 | 3.57 / 0.16 | 3.21 / 0.16 |
+| `Xcc` (mg C mg chl^−1^) | 50 | 40 | 40 |
+| `KePHY` | 0.005 | 0.001 | 0.005 |
+
+**Identifiability:** `R_growth`, `R_resp` and `w_p` all move standing biomass —
+separable only with an additional rate or vertical-distribution constraint. With
+chlorophyll-*a* alone, fix `w_p` from settling-column literature and `R_resp`
+from literature, and calibrate `R_growth` plus one light parameter. `I_K` and
+`T_opt` both shift bloom timing — use seasonal shape (spring vs. summer peak) to
+distinguish. Calibrate groups sequentially by season of dominance.
+
+## Configuration switches
+
+Many calibration parameters are gated behind config flags. If the switch is not
+set, the parameter is read but silently unused.
+
+| Switch | Set to | Enables | Note |
+|---|---|---|---|
+| `aed_sedflux/sedflux_model` | `Constant2d` | `aed_sed_const2d/fsed_*` | activates the zoned flux block |
+| `aed_oxygen/Fsed_oxy_variable` | `SDF_Fsed_oxy` | `fsed_oxy` (zoned) | else module uses its own scalar `Fsed_oxy` |
+| `aed_nitrogen/Fsed_amm_variable` | `SDF_Fsed_amm` | `fsed_amm` (zoned) | else module scalar `Fsed_amm` |
+| `aed_nitrogen/Fsed_nit_variable` | `SDF_Fsed_nit` | `fsed_nit` (zoned) | else module scalar `Fsed_nit` |
+| `aed_phosphorus/Fsed_frp_variable` | `SDF_Fsed_frp` | `fsed_frp` (zoned) | else module scalar `Fsed_frp` |
+| `aed_nitrogen/nitrif_reactant_variable` | `OXY_oxy` | `knitrif`, O~2~ dependence of `ksed_amm` | `rnitrif`/`theta_nitrif` still act without it |
+| `aed_phosphorus/phosphorus_reactant_variable` | `OXY_oxy` | `ksed_frp`, `theta_sed_frp` (redox P release) | `fsed_frp` still applied without it |
+| `aed_organic_matter/dom_miner_oxy_reactant_var` | `OXY_oxy` | O~2~ half-saturation in `kdom_minerl`, `kpom_hydrol` | rates/theta still act without it |
+| `aed_phosphorus/simPO4Adsorption` | `.true.` | `kpo4p`, `kadsratio`, `qmax`, `w_po4ads` | plus `PO4AdsorptionModel` (1 → `kpo4p`; 2 → `kadsratio`+`qmax`) and a sorbent (`ads_use_external_tss` or `po4sorption_target_variable`) |
+| `aed_phytoplankton/num_phytos`, `the_phytos`, `dbase` | 3; `1,2,3`; csv | all `phyto/*` rows | `the_phytos` order defines the `index` |
+| `aed_phytoplankton/settling` | 1 (`_MOB_CONST_`) per group | `w_p` | Stokes (3) / motile (4) compute sinking from density and ignore `w_p` |
+| `aed_phytoplankton/si_uptake_target_variable` | `SIL_rsi` | `K_Si`, `X_sicon` | requires `aed_silica` active |
+| `phyto/fT_Method` (per group) | `1` | `T_opt`, `T_std`, `T_max`, `theta_growth` | `0` = no temperature limitation |
+| `phyto/lightModel` (per group) | `0` | `I_K` | `1` uses `I_S` instead |
+| `phyto/simDINUptake` / `simINDynamics` | `1` / `2` | `K_N` / `X_nmin`,`X_nmax`,`R_nuptake` | `simINDynamics` 0–1 uses fixed `X_ncon` |
+| `phyto/simDIPUptake` / `simIPDynamics` | `1` / `2` | `K_P` / `X_pmin`,`X_pmax`,`R_puptake` | `simIPDynamics` 0–1 uses fixed `X_pcon` |
+| `phyto/simSiUptake` (per group) | `1` | `K_Si`, `X_sicon` | diatom only |
+
+### Common "parameter looks ignored" traps
+
+- The example `aed_phyto_pars.csv` ships with **diatom `fT_Method = 0`** — its
+  temperature parameters do nothing until set to `1`.
+- The example `aed_phyto_pars.csv` ships with **`simSiUptake = 0` for every
+  group** — `K_Si` / `X_sicon` are inert until switched on.
+- `Fsed_*_variable` links not set — the zoned sediment fluxes never reach the
+  modules and the per-module scalars are used instead.
+
+## Recommended workflow
+
+1. Confirm switches (Section 6) match the intended process representation.
+2. Screening SA (Morris) over the full parameter union — ~30–40 parameters.
+3. Variance-based SA (Sobol) on the ~10–15 survivors, per-target metrics
+   (hypolimnetic DO depletion rate; NH~4~ / FRP anoxic accumulation;
+   chlorophyll-*a* peak magnitude and timing).
+4. Calibrate the Tier-1 subset — roughly: `fsed_oxy`, `theta_sed_oxy`, one
+   `r*_minerl`; `fsed_amm`, `rnitrif`; `fsed_frp`, `ksed_frp`; per group
+   `R_growth`, `I_K`/`I_S`, `T_opt`, `R_resp` — ~12–18 parameters.
+5. Physics and DO first, then N and P sediment exchange, then phytoplankton by
+   season of dominance.
+
+## Companion files
+
+```{r}
+#| label: load-params
+#| eval: false
+# Adjust paths as needed
+params   <- readr::read_csv("../data/processed/aed/aed_sa_calib_params.csv")
+switches <- readr::read_csv("../data/processed/aed/aed_sa_calib_switches.csv")
+
+params   |> dplyr::count(module, name = "n_parameters")
+params   |> dplyr::filter(module == "phytoplankton") |> dplyr::count(group)
+```
+
+- **`aed_sa_calib_params.csv`** — columns:
+  `model, file, name, value, min, max, group, index, module, var_sim`.
+  Sediment fluxes listed for zone 1; phytoplankton listed for cyano / diatom /
+  green (index 1 / 2 / 3).
+- **`aed_sa_calib_switches.csv`** — columns:
+  `file, name, required_value, enables, module, note`.
