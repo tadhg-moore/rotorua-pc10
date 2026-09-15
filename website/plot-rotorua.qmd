@@ -1,0 +1,390 @@
+---
+title: "Lake Rotorua V4 - GLM-AED output plots"
+format: html
+eval: true
+execute:
+  cache: true
+knitr:
+  opts_chunk:
+    cache.extra: !expr tools::md5sum(c("LakeRotorua/glm4_original.nml", "LakeRotorua/aed/aed_original.nml"))
+---
+
+Rotorua V4 outputs (GLM-AED+ 4.0.0, `glm4.nml`, 1-year run 2008-07-01 to 2009-07-01),
+plotted with the [AEME](https://github.com/limnotrack/AEME) package rather than a
+hand-rolled `netCDF4`/`matplotlib` stack — this is the R/Quarto counterpart of the old
+`plot_rotorua.ipynb`.
+
+`AEME::get_var()`/`plot_output()` cover every plain water-column and sediment-zone
+variable (they read `output/output.nc` and `output/lake.csv` for you, translate between
+AED and AEME variable names, and turn a depth-time array into a heatmap in one call). The
+one thing they don't model is the dynamic sediment-heat profile (`sed_heat_model = 2`,
+a `(time, nzones, sed_layers)` array) — that section still opens the NetCDF file directly
+with `ncdf4`.
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+
+library(AEME)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+library(ncdf4)
+
+lake_dir  <- "LakeRotorua"
+output_nc <- file.path(lake_dir, "output", "output.nc")
+plot_dir  <- file.path(lake_dir, "plots")
+dir.create(plot_dir, showWarnings = FALSE)
+dir.create(file.path(plot_dir, "profile"), showWarnings = FALSE)
+dir.create(file.path(plot_dir, "zone"), showWarnings = FALSE)
+
+# glm_exec <- normalizePath(list.files(pattern = "*.exe", full.names = TRUE, recursive = TRUE))
+# options("AEME.glm_exec" = glm_exec)
+
+# file.copy(file.path(lake_dir,"aed", "aed_original.nml"),
+#           file.path(lake_dir, "aed", "aed.nml"), overwrite = TRUE)
+aeme <- glm_config_to_aeme(nml_file = file.path(lake_dir, "glm4_original.nml"))
+
+tgt_vars <- c("HYD_temp", "CHM_salt", "HYD_dens", "RAD_extc", "OXY_oxy", "CAR_dic", "CAR_pH",
+              "PHS_frp", "ALU_ala", "ALU_alp", "ALU_uptake_w", "ALU_fpH",
+              "ALU_ben_ala", "ALU_ben_alp", "ALU_uptake_s")
+
+model_controls <- get_model_controls(use_bgc = TRUE)
+model_controls <- set_vars_sim(model_controls, tgt_vars)
+
+aeme <- aeme |> 
+  build_aeme(use_bgc = TRUE, use_aeme = F)
+aeme_path <- get_lake_dir(aeme)
+
+aed_old_file <- file.path(lake_dir, "aed", "aed_original.nml")
+aed_file <- file.path(aeme_path, "glm_aed", "aed", "aed.nml")
+
+aed_old <- read_nml(aed_old_file)
+aed <- read_nml(aed_file)
+aed$aed_models$models <- c(aed$aed_models$models, "aed_alum")
+aed$aed_alum <- aed_old$aed_alum
+write_nml(aed, aed_file)
+
+aeme <- aeme |> 
+  run_aeme()
+
+outfile <- get_model_outfile(aeme)$glm_aed["output"]
+out <- read_glm_output(file = outfile, vars_sim = tgt_vars, load_all = T)
+
+theme_set(theme_bw(base_size = 10))
+```
+
+## 0. Helpers
+
+`profile_vars`/`zone_vars` are read straight off the NetCDF file's dimensions (AEME has
+no catalogue of "every variable in this output" — it only knows the variables it has a
+name mapping for), so this is the one place raw `ncdf4` is used outside the sediment-heat
+section. `get_var()` happily accepts either the AED name (`"OXY_oxy"`) or AEME's own name
+(`"CHM_oxy"`) for everything found this way.
+
+```{r}
+#| label: helpers
+#| message: false
+
+nc <- nc_open(outfile)
+var_dims <- sapply(names(nc$var), function(v) sapply(nc$var[[v]]$dim, `[[`, "name"))
+
+profile_vars <- names(var_dims)[sapply(var_dims, function(d) "z" %in% d)]
+zone_vars    <- names(var_dims)[sapply(var_dims, function(d) {
+  "nzones" %in% d && !"z" %in% d && !"sed_layers" %in% d
+})]
+
+long_name <- function(var) {
+  v <- nc$var[[var]]
+  if (is.null(v)) return(var)
+  sprintf("%s (%s)", if (nzchar(v$longname)) v$longname else var, v$units)
+}
+
+cat(sprintf("%d profile variables, %d zone variables\n", length(profile_vars), length(zone_vars)))
+
+# A handful of AED variable names aren't recognised by AEME's fuzzy matcher even
+# though they're just renamed internally (e.g. dissolved oxygen is `CHM_oxy`, not
+# `OXY_oxy`) - resolve those explicitly rather than letting get_var() error.
+var_alias <- c(OXY_oxy = "CHM_oxy")
+resolve_var <- function(var) unname(ifelse(var %in% names(var_alias), var_alias[var], var))
+
+#' GLM writes each layer against a moving Lagrangian grid, so `get_var()`'s depths
+#' don't line up day to day - interpolate onto a common depth-below-surface grid
+#' before tiling, or the heatmap comes out as sparse, misaligned slivers.
+grid_profile <- function(df, nz = 150) {
+  depths <- seq(0, max(df$depth, na.rm = TRUE), length.out = nz)
+  df |>
+    group_by(Date) |>
+    group_modify(~ data.frame(depth = depths,
+                               value = approx(.x$depth, .x$value, xout = depths, rule = 2)$y)) |>
+    ungroup()
+}
+
+#' Depth-time heatmap for a (lon, lat, z, time) variable, via AEME::get_var()
+plot_profile <- function(var, cmap = "viridis") {
+  df <- get_var(aeme, model = "glm_aed", var_sim = resolve_var(var), remove_spin_up = FALSE) |>
+    grid_profile()
+  ggplot(df, aes(x = Date, y = depth, fill = value)) +
+    geom_raster() +
+    scale_y_reverse() +
+    scale_fill_viridis_c(option = cmap, na.value = NA) +
+    labs(x = NULL, y = "depth (m)", fill = NULL, title = var,
+         subtitle = long_name(var)) +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+}
+
+#' One line per sediment zone for a (lon, lat, nzones, time) variable
+plot_zone <- function(var) {
+  df <- get_var(aeme, model = "glm_aed", var_sim = resolve_var(var), remove_spin_up = FALSE)
+  ggplot(df, aes(x = Date, y = value, colour = factor(nzones))) +
+    geom_line(linewidth = 0.4) +
+    labs(x = NULL, y = NULL, colour = "zone", title = var, subtitle = long_name(var)) +
+    theme(plot.title = element_text(size = 9), plot.subtitle = element_text(size = 7),
+          legend.position = "bottom")
+}
+```
+
+## 1. Lake-level summary
+
+`plot_wlev()` and `plot_wbal()` are AEME's built-ins for the two standard GLM diagnostics;
+the temperature and heat-balance panels are assembled from `get_var()` since AEME has no
+single "lake summary" plot for them.
+
+```{r}
+#| label: lake-summary
+#| fig-width: 12
+#| fig-height: 8
+
+temp_panel <- bind_rows(
+  get_var(aeme, model = "glm_aed", var_sim = "surface_temp") |> mutate(series = "Surface Temp"),
+  get_var(aeme, model = "glm_aed", var_sim = "max_temp")     |> mutate(series = "Max Temp"),
+  get_var(aeme, model = "glm_aed", var_sim = "min_temp")     |> mutate(series = "Min Temp")
+) |>
+  ggplot(aes(x = Date, y = value, colour = series)) +
+  geom_line(linewidth = 0.5) +
+  scale_colour_manual(values = c("Surface Temp" = "firebrick", "Max Temp" = "darkorange",
+                                  "Min Temp" = "steelblue")) +
+  labs(title = "Surface / max / min temperature (degC)", x = NULL, y = NULL, colour = NULL) +
+  theme(legend.position = "bottom")
+
+heat_panel <- bind_rows(
+  get_var(aeme, model = "glm_aed", var_sim = "LKE_Qsw") |> mutate(series = "Qsw"),
+  get_var(aeme, model = "glm_aed", var_sim = "LKE_Qe")  |> mutate(series = "Qe"),
+  get_var(aeme, model = "glm_aed", var_sim = "LKE_Qh")  |> mutate(series = "Qh"),
+  get_var(aeme, model = "glm_aed", var_sim = "LKE_Qlw") |> mutate(series = "Qlw")
+) |>
+  ggplot(aes(x = Date, y = value, colour = series)) +
+  geom_line(linewidth = 0.4) +
+  labs(title = "Heat balance components", x = NULL, y = NULL, colour = NULL) +
+  theme(legend.position = "bottom")
+
+lake_summary <- (plot_wlev(aeme, model = "glm_aed") | plot_wbal(aeme, model = "glm_aed")) /
+  (temp_panel | heat_panel)
+lake_summary
+ggsave(file.path(plot_dir, "lake_summary.png"), lake_summary, width = 12, height = 8, dpi = 120)
+```
+
+## 2. Physical profiles
+
+```{r}
+#| label: profile-headline
+#| fig-width: 10
+#| fig-height: 13
+
+headline <- intersect(c("temp", "salt", "dens", "extc"), profile_vars)
+profile_headline <- wrap_plots(lapply(headline, plot_profile), ncol = 1)
+profile_headline[[1]] <- profile_headline[[1]] + scale_fill_viridis_c(option = "magma")
+profile_headline
+ggsave(file.path(plot_dir, "profile_headline.png"), profile_headline, width = 10, height = 13, dpi = 120)
+```
+
+## 3. AED biogeochemistry
+
+The state-variable list is whatever `aed/aed.nml` currently simulates (`aed_sedflux`,
+`aed_oxygen`, `aed_carbon`, `aed_phosphorus`, `aed_alum`) — a smaller set than the full
+biogeochemistry the original notebook was written against, so the sample below is drawn
+from what's actually in `profile_vars`.
+
+```{r}
+#| label: profile-aed-sample
+#| fig-width: 10
+#| fig-height: 12
+
+aed_sample <- intersect(c("OXY_oxy", "CAR_dic", "CAR_pH", "PHS_frp"), profile_vars)
+profile_aed_sample <- wrap_plots(lapply(aed_sample, plot_profile), ncol = 1)
+profile_aed_sample
+ggsave(file.path(plot_dir, "profile_aed_sample.png"), profile_aed_sample, width = 10, height = 12, dpi = 120)
+```
+
+## 4. Dynamic sediment heat model
+
+`sed_heat_model = 2` gives every sediment zone a vertical soil-temperature profile,
+integrated by `zZSoilTemp` with the zone-average water temperature as its surface boundary
+condition. This is a `(time, nzones, sed_layers)` array with no AEME variable mapping, so
+it's read directly from the NetCDF file.
+
+What to look for: the seasonal signal should **damp and lag** with depth, and the deepest
+node should be flat.
+
+```{r}
+#| label: sediment-temperature
+#| fig-width: 11
+#| fig-height: 10
+
+sed_temp  <- ncvar_get(nc, "sed_temp")        # (sed_layers, nzones, time)
+sed_depth <- ncvar_get(nc, "sed_layer_depth") # (sed_layers)
+zone_ztemp <- ncvar_get(nc, "zone_ztemp")     # (nzones, time)
+sed_hf     <- ncvar_get(nc, "sed_heatflux")   # (nzones, time)
+time_vals  <- as.Date(ncvar_get(nc, "time") / 24, origin = strsplit(ncatt_get(nc, "time", "units")$value, "since ")[[1]][2])
+n_zone     <- dim(sed_temp)[2]
+
+cat("sediment nodes (m below SWI):", round(sed_depth, 3), "\n")
+
+sed_df <- expand.grid(layer = seq_len(dim(sed_temp)[1]), zone = seq_len(n_zone), t = seq_along(time_vals)) |>
+  mutate(Date = time_vals[t], depth = sed_depth[layer], value = sed_temp[cbind(layer, zone, t)])
+water_df <- expand.grid(zone = seq_len(n_zone), t = seq_along(time_vals)) |>
+  mutate(Date = time_vals[t], value = zone_ztemp[cbind(zone, t)])
+
+sed_temp_plot <- ggplot(sed_df, aes(x = Date, y = value, colour = sprintf("%.2f m", depth))) +
+  geom_line(linewidth = 0.4) +
+  geom_line(data = water_df, aes(colour = "water"), linewidth = 0.9, colour = "black") +
+  facet_wrap(~ sprintf("zone %d", zone - 1), ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = "degC", colour = NULL, title = "Sediment temperature profile by zone") +
+  theme(legend.position = "bottom")
+sed_temp_plot
+ggsave(file.path(plot_dir, "sediment_temperature.png"), sed_temp_plot, width = 11, height = 3.2 * n_zone, dpi = 120)
+```
+
+```{r}
+#| label: sediment-heatflux
+#| fig-width: 11
+#| fig-height: 6
+
+hf_df <- expand.grid(zone = seq_len(n_zone), t = seq_along(time_vals)) |>
+  mutate(Date = time_vals[t], hf = sed_hf[cbind(zone, t)],
+         diff = sed_temp[cbind(1, zone, t)] - zone_ztemp[cbind(zone, t)])
+
+hf_plot <- ggplot(hf_df, aes(x = Date, y = hf, colour = factor(zone - 1))) +
+  geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
+  geom_line(linewidth = 0.4) +
+  labs(title = "Sediment-water heat flux (W/m2; negative = water losing heat to the bed)",
+       x = NULL, y = NULL, colour = "zone")
+
+diff_plot <- ggplot(hf_df, aes(x = Date, y = diff, colour = factor(zone - 1))) +
+  geom_line(linewidth = 0.4) +
+  geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
+  labs(title = "Sediment-water temperature difference (degC)", x = NULL, y = NULL, colour = "zone")
+
+sed_heatflux <- hf_plot / diff_plot
+sed_heatflux
+ggsave(file.path(plot_dir, "sediment_heatflux.png"), sed_heatflux, width = 11, height = 6, dpi = 120)
+```
+
+## 5. Alum (`aed_alum`)
+
+`aed/aed.nml` currently sets `S_ala = 0` (no alum dose) with zero initial pools, so this
+panel is mainly a check that the module is wired in — the min/max table below should stay
+near zero and `ALU_fpH` near 1 (the pH modifier disabled) until `S_ala` is set to actually
+dose the lake.
+
+```{r}
+#| label: alum-profiles
+#| fig-width: 10
+#| fig-height: 10
+
+alu_prof  <- intersect(c("ALU_ala", "ALU_alp", "ALU_uptake_w", "ALU_fpH"), profile_vars)
+alu_sheet <- intersect(c("ALU_ben_ala", "ALU_ben_alp", "ALU_uptake_s"), names(nc$var))
+
+alum_profiles <- wrap_plots(lapply(alu_prof, plot_profile), ncol = 1)
+alum_profiles
+ggsave(file.path(plot_dir, "alum_profiles.png"), alum_profiles, width = 10, height = 10, dpi = 120)
+```
+
+```{r}
+#| label: alum-benthic
+#| fig-width: 11
+#| fig-height: 4
+
+alu_sheet_df <- lapply(alu_sheet, function(v) {
+  get_var(aeme, model = "glm_aed", var_sim = v, remove_spin_up = FALSE) |>
+    mutate(series = sprintf("%s  %s", v, long_name(v)))
+}) |> bind_rows()
+
+alum_benthic <- ggplot(alu_sheet_df, aes(x = Date, y = value, colour = series)) +
+  geom_line(linewidth = 0.5) +
+  labs(title = "Benthic alum pools", x = NULL, y = NULL, colour = NULL) +
+  theme(legend.position = "bottom", legend.text = element_text(size = 7))
+alum_benthic
+ggsave(file.path(plot_dir, "alum_benthic.png"), alum_benthic, width = 11, height = 4, dpi = 120)
+
+sapply(c(alu_prof, alu_sheet), function(v) {
+  vals <- ncvar_get(nc, v)
+  c(min = min(vals, na.rm = TRUE), max = max(vals, na.rm = TRUE))
+}) |> t() |> knitr::kable(digits = 6)
+```
+
+## 6. Save every profile variable to PNG
+
+One figure per variable under `plots/profile/`. Existing files are skipped, so re-running
+is cheap; delete the directory to force a rebuild.
+
+```{r}
+#| label: dump-profile
+#| message: false
+#| warning: false
+
+profile_dir <- file.path(plot_dir, "profile")
+failed <- list()
+for (var in profile_vars) {
+  out_path <- file.path(profile_dir, paste0(var, ".png"))
+  if (file.exists(out_path)) next
+  p <- tryCatch(plot_profile(var), error = function(e) e)
+  if (inherits(p, "error")) {
+    failed[[var]] <- conditionMessage(p)
+  } else {
+    ggsave(out_path, p, width = 10, height = 4, dpi = 110)
+  }
+}
+cat(sprintf("wrote %d profile PNGs to %s\n", length(profile_vars) - length(failed), profile_dir))
+if (length(failed) > 0) print(failed)
+```
+
+## 7. Save every zone variable to PNG
+
+Zone variables are `(nzones, time)` — sediment fluxes and the sediment heat flux.
+`sed_temp` is handled separately in section 4 because it carries the extra `sed_layers`
+dimension.
+
+```{r}
+#| label: dump-zone
+#| message: false
+#| warning: false
+
+zone_dir <- file.path(plot_dir, "zone")
+failed_z <- list()
+for (var in zone_vars) {
+  out_path <- file.path(zone_dir, paste0(var, ".png"))
+  if (file.exists(out_path)) next
+  p <- tryCatch(plot_zone(var), error = function(e) e)
+  if (inherits(p, "error")) {
+    failed_z[[var]] <- conditionMessage(p)
+  } else {
+    ggsave(out_path, p, width = 10, height = 4, dpi = 110)
+  }
+}
+cat(sprintf("wrote %d zone PNGs to %s\n", length(zone_vars) - length(failed_z), zone_dir))
+if (length(failed_z) > 0) print(failed_z)
+```
+
+## 8. Done
+
+Everything is under [plots/](LakeRotorua/plots/):
+
+- [plots/lake_summary.png](LakeRotorua/plots/lake_summary.png)
+- [plots/profile_headline.png](LakeRotorua/plots/profile_headline.png), [plots/profile_aed_sample.png](LakeRotorua/plots/profile_aed_sample.png)
+- [plots/sediment_temperature.png](LakeRotorua/plots/sediment_temperature.png), [plots/sediment_heatflux.png](LakeRotorua/plots/sediment_heatflux.png) — the dynamic sediment heat model
+- [plots/alum_profiles.png](LakeRotorua/plots/alum_profiles.png), [plots/alum_benthic.png](LakeRotorua/plots/alum_benthic.png) — `aed_alum`
+- [plots/profile/](LakeRotorua/plots/profile/) and [plots/zone/](LakeRotorua/plots/zone/) — one PNG per variable

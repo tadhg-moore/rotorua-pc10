@@ -1,0 +1,168 @@
+---
+title: "Lake Rotorua Modelling"
+subtitle: "Team Review & Planning Update"
+format:
+  revealjs:
+    theme: default
+    slide-number: true
+    toc: false
+    footer: "Lake Rotorua Modelling | Internal Update"
+---
+
+## Overview
+
+::: incremental
+-   Data inputs reviewed for Lake Rotorua GLM modelling
+-   Calibration and validation periods defined
+-   Key performance benchmarks identified
+-   Sediment process trade-offs discussed
+:::
+
+------------------------------------------------------------------------
+
+## Data & Setup
+
+**Inputs reviewed:**
+
+-   Hypsograph *(excluding the hole)*
+-   Hourly meteorological data — NIWA, sourced from airport
+-   Existing inflow data
+-   PAR timeseries
+
+**Modelling periods:**
+
+| Period       | Years     | Purpose     |
+|--------------|-----------|-------------|
+| Historical   | 2000–2010 | Calibration |
+| Contemporary | 2011–2026 | Validation  |
+
+## Hypsograph
+
+![](www/plots/hyps_diff.png)
+
+## PAR
+
+![](www/plots/par_timeseries.png)
+
+## Calibration Strategy
+
+**Physical & biological parameters** will both be addressed
+
+**Phytoplankton modelled across three groups:**
+
+:::::: columns
+::: {.column width="33%"}
+🟦 **Cyanobacteria**\
+Positively buoyant
+:::
+
+::: {.column width="33%"}
+🟤 **Diatoms**\
+Mixed layer driven
+:::
+
+::: {.column width="33%"}
+🟩 **Chlorophytes**\
+Winter dominant
+:::
+::::::
+
+**Data integration:**
+
+-   Buoy data used to separate signal from noise
+
+------------------------------------------------------------------------
+
+## Calibration Benchmarks - 1
+
+*Key indicators — framed for climate adaptation conversations*
+
+::: incremental
+-   **TLI & components** — TN, TP, Chlorophyll-a, Secchi depth
+-   **Anoxic duration** — temperature & stratification metrics
+-   **Phytoplankton timing**
+-   **Outflow nutrient concentrations** — to Ohau Channel
+-   **Alum dosing module** — pH effects, TLI impact, cost implications
+:::
+
+## Calibration Benchmarks - 2
+
+| Benchmark | CSPS Level | Notes |
+|----|----|----|
+| TLI & components (TN, TP, Chl-a, Secchi) | Level 1a/1b | Direct state variable comparisons — core of current practice |
+| Anoxic duration | Level 1b | Derived metric from temperature/oxygen profiles |
+| Phytoplankton timing | Level 1b | Derived metric — bloom onset, peak, duration |
+| Outflow nutrients to Ohau Channel | Level 1–2 | Becomes Level 2 if used to validate internal flux pathways |
+| Alum dosing — pH effects | Level 2 | Tests geochemical transformation processes |
+| Alum dosing — TLI impact | Level 3 | System-level response to management intervention |
+| Simplified approach comparison | Level 3 | Do simpler models reproduce the same emergent behaviour? |
+| **Gap: internal process rates** | **Level 2** | **No explicit sediment flux or denitrification validation — key given alum targets internal loading** |
+
+> *Open question:* We have sediment chamber data — could this be used to validate internal fluxes?
+
+------------------------------------------------------------------------
+
+## Alum Dosing Module
+
+A dedicated module to account for:
+
+| Factor     | Consideration                            |
+|------------|------------------------------------------|
+| pH effects | Alum reaction with lake chemistry        |
+| TLI impact | Contribution to trophic index targets    |
+| Cost       | Economic implications of dosing strategy |
+
+------------------------------------------------------------------------
+
+## Simulating pH
+
+## The Problem
+
+**pH ignores `pH_initial` because it's diagnostic, not prognostic**
+
+-   `aed_carbon` tracks DIC as a conserved state variable; pH is *recomputed every timestep* from DIC + Total Alkalinity via `CO2SYS` — `pH_initial` is only the solver's first guess
+-   Default `alk_mode = 1` hardcodes a salinity regression fit to Caboolture, QLD — no general-purpose option, no way to supply real TA data
+-   `id_talk` (a TA state variable ID) is declared in `aed_carbon.F90` but never registered — the intended dynamic TA path was never finished
+
+::: notes
+alk_mode = 0 is also broken — CO2SYS calls are commented out and the solver never converges. Modes 1–5 are all site-specific Queensland regressions. Nothing in the shipped module supports user-supplied alkalinity.
+:::
+
+## The Fix: `alk_mode = 6`
+
+**New option on branch `feature/fixed-alkalinity-mode`** — bypasses every regression:
+
+``` fortran
+&aed_carbon
+   alk_mode   = 6
+   talk_fixed = 2200.0   !# Total Alkalinity, umol/kg
+/
+```
+
+-   `talk_fixed` defaults to `NaN` — mode 6 without it fails loudly at startup
+-   Get `talk_fixed` from real TA measurements, or back-solve from (DIC, observed pH) via `PyCO2SYS`
+-   Observed pH becomes a **validation target**, not a model input
+-   **Higher TA → higher pH**; response is nonlinear, steepest near pKa values (\~6.3, \~10.3)
+-   Verified with clean compile and full library build — not yet run end-to-end through GLM
+-   If a single constant isn't sufficient, the next step is finishing `id_talk` as a real dynamic state variable with a depth-varying initial profile
+
+------------------------------------------------------------------------
+
+## Sediment Processes
+
+**Key discussion points:**
+
+::: incremental
+-   **Fixed vs. dynamic sediment loading** — trade-offs under review
+-   **Spin-up period looping** — potential approach to stabilise initial conditions
+-   Trade-offs between model complexity and computational cost
+:::
+
+------------------------------------------------------------------------
+
+## Next Steps
+
+| Action                             | Owner |
+|------------------------------------|-------|
+| Calibration strategy discussion    | TBC   |
+| Finalise sediment loading approach | TBC   |

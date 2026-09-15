@@ -1,0 +1,12 @@
+---
+title: "Rotorua Inflows"
+author: "Tadhg Moore"
+format: html
+editor: visual
+---
+
+Reports:
+
+-   [2017](https://atlas.boprc.govt.nz/api/v1/edms/document/A3139961/content)
+
+-   2022
