@@ -24,39 +24,16 @@ jobs:
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: "1.8.23"     # use latest stable
 
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
 
-      # - name:  Install dependencies
-      #   run:   |
-      #    if [ "$RUNNER_OS" == "Linux" ]; then
-      #         sudo apt-get update
-      #         sudo apt-get install -y \
-      #           libudunits2-dev \
-      #           libgdal-dev \
-      #           libgeos-dev \
-      #           libproj-dev \
-      #           libsecret-1-dev \
-      #           libglpk40 \
-      #           libnode-dev       # ← add this
-      #     fi
-
-      - name: Cache renv packages
-        uses: actions/cache@v4
+      - name: Setup renv
+        uses: r-lib/actions/setup-renv@v2
         with:
-          path: ~/.local/share/renv/cache
-          key: ${{ runner.os }}-renv-v2-${{ hashFiles('renv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-renv-
-      
-      - name: Install renv
-        run: Rscript -e 'install.packages("renv")'
-      
-      - name: Restore renv packages
-        run: Rscript -e 'renv::restore(prompt = FALSE)'
+          cache-version: 2
+        env:
+          RENV_CONFIG_REPOS_OVERRIDE: "https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
       - name: Cache targets store
         uses: actions/cache@v4
