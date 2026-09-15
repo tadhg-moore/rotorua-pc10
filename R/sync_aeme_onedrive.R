@@ -33,3 +33,17 @@ sync_onedrive_folder <- function(src, dest) {
                       recursive = TRUE, parallel = FALSE)
   dest
 }
+
+#' Upload a local folder (recursively) to OneDrive at `dest`. Used to push
+#' up expensive-to-compute outputs (e.g. CMIP6 processing) so CI can
+#' download already-computed results instead of recomputing them.
+upload_onedrive_folder <- function(src, dest) {
+  od <- get_onedrive_session()
+  files <- list.files(src, full.names = TRUE, recursive = TRUE)
+  rel_paths <- substring(files, nchar(src) + 2)
+  for (i in seq_along(files)) {
+    message("Uploading file: ", rel_paths[i])
+    od$upload_file(files[i], dest = paste0(dest, "/", rel_paths[i]))
+  }
+  invisible(dest)
+}
