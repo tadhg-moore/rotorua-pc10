@@ -695,36 +695,71 @@ list(
   ),
   
   # CMIP6 processing
-  tar_target(
-    cmip6_files, {
-      process_cmip6_shp(
-        x = rotorua_catchment_bbox,
-        vcsn_grid_points = vcsn_grid_points,
-        metadata = sub_metadata,
-        out_dir = here::here("data", "processed", "rotorua_lakes_cmip6"),
-        overwrite = FALSE
-      )
-    }, 
-    pattern = map(sub_metadata),
-    format = "file",
-    # deployment = "main"
-    # cue = tar_cue(mode = "never")
-  ),
-  tar_target(
-    tutira_cmip6_files, {
-      process_cmip6_shp(
-        x = tutira_catchment_bbox,
-        vcsn_grid_points = vcsn_grid_points,
-        metadata = sub_metadata,
-        out_dir = here::here("data", "processed", "tutira_cmip6"),
-        overwrite = FALSE
-      )
-    },
-    pattern = map(sub_metadata),
-    format = "file",
-    # deployment = "main"
-    cue = tar_cue(mode = "never")
-  ),
+  # process_cmip6_shp() takes >6 days locally across the full grid/variable/
+  # scenario/period combination set — far beyond what a CI runner can do.
+  # In CI (Sys.getenv("CI") == "true", set automatically by GitHub Actions),
+  # download the already-computed outputs from OneDrive instead of
+  # recomputing them. Push fresh outputs up with R/sync_cmip6_onedrive.R
+  # after running tar_make() locally.
+  if (identical(Sys.getenv("CI"), "true")) {
+    tar_target(
+      cmip6_files,
+      list.files(
+        sync_onedrive_folder("rotorua-pc10/data/processed/rotorua_lakes_cmip6",
+                             here::here("data", "processed", "rotorua_lakes_cmip6")),
+        full.names = TRUE, recursive = TRUE
+      ),
+      format = "file",
+      # Combined with the _targets cache in CI: download once, then skip on
+      # every subsequent run. Re-run R/sync_cmip6_onedrive.R after a local
+      # recompute, then tar_invalidate(cmip6_files) to force a fresh pull.
+      cue = tar_cue(mode = "never")
+    )
+  } else {
+    tar_target(
+      cmip6_files, {
+        process_cmip6_shp(
+          x = rotorua_catchment_bbox,
+          vcsn_grid_points = vcsn_grid_points,
+          metadata = sub_metadata,
+          out_dir = here::here("data", "processed", "rotorua_lakes_cmip6"),
+          overwrite = FALSE
+        )
+      },
+      pattern = map(sub_metadata),
+      format = "file",
+      # deployment = "main"
+      # cue = tar_cue(mode = "never")
+    )
+  },
+  if (identical(Sys.getenv("CI"), "true")) {
+    tar_target(
+      tutira_cmip6_files,
+      list.files(
+        sync_onedrive_folder("rotorua-pc10/data/processed/tutira_cmip6",
+                             here::here("data", "processed", "tutira_cmip6")),
+        full.names = TRUE, recursive = TRUE
+      ),
+      format = "file",
+      cue = tar_cue(mode = "never")
+    )
+  } else {
+    tar_target(
+      tutira_cmip6_files, {
+        process_cmip6_shp(
+          x = tutira_catchment_bbox,
+          vcsn_grid_points = vcsn_grid_points,
+          metadata = sub_metadata,
+          out_dir = here::here("data", "processed", "tutira_cmip6"),
+          overwrite = FALSE
+        )
+      },
+      pattern = map(sub_metadata),
+      format = "file",
+      # deployment = "main"
+      cue = tar_cue(mode = "never")
+    )
+  },
   # tar_target(
   #   cmip6_files, {
   #     cmip6_processed$outfile
@@ -804,7 +839,8 @@ list(
         )
     },
     pattern = map(sim_grid),
-    iteration = "list"
+    iteration = "list",
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     gcm_point_data_std_df, dplyr::bind_rows(gcm_point_data_std)
