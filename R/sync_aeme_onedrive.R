@@ -27,7 +27,6 @@ sync_onedrive_file <- function(src, dest) {
 
 #' Download a folder (recursively) from OneDrive to `dest`. Returns `dest`.
 sync_onedrive_folder <- function(src, dest) {
-  browser()
   od <- get_onedrive_session()
   dir.create(dest, recursive = TRUE, showWarnings = FALSE)
   od$download_folder(src = src, dest = dest, overwrite = TRUE,
