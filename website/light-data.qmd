@@ -12,22 +12,16 @@ execute:
 
 ## Motivation
 
-Lake Rotorua's GLM-AED setup needs a light extinction (`Kw`) parameterisation.
-The options considered were:
+Lake Rotorua's GLM-AED setup needs a light extinction (`Kw`) parameterisation. The options considered were:
 
-1. A single **static Kw** (one value for the whole run).
-2. A **monthly Kw climatology** (12 calendar-month values, time-varying).
-3. A **fully dated time-varying Kw** built from the observed record.
-4. A **decomposed background Kw** (observed Kw minus the fraction attributable
-   to phytoplankton/turbidity), for use when AED's own biology should generate
-   the biotic part of light extinction dynamically.
+1.  A single **static Kw** (one value for the whole run).
+2.  A **monthly Kw climatology** (12 calendar-month values, time-varying).
+3.  A **fully dated time-varying Kw** built from the observed record.
+4.  A **decomposed background Kw** (observed Kw minus the fraction attributable to phytoplankton/turbidity), for use when AED's own biology should generate the biotic part of light extinction dynamically.
 
-This document works through the diagnostics behind that decision for the
-Rotorua PAR/Kd record, and lands on a recommendation for the **climate
-scenario** runs specifically (as opposed to a historical hindcast).
+This document works through the diagnostics behind that decision for the Rotorua PAR/Kd record, and lands on a recommendation for the **climate scenario** runs specifically (as opposed to a historical hindcast).
 
-The helper functions used throughout live in
-[`R/recommend_light_parameterisation.R`](R/recommend_light_parameterisation.R).
+The helper functions used throughout live in [`R/recommend_light_parameterisation.R`](R/recommend_light_parameterisation.R).
 
 ```{r}
 #| label: setup
@@ -44,50 +38,32 @@ aeme <- setup_aeme(path = path)
 
 ## Static vs. time-varying Kw: the trade-offs
 
-**Time-varying Kw** (monthly or dated) can capture real seasonal drivers of
-light attenuation — spring runoff/turbidity pulses, algal self-shading,
-CDOM inputs, ice-off resuspension — that a single Kw cannot. Where good
-profile data exist, throwing that signal away by collapsing to one number
-misrepresents both the clear and the turbid periods.
+**Time-varying Kw** (monthly or dated) can capture real seasonal drivers of light attenuation — spring runoff/turbidity pulses, algal self-shading, CDOM inputs, ice-off resuspension — that a single Kw cannot. Where good profile data exist, throwing that signal away by collapsing to one number misrepresents both the clear and the turbid periods.
 
 The trade-offs:
 
-- More data wrangling and another forcing file to QC.
-- Monthly resolution still misses short-lived bloom/storm spikes.
-- If Kw has been used as a tuning knob to compensate for other model
-  deficiencies (mixing scheme, inflow temperatures), imposing an
-  independently-derived time-varying Kw removes that degree of freedom and
-  can expose calibration problems elsewhere.
-- A poorly-constrained time-varying curve (built on noisy or sparse data) is
-  worse than a well-chosen static value.
+-   More data wrangling and another forcing file to QC.
+-   Monthly resolution still misses short-lived bloom/storm spikes.
+-   If Kw has been used as a tuning knob to compensate for other model deficiencies (mixing scheme, inflow temperatures), imposing an independently-derived time-varying Kw removes that degree of freedom and can expose calibration problems elsewhere.
+-   A poorly-constrained time-varying curve (built on noisy or sparse data) is worse than a well-chosen static value.
 
-**Static Kw** is defensible when extinction is dominated by relatively
-stable factors, when supporting data are too sparse/noisy to justify more
-resolution, or — as turns out to matter most here — **when there is no
-calendar correspondence between the simulated period and the observed
-record**, which is exactly the case for a forward climate scenario.
+**Static Kw** is defensible when extinction is dominated by relatively stable factors, when supporting data are too sparse/noisy to justify more resolution, or — as turns out to matter most here — **when there is no calendar correspondence between the simulated period and the observed record**, which is exactly the case for a forward climate scenario.
 
 ## GLM-AED's own light feedback
 
-When AED is coupled to GLM with `bioshade_feedback = .true.`, light
-extinction is **not** just the prescribed `Kw` — GLM adds AED's own
-simulated biotic/particulate extinction on top, additively
-(`glm_aed.F90`, `update_light`):
+When AED is coupled to GLM with `bioshade_feedback = .true.`, light extinction is **not** just the prescribed `Kw` — GLM adds AED's own simulated biotic/particulate extinction on top, additively (`glm_aed.F90`, `update_light`):
 
-```fortran
+``` fortran
 par(i) = par(i+1) * EXP( -(Kw + localext_up) * dz(i+1) )
 IF (bioshade_feedback) extc(i) = Kw + localext
 ```
 
-`localext` is the sum of whatever AED modules contribute a light-extinction
-diagnostic — in this setup that includes:
+`localext` is the sum of whatever AED modules contribute a light-extinction diagnostic — in this setup that includes:
 
-- **`aed_phytoplankton`** — self-shading from simulated chlorophyll.
-- **`aed_noncohesive`** — extinction from simulated suspended sediment,
-  `Ke_ss(i) * SS_conc(i)` summed across size classes. The active
-  configuration:
+-   **`aed_phytoplankton`** — self-shading from simulated chlorophyll.
+-   **`aed_noncohesive`** — extinction from simulated suspended sediment, `Ke_ss(i) * SS_conc(i)` summed across size classes. The active configuration:
 
-```fortran
+``` fortran
 &aed_noncohesive
    num_ss = 2
    ss_initial = 3, 1
@@ -109,20 +85,13 @@ diagnostic — in this setup that includes:
 /
 ```
 
-**Practical consequence:** the prescribed `Kw`/`Kw_file` should represent
-only the *background* (non-biotic, non-suspended-sediment) extinction —
-water + CDOM + anything not reproduced by AED's own state. If a Kw derived
-from field-measured Kd (which already contains the biotic + SS signal at the
-time of sampling) is combined with `bioshade_feedback` and an active
-`aed_noncohesive`, the biotic/SS contribution is **double-counted**,
-over-attenuating light and biasing production, DO, and thermal structure.
+**Practical consequence:** the prescribed `Kw`/`Kw_file` should represent only the *background* (non-biotic, non-suspended-sediment) extinction — water + CDOM + anything not reproduced by AED's own state. If a Kw derived from field-measured Kd (which already contains the biotic + SS signal at the time of sampling) is combined with `bioshade_feedback` and an active `aed_noncohesive`, the biotic/SS contribution is **double-counted**, over-attenuating light and biasing production, DO, and thermal structure.
 
 ## Configuring GLM to use a time-varying Kw
 
-For reference, if a time-varying background is used, the `&light` namelist
-and `Kw_file` CSV are:
+For reference, if a time-varying background is used, the `&light` namelist and `Kw_file` CSV are:
 
-```fortran
+``` fortran
 &light
    light_mode       = 0        ! single-Kw Beer-Lambert; required for Kw_file
    Kw               = 0.37     ! fallback/initial value
@@ -137,26 +106,20 @@ and `Kw_file` CSV are:
 /
 ```
 
-```csv
+``` csv
 time,Kd
 2015-01-01,0.62
 2015-02-01,0.58
 2015-03-01,0.51
 ```
 
-- The `time` column must use the same `time_fmt`/`timezone` as the
-  `&meteorology` block.
-- GLM performs a **daily lookup** (holds the most recent row's value), not
-  sub-daily interpolation — the file needs one row per day you want a
-  distinct value for.
-- `Kw_file` only drives the single scalar `ExtcCoefSW`, so it requires
-  `light_mode = 0`; it has no effect on the per-band `light_extc` array used
-  by `light_mode = 1`.
+-   The `time` column must use the same `time_fmt`/`timezone` as the `&meteorology` block.
+-   GLM performs a **daily lookup** (holds the most recent row's value), not sub-daily interpolation — the file needs one row per day you want a distinct value for.
+-   `Kw_file` only drives the single scalar `ExtcCoefSW`, so it requires `light_mode = 0`; it has no effect on the per-band `light_extc` array used by `light_mode = 1`.
 
 ## Diagnosing the observed Kd record
 
-`kd_fits` holds Kd values fitted from PAR profiles (`log(PAR) ~ depth`,
-filtered to r² > 0.8), spanning 2003–2025.
+`kd_fits` holds Kd values fitted from PAR profiles (`log(PAR) ~ depth`, filtered to r² \> 0.8), spanning 2003–2025.
 
 ```{r}
 #| label: load-light-data
@@ -165,17 +128,14 @@ targets::tar_config_set(store = here::here("_targets"))
 targets::tar_load(light_data)
 ```
 
-`light_data` provides the same `Date`/`Kd` fields used throughout this
-analysis (fitted from PAR profiles via `log(PAR) ~ depth`, filtered to
-r² > 0.8), spanning 2003–2025.
+`light_data` provides the same `Date`/`Kd` fields used throughout this analysis (fitted from PAR profiles via `log(PAR) ~ depth`, filtered to r² \> 0.8), spanning 2003–2025.
 
 ```{r}
 #| label: light-data-summary
 summary(light_data)
 ```
 
-When Kd and secchi depth are plotted over time, the **interannual variability dominates over any
-seasonal signal**:
+When Kd and secchi depth are plotted over time, the **interannual variability dominates over any seasonal signal**:
 
 ```{r}
 #| label: kd-fits-plot
@@ -199,8 +159,7 @@ g <- wrap_plots(p1, p2, ncol = 1)
 g
 ```
 
-There is not a consistent relationship between the CTD PAR profiles and the 
-secchi depth:
+There is not a consistent relationship between the CTD PAR profiles and the secchi depth:
 
 ```{r}
 #| label: kd-v-secchi-plot
@@ -217,9 +176,6 @@ ggplot(light_data, aes(x = secchi, y = Kd)) +
   scale_colour_viridis_d(name = "Date", option = "plasma") +
   theme_bw()
 ```
-
-
-
 
 ```{r}
 #| label: kd-fits-recommendation
@@ -239,24 +195,14 @@ plot(kd_recommendation)
 
 ### Key finding: interannual variability dominates over seasonality
 
-- Kd mean 0.71 m⁻¹, CV 0.52, range 0.25–1.92 m⁻¹.
-- **Year explains ~47% of total variance** — more than the seasonal cycle
-  does. Annual means step from ~0.35–0.43 m⁻¹ (2003–2008) to a noisy
-  0.32–1.4 m⁻¹ regime from 2009 onward.
-- After removing each year's own mean, the detrended seasonal ratio is only
-  ~1.6–1.85x, and mostly driven by a handful of bloom/turbidity events rather
-  than a robust recurring monthly pattern.
-- A pooled multi-year **monthly climatology would blend a real interannual
-  regime shift with a weak seasonal signal**, misrepresenting most individual
-  years — hence the function's recommendation of a dated time-varying series
-  over a monthly climatology *for a hindcast*.
+-   Kd mean 0.71 m⁻¹, CV 0.52, range 0.25–1.92 m⁻¹.
+-   **Year explains \~47% of total variance** — more than the seasonal cycle does. Annual means step from \~0.35–0.43 m⁻¹ (2003–2008) to a noisy 0.32–1.4 m⁻¹ regime from 2009 onward.
+-   After removing each year's own mean, the detrended seasonal ratio is only \~1.6–1.85x, and mostly driven by a handful of bloom/turbidity events rather than a robust recurring monthly pattern.
+-   A pooled multi-year **monthly climatology would blend a real interannual regime shift with a weak seasonal signal**, misrepresenting most individual years — hence the function's recommendation of a dated time-varying series over a monthly climatology *for a hindcast*.
 
 ## Decomposing observed Kd into background vs. biotic components
 
-Available overlapping chemistry: `CHLA (mg/m^3)` and `Turbidity (NTU)` are
-the two usable predictors of the biotic/particulate extinction component
-(Secchi is itself just another optical measurement of the same quantity, so
-it is not used as a predictor).
+Available overlapping chemistry: `CHLA (mg/m^3)` and `Turbidity (NTU)` are the two usable predictors of the biotic/particulate extinction component (Secchi is itself just another optical measurement of the same quantity, so it is not used as a predictor).
 
 ```{r}
 #| label: decompose-kw-example
@@ -279,7 +225,6 @@ kw_decomp <- decompose_kw_biotic(
 print(kw_decomp)
 ```
 
-
 Two fits were run against the real data as the join was corrected:
 
 ```{r}
@@ -289,63 +234,28 @@ Two fits were run against the real data as the join was corrected:
 plot(kw_decomp)
 ```
 
-
 ```{r}
 #| label: decompose-kw-summary
 print(kw_decomp)
 ```
 
-
 ### Interpretation
 
-- Even after fixing the join (pseudo-replication), **R² = 0.067** — Chla and
-  turbidity together explain under 7% of Kd variance. Chla alone is not
-  significant (p = 0.167); only turbidity clears p < 0.05, and its large
-  coefficient combined with an 18% floor-clipping rate suggests the fit is
-  being pulled around by a handful of high-turbidity events rather than
-  reflecting a stable relationship.
-- `aed_noncohesive` is active in this AED configuration, computing its own
-  suspended-sediment-driven extinction (`Ke_ss(i) * SS_conc(i)`) dynamically
-  — so, unlike a setup with phytoplankton feedback alone, **both** the Chla-
-  and turbidity-attributable terms are legitimately things AED will
-  reconstruct, and both are fair to remove from the prescribed background.
-  (Caveat: `aed_noncohesive`'s simulated SS is a mass concentration state,
-  not the same quantity as measured NTU turbidity — the *decision* to
-  exclude it is justified, but there's no guarantee the simulated SS
-  dynamics reproduce the same magnitude/timing the regression attributed to
-  turbidity.)
-- The **intercept is the one robust number here**: 0.368 m⁻¹ at p = 0.0013,
-  much better constrained than either slope, since intercepts are anchored
-  by the bulk of the data rather than a weak covariate relationship.
-- The Secchi–Kd relationship was also noted as weak, reinforcing that this
-  system's optical signal is noisy relative to the predictors available.
+-   Even after fixing the join (pseudo-replication), **R² = 0.067** — Chla and turbidity together explain under 7% of Kd variance. Chla alone is not significant (p = 0.167); only turbidity clears p \< 0.05, and its large coefficient combined with an 18% floor-clipping rate suggests the fit is being pulled around by a handful of high-turbidity events rather than reflecting a stable relationship.
+-   `aed_noncohesive` is active in this AED configuration, computing its own suspended-sediment-driven extinction (`Ke_ss(i) * SS_conc(i)`) dynamically — so, unlike a setup with phytoplankton feedback alone, **both** the Chla- and turbidity-attributable terms are legitimately things AED will reconstruct, and both are fair to remove from the prescribed background. (Caveat: `aed_noncohesive`'s simulated SS is a mass concentration state, not the same quantity as measured NTU turbidity — the *decision* to exclude it is justified, but there's no guarantee the simulated SS dynamics reproduce the same magnitude/timing the regression attributed to turbidity.)
+-   The **intercept is the one robust number here**: 0.368 m⁻¹ at p = 0.0013, much better constrained than either slope, since intercepts are anchored by the bulk of the data rather than a weak covariate relationship.
+-   The Secchi–Kd relationship was also noted as weak, reinforcing that this system's optical signal is noisy relative to the predictors available.
 
 ## Recommendation for the climate scenario runs
 
 For a **climate scenario** parameterisation (not a historical hindcast):
 
-1. **Do not use observed Kd.** `bioshade_feedback` and `aed_noncohesive` are
-   both active, so a Kw already containing today's biotic/SS signal would be
-   double-counted against AED's own dynamic contribution.
-2. **Do not use a dated time-varying background.** There is no calendar
-   correspondence between a historical sampling date and a future scenario
-   year — the "use the actual dated observations" option only applies to
-   hindcast-style runs over the sampled period.
-3. **Do not build a monthly background climatology.** The Chla/turbidity
-   regression (R² = 0.067) and the Secchi–Kd relationship are both weak;
-   imposing monthly structure on this background signal risks encoding noise
-   as if it were a genuine recurring seasonal driver.
-4. **Use a static background Kw**, set from the regression intercept
-   (~0.37 m⁻¹) — the most robust single number the data support. Let
-   `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended
-   sediment) supply the dynamic, climate-responsive part of the light
-   environment, rather than freezing it to the historical record. This is
-   also the conceptually correct setup for a scenario run: it lets the
-   lake's optical response evolve mechanistically under whatever the
-   scenario does to nutrients, temperature, and hydrology, instead of
-   repeating today's bloom/turbidity patterns indefinitely.
+1.  **Do not use observed Kd.** `bioshade_feedback` and `aed_noncohesive` are both active, so a Kw already containing today's biotic/SS signal would be double-counted against AED's own dynamic contribution.
+2.  **Do not use a dated time-varying background.** There is no calendar correspondence between a historical sampling date and a future scenario year — the "use the actual dated observations" option only applies to hindcast-style runs over the sampled period.
+3.  **Do not build a monthly background climatology.** The Chla/turbidity regression (R² = 0.067) and the Secchi–Kd relationship are both weak; imposing monthly structure on this background signal risks encoding noise as if it were a genuine recurring seasonal driver.
+4.  **Use a static background Kw**, set from the regression intercept (\~0.37 m⁻¹) — the most robust single number the data support. Let `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake's optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today's bloom/turbidity patterns indefinitely.
 
-```fortran
+``` fortran
 &light
    light_mode       = 0
    Kw               = 0.37   ! static background Kw (regression intercept)
@@ -361,19 +271,9 @@ For a **climate scenario** parameterisation (not a historical hindcast):
 
 ## Sensitivity check
 
-Before committing to this, a direct sensitivity comparison is worth running:
-static background Kw (0.37 m⁻¹) with `bioshade_feedback` on, vs. the old
-static *observed* mean Kw (0.71 m⁻¹) with `bioshade_feedback` off. If key
-scenario outputs (surface temperature, stratification onset/breakdown,
-chlorophyll, hypolimnetic DO) are not materially different between the two,
-the choice matters less than the analysis above might suggest; if they
-diverge substantially, it's worth investing more in constraining the
-background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity
-calibration for `aed_noncohesive`) before running the full scenario suite.
+Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with `bioshade_feedback` on, vs. the old static *observed* mean Kw (0.71 m⁻¹) with `bioshade_feedback` off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it's worth investing more in constraining the background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity calibration for `aed_noncohesive`) before running the full scenario suite.
 
-The chunks below are scaffolding only (`eval: false`) — wire in your own nml
-paths, `glm.exe` invocation, and output-reading (e.g. `glmtools`/`ncdf4`) to
-run them.
+The chunks below are scaffolding only (`eval: false`) — wire in your own nml paths, `glm.exe` invocation, and output-reading (e.g. `glmtools`/`ncdf4`) to run them.
 
 ```{r}
 #| label: sensitivity-setup
@@ -463,10 +363,10 @@ plot_list$LKE_photic
 ## Summary
 
 | Question | Answer |
-|---|---|
+|----|----|
 | Static vs. time-varying Kw (general)? | Time-varying is better *if* the seasonal signal is real and well-sampled; here, interannual variability (47% of variance) dominates over seasonality, so a pooled monthly climatology would misrepresent most years. |
 | Does AED feedback interact with Kw? | Yes — `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended sediment) both add their own simulated extinction on top of the prescribed `Kw`, additively. |
 | Should prescribed Kw include the biotic signal? | No, not when both feedbacks are active — it double-counts. |
 | Can the biotic component be estimated from data? | Weakly. `Kd ~ Chla + Turbidity` gives R² = 0.067; only the intercept (background Kw ≈ 0.37 m⁻¹) is well-constrained. |
 | Is calibrating AED's biotic light coefficients a good idea? | Not as a first move — risks equifinality/circularity with growth and mortality parameters; better to fix it from the empirical estimate and reserve calibration for parameters not otherwise measurable. |
-| What should the climate scenario runs use? | A **static background Kw** (~0.37 m⁻¹), with `bioshade_feedback` and `aed_noncohesive` supplying the dynamic, climate-responsive part of light extinction. |
+| What should the climate scenario runs use? | A **static background Kw** (\~0.37 m⁻¹), with `bioshade_feedback` and `aed_noncohesive` supplying the dynamic, climate-responsive part of light extinction. |

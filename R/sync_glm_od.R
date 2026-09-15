@@ -1,13 +1,3 @@
-# chk <- aemetools::check_api_status()
-# if (chk) {
-#   aeme <- aemetools::get_aeme(id = "LID11133")
-#   
-#   aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
-#     AEME::run_aeme()
-#   saveRDS(aeme, "../LID11133_rotorua/aeme_download.rds")
-#   
-# }
-
 # Decrypt and restore cache file
 bundle    <- openssl::base64_decode(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))
 iv        <- bundle[1:16]
@@ -24,13 +14,16 @@ writeBin(token_raw, file.path(cache_dir, Sys.getenv("ONEDRIVE_TOKEN_HASH")))
 token <- AzureAuth::load_azure_token(hash = Sys.getenv("ONEDRIVE_TOKEN_HASH"))
 od    <- Microsoft365R::get_business_onedrive(token = token)
 
-od$download_file(src = "rotorua-pc10/LID11133_rotorua/aeme.rds", 
-                 dest = "../LID11133_rotorua/aeme_download.rds",
-                 overwrite = TRUE)
+od$list_files(path = "rotorua-pc10/LID11133_rotorua")
 
-aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
 
-aeme <- AEME::build_aeme(aeme = aeme, path = "../") |> 
-  AEME::run_aeme()
 
-saveRDS(aeme, "../LID11133_rotorua/aeme_download.rds")
+src_files <- list.files("LID11133_rotorua/", full.names = TRUE, 
+                        recursive = TRUE)
+src_files <- src_files[!grepl("/output/|fort|dy_cd|gotm_wet", src_files)]
+f <- src_files[1]
+for (f in src_files) {
+  message("Uploading file: ", f)
+  od$upload_file(f, dest = paste0("rotorua-pc10/", f))
+}
+# od$upload_file(src_files, dest = "rotorua-pc10/LID11133_rotorua/glm_aed/")

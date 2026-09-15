@@ -57,7 +57,15 @@ jobs:
       
       - name: Restore renv packages
         run: Rscript -e 'renv::restore(prompt = FALSE)'
-          
+
+      - name: Cache targets store
+        uses: actions/cache@v4
+        with:
+          path: _targets
+          key: ${{ runner.os }}-targets-${{ hashFiles('_targets.R', 'R/**') }}
+          restore-keys: |
+            ${{ runner.os }}-targets-
+
       - name: Render site
         run: quarto render website   # use 'website' dir
 

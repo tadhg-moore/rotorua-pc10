@@ -1,7 +1,6 @@
 project:
   type: website
-  pre-render: scripts/download_aeme_onedrive.R
-  # pre-render: scripts/download_aeme_api.R
+  pre-render: scripts/build_data.R
   resources:
     - assets/
     - www/
@@ -40,21 +39,42 @@ website:
         href: index.qmd
         contents:
           - gantt.qmd
+          - href: modelling-updates.qmd
+            text: "Modelling Updates"
       - section: "Lake Models"
         contents:
           - href: rotorua-glm-config.qmd
             text: "GLM Config"
+          - href: rotorua-glm-config_v4.qmd
+            text: "GLM Config (v4)"
+          - href: rotorua-inflows.qmd
+            text: "Inflows"
+          - href: light-data.qmd
+            text: "Light Data (Kw)"
+          - href: plot-rotorua.qmd
+            text: "Output Plots (v4)"
+          - href: aed_calibration_sa_plan.qmd
+            text: "Calibration & SA Plan"
+      - section: "Alum Dosing"
+        contents:
           - href: alum-model.qmd
             text: "Alum Model"
+          - href: aed-alum-module.qmd
+            text: "Simplified Alum Module"
           - href: glm_aed_alum_stress_tests.qmd
             text: "GLM-AED aed_alum Stress Tests"
+          - href: alum-dosing-sanila-msc-thesis.qmd
+            text: "Sanila Thesis Notes"
       - section: "Tasks"
         contents:
           - data.qmd
           - data-request.qmd
           - cmip6-processing.qmd
           - cmip6-visualisation.qmd
-          # - aed-alum-module.qmd
+      - section: "Notes"
+        contents:
+          - href: notes.qmd
+            text: "Meeting Notes"
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 

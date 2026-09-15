@@ -34,7 +34,8 @@ tar_source(
     here::here("R", "format_dyresm_inflow.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
-    here::here("R", "calc_alum_inflow.R") 
+    here::here("R", "calc_alum_inflow.R"),
+    here::here("R", "sync_aeme_onedrive.R")
   )
 )
 # Set target options
@@ -49,7 +50,42 @@ tar_option_set(
 
 # Pipeline definition
 list(
-  
+
+  # -1. Sync data from OneDrive ----
+  # Freshness lives on OneDrive, not in any locally-hashable input, so these
+  # always re-run and their results are re-hashed each tar_make().
+  tar_target(
+    data_raw_dir,
+    sync_onedrive_folder("rotorua-pc10/data/raw", here::here("data", "raw")),
+    format = "file",
+    cue = tar_cue(mode = "always")
+  ),
+  tar_target(
+    aeme_onedrive_rds,
+    sync_onedrive_file("rotorua-pc10/LID11133_rotorua/aeme.rds",
+                       here::here("LID11133_rotorua", "aeme_download.rds")),
+    format = "file",
+    cue = tar_cue(mode = "always")
+  ),
+  tar_target(
+    aeme_onedrive_lake_rotorua_dir,
+    sync_onedrive_folder("rotorua-pc10/LakeRotorua", here::here("website", "LakeRotorua")),
+    format = "file",
+    cue = tar_cue(mode = "always")
+  ),
+  tar_target(
+    aeme_onedrive_bin_dir,
+    sync_onedrive_folder("rotorua-pc10/bin", here::here("website", "bin")),
+    format = "file",
+    cue = tar_cue(mode = "always")
+  ),
+  tar_target(
+    aeme_onedrive_r_dir,
+    sync_onedrive_folder("rotorua-pc10/R", here::here("website", "R")),
+    format = "file",
+    cue = tar_cue(mode = "always")
+  ),
+
   # 0. Define constants ----
   tar_target(
     # rotorua_catchment_bbox_file, here::here("data", "processed", "rotorua_area.rds")
@@ -60,61 +96,61 @@ list(
                           ymax = -39.15557)
   ),
   tar_target(
-    #list.files(here::here("data", "raw", "niwa_climate"), pattern = "daily", full.names = TRUE),
+    #list.files(file.path(data_raw_dir, "niwa_climate"), pattern = "daily", full.names = TRUE),
     niwa_met_daily_files, c(
-      here::here("data", "raw", "niwa_climate", "1770__Evaporation__Penman-Open-Water-Evaporation__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Evaporation__Penman-PET__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Evaporation__Priestly-Taylor-PET__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Radiation__Global__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Rain__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Temperature__daily.csv"),
-      here::here("data", "raw", "niwa_climate", "1770__Wind__daily.csv")
+      file.path(data_raw_dir, "niwa_climate", "1770__Evaporation__Penman-Open-Water-Evaporation__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Evaporation__Penman-PET__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Evaporation__Priestly-Taylor-PET__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Radiation__Global__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Rain__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Temperature__daily.csv"),
+      file.path(data_raw_dir, "niwa_climate", "1770__Wind__daily.csv")
     )
   ),
   tar_target(
-    niwa_met_hourly_files, list.files(here::here("data", "raw", "niwa_climate"), 
+    niwa_met_hourly_files, list.files(file.path(data_raw_dir, "niwa_climate"),
                                       pattern = "hourly", full.names = TRUE),
     format = "file"
   ),
   # From Chris McBride previous load modelling work
   tar_target(
-    rotorua_inflow_file, here::here("data", "raw", "flows", 
+    rotorua_inflow_file, file.path(data_raw_dir, "flows",
                                     "Rotorua_inf_final.csv"),
     format = "file"
   ),
   tar_target(
-    rotorua_inflow_id_file, here::here("data", "raw", "flows",
+    rotorua_inflow_id_file, file.path(data_raw_dir, "flows",
                                        "Rotorua_infID.csv"),
     format = "file"
   ),
   tar_target(
-    rotorua_inflow_key, here::here("data", "raw", "flows",
+    rotorua_inflow_key, file.path(data_raw_dir, "flows",
                                    "rotorua_inflow_key.csv"),
     format = "file"
   ),
   tar_target(
-    alum_dosing_file, here::here("data", "raw", "alum_dosing",
+    alum_dosing_file, file.path(data_raw_dir, "alum_dosing",
                                  "Rotorua alum dose data February 2026.xlsx"),
     format = "file"
   ),
   tar_target(
-    bop_lake_level_zip_folder, here::here("data", "raw",
+    bop_lake_level_zip_folder, file.path(data_raw_dir,
                                           "BulkExport-FL150407-20251215152116.zip"),
     format = "file"
   ),
-  
+
   # CTD Excel file
   tar_target(
-    ctd_excel_file, 
-    here::here("data", "raw", "bop_wq",
+    ctd_excel_file,
+    file.path(data_raw_dir, "bop_wq",
                "Lake Rotorua CTD Profile Data - Full Record .xlsx"),
     format = "file"
   ),
-  
+
   # Lake Chemistry data
   tar_target(
     chem_excel_file,
-    here::here("data", "raw", "bop_wq", "Lakes Data 1989_2025.xlsx"), 
+    file.path(data_raw_dir, "bop_wq", "Lakes Data 1989_2025.xlsx"),
     format = "file"
   ),
   
