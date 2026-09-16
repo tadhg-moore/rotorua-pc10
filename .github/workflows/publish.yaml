@@ -35,7 +35,6 @@ jobs:
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
-        run: Get-PSDrive -PSProvider FileSystem
 
       - name: Diagnose secretbase install failure
         if: steps.setup_renv.outcome == 'failure'
