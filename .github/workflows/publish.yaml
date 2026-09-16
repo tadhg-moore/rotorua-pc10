@@ -38,16 +38,7 @@ jobs:
 
       - name: Restore stuck package cluster individually, then retry full restore
         if: steps.setup_renv.outcome == 'failure'
-        run: |
-          Rscript -e '
-          cluster <- c("secretbase", "targets", "tarchetypes", "nanonext", "mirai", "crew",
-                       "curl", "httr", "httr2", "AzureAuth", "AzureGraph", "rstudioapi",
-                       "getPass", "kableExtra", "XML", "tmaptools", "maptiles", "gh",
-                       "ecmwfr", "plotly", "tmap", "Microsoft365R", "bathytools", "AEME",
-                       "aemetools", "ltapi")
-          renv::restore(packages = cluster)
-          renv::restore()
-          '
+        run: Rscript .github/scripts/restore_cluster.R
 
       - name: Cache targets store
         uses: actions/cache@v4
