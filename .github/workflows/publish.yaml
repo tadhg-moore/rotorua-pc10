@@ -40,10 +40,6 @@ jobs:
         with:
           cache-version: 1
 
-      - name: Restore stuck package cluster individually, then retry full restore
-        if: steps.setup_renv.outcome == 'failure'
-        run: Rscript .github/scripts/restore_cluster.R
-
       - name: Cache targets store
         uses: actions/cache@v4
         with:
