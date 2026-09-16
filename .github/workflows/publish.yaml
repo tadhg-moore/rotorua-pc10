@@ -29,6 +29,13 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
 
+      - name: Force known-good tar for actions/cache
+        # setup-renv's own tar check only guards against the specific GNU tar
+        # 1.30 bug from Rtools 3.5; we're on Rtools45 with an unverified tar
+        # version, so don't rely on that heuristic — just always prefer
+        # Git's tar, which actions/cache is known to work with.
+        run: echo "C:/Program Files/Git/usr/bin" >> $env:GITHUB_PATH
+
       - name: Setup renv
         id: setup_renv
         continue-on-error: true
