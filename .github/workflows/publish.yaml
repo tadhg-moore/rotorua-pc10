@@ -32,8 +32,6 @@ jobs:
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 2
-        env:
-          RENV_CONFIG_REPOS_OVERRIDE: "https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
       - name: Cache targets store
         uses: actions/cache@v4
