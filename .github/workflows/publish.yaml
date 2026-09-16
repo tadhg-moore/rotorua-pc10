@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       R_KEYRING_BACKEND: basic
       ONEDRIVE_TOKEN_ENCRYPTED: ${{ secrets.ONEDRIVE_TOKEN_ENCRYPTED }}
