@@ -138,7 +138,7 @@ summary(light_data)
 When Kd and secchi depth are plotted over time, the **interannual variability dominates over any seasonal signal**:
 
 ```{r}
-#| label: kd-fits-plot
+#| label: kd-fits-plot-comparison
 #| fig-width: 9
 #| fig-height: 4.5
 
@@ -363,7 +363,7 @@ plot_list$LKE_photic
 ## Summary
 
 | Question | Answer |
-|----|----|
+|------------------------------------|------------------------------------|
 | Static vs. time-varying Kw (general)? | Time-varying is better *if* the seasonal signal is real and well-sampled; here, interannual variability (47% of variance) dominates over seasonality, so a pooled monthly climatology would misrepresent most years. |
 | Does AED feedback interact with Kw? | Yes — `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended sediment) both add their own simulated extinction on top of the prescribed `Kw`, additively. |
 | Should prescribed Kw include the biotic signal? | No, not when both feedbacks are active — it double-counts. |
