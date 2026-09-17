@@ -89,7 +89,7 @@
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "AEME",
       "RemoteRef": "dev",
-      "RemoteSha": "230c67a377e6c6cc44fec45666f8a7634e74afeb"
+      "RemoteSha": "c4817d3f3c53fe95983bc62f6a6aca42ed3204f6"
     },
     "AzureAuth": {
       "Package": "AzureAuth",

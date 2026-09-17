@@ -60,32 +60,37 @@ list(
     data_raw_dir,
     sync_onedrive_folder("rotorua-pc10/data/raw", here::here("data", "raw")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   tar_target(
     aeme_onedrive_rds,
     sync_onedrive_file("rotorua-pc10/LID11133_rotorua/aeme.rds",
                        here::here("LID11133_rotorua", "aeme_download.rds")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   tar_target(
     aeme_onedrive_lake_rotorua_dir,
     sync_onedrive_folder("rotorua-pc10/LakeRotorua", here::here("website", "LakeRotorua")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   tar_target(
     aeme_onedrive_bin_dir,
     sync_onedrive_folder("rotorua-pc10/bin", here::here("website", "bin")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   tar_target(
     aeme_onedrive_r_dir,
     sync_onedrive_folder("rotorua-pc10/R", here::here("website", "R")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   
   # 0. Define constants ----
@@ -94,7 +99,8 @@ list(
     sync_onedrive_file("rotorua-pc10/data/processed/rotorua_lakes_area.rds",
                        here::here("data", "processed", "rotorua_lakes_area.rds")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "always"),
+    deployment = "main"
   ),
   tar_target(
     tutira_bbox_coords, c(xmin = 176.75423, ymin = -39.29087, xmax = 177.00423, 
@@ -736,7 +742,8 @@ list(
       # Combined with the _targets cache in CI: download once, then skip on
       # every subsequent run. Re-run R/sync_cmip6_onedrive.R after a local
       # recompute, then tar_invalidate(cmip6_files) to force a fresh pull.
-      cue = tar_cue(mode = "always")
+      cue = tar_cue(mode = "always"),
+      deployment = "main"
     )
   } else {
     tar_target(
@@ -764,7 +771,8 @@ list(
         full.names = TRUE, recursive = TRUE
       ),
       format = "file",
-      cue = tar_cue(mode = "always")
+      cue = tar_cue(mode = "always"),
+      deployment = "main"
     )
   } else {
     tar_target(
@@ -812,7 +820,8 @@ list(
       gcm_ts_df,
       readRDS(sync_onedrive_file("rotorua-pc10/data/processed/gcm_ts_df.rds",
                                  here::here("data", "processed", "gcm_ts_df.rds"))),
-      cue = tar_cue(mode = "always")
+      cue = tar_cue(mode = "always"),
+      deployment = "main"
     )
   } else {
     list(
