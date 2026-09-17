@@ -1,6 +1,6 @@
 KELVIN_VARS <- c("tas", "tasmax", "tasmin")
 
-## metscale::extract_cmip6_point() returns AEME MET_* column names; map them
+## metscale::extract_climate_point() returns AEME MET_* column names; map them
 ## back to the raw CMIP6 short names (matching `cmip_vars`) used throughout
 ## this project.
 .met_to_cmip_var <- c(
@@ -15,7 +15,7 @@ KELVIN_VARS <- c("tas", "tasmax", "tasmin")
 
 #' Extract point data across multiple CMIP6 files
 #'
-#' Wraps \code{\link[metscale]{extract_cmip6_point}} to sample the requested
+#' Wraps \code{\link[metscale]{extract_climate_point}} to sample the requested
 #' GCM/scenario files at a point, decode the model calendar, and convert units
 #' (Kelvin to Celsius, precipitation to mm/day).
 #'
@@ -28,7 +28,7 @@ KELVIN_VARS <- c("tas", "tasmax", "tasmin")
 #' @param cmip6_files    Character vector of all available file paths
 #' @param cmip6_metadata Data frame with columns: gcm, scenario, variable, filename
 #' @param method         Extraction method passed to
-#'   \code{metscale::extract_cmip6_point()}: "bilinear" (default) or "nearest"
+#'   \code{metscale::extract_climate_point()}: "bilinear" (default) or "nearest"
 #'
 #' @return A data.frame with columns: date, date_char, value, variable, gcm, scenario
 get_point_data <- function(lat, lon, lakename, gcm, scenario, cmip_vars,
@@ -49,7 +49,7 @@ get_point_data <- function(lat, lon, lakename, gcm, scenario, cmip_vars,
     ))
   }
 
-  wide <- metscale::extract_cmip6_point(
+  wide <- metscale::extract_climate_point(
     path        = sel_files,
     lon         = lon,
     lat         = lat,
