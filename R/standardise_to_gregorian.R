@@ -11,8 +11,9 @@ standardise_to_gregorian <- function(
   data_wide <- data |> 
     dplyr::filter(gcm == !!gcm,
                   scenario == !!scenario) |> 
-    dplyr::select(dplyr::all_of(c(date_col, "variable", "value"))) |> 
-    tidyr::pivot_wider(names_from = variable, values_from = value)
+    dplyr::select(dplyr::all_of(c(date_col, "variable", "value"))) |>
+    tidyr::pivot_wider(names_from = variable, values_from = value,
+                        values_fn = mean)
 
   calendar <- metadata |> 
     dplyr::filter(gcm == !!gcm,
