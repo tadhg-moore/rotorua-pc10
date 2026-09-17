@@ -88,8 +88,11 @@ list(
 
   # 0. Define constants ----
   tar_target(
-    # rotorua_catchment_bbox_file, here::here("data", "processed", "rotorua_area.rds")
-    rotorua_catchment_bbox_file, here::here("data", "processed", "rotorua_lakes_area.rds")
+    rotorua_catchment_bbox_file,
+    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_lakes_area.rds",
+                       here::here("data", "processed", "rotorua_lakes_area.rds")),
+    format = "file",
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     tutira_bbox_coords, c(xmin = 176.75423, ymin = -39.29087, xmax = 177.00423, 
