@@ -109,14 +109,26 @@ standardise_to_gregorian <- function(
       names(new_df)[1] <- date_col
       
       for (v in vars) {
-        new_df[[v]] <- approx(
-          x = source_day,
-          y = df_year[[v]],
-          xout = scaled_source,
-          rule = 2
-        )$y
+        y <- df_year[[v]]
+        if (sum(!is.na(y)) < 2) {
+          # A boundary year (partial historical/ssp period) can leave a
+          # variable with <2 non-NA values after the outer-join in
+          # extract_climate_point() — nothing to interpolate from, so
+          # leave the year NA for that variable rather than erroring.
+          warning("Fewer than 2 non-NA '", v, "' values for ", yr,
+                  " (gcm = '", gcm, "', scenario = '", scenario,
+                  "') — leaving NA.")
+          new_df[[v]] <- NA_real_
+        } else {
+          new_df[[v]] <- approx(
+            x = source_day,
+            y = y,
+            xout = scaled_source,
+            rule = 2
+          )$y
+        }
       }
-      
+
       new_df
     })
     
