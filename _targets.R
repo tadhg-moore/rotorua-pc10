@@ -1092,7 +1092,8 @@ list(
         filename = out_file,
         plot = p,
         width = 10,
-        height = 6
+        height = 6,
+        create.dir = TRUE
       )
       out_file
     },
