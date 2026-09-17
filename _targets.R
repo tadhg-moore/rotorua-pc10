@@ -52,7 +52,7 @@ tar_option_set(
 
 # Pipeline definition
 list(
-
+  
   # -1. Sync data from OneDrive ----
   # Freshness lives on OneDrive, not in any locally-hashable input, so these
   # always re-run and their results are re-hashed each tar_make().
@@ -87,7 +87,7 @@ list(
     format = "file",
     cue = tar_cue(mode = "never")
   ),
-
+  
   # 0. Define constants ----
   tar_target(
     rotorua_catchment_bbox_file,
@@ -120,38 +120,38 @@ list(
   # From Chris McBride previous load modelling work
   tar_target(
     rotorua_inflow_file, file.path(data_raw_dir, "flows",
-                                    "Rotorua_inf_final.csv"),
+                                   "Rotorua_inf_final.csv"),
     format = "file"
   ),
   tar_target(
     rotorua_inflow_id_file, file.path(data_raw_dir, "flows",
-                                       "Rotorua_infID.csv"),
+                                      "Rotorua_infID.csv"),
     format = "file"
   ),
   tar_target(
     rotorua_inflow_key, file.path(data_raw_dir, "flows",
-                                   "rotorua_inflow_key.csv"),
+                                  "rotorua_inflow_key.csv"),
     format = "file"
   ),
   tar_target(
     alum_dosing_file, file.path(data_raw_dir, "alum_dosing",
-                                 "Rotorua alum dose data February 2026.xlsx"),
+                                "Rotorua alum dose data February 2026.xlsx"),
     format = "file"
   ),
   tar_target(
     bop_lake_level_zip_folder, file.path(data_raw_dir,
-                                          "BulkExport-FL150407-20251215152116.zip"),
+                                         "BulkExport-FL150407-20251215152116.zip"),
     format = "file"
   ),
-
+  
   # CTD Excel file
   tar_target(
     ctd_excel_file,
     file.path(data_raw_dir, "bop_wq",
-               "Lake Rotorua CTD Profile Data - Full Record .xlsx"),
+              "Lake Rotorua CTD Profile Data - Full Record .xlsx"),
     format = "file"
   ),
-
+  
   # Lake Chemistry data
   tar_target(
     chem_excel_file,
@@ -309,14 +309,10 @@ list(
   # instead of trying (and failing) to rebuild it from the network drive.
   tar_target(
     cmip6_metadata, {
-      if (identical(Sys.getenv("CI"), "true")) {
-        readr::read_csv(here::here("data", "processed", "niwa_cmip6_metadata.csv"),
-                         col_types = readr::cols())
-      } else {
-        gather_cmip6_metadata()
-      }
-    },
-    cue = tar_cue(mode = "never")
+      # gather_cmip6_metadata()
+      readr::read_csv(here::here("data", "processed", "niwa_cmip6_metadata.csv"),
+                      col_types = readr::cols())
+    }
   ),
   
   tar_target(
@@ -337,7 +333,7 @@ list(
   tar_target(
     lernzmp_aeme, {
       aeme <- aemetools::get_aeme(id = lake_id,
-                          api_key = Sys.getenv("LERNZMP_KEY")) |> 
+                                  api_key = Sys.getenv("LERNZMP_KEY")) |> 
         AEME::upgrade_aeme()
       # Rename inflow variable "Rainfall" to "precip" to match AEME variable names
       inf <- inflows(aeme)
@@ -480,17 +476,17 @@ list(
         chem_data              = chem_data,
         chem_sites             = chem_sites,
         light_data             = light_data,
-
+        
         # ── Climate ───────────────────────────────────────────────────────
         niwa_met_daily         = niwa_met_daily,
         niwa_met_hourly_files  = niwa_met_hourly_files,  # character vector of paths
-
+        
         # ── GCM / CMIP6 ───────────────────────────────────────────────────
         cmip6_metadata         = cmip6_metadata,
         gcm_point_data_df      = gcm_point_data_df,
         gcm_point_data_std_df  = gcm_point_data_std_df,
         gcm_ts_df              = gcm_ts_df,
-
+        
         # ── Spatial ───────────────────────────────────────────────────────
         lake_shape             = lake_shape,
         lake_meta              = lake_meta,
@@ -498,7 +494,7 @@ list(
         rotorua_catchment_bbox = rotorua_catchment_bbox,
         tutira_catchment_bbox  = tutira_catchment_bbox,
         vcsn_grid_points       = vcsn_grid_points,
-
+        
         # ── Model config ──────────────────────────────────────────────────
         aeme_base_hyps         = aeme_base_hyps,
         corr_hyps              = corr_hyps,
@@ -956,9 +952,9 @@ list(
         AEME::add_obs(lake = aeme_buoy_data, level = sub_lake_level) |> 
         AEME::add_param(params) |>
         AEME::set_time(start = calib_period$start, stop = calib_period$stop,
-                      spin_up = calib_period$spin_up) |> 
-      # aeme_time <- AEME::time(aeme)
-      
+                       spin_up = calib_period$spin_up) |> 
+        # aeme_time <- AEME::time(aeme)
+        
         AEME::build_aeme(path = glm4_path, model = model, ext_elev = ext_elev,
                          use_bgc = TRUE)
       # aeme <- AEME::run_aeme(aeme, verbose = TRUE)
