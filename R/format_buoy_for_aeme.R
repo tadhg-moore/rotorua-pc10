@@ -5,7 +5,7 @@ format_buoy_for_aeme <- function(df) {
     dplyr::mutate(
       Date = as.Date(DateTime),
       depth_bin = round(DptSns * 2) / 2
-      )
+    )
   
   df_daily <- df |> 
     dplyr::group_by(Date, depth_bin) |> 
@@ -32,7 +32,7 @@ format_buoy_for_aeme <- function(df) {
   )
   
   aeme_obs <- AEME::lake_obs_to_aeme(data = df_daily_long,
-                                       datetime_col_name = "Date",
+                                     datetime_col_name = "Date",
                                      depth_col_name = "depth_bin", 
                                      var_col_name = "variable",
                                      value_col_name = "value",
