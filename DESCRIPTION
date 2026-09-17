@@ -19,6 +19,7 @@ Imports:
     gh,
     here,
     kableExtra,
+    metscale (>= 0.1.0),
     Microsoft365R,
     ncmeta,
     readxl,
@@ -28,6 +29,7 @@ Imports:
     tarchetypes,
     targets,
     visNetwork
-Remotes: 
+Remotes:  
     limnotrack/AEME,
-    limnotrack/bathytools
+    limnotrack/bathytools,
+    limnotrack/metscale

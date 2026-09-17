@@ -39,8 +39,10 @@ tar_source(
   )
 )
 # Set target options
+cores <- parallel::detectCores(logical = FALSE) - 1
+workers <- pmin(cores, 5)
 tar_option_set(
-  controller = crew_controller_local(workers = 5), 
+  controller = crew_controller_local(workers = workers), 
   error = "continue", 
   storage = "worker", 
   retrieval = "worker",

@@ -21,7 +21,7 @@ dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 lat <- -38.1368
 lon <- 176.2497
 lakename <- "Rotorua"
-method <- "simple" # Can be "simple" or "bilinear"
+method <- "bilinear" # Can be "bilinear" or "nearest" (passed to metscale::extract_cmip6_point)
 overwrite <- FALSE # Set to TRUE to overwrite existing files, FALSE to skip if file exists
 
 # Loop through each GCM x SSP combination and extract point data for each variable
