@@ -21,7 +21,10 @@ Imports:
     kableExtra,
     Microsoft365R,
     ncmeta,
+    readxl,
     roxygen2,
+    rvest,
+    segmented,
     tarchetypes,
     targets,
     visNetwork
