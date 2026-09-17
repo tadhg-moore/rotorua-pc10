@@ -29,9 +29,7 @@ library(dplyr)
 library(knitr)
 library(patchwork)
 
-glm_exec <- list.files(pattern = "*.exe", full.names = TRUE, recursive = TRUE)
-glm_exec <- normalizePath(glm_exec)
-options("AEME.glm_exec" = glm_exec)
+options(AEME.glm_exec = AEME::glm_exe_path())
 
 aed_file <- "LakeRotorua/aed/aed_original.nml"
 aed      <- AEME::read_nml(aed_file)

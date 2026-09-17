@@ -24,17 +24,29 @@ install_glm_aed(version = "latest")
 # options(AEME.glm_version = "3.9.108")
 
 source("../R/plot_aeme_loads.R")
-source("R/setup_aeme.R")
+source("../R/setup_aeme.R")
 
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
 
-lake_dir  <- "LakeRotorua"
-nml_file <- file.path(lake_dir, "glm4_original.nml")
-aeme <- glm_config_to_aeme(nml_file = nml_file)
-
+# Baseline (run_id: aeme_base) is a historical run, so scenario = "historical".
+# GCM choice still matters for it, since the met forcing is downscaled CMIP6
+# historical output, not observations — ACCESS-CM2 (cmip_gcm[1]) is used as
+# the reference GCM for this documentation page; change if a different GCM
+# should represent the baseline.
 path <- "glm_v4"
-aeme <- setup_aeme(path)
+model <- targets::tar_read(model)
+aeme <- setup_aeme(
+  aeme              = targets::tar_read(aeme_base_hyps),
+  model             = model,
+  path              = path,
+  gcm_point_data_df = targets::tar_read(gcm_point_data_df),
+  gcm               = targets::tar_read(cmip_gcm)[1],
+  scenario          = "historical",
+  lake_level        = targets::tar_read(sub_lake_level),
+  sim_periods       = targets::tar_read(sim_periods)
+)
+aeme <- AEME::run_aeme(aeme, model = model, path = path, verbose = TRUE)
 
 cfg <- configuration(aeme)
 glm4_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
