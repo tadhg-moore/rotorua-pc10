@@ -856,6 +856,7 @@ list(
     },
     pattern = map(sim_grid),
     iteration = "list",
+    deployment = "main",
     cue = tar_cue(mode = "never")
   ),
   tar_target(
