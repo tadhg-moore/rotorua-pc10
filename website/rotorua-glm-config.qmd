@@ -20,9 +20,6 @@ library(AEME)
 library(knitr)
 library(kableExtra)
 
-install_glm_aed(version = "3.9.108")
-options(AEME.glm_version = "3.9.108")
-
 source("../R/plot_aeme_loads.R")
 
 glm_ver <- get_model_version("glm_aed")
@@ -51,7 +48,7 @@ period <- paste0(format(aeme_time$start, "%Y"), "–", format(aeme_time$stop, "%
 
 perf <- assess_model(aeme, var_sim = c("HYD_temp","NIT_tn","PHS_tp","PHY_tchla","LKE_lvlwtr")) |> 
   dplyr::mutate(Period = period) |>
-  dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = r2) |> 
+  dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = rs) |> 
   dplyr::select(Variable, Period, RMSE, Bias, R2, n)
 
 ```
