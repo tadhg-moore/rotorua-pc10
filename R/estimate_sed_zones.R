@@ -49,14 +49,14 @@ estimate_sed_zones <- function(aeme) {
   obs <- obs_temp |>
     dplyr::mutate(
       sed_zone = zones[
-        findInterval(depth_from, vec = breaks)
+        findInterval(depth, vec = breaks)
       ]
     )
   
-  # Assign depth_from based on depth bins in the sed_heights input
+  # Assign depth based on depth bins in the sed_heights input
   obs_temp_summ <- obs |> 
     # dplyr::mutate(
-    #   depth_bin = cut(depth_from, breaks = c(-Inf, abs(sed_heights$max_depth)), labels = FALSE)
+    #   depth_bin = cut(depth, breaks = c(-Inf, abs(sed_heights$max_depth)), labels = FALSE)
     # ) |> 
     dplyr::mutate(
       month = lubridate::month(Date),
@@ -66,7 +66,7 @@ estimate_sed_zones <- function(aeme) {
     ) |> 
     dplyr::group_by(adj_year, sed_zone) |>
     dplyr::summarise(
-      avg_depth = mean(depth_from, na.rm = TRUE),
+      avg_depth = mean(depth, na.rm = TRUE),
       sed_temp_mean = mean(value, na.rm = TRUE),
       sed_temp_amplitude = sd(value, na.rm = TRUE),
       max_temp = max(value, na.rm = TRUE),
@@ -146,7 +146,7 @@ estimate_sed_zones <- function(aeme) {
   obs_td <- obs_temp |> 
     dplyr::group_by(Date) |> 
     dplyr::summarise(
-      value = rLakeAnalyzer::thermo.depth(wtr = value, depths = depth_from)
+      value = rLakeAnalyzer::thermo.depth(wtr = value, depths = depth)
     )
   
   obs_thmcln <- AEME::get_obs(aeme, var_sim = "HYD_thmcln")

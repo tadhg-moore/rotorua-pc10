@@ -58,32 +58,32 @@ list(
     data_raw_dir,
     sync_onedrive_folder("rotorua-pc10/data/raw", here::here("data", "raw")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     aeme_onedrive_rds,
     sync_onedrive_file("rotorua-pc10/LID11133_rotorua/aeme.rds",
                        here::here("LID11133_rotorua", "aeme_download.rds")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     aeme_onedrive_lake_rotorua_dir,
     sync_onedrive_folder("rotorua-pc10/LakeRotorua", here::here("website", "LakeRotorua")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     aeme_onedrive_bin_dir,
     sync_onedrive_folder("rotorua-pc10/bin", here::here("website", "bin")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     aeme_onedrive_r_dir,
     sync_onedrive_folder("rotorua-pc10/R", here::here("website", "R")),
     format = "file",
-    cue = tar_cue(mode = "always")
+    cue = tar_cue(mode = "never")
   ),
 
   # 0. Define constants ----
@@ -320,8 +320,16 @@ list(
     },
   ),
   tar_target(
-    lernzmp_aeme, aemetools::get_aeme(id = lake_id,
-                                      api_key = Sys.getenv("LERNZMP_KEY"))
+    lernzmp_aeme, {
+      aeme <- aemetools::get_aeme(id = lake_id,
+                          api_key = Sys.getenv("LERNZMP_KEY")) |> 
+        AEME::upgrade_aeme()
+      # Rename inflow variable "Rainfall" to "precip" to match AEME variable names
+      inf <- inflows(aeme)
+      names(inf$data)[names(inf$data) == "Rainfall"] <- "precip"
+      inflows(aeme) <- inf
+      aeme
+    }
   ),
   
   tar_target(
@@ -922,7 +930,7 @@ list(
   # 3. Model execution ----
   tar_target(
     aeme_glm4, {
-      
+      browser()
       params <- dplyr::bind_rows(glm_sed_param_meas, meas_param, 
                                  aed_alum_params)
       aeme <- aeme_base |> 
