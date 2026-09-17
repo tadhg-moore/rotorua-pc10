@@ -2,17 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.23">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Resources – Rotorua Lake Modelling</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -59,7 +65,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -88,15 +93,14 @@ div.csl-indent {
 <link href="./www/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b77ad8b8fd8f04bd21044df5c5bf7d25.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1c0535d037eb8813b585731018da8aa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -136,8 +140,6 @@ div.csl-indent {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Rotorua Lake Modelling</span>
     </a>
@@ -199,10 +201,6 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
-      </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -225,6 +223,12 @@ div.csl-indent {
  <span class="menu-text">GANTT Chart</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -244,8 +248,55 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -254,17 +305,29 @@ div.csl-indent {
  <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Tasks</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data-request.html" class="sidebar-item-text sidebar-link">
@@ -281,6 +344,23 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
   </div>
 </li>
       </ul>
@@ -311,11 +391,11 @@ div.csl-indent {
   </ul></li>
   <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">2021</a>
   <ul class="collapse">
-  <li><a href="#mcbride2021" id="toc-mcbride2021" class="nav-link" data-scroll-target="#mcbride2021"><span class="citation" data-cites="mcbride2021">McBride, MacCormick, and Verburg (2021)</span></a></li>
+  <li><a href="#mcbride2021" id="toc-mcbride2021" class="nav-link" data-scroll-target="#mcbride2021"><span class="citation" data-cites="mcbride2021">McBride et al. (2021)</span></a></li>
   </ul></li>
   <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">2019</a>
   <ul class="collapse">
-  <li><a href="#mcbride2019" id="toc-mcbride2019" class="nav-link" data-scroll-target="#mcbride2019"><span class="citation" data-cites="mcbride2019">McBride, Abell, and Hamilton (2019)</span></a></li>
+  <li><a href="#mcbride2019" id="toc-mcbride2019" class="nav-link" data-scroll-target="#mcbride2019"><span class="citation" data-cites="mcbride2019">McBride et al. (2019)</span></a></li>
   </ul></li>
   <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">2018</a>
   <ul class="collapse">
@@ -327,7 +407,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#section-7" id="toc-section-7" class="nav-link" data-scroll-target="#section-7">2015</a>
   <ul class="collapse">
-  <li><a href="#abell2015" id="toc-abell2015" class="nav-link" data-scroll-target="#abell2015"><span class="citation" data-cites="abell2015">Abell, McBride, and Hamilton (2015)</span></a></li>
+  <li><a href="#abell2015" id="toc-abell2015" class="nav-link" data-scroll-target="#abell2015"><span class="citation" data-cites="abell2015">Abell et al. (2015)</span></a></li>
   </ul></li>
   <li><a href="#section-8" id="toc-section-8" class="nav-link" data-scroll-target="#section-8">2013</a>
   <ul class="collapse">
@@ -339,7 +419,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#section-10" id="toc-section-10" class="nav-link" data-scroll-target="#section-10">2009</a>
   <ul class="collapse">
-  <li><a href="#burns2009" id="toc-burns2009" class="nav-link" data-scroll-target="#burns2009"><span class="citation" data-cites="burns2009">Burns, McIntosh, and Scholes (2009)</span></a></li>
+  <li><a href="#burns2009" id="toc-burns2009" class="nav-link" data-scroll-target="#burns2009"><span class="citation" data-cites="burns2009">Burns et al. (2009)</span></a></li>
   </ul></li>
   <li><a href="#section-11" id="toc-section-11" class="nav-link" data-scroll-target="#section-11">2005</a>
   <ul class="collapse">
@@ -485,7 +565,7 @@ Click to expand: Summary
 <section id="section-3" class="level2">
 <h2 class="anchored" data-anchor-id="section-3">2021</h2>
 <section id="mcbride2021" class="level3">
-<h3 class="anchored" data-anchor-id="mcbride2021"><span class="citation" data-cites="mcbride2021">McBride, MacCormick, and Verburg (<a href="#ref-mcbride2021" role="doc-biblioref">2021</a>)</span></h3>
+<h3 class="anchored" data-anchor-id="mcbride2021"><span class="citation" data-cites="mcbride2021">McBride et al. (<a href="#ref-mcbride2021" role="doc-biblioref">2021</a>)</span></h3>
 <p>Estimated catchment loads of nitrogen and phosphorus to the Rotorua Te Arawa Lakes.<br>
 ERI report 143, University of Waikato.<br>
 <a href="https://hdl.handle.net/10289/16725">PDF</a></p>
@@ -525,7 +605,7 @@ Click to expand: Summary
 <section id="section-4" class="level2">
 <h2 class="anchored" data-anchor-id="section-4">2019</h2>
 <section id="mcbride2019" class="level3">
-<h3 class="anchored" data-anchor-id="mcbride2019"><span class="citation" data-cites="mcbride2019">McBride, Abell, and Hamilton (<a href="#ref-mcbride2019" role="doc-biblioref">2019</a>)</span></h3>
+<h3 class="anchored" data-anchor-id="mcbride2019"><span class="citation" data-cites="mcbride2019">McBride et al. (<a href="#ref-mcbride2019" role="doc-biblioref">2019</a>)</span></h3>
 <p>Long-term nutrient loads and water quality for Lake Rotorua: 1965–2017.<br>
 ERI Report 123, University of Waikato.<br>
 <a href="https://hdl.handle.net/10289/16725">PDF</a></p>
@@ -586,7 +666,7 @@ Click to expand: Summary
 <section id="section-7" class="level2">
 <h2 class="anchored" data-anchor-id="section-7">2015</h2>
 <section id="abell2015" class="level3">
-<h3 class="anchored" data-anchor-id="abell2015"><span class="citation" data-cites="abell2015">Abell, McBride, and Hamilton (<a href="#ref-abell2015" role="doc-biblioref">2015</a>)</span></h3>
+<h3 class="anchored" data-anchor-id="abell2015"><span class="citation" data-cites="abell2015">Abell et al. (<a href="#ref-abell2015" role="doc-biblioref">2015</a>)</span></h3>
 <p>Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study ERI Report 80, University of Waikato. <a href="https://hdl.handle.net/10289/12474">PDF</a></p>
 <details>
 <summary>
@@ -670,7 +750,7 @@ Click to expand: Summary
 <section id="section-10" class="level2">
 <h2 class="anchored" data-anchor-id="section-10">2009</h2>
 <section id="burns2009" class="level3">
-<h3 class="anchored" data-anchor-id="burns2009"><span class="citation" data-cites="burns2009">Burns, McIntosh, and Scholes (<a href="#ref-burns2009" role="doc-biblioref">2009</a>)</span></h3>
+<h3 class="anchored" data-anchor-id="burns2009"><span class="citation" data-cites="burns2009">Burns et al. (<a href="#ref-burns2009" role="doc-biblioref">2009</a>)</span></h3>
 <p>Managing the lakes of the Rotorua District, New Zealand.<br>
 <em>Lake and Reservoir Management</em>, 25(3), 284–296.<br>
 <a href="https://doi.org/10.1080/07438140903083815">DOI</a></p>
@@ -704,9 +784,9 @@ Click to expand: Summary
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-abell2015" class="csl-entry" role="listitem">
-Abell, J. M., C. G. McBride, and D. P. Hamilton. 2015. <span>“Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study.”</span> ERI Report. Hamilton, New Zealand: Environmental Research Institute, Faculty of Science; Engineering, The University of Waikato.
+Abell, J. M., C. G. McBride, and D. P. Hamilton. 2015. <em>Lake Rotorua Treated Wastewater Discharge: Environmental Effects Study</em>. ERI Report. Environmental Research Institute, Faculty of Science; Engineering, The University of Waikato.
 </div>
 <div id="ref-burns2009" class="csl-entry" role="listitem">
 Burns, N., J. McIntosh, and P. Scholes. 2009. <span>“Managing the Lakes of the Rotorua District, New Zealand.”</span> <em>Lake and Reservoir Management</em> 25 (3): 284–96. <a href="https://doi.org/10.1080/07438140903083815">https://doi.org/10.1080/07438140903083815</a>.
@@ -715,34 +795,34 @@ Burns, N., J. McIntosh, and P. Scholes. 2009. <span>“Managing the Lakes of the
 Dadi, Tallent, Martin Schultze, Xiangzhen Kong, Michael Seewald, Karsten Rinke, and Kurt Friese. 2023. <span>“Sudden Eutrophication of an Aluminum Sulphate Treated Lake Due to Abrupt Increase of Internal Phosphorus Loading After Three Decades of Mesotrophy.”</span> <em>Water Research</em> 235: 119824. <a href="https://doi.org/10.1016/j.watres.2023.119824">https://doi.org/10.1016/j.watres.2023.119824</a>.
 </div>
 <div id="ref-gibson2025" class="csl-entry" role="listitem">
-Gibson, Peter B., Ashley M. Broadbent, Stephen J. Stuart, Hamish Lewis, Isaac Campbell, Neelesh Rampal, Luke J. Harrington, and Jonny Williams. 2025. <span>“Downscaled CMIP6 Future Climate Projections for New Zealand: Climatology and Extremes.”</span> <em>Weather and Climate Extremes</em> 49: 100784. https://doi.org/<a href="https://doi.org/10.1016/j.wace.2025.100784">https://doi.org/10.1016/j.wace.2025.100784</a>.
+Gibson, Peter B., Ashley M. Broadbent, Stephen J. Stuart, et al. 2025. <span>“Downscaled CMIP6 Future Climate Projections for New Zealand: Climatology and Extremes.”</span> <em>Weather and Climate Extremes</em> 49: 100784. https://doi.org/<a href="https://doi.org/10.1016/j.wace.2025.100784">https://doi.org/10.1016/j.wace.2025.100784</a>.
 </div>
 <div id="ref-hamill2022" class="csl-entry" role="listitem">
-Hamill, K. 2022. <span>“Trend and State of Nutrients in Lake Rotorua Streams 2002–2022.”</span> River Lake Ltd for Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content</a>.
+Hamill, K. 2022. <em>Trend and State of Nutrients in Lake Rotorua Streams 2002–2022</em>. River Lake Ltd for Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4440195/content</a>.
 </div>
 <div id="ref-hamilton2012" class="csl-entry" role="listitem">
-Hamilton, D. P., D. Özkundakci, C. McBride, L. Luo, W. B. Silvester, and P. White. 2012. <span>“Predicting the Effects of Nutrient Loads, Management Regimes and Climate Change on Water Quality of Lake Rotorua.”</span>
+Hamilton, D. P., D. Özkundakci, C. McBride, L. Luo, W. B. Silvester, and P. White. 2012. <em>Predicting the Effects of Nutrient Loads, Management Regimes and Climate Change on Water Quality of Lake Rotorua</em>.
 </div>
 <div id="ref-mangeya2022" class="csl-entry" role="listitem">
-Mangeya, P. 2022. <span>“Groundwater Modelling Report.”</span> Jacobs for Bay of Plenty Regional Council (Toi Moana).
+Mangeya, P. 2022. <em>Groundwater Modelling Report</em>. Jacobs for Bay of Plenty Regional Council (Toi Moana).
 </div>
 <div id="ref-mcbride2019" class="csl-entry" role="listitem">
-McBride, C. G., J. M. Abell, and D. Hamilton. 2019. <span>“Long-Term Nutrient Loads and Water Quality for Lake Rotorua: 1965 to 2017.”</span> ERI Report 123. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
+McBride, C. G., J. M. Abell, and D. Hamilton. 2019. <em>Long-Term Nutrient Loads and Water Quality for Lake Rotorua: 1965 to 2017</em>. ERI Report 123. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
 </div>
 <div id="ref-mcbride2021" class="csl-entry" role="listitem">
-McBride, C. G., A. MacCormick, and P. Verburg. 2021. <span>“Estimated Catchment Loads of Nitrogen and Phosphorus to the Rotorua Te Arawa Lakes.”</span> ERI Report 143. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
+McBride, C. G., A. MacCormick, and P. Verburg. 2021. <em>Estimated Catchment Loads of Nitrogen and Phosphorus to the Rotorua Te Arawa Lakes</em>. ERI Report 143. Environmental Research Institute, University of Waikato. <a href="https://hdl.handle.net/10289/16725">https://hdl.handle.net/10289/16725</a>.
 </div>
 <div id="ref-wang2018" class="csl-entry" role="listitem">
 Me, Wang, David P. Hamilton, Christopher G. McBride, Jonathan M. Abell, and Brendan J. Hicks. 2018. <span>“Modelling Hydrology and Water Quality in a Mixed Land Use Catchment and Eutrophic Lake: Effects of Nutrient Load Reductions and Climate Change.”</span> <em>Environmental Modelling &amp; Software</em> 109: 114–33. https://doi.org/<a href="https://doi.org/10.1016/j.envsoft.2018.08.001">https://doi.org/10.1016/j.envsoft.2018.08.001</a>.
 </div>
 <div id="ref-ozkundakci2023" class="csl-entry" role="listitem">
-Özkundakci, Deniz. 2023. <span>“Lake Rotorua Science Review, Summary.”</span> Environmental Publication 2023/09. Whakatāne, New Zealand: Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content</a>.
+Özkundakci, Deniz. 2023. <em>Lake Rotorua Science Review, Summary</em>. Environmental Publication 2023/09. Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A4434503/content</a>.
 </div>
 <div id="ref-rutherford2005" class="csl-entry" role="listitem">
-Rutherford, J. C. 2005. <span>“Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &amp; Taupo, New Zealand.”</span> In <em>MODSIM 2005 International Congress on Modelling and Simulation</em>, edited by A. Zerger and R. M. Argent, 2749–54. Modelling; Simulation Society of Australia; New Zealand. <a href="https://www.mssanz.org.au/modsim05/papers/rutherford.pdf">https://www.mssanz.org.au/modsim05/papers/rutherford.pdf</a>.
+Rutherford, J. C. 2005. <span>“Modelling the Effects of Groundwater Lags on Nitrate Inputs to Lakes Rotorua &amp; Taupo, New Zealand.”</span> In <em>MODSIM 2005 International Congress on Modelling and Simulation</em>, edited by A. Zerger and R. M. Argent. Modelling; Simulation Society of Australia; New Zealand. <a href="https://www.mssanz.org.au/modsim05/papers/rutherford.pdf">https://www.mssanz.org.au/modsim05/papers/rutherford.pdf</a>.
 </div>
 <div id="ref-scholes2013" class="csl-entry" role="listitem">
-Scholes, P. 2013. <span>“Trends and State of Nutrients in Lake Rotorua Streams 2013.”</span> Environmental Publication 2013/08. Whakatāne, New Zealand: Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content</a>.
+Scholes, P. 2013. <em>Trends and State of Nutrients in Lake Rotorua Streams 2013</em>. Environmental Publication 2013/08. Bay of Plenty Regional Council (Toi Moana). <a href="https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content">https://atlas.boprc.govt.nz/api/v1/edms/document/A2657488/content</a>.
 </div>
 <div id="ref-smith2016" class="csl-entry" role="listitem">
 Smith, Val H., Susanna A. Wood, Chris G. McBride, Javier Atalah, David P. Hamilton, and Jonathan Abell. 2016. <span>“Phosphorus and Nitrogen Loading Restraints Are Essential for Successful Eutrophication Control of Lake Rotorua, New Zealand.”</span> <em>Inland Waters</em> 6 (2): 273–83. <a href="https://doi.org/10.5268/IW-6.2.998">https://doi.org/10.5268/IW-6.2.998</a>.
@@ -840,16 +920,16 @@ Smith, Val H., Susanna A. Wood, Chris G. McBride, Javier Atalah, David P. Hamilt
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {

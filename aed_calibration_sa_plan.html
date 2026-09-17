@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-09-17">
+
+<title>GLM-AED Sensitivity Analysis and Calibration Plan – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1c0535d037eb8813b585731018da8aa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./aed_calibration_sa_plan.html">Calibration &amp; SA Plan</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm_aed_alum_stress_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
+  <li><a href="#model-configuration-assumed" id="toc-model-configuration-assumed" class="nav-link" data-scroll-target="#model-configuration-assumed"><span class="header-section-number">2</span> Model configuration assumed</a></li>
+  <li><a href="#how-sa-and-calibration-relate" id="toc-how-sa-and-calibration-relate" class="nav-link" data-scroll-target="#how-sa-and-calibration-relate"><span class="header-section-number">3</span> How SA and calibration relate</a></li>
+  <li><a href="#parameters-by-target" id="toc-parameters-by-target" class="nav-link" data-scroll-target="#parameters-by-target"><span class="header-section-number">4</span> Parameters by target</a>
+  <ul class="collapse">
+  <li><a href="#dissolved-oxygen" id="toc-dissolved-oxygen" class="nav-link" data-scroll-target="#dissolved-oxygen"><span class="header-section-number">4.1</span> Dissolved oxygen</a></li>
+  <li><a href="#ammonium" id="toc-ammonium" class="nav-link" data-scroll-target="#ammonium"><span class="header-section-number">4.2</span> Ammonium</a></li>
+  <li><a href="#filterable-reactive-phosphorus" id="toc-filterable-reactive-phosphorus" class="nav-link" data-scroll-target="#filterable-reactive-phosphorus"><span class="header-section-number">4.3</span> Filterable reactive phosphorus</a></li>
+  <li><a href="#phytoplankton-growth" id="toc-phytoplankton-growth" class="nav-link" data-scroll-target="#phytoplankton-growth"><span class="header-section-number">4.4</span> Phytoplankton growth</a></li>
+  </ul></li>
+  <li><a href="#configuration-switches" id="toc-configuration-switches" class="nav-link" data-scroll-target="#configuration-switches"><span class="header-section-number">5</span> Configuration switches</a>
+  <ul class="collapse">
+  <li><a href="#common-parameter-looks-ignored-traps" id="toc-common-parameter-looks-ignored-traps" class="nav-link" data-scroll-target="#common-parameter-looks-ignored-traps"><span class="header-section-number">5.1</span> Common “parameter looks ignored” traps</a></li>
+  </ul></li>
+  <li><a href="#recommended-workflow" id="toc-recommended-workflow" class="nav-link" data-scroll-target="#recommended-workflow"><span class="header-section-number">6</span> Recommended workflow</a></li>
+  <li><a href="#companion-files" id="toc-companion-files" class="nav-link" data-scroll-target="#companion-files"><span class="header-section-number">7</span> Companion files</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./aed_calibration_sa_plan.html">Calibration &amp; SA Plan</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">GLM-AED Sensitivity Analysis and Calibration Plan</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Oxygen, ammonium, filterable reactive phosphorus, and phytoplankton growth</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 17, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="purpose" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
+<p>This document explains which AED parameters are proposed for <strong>sensitivity analysis (SA)</strong> and <strong>calibration</strong>, why they were chosen, and the model configuration switches that must be enabled for them to have any effect.</p>
+<p>It covers four target outputs:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Target</th>
+<th>AED state variable(s)</th>
+<th>Primary observation used to constrain it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dissolved oxygen</td>
+<td><code>OXY_oxy</code></td>
+<td>DO profiles / hypolimnetic depletion rate</td>
+</tr>
+<tr class="even">
+<td>Ammonium</td>
+<td><code>NIT_amm</code> (<code>NIT_tn</code>)</td>
+<td>NH<sub>4</sub> profiles, hypolimnetic accumulation</td>
+</tr>
+<tr class="odd">
+<td>Filterable reactive phosphorus</td>
+<td><code>PHS_frp</code> (<code>PHS_tp</code>)</td>
+<td>FRP profiles, timing of the anoxic P pulse</td>
+</tr>
+<tr class="even">
+<td>Phytoplankton growth</td>
+<td><code>PHY_&lt;group&gt;</code>, <code>PHY_tchla</code></td>
+<td>Chlorophyll-<em>a</em>, group biomass, bloom timing</td>
+</tr>
+</tbody>
+</table>
+<p>The parameter list and switch list are maintained as companion CSV files:</p>
+<ul>
+<li><code>aed_sa_calib_params.csv</code> — the parameters, default values and screening ranges</li>
+<li><code>aed_sa_calib_switches.csv</code> — the configuration flags that gate them</li>
+</ul>
+</section>
+<section id="model-configuration-assumed" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="model-configuration-assumed"><span class="header-section-number">2</span> Model configuration assumed</h2>
+<p>The plan targets a GLM-AED setup with the following modules active: <code>aed_sedflux</code>, <code>aed_oxygen</code>, <code>aed_carbon</code>, <code>aed_organic_matter</code>, <code>aed_nitrogen</code>, <code>aed_phosphorus</code>, <code>aed_silica</code>, <code>aed_phytoplankton</code>.</p>
+<p>Sediment fluxes are supplied by <strong>zoned constant fluxes</strong> rather than the per-module scalar values:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode fortran code-with-copy"><code class="sourceCode fortranfixed"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&amp;</span>aed_sedflux</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   sedflux_model <span class="kw">=</span> <span class="st">'Constant2d'</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">/</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&amp;</span>aed_sed_const2d</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   n_zones <span class="kw">=</span> <span class="dv">3</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   active_zones <span class="kw">=</span> <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>   fsed_oxy <span class="kw">=</span> <span class="kw">-</span><span class="dv">300</span>, <span class="kw">-</span><span class="dv">200</span>, <span class="kw">-</span><span class="dv">100</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>   fsed_amm <span class="kw">=</span> <span class="fl">3.402</span>, <span class="fl">0.66</span>, <span class="fl">0.33</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   fsed_nit <span class="kw">=</span> <span class="kw">-</span><span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>   fsed_frp <span class="kw">=</span> <span class="fl">0.0417</span>, <span class="fl">0.0583</span>, <span class="fl">0.06</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In the parameter table these fluxes appear as <code>aed_sed_const2d/fsed_*</code> with the <code>index</code> column holding the <strong>zone number</strong> (index 1 = zone 1). The companion CSV lists zone 1 only; extend to zones 2–3 by duplicating each row with the matching value.</p>
+<p>Three phytoplankton groups are assumed, mapped to columns of <code>aed_phyto_pars.csv</code> via <code>the_phytos</code>, with the <code>index</code> column giving the group order:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>index</th>
+<th>group</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>cyano</td>
+<td>buoyant / non-sinking, warm optimum</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>diatom</td>
+<td>fast growth, sinks, Si-limited</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>green</td>
+<td>slower growth, intermediate traits</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-sa-and-calibration-relate" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="how-sa-and-calibration-relate"><span class="header-section-number">3</span> How SA and calibration relate</h2>
+<ol type="1">
+<li><p><strong>Screening SA (e.g.&nbsp;Morris / elementary effects).</strong> Run over the <em>full</em> parameter union below with wide ranges. Fix stoichiometry and most Arrhenius (<code>theta_*</code>) terms. Goal: discard parameters with negligible influence on the four targets.</p></li>
+<li><p><strong>Variance-based SA (e.g.&nbsp;Sobol) — optional.</strong> Run on the ~10–15 survivors with ranges tightened to roughly ±25–50 % of the expected value. Goal: rank interactions and first-order effects per target metric.</p></li>
+<li><p><strong>Calibration.</strong> Tune only the high-ranking, poorly-constrained, <em>identifiable</em> subset (Section 5). Typically 12–18 parameters.</p></li>
+</ol>
+<p><strong>Order matters.</strong> Get temperature/stratification and DO right first: the redox switches controlling NH<sub>4</sub> and FRP sediment release (<code>ksed_amm</code>, <code>ksed_frp</code>) are gated on the simulated O<sub>2</sub> field, so calibrating them before DO is closed will bias them.</p>
+</section>
+<section id="parameters-by-target" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="parameters-by-target"><span class="header-section-number">4</span> Parameters by target</h2>
+<section id="dissolved-oxygen" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="dissolved-oxygen"><span class="header-section-number">4.1</span> Dissolved oxygen</h3>
+<p>Oxygen is a balance term; its drivers span several modules.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Module</th>
+<th>Default</th>
+<th>SA range</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>aed_sed_const2d/fsed_oxy</code> (per zone)</td>
+<td>sedflux</td>
+<td>−300</td>
+<td>−450 … −150</td>
+<td>Sediment oxygen demand — usually the dominant sink for hypolimnetic DO</td>
+</tr>
+<tr class="even">
+<td><code>aed_oxygen/ksed_oxy</code></td>
+<td>oxygen</td>
+<td>30</td>
+<td>10 … 100</td>
+<td>DO half-saturation of SOD</td>
+</tr>
+<tr class="odd">
+<td><code>aed_oxygen/theta_sed_oxy</code></td>
+<td>oxygen</td>
+<td>1.08</td>
+<td>1.04 … 1.12</td>
+<td>Temperature sensitivity of SOD</td>
+</tr>
+<tr class="even">
+<td><code>aed_organic_matter/rpoc_hydrol</code></td>
+<td>organic_matter</td>
+<td>0.03</td>
+<td>0.001 … 0.1</td>
+<td>POC breakdown feeding the DOC pool</td>
+</tr>
+<tr class="odd">
+<td><code>aed_organic_matter/rdoc_minerl</code></td>
+<td>organic_matter</td>
+<td>0.01</td>
+<td>0.001 … 0.05</td>
+<td>Pelagic mineralisation O<sub>2</sub> sink</td>
+</tr>
+<tr class="even">
+<td><code>aed_organic_matter/theta_hydrol</code>, <code>theta_minerl</code></td>
+<td>organic_matter</td>
+<td>1.07</td>
+<td>1.04 … 1.10</td>
+<td>Temperature sensitivity of OM decay</td>
+</tr>
+<tr class="odd">
+<td><code>aed_organic_matter/kdom_minerl</code>, <code>kpom_hydrol</code></td>
+<td>organic_matter</td>
+<td>20</td>
+<td>2 … 30</td>
+<td>O<sub>2</sub> half-saturation for aerobic decay</td>
+</tr>
+<tr class="even">
+<td><code>aed_organic_matter/f_an</code></td>
+<td>organic_matter</td>
+<td>1.0</td>
+<td>0.1 … 1.0</td>
+<td>Anaerobic mineralisation fraction</td>
+</tr>
+<tr class="odd">
+<td><code>aed_nitrogen/rnitrif</code></td>
+<td>nitrogen</td>
+<td>0.1</td>
+<td>0.01 … 0.5</td>
+<td>Nitrification O<sub>2</sub> demand (2 mol O<sub>2</sub> / mol N)</td>
+</tr>
+<tr class="even">
+<td>phyto <code>R_growth</code>, <code>R_resp</code></td>
+<td>phytoplankton</td>
+<td>group</td>
+<td>—</td>
+<td>Photosynthetic source / respiration sink</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Calibrate:</strong> <code>fsed_oxy</code> (per zone), <code>theta_sed_oxy</code>, and <strong>one</strong> pelagic mineralisation rate (<code>rdoc_minerl</code> <em>or</em> <code>rpoc_hydrol</code>, not both — they are confounded when fitting DO alone). Choose <code>oxy_piston_model</code> by waterbody type <em>before</em> calibration rather than treating it as a free knob.</p>
+<p><strong>Fix from literature:</strong> <code>ksed_oxy</code>, <code>kdom_minerl</code>, <code>altitude</code> (known), Schmidt-number choice.</p>
+</section>
+<section id="ammonium" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="ammonium"><span class="header-section-number">4.2</span> Ammonium</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Module</th>
+<th>Default</th>
+<th>SA range</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>aed_sed_const2d/fsed_amm</code> (per zone)</td>
+<td>sedflux</td>
+<td>3.402</td>
+<td>1.70 … 5.10</td>
+<td>Benthic NH<sub>4</sub> release — dominant internal load when stratified</td>
+</tr>
+<tr class="even">
+<td><code>aed_nitrogen/ksed_amm</code></td>
+<td>nitrogen</td>
+<td>30</td>
+<td>10 … 100</td>
+<td>O<sub>2</sub> control on the NH<sub>4</sub> flux</td>
+</tr>
+<tr class="odd">
+<td><code>aed_nitrogen/theta_sed_amm</code></td>
+<td>nitrogen</td>
+<td>1.08</td>
+<td>1.04 … 1.10</td>
+<td>Temperature sensitivity of the flux</td>
+</tr>
+<tr class="even">
+<td><code>aed_nitrogen/rnitrif</code></td>
+<td>nitrogen</td>
+<td>0.1</td>
+<td>0.01 … 0.5</td>
+<td>NH<sub>4</sub> → NO<sub>2</sub>/NO<sub>3</sub> — main water-column sink</td>
+</tr>
+<tr class="odd">
+<td><code>aed_nitrogen/knitrif</code></td>
+<td>nitrogen</td>
+<td>150</td>
+<td>20 … 300</td>
+<td>O<sub>2</sub> half-saturation for nitrification</td>
+</tr>
+<tr class="even">
+<td><code>aed_nitrogen/theta_nitrif</code></td>
+<td>nitrogen</td>
+<td>1.08</td>
+<td>1.04 … 1.10</td>
+<td>Temperature sensitivity of nitrification</td>
+</tr>
+<tr class="odd">
+<td>phyto <code>K_N</code>, <code>R_nuptake</code>, <code>X_nmin/X_nmax</code></td>
+<td>phytoplankton</td>
+<td>group</td>
+<td>—</td>
+<td>Algal DIN uptake — large NH<sub>4</sub> sink in the growing season</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Calibrate:</strong> <code>fsed_amm</code> (per zone), <code>rnitrif</code>, and <strong>one</strong> temperature term (<code>theta_nitrif</code> <em>or</em> <code>theta_sed_amm</code>). If phytoplankton is active, the dominant group’s <code>K_N</code> / <code>R_nuptake</code> shape the growing-season NH<sub>4</sub> minimum.</p>
+<p><strong>Fix:</strong> <code>knitrif</code>, <code>ksed_amm</code>; anammox / DNRA rates left at zero unless those pathways are explicitly modelled.</p>
+<p><strong>Confounding:</strong> <code>fsed_amm</code> (source) trades off directly against <code>rnitrif</code> (sink) for the hypolimnetic accumulation rate; the DO profile and NO<sub>3</sub> data help constrain <code>rnitrif</code> independently.</p>
+</section>
+<section id="filterable-reactive-phosphorus" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="filterable-reactive-phosphorus"><span class="header-section-number">4.3</span> Filterable reactive phosphorus</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Module</th>
+<th>Default</th>
+<th>SA range</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>aed_sed_const2d/fsed_frp</code> (per zone)</td>
+<td>sedflux</td>
+<td>0.0417</td>
+<td>0.021 … 0.063</td>
+<td>Benthic P release — primary internal load</td>
+</tr>
+<tr class="even">
+<td><code>aed_phosphorus/ksed_frp</code></td>
+<td>phosphorus</td>
+<td>30</td>
+<td>10 … 100</td>
+<td>O<sub>2</sub> dependence of the P flux (redox switch)</td>
+</tr>
+<tr class="odd">
+<td><code>aed_phosphorus/theta_sed_frp</code></td>
+<td>phosphorus</td>
+<td>1.05</td>
+<td>1.04 … 1.12</td>
+<td>Temperature sensitivity of the P flux</td>
+</tr>
+<tr class="even">
+<td><code>aed_phosphorus/kpo4p</code></td>
+<td>phosphorus</td>
+<td>1.05</td>
+<td>0.1 … 10</td>
+<td>Partition coefficient (adsorption model 1)</td>
+</tr>
+<tr class="odd">
+<td><code>aed_phosphorus/kadsratio</code>, <code>qmax</code></td>
+<td>phosphorus</td>
+<td>1.05</td>
+<td>0.1 … 10</td>
+<td>Langmuir affinity / capacity (adsorption model 2)</td>
+</tr>
+<tr class="even">
+<td><code>aed_phosphorus/w_po4ads</code></td>
+<td>phosphorus</td>
+<td>0</td>
+<td>0 … 0.5</td>
+<td>Settling of particulate-bound P</td>
+</tr>
+<tr class="odd">
+<td>phyto <code>K_P</code>, <code>R_puptake</code>, <code>X_pmin/X_pmax</code></td>
+<td>phytoplankton</td>
+<td>group</td>
+<td>—</td>
+<td>Algal uptake — dominant epilimnetic FRP sink</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Calibrate:</strong> <code>fsed_frp</code> (per zone), <code>ksed_frp</code> (sets the O<sub>2</sub> threshold at which release switches on — calibrate <em>jointly</em> with the DO model), <code>theta_sed_frp</code>. Calibrate adsorption parameters <strong>only</strong> with particulate-P or TSS data; otherwise they are unidentifiable.</p>
+<p><strong>Fix:</strong> phyto <code>K_P</code> (well below typical FRP), <code>P_0</code>.</p>
+<p><strong>Confounding:</strong> epilimnetic FRP is mostly set by algal uptake, so a phosphorus-only calibration is biased if phytoplankton parameters are still off.</p>
+</section>
+<section id="phytoplankton-growth" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="phytoplankton-growth"><span class="header-section-number">4.4</span> Phytoplankton growth</h3>
+<p>Growth = <code>R_growth · fT · fI · min(fN, fP, fSi) · fSal − respiration − losses</code>. Parameters are <strong>per group</strong> — calibrate the 1–3 groups that carry biomass.</p>
+<p><strong>Tier 1 — almost always calibrate (per dominant group):</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>R_growth</code></td>
+<td>Maximum growth rate — top sensitivity for bloom magnitude</td>
+</tr>
+<tr class="even">
+<td><code>I_K</code> (or <code>I_S</code> if <code>lightModel = 1</code>)</td>
+<td>Light half-saturation — depth of production, spring onset</td>
+</tr>
+<tr class="odd">
+<td><code>T_opt</code></td>
+<td>Optimum temperature — seasonal timing and succession</td>
+</tr>
+<tr class="even">
+<td><code>R_resp</code></td>
+<td>Metabolic loss — controls biomass decline and net growth</td>
+</tr>
+<tr class="odd">
+<td><code>w_p</code></td>
+<td>Settling velocity — loss term, strong on standing stock</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tier 2 — include in SA, calibrate if Tier 1 cannot close the fit:</strong> <code>T_std</code>, <code>T_max</code>, <code>theta_growth</code>, <code>K_N</code>, <code>K_P</code>, <code>X_nmin/X_nmax</code>, <code>X_pmin/X_pmax</code>, <code>R_nuptake</code>, <code>R_puptake</code>, <code>f_pr</code>, <code>k_fres</code>, <code>k_fdom</code>, <code>Xcc</code>, <code>KePHY</code>, <code>p0</code>. Diatom only: <code>K_Si</code>, <code>X_sicon</code>.</p>
+<p><strong>Per-group starting values (from <code>aed_phyto_pars.csv</code> example columns):</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>cyano</th>
+<th>diatom</th>
+<th>green</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>R_growth</code> (/d)</td>
+<td>1.1 [0.55–1.65]</td>
+<td>2.8 [1.4–4.2]</td>
+<td>0.7 [0.35–1.05]</td>
+</tr>
+<tr class="even">
+<td><code>I_K</code> (µE m<sup>−2</sup> s<sup>−1</sup>)</td>
+<td>25 [10–60]</td>
+<td>10 [4–25]</td>
+<td>25 [10–60]</td>
+</tr>
+<tr class="odd">
+<td><code>T_opt</code> (°C)</td>
+<td>28 [24–32]</td>
+<td>20 [16–26]</td>
+<td>27 [23–31]</td>
+</tr>
+<tr class="even">
+<td><code>T_std</code> / <code>T_max</code> (°C)</td>
+<td>20 / 35</td>
+<td>15 / 32</td>
+<td>20 / 33</td>
+</tr>
+<tr class="odd">
+<td><code>R_resp</code> (/d)</td>
+<td>0.08 [0.04–0.12]</td>
+<td>0.12 [0.06–0.2]</td>
+<td>0.012 [0.006–0.05]</td>
+</tr>
+<tr class="even">
+<td><code>w_p</code> (m/d)</td>
+<td>0 [−0.1–0.05]</td>
+<td>−0.104 [−0.5–0]</td>
+<td>−0.01 [−0.2–0.05]</td>
+</tr>
+<tr class="odd">
+<td><code>K_N</code> / <code>K_P</code> (mmol m<sup>−3</sup>)</td>
+<td>4 / 0.15</td>
+<td>3.57 / 0.16</td>
+<td>3.21 / 0.16</td>
+</tr>
+<tr class="even">
+<td><code>Xcc</code> (mg C mg chl<sup>−1</sup>)</td>
+<td>50</td>
+<td>40</td>
+<td>40</td>
+</tr>
+<tr class="odd">
+<td><code>KePHY</code></td>
+<td>0.005</td>
+<td>0.001</td>
+<td>0.005</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Identifiability:</strong> <code>R_growth</code>, <code>R_resp</code> and <code>w_p</code> all move standing biomass — separable only with an additional rate or vertical-distribution constraint. With chlorophyll-<em>a</em> alone, fix <code>w_p</code> from settling-column literature and <code>R_resp</code> from literature, and calibrate <code>R_growth</code> plus one light parameter. <code>I_K</code> and <code>T_opt</code> both shift bloom timing — use seasonal shape (spring vs.&nbsp;summer peak) to distinguish. Calibrate groups sequentially by season of dominance.</p>
+</section>
+</section>
+<section id="configuration-switches" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="configuration-switches"><span class="header-section-number">5</span> Configuration switches</h2>
+<p>Many calibration parameters are gated behind config flags. If the switch is not set, the parameter is read but silently unused.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Switch</th>
+<th>Set to</th>
+<th>Enables</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>aed_sedflux/sedflux_model</code></td>
+<td><code>Constant2d</code></td>
+<td><code>aed_sed_const2d/fsed_*</code></td>
+<td>activates the zoned flux block</td>
+</tr>
+<tr class="even">
+<td><code>aed_oxygen/Fsed_oxy_variable</code></td>
+<td><code>SDF_Fsed_oxy</code></td>
+<td><code>fsed_oxy</code> (zoned)</td>
+<td>else module uses its own scalar <code>Fsed_oxy</code></td>
+</tr>
+<tr class="odd">
+<td><code>aed_nitrogen/Fsed_amm_variable</code></td>
+<td><code>SDF_Fsed_amm</code></td>
+<td><code>fsed_amm</code> (zoned)</td>
+<td>else module scalar <code>Fsed_amm</code></td>
+</tr>
+<tr class="even">
+<td><code>aed_nitrogen/Fsed_nit_variable</code></td>
+<td><code>SDF_Fsed_nit</code></td>
+<td><code>fsed_nit</code> (zoned)</td>
+<td>else module scalar <code>Fsed_nit</code></td>
+</tr>
+<tr class="odd">
+<td><code>aed_phosphorus/Fsed_frp_variable</code></td>
+<td><code>SDF_Fsed_frp</code></td>
+<td><code>fsed_frp</code> (zoned)</td>
+<td>else module scalar <code>Fsed_frp</code></td>
+</tr>
+<tr class="even">
+<td><code>aed_nitrogen/nitrif_reactant_variable</code></td>
+<td><code>OXY_oxy</code></td>
+<td><code>knitrif</code>, O<sub>2</sub> dependence of <code>ksed_amm</code></td>
+<td><code>rnitrif</code>/<code>theta_nitrif</code> still act without it</td>
+</tr>
+<tr class="odd">
+<td><code>aed_phosphorus/phosphorus_reactant_variable</code></td>
+<td><code>OXY_oxy</code></td>
+<td><code>ksed_frp</code>, <code>theta_sed_frp</code> (redox P release)</td>
+<td><code>fsed_frp</code> still applied without it</td>
+</tr>
+<tr class="even">
+<td><code>aed_organic_matter/dom_miner_oxy_reactant_var</code></td>
+<td><code>OXY_oxy</code></td>
+<td>O<sub>2</sub> half-saturation in <code>kdom_minerl</code>, <code>kpom_hydrol</code></td>
+<td>rates/theta still act without it</td>
+</tr>
+<tr class="odd">
+<td><code>aed_phosphorus/simPO4Adsorption</code></td>
+<td><code>.true.</code></td>
+<td><code>kpo4p</code>, <code>kadsratio</code>, <code>qmax</code>, <code>w_po4ads</code></td>
+<td>plus <code>PO4AdsorptionModel</code> (1 → <code>kpo4p</code>; 2 → <code>kadsratio</code>+<code>qmax</code>) and a sorbent (<code>ads_use_external_tss</code> or <code>po4sorption_target_variable</code>)</td>
+</tr>
+<tr class="even">
+<td><code>aed_phytoplankton/num_phytos</code>, <code>the_phytos</code>, <code>dbase</code></td>
+<td>3; <code>1,2,3</code>; csv</td>
+<td>all <code>phyto/*</code> rows</td>
+<td><code>the_phytos</code> order defines the <code>index</code></td>
+</tr>
+<tr class="odd">
+<td><code>aed_phytoplankton/settling</code></td>
+<td>1 (<code>_MOB_CONST_</code>) per group</td>
+<td><code>w_p</code></td>
+<td>Stokes (3) / motile (4) compute sinking from density and ignore <code>w_p</code></td>
+</tr>
+<tr class="even">
+<td><code>aed_phytoplankton/si_uptake_target_variable</code></td>
+<td><code>SIL_rsi</code></td>
+<td><code>K_Si</code>, <code>X_sicon</code></td>
+<td>requires <code>aed_silica</code> active</td>
+</tr>
+<tr class="odd">
+<td><code>phyto/fT_Method</code> (per group)</td>
+<td><code>1</code></td>
+<td><code>T_opt</code>, <code>T_std</code>, <code>T_max</code>, <code>theta_growth</code></td>
+<td><code>0</code> = no temperature limitation</td>
+</tr>
+<tr class="even">
+<td><code>phyto/lightModel</code> (per group)</td>
+<td><code>0</code></td>
+<td><code>I_K</code></td>
+<td><code>1</code> uses <code>I_S</code> instead</td>
+</tr>
+<tr class="odd">
+<td><code>phyto/simDINUptake</code> / <code>simINDynamics</code></td>
+<td><code>1</code> / <code>2</code></td>
+<td><code>K_N</code> / <code>X_nmin</code>,<code>X_nmax</code>,<code>R_nuptake</code></td>
+<td><code>simINDynamics</code> 0–1 uses fixed <code>X_ncon</code></td>
+</tr>
+<tr class="even">
+<td><code>phyto/simDIPUptake</code> / <code>simIPDynamics</code></td>
+<td><code>1</code> / <code>2</code></td>
+<td><code>K_P</code> / <code>X_pmin</code>,<code>X_pmax</code>,<code>R_puptake</code></td>
+<td><code>simIPDynamics</code> 0–1 uses fixed <code>X_pcon</code></td>
+</tr>
+<tr class="odd">
+<td><code>phyto/simSiUptake</code> (per group)</td>
+<td><code>1</code></td>
+<td><code>K_Si</code>, <code>X_sicon</code></td>
+<td>diatom only</td>
+</tr>
+</tbody>
+</table>
+<section id="common-parameter-looks-ignored-traps" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="common-parameter-looks-ignored-traps"><span class="header-section-number">5.1</span> Common “parameter looks ignored” traps</h3>
+<ul>
+<li>The example <code>aed_phyto_pars.csv</code> ships with <strong>diatom <code>fT_Method = 0</code></strong> — its temperature parameters do nothing until set to <code>1</code>.</li>
+<li>The example <code>aed_phyto_pars.csv</code> ships with <strong><code>simSiUptake = 0</code> for every group</strong> — <code>K_Si</code> / <code>X_sicon</code> are inert until switched on.</li>
+<li><code>Fsed_*_variable</code> links not set — the zoned sediment fluxes never reach the modules and the per-module scalars are used instead.</li>
+</ul>
+</section>
+</section>
+<section id="recommended-workflow" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="recommended-workflow"><span class="header-section-number">6</span> Recommended workflow</h2>
+<ol type="1">
+<li>Confirm switches (Section 6) match the intended process representation.</li>
+<li>Screening SA (Morris) over the full parameter union — ~30–40 parameters.</li>
+<li>Variance-based SA (Sobol) on the ~10–15 survivors, per-target metrics (hypolimnetic DO depletion rate; NH<sub>4</sub> / FRP anoxic accumulation; chlorophyll-<em>a</em> peak magnitude and timing).</li>
+<li>Calibrate the Tier-1 subset — roughly: <code>fsed_oxy</code>, <code>theta_sed_oxy</code>, one <code>r*_minerl</code>; <code>fsed_amm</code>, <code>rnitrif</code>; <code>fsed_frp</code>, <code>ksed_frp</code>; per group <code>R_growth</code>, <code>I_K</code>/<code>I_S</code>, <code>T_opt</code>, <code>R_resp</code> — ~12–18 parameters.</li>
+<li>Physics and DO first, then N and P sediment exchange, then phytoplankton by season of dominance.</li>
+</ol>
+</section>
+<section id="companion-files" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="companion-files"><span class="header-section-number">7</span> Companion files</h2>
+<ul>
+<li><strong><code>aed_sa_calib_params.csv</code></strong> — columns: <code>model, file, name, value, min, max, group, index, module, var_sim</code>. Sediment fluxes listed for zone 1; phytoplankton listed for cyano / diatom / green (index 1 / 2 / 3).</li>
+<li><strong><code>aed_sa_calib_switches.csv</code></strong> — columns: <code>file, name, required_value, enables, module, note</code>.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "GLM-AED Sensitivity Analysis and Calibration Plan"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Oxygen, ammonium, filterable reactive phosphorus, and phytoplankton growth"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">  # gfm:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc: true</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">  #   number-sections: true</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Purpose</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>This document explains which AED parameters are proposed for **sensitivity</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>analysis (SA)** and **calibration**, why they were chosen, and the model</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>configuration switches that must be enabled for them to have any effect.</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>It covers four target outputs:</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Target <span class="pp">|</span> AED state variable(s) <span class="pp">|</span> Primary observation used to constrain it <span class="pp">|</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Dissolved oxygen <span class="pp">|</span> <span class="in">`OXY_oxy`</span> <span class="pp">|</span> DO profiles / hypolimnetic depletion rate <span class="pp">|</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ammonium <span class="pp">|</span> <span class="in">`NIT_amm`</span> (<span class="in">`NIT_tn`</span>) <span class="pp">|</span> NH~4~ profiles, hypolimnetic accumulation <span class="pp">|</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Filterable reactive phosphorus <span class="pp">|</span> <span class="in">`PHS_frp`</span> (<span class="in">`PHS_tp`</span>) <span class="pp">|</span> FRP profiles, timing of the anoxic P pulse <span class="pp">|</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Phytoplankton growth <span class="pp">|</span> <span class="in">`PHY_&lt;group&gt;`</span>, <span class="in">`PHY_tchla`</span> <span class="pp">|</span> Chlorophyll-*a*, group biomass, bloom timing <span class="pp">|</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>The parameter list and switch list are maintained as companion CSV files:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`aed_sa_calib_params.csv`</span> — the parameters, default values and screening ranges</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`aed_sa_calib_switches.csv`</span> — the configuration flags that gate them</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model configuration assumed</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>The plan targets a GLM-AED setup with the following modules active:</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="in">`aed_sedflux`</span>, <span class="in">`aed_oxygen`</span>, <span class="in">`aed_carbon`</span>, <span class="in">`aed_organic_matter`</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="in">`aed_nitrogen`</span>, <span class="in">`aed_phosphorus`</span>, <span class="in">`aed_silica`</span>, <span class="in">`aed_phytoplankton`</span>.</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>Sediment fluxes are supplied by **zoned constant fluxes** rather than the</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>per-module scalar values:</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="in">```fortran</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="in">&amp;aed_sedflux</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="in">   sedflux_model = 'Constant2d'</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="in">/</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="in">&amp;aed_sed_const2d</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="in">   n_zones = 3</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="in">   active_zones = 1, 2, 3</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="in">   fsed_oxy = -300, -200, -100</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="in">   fsed_amm = 3.402, 0.66, 0.33</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="in">   fsed_nit = -0.4, 0.1, 0.05</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="in">   fsed_frp = 0.0417, 0.0583, 0.06</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="in">/</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>In the parameter table these fluxes appear as <span class="in">`aed_sed_const2d/fsed_*`</span> with the</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="in">`index`</span> column holding the **zone number** (index 1 = zone 1). The companion</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>CSV lists zone 1 only; extend to zones 2–3 by duplicating each row with the</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>matching value.</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>Three phytoplankton groups are assumed, mapped to columns of</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="in">`aed_phyto_pars.csv`</span> via <span class="in">`the_phytos`</span>, with the <span class="in">`index`</span> column giving the group</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>order:</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> index <span class="pp">|</span> group <span class="pp">|</span> notes <span class="pp">|</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> cyano <span class="pp">|</span> buoyant / non-sinking, warm optimum <span class="pp">|</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2 <span class="pp">|</span> diatom <span class="pp">|</span> fast growth, sinks, Si-limited <span class="pp">|</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 3 <span class="pp">|</span> green <span class="pp">|</span> slower growth, intermediate traits <span class="pp">|</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## How SA and calibration relate</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Screening SA (e.g. Morris / elementary effects).** Run over the *full*</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>   parameter union below with wide ranges. Fix stoichiometry and most Arrhenius</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>   (<span class="in">`theta_*`</span>) terms. Goal: discard parameters with negligible influence on the</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>   four targets.</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Variance-based SA (e.g. Sobol) — optional.** Run on the ~10–15 survivors</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>   with ranges tightened to roughly ±25–50 % of the expected value. Goal:</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>   rank interactions and first-order effects per target metric.</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Calibration.** Tune only the high-ranking, poorly-constrained,</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>   *identifiable* subset (Section 5). Typically 12–18 parameters.</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>**Order matters.** Get temperature/stratification and DO right first: the</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>redox switches controlling NH~4~ and FRP sediment release</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>(<span class="in">`ksed_amm`</span>, <span class="in">`ksed_frp`</span>) are gated on the simulated O~2~ field, so calibrating</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>them before DO is closed will bias them.</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameters by target</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dissolved oxygen</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>Oxygen is a balance term; its drivers span several modules.</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Module <span class="pp">|</span> Default <span class="pp">|</span> SA range <span class="pp">|</span> Role <span class="pp">|</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_sed_const2d/fsed_oxy`</span> (per zone) <span class="pp">|</span> sedflux <span class="pp">|</span> −300 <span class="pp">|</span> −450 … −150 <span class="pp">|</span> Sediment oxygen demand — usually the dominant sink for hypolimnetic DO <span class="pp">|</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_oxygen/ksed_oxy`</span> <span class="pp">|</span> oxygen <span class="pp">|</span> 30 <span class="pp">|</span> 10 … 100 <span class="pp">|</span> DO half-saturation of SOD <span class="pp">|</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_oxygen/theta_sed_oxy`</span> <span class="pp">|</span> oxygen <span class="pp">|</span> 1.08 <span class="pp">|</span> 1.04 … 1.12 <span class="pp">|</span> Temperature sensitivity of SOD <span class="pp">|</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/rpoc_hydrol`</span> <span class="pp">|</span> organic_matter <span class="pp">|</span> 0.03 <span class="pp">|</span> 0.001 … 0.1 <span class="pp">|</span> POC breakdown feeding the DOC pool <span class="pp">|</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/rdoc_minerl`</span> <span class="pp">|</span> organic_matter <span class="pp">|</span> 0.01 <span class="pp">|</span> 0.001 … 0.05 <span class="pp">|</span> Pelagic mineralisation O~2~ sink <span class="pp">|</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/theta_hydrol`</span>, <span class="in">`theta_minerl`</span> <span class="pp">|</span> organic_matter <span class="pp">|</span> 1.07 <span class="pp">|</span> 1.04 … 1.10 <span class="pp">|</span> Temperature sensitivity of OM decay <span class="pp">|</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/kdom_minerl`</span>, <span class="in">`kpom_hydrol`</span> <span class="pp">|</span> organic_matter <span class="pp">|</span> 20 <span class="pp">|</span> 2 … 30 <span class="pp">|</span> O~2~ half-saturation for aerobic decay <span class="pp">|</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/f_an`</span> <span class="pp">|</span> organic_matter <span class="pp">|</span> 1.0 <span class="pp">|</span> 0.1 … 1.0 <span class="pp">|</span> Anaerobic mineralisation fraction <span class="pp">|</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/rnitrif`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 0.1 <span class="pp">|</span> 0.01 … 0.5 <span class="pp">|</span> Nitrification O~2~ demand (2 mol O~2~ / mol N) <span class="pp">|</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phyto <span class="in">`R_growth`</span>, <span class="in">`R_resp`</span> <span class="pp">|</span> phytoplankton <span class="pp">|</span> group <span class="pp">|</span> — <span class="pp">|</span> Photosynthetic source / respiration sink <span class="pp">|</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>**Calibrate:** `fsed_oxy` (per zone), `theta_sed_oxy`, and **one** pelagic</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>mineralisation rate (<span class="in">`rdoc_minerl`</span> *or* <span class="in">`rpoc_hydrol`</span>, not both — they are</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>confounded when fitting DO alone). Choose <span class="in">`oxy_piston_model`</span> by waterbody type</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>*before* calibration rather than treating it as a free knob.</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>**Fix from literature:** <span class="in">`ksed_oxy`</span>, <span class="in">`kdom_minerl`</span>, <span class="in">`altitude`</span> (known),</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>Schmidt-number choice.</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ammonium</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Module <span class="pp">|</span> Default <span class="pp">|</span> SA range <span class="pp">|</span> Role <span class="pp">|</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_sed_const2d/fsed_amm`</span> (per zone) <span class="pp">|</span> sedflux <span class="pp">|</span> 3.402 <span class="pp">|</span> 1.70 … 5.10 <span class="pp">|</span> Benthic NH~4~ release — dominant internal load when stratified <span class="pp">|</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/ksed_amm`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 30 <span class="pp">|</span> 10 … 100 <span class="pp">|</span> O~2~ control on the NH~4~ flux <span class="pp">|</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/theta_sed_amm`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 1.08 <span class="pp">|</span> 1.04 … 1.10 <span class="pp">|</span> Temperature sensitivity of the flux <span class="pp">|</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/rnitrif`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 0.1 <span class="pp">|</span> 0.01 … 0.5 <span class="pp">|</span> NH~4~ → NO~2~/NO~3~ — main water-column sink <span class="pp">|</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/knitrif`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 150 <span class="pp">|</span> 20 … 300 <span class="pp">|</span> O~2~ half-saturation for nitrification <span class="pp">|</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/theta_nitrif`</span> <span class="pp">|</span> nitrogen <span class="pp">|</span> 1.08 <span class="pp">|</span> 1.04 … 1.10 <span class="pp">|</span> Temperature sensitivity of nitrification <span class="pp">|</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phyto <span class="in">`K_N`</span>, <span class="in">`R_nuptake`</span>, <span class="in">`X_nmin/X_nmax`</span> <span class="pp">|</span> phytoplankton <span class="pp">|</span> group <span class="pp">|</span> — <span class="pp">|</span> Algal DIN uptake — large NH~4~ sink in the growing season <span class="pp">|</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>**Calibrate:** `fsed_amm` (per zone), `rnitrif`, and **one** temperature term</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>(<span class="in">`theta_nitrif`</span> *or* <span class="in">`theta_sed_amm`</span>). If phytoplankton is active, the dominant</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>group's <span class="in">`K_N`</span> / <span class="in">`R_nuptake`</span> shape the growing-season NH~4~ minimum.</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>**Fix:** <span class="in">`knitrif`</span>, <span class="in">`ksed_amm`</span>; anammox / DNRA rates left at zero unless those</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>pathways are explicitly modelled.</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>**Confounding:** <span class="in">`fsed_amm`</span> (source) trades off directly against <span class="in">`rnitrif`</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>(sink) for the hypolimnetic accumulation rate; the DO profile and NO~3~ data</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>help constrain <span class="in">`rnitrif`</span> independently.</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="fu">### Filterable reactive phosphorus</span></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Module <span class="pp">|</span> Default <span class="pp">|</span> SA range <span class="pp">|</span> Role <span class="pp">|</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_sed_const2d/fsed_frp`</span> (per zone) <span class="pp">|</span> sedflux <span class="pp">|</span> 0.0417 <span class="pp">|</span> 0.021 … 0.063 <span class="pp">|</span> Benthic P release — primary internal load <span class="pp">|</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/ksed_frp`</span> <span class="pp">|</span> phosphorus <span class="pp">|</span> 30 <span class="pp">|</span> 10 … 100 <span class="pp">|</span> O~2~ dependence of the P flux (redox switch) <span class="pp">|</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/theta_sed_frp`</span> <span class="pp">|</span> phosphorus <span class="pp">|</span> 1.05 <span class="pp">|</span> 1.04 … 1.12 <span class="pp">|</span> Temperature sensitivity of the P flux <span class="pp">|</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/kpo4p`</span> <span class="pp">|</span> phosphorus <span class="pp">|</span> 1.05 <span class="pp">|</span> 0.1 … 10 <span class="pp">|</span> Partition coefficient (adsorption model 1) <span class="pp">|</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/kadsratio`</span>, <span class="in">`qmax`</span> <span class="pp">|</span> phosphorus <span class="pp">|</span> 1.05 <span class="pp">|</span> 0.1 … 10 <span class="pp">|</span> Langmuir affinity / capacity (adsorption model 2) <span class="pp">|</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/w_po4ads`</span> <span class="pp">|</span> phosphorus <span class="pp">|</span> 0 <span class="pp">|</span> 0 … 0.5 <span class="pp">|</span> Settling of particulate-bound P <span class="pp">|</span></span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phyto <span class="in">`K_P`</span>, <span class="in">`R_puptake`</span>, <span class="in">`X_pmin/X_pmax`</span> <span class="pp">|</span> phytoplankton <span class="pp">|</span> group <span class="pp">|</span> — <span class="pp">|</span> Algal uptake — dominant epilimnetic FRP sink <span class="pp">|</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>**Calibrate:** <span class="in">`fsed_frp`</span> (per zone), <span class="in">`ksed_frp`</span> (sets the O~2~ threshold at</span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>which release switches on — calibrate *jointly* with the DO model),</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="in">`theta_sed_frp`</span>. Calibrate adsorption parameters **only** with particulate-P or</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>TSS data; otherwise they are unidentifiable.</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>**Fix:** phyto <span class="in">`K_P`</span> (well below typical FRP), <span class="in">`P_0`</span>.</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>**Confounding:** epilimnetic FRP is mostly set by algal uptake, so a</span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>phosphorus-only calibration is biased if phytoplankton parameters are still off.</span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="fu">### Phytoplankton growth</span></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>Growth = <span class="in">`R_growth · fT · fI · min(fN, fP, fSi) · fSal − respiration − losses`</span>.</span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>Parameters are **per group** — calibrate the 1–3 groups that carry biomass.</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>**Tier 1 — almost always calibrate (per dominant group):**</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Role <span class="pp">|</span></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R_growth`</span> <span class="pp">|</span> Maximum growth rate — top sensitivity for bloom magnitude <span class="pp">|</span></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`I_K`</span> (or <span class="in">`I_S`</span> if <span class="in">`lightModel = 1`</span>) <span class="pp">|</span> Light half-saturation — depth of production, spring onset <span class="pp">|</span></span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`T_opt`</span> <span class="pp">|</span> Optimum temperature — seasonal timing and succession <span class="pp">|</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R_resp`</span> <span class="pp">|</span> Metabolic loss — controls biomass decline and net growth <span class="pp">|</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`w_p`</span> <span class="pp">|</span> Settling velocity — loss term, strong on standing stock <span class="pp">|</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>**Tier 2 — include in SA, calibrate if Tier 1 cannot close the fit:**</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="in">`T_std`</span>, <span class="in">`T_max`</span>, <span class="in">`theta_growth`</span>, <span class="in">`K_N`</span>, <span class="in">`K_P`</span>, <span class="in">`X_nmin/X_nmax`</span>,</span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a><span class="in">`X_pmin/X_pmax`</span>, <span class="in">`R_nuptake`</span>, <span class="in">`R_puptake`</span>, <span class="in">`f_pr`</span>, <span class="in">`k_fres`</span>, <span class="in">`k_fdom`</span>, <span class="in">`Xcc`</span>,</span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="in">`KePHY`</span>, <span class="in">`p0`</span>. Diatom only: <span class="in">`K_Si`</span>, <span class="in">`X_sicon`</span>.</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>**Per-group starting values (from `aed_phyto_pars.csv` example columns):**</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> cyano <span class="pp">|</span> diatom <span class="pp">|</span> green <span class="pp">|</span></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R_growth`</span> (/d) <span class="pp">|</span> 1.1 <span class="co">[</span><span class="ot">0.55–1.65</span><span class="co">]</span> <span class="pp">|</span> 2.8 <span class="co">[</span><span class="ot">1.4–4.2</span><span class="co">]</span> <span class="pp">|</span> 0.7 <span class="co">[</span><span class="ot">0.35–1.05</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`I_K`</span> (µE m^−2^ s^−1^) <span class="pp">|</span> 25 <span class="co">[</span><span class="ot">10–60</span><span class="co">]</span> <span class="pp">|</span> 10 <span class="co">[</span><span class="ot">4–25</span><span class="co">]</span> <span class="pp">|</span> 25 <span class="co">[</span><span class="ot">10–60</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`T_opt`</span> (°C) <span class="pp">|</span> 28 <span class="co">[</span><span class="ot">24–32</span><span class="co">]</span> <span class="pp">|</span> 20 <span class="co">[</span><span class="ot">16–26</span><span class="co">]</span> <span class="pp">|</span> 27 <span class="co">[</span><span class="ot">23–31</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`T_std`</span> / <span class="in">`T_max`</span> (°C) <span class="pp">|</span> 20 / 35 <span class="pp">|</span> 15 / 32 <span class="pp">|</span> 20 / 33 <span class="pp">|</span></span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R_resp`</span> (/d) <span class="pp">|</span> 0.08 <span class="co">[</span><span class="ot">0.04–0.12</span><span class="co">]</span> <span class="pp">|</span> 0.12 <span class="co">[</span><span class="ot">0.06–0.2</span><span class="co">]</span> <span class="pp">|</span> 0.012 <span class="co">[</span><span class="ot">0.006–0.05</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`w_p`</span> (m/d) <span class="pp">|</span> 0 <span class="co">[</span><span class="ot">−0.1–0.05</span><span class="co">]</span> <span class="pp">|</span> −0.104 <span class="co">[</span><span class="ot">−0.5–0</span><span class="co">]</span> <span class="pp">|</span> −0.01 <span class="co">[</span><span class="ot">−0.2–0.05</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`K_N`</span> / <span class="in">`K_P`</span> (mmol m^−3^) <span class="pp">|</span> 4 / 0.15 <span class="pp">|</span> 3.57 / 0.16 <span class="pp">|</span> 3.21 / 0.16 <span class="pp">|</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Xcc`</span> (mg C mg chl^−1^) <span class="pp">|</span> 50 <span class="pp">|</span> 40 <span class="pp">|</span> 40 <span class="pp">|</span></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`KePHY`</span> <span class="pp">|</span> 0.005 <span class="pp">|</span> 0.001 <span class="pp">|</span> 0.005 <span class="pp">|</span></span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>**Identifiability:** <span class="in">`R_growth`</span>, <span class="in">`R_resp`</span> and <span class="in">`w_p`</span> all move standing biomass —</span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a>separable only with an additional rate or vertical-distribution constraint. With</span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a>chlorophyll-*a* alone, fix <span class="in">`w_p`</span> from settling-column literature and <span class="in">`R_resp`</span></span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a>from literature, and calibrate <span class="in">`R_growth`</span> plus one light parameter. <span class="in">`I_K`</span> and</span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="in">`T_opt`</span> both shift bloom timing — use seasonal shape (spring vs. summer peak) to</span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a>distinguish. Calibrate groups sequentially by season of dominance.</span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Configuration switches</span></span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>Many calibration parameters are gated behind config flags. If the switch is not</span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>set, the parameter is read but silently unused.</span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Switch <span class="pp">|</span> Set to <span class="pp">|</span> Enables <span class="pp">|</span> Note <span class="pp">|</span></span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_sedflux/sedflux_model`</span> <span class="pp">|</span> <span class="in">`Constant2d`</span> <span class="pp">|</span> <span class="in">`aed_sed_const2d/fsed_*`</span> <span class="pp">|</span> activates the zoned flux block <span class="pp">|</span></span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_oxygen/Fsed_oxy_variable`</span> <span class="pp">|</span> <span class="in">`SDF_Fsed_oxy`</span> <span class="pp">|</span> <span class="in">`fsed_oxy`</span> (zoned) <span class="pp">|</span> else module uses its own scalar <span class="in">`Fsed_oxy`</span> <span class="pp">|</span></span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/Fsed_amm_variable`</span> <span class="pp">|</span> <span class="in">`SDF_Fsed_amm`</span> <span class="pp">|</span> <span class="in">`fsed_amm`</span> (zoned) <span class="pp">|</span> else module scalar <span class="in">`Fsed_amm`</span> <span class="pp">|</span></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/Fsed_nit_variable`</span> <span class="pp">|</span> <span class="in">`SDF_Fsed_nit`</span> <span class="pp">|</span> <span class="in">`fsed_nit`</span> (zoned) <span class="pp">|</span> else module scalar <span class="in">`Fsed_nit`</span> <span class="pp">|</span></span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/Fsed_frp_variable`</span> <span class="pp">|</span> <span class="in">`SDF_Fsed_frp`</span> <span class="pp">|</span> <span class="in">`fsed_frp`</span> (zoned) <span class="pp">|</span> else module scalar <span class="in">`Fsed_frp`</span> <span class="pp">|</span></span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_nitrogen/nitrif_reactant_variable`</span> <span class="pp">|</span> <span class="in">`OXY_oxy`</span> <span class="pp">|</span> <span class="in">`knitrif`</span>, O~2~ dependence of <span class="in">`ksed_amm`</span> <span class="pp">|</span> <span class="in">`rnitrif`</span>/<span class="in">`theta_nitrif`</span> still act without it <span class="pp">|</span></span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/phosphorus_reactant_variable`</span> <span class="pp">|</span> <span class="in">`OXY_oxy`</span> <span class="pp">|</span> <span class="in">`ksed_frp`</span>, <span class="in">`theta_sed_frp`</span> (redox P release) <span class="pp">|</span> <span class="in">`fsed_frp`</span> still applied without it <span class="pp">|</span></span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_organic_matter/dom_miner_oxy_reactant_var`</span> <span class="pp">|</span> <span class="in">`OXY_oxy`</span> <span class="pp">|</span> O~2~ half-saturation in <span class="in">`kdom_minerl`</span>, <span class="in">`kpom_hydrol`</span> <span class="pp">|</span> rates/theta still act without it <span class="pp">|</span></span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phosphorus/simPO4Adsorption`</span> <span class="pp">|</span> <span class="in">`.true.`</span> <span class="pp">|</span> <span class="in">`kpo4p`</span>, <span class="in">`kadsratio`</span>, <span class="in">`qmax`</span>, <span class="in">`w_po4ads`</span> <span class="pp">|</span> plus <span class="in">`PO4AdsorptionModel`</span> (1 → <span class="in">`kpo4p`</span>; 2 → <span class="in">`kadsratio`</span>+<span class="in">`qmax`</span>) and a sorbent (<span class="in">`ads_use_external_tss`</span> or <span class="in">`po4sorption_target_variable`</span>) <span class="pp">|</span></span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phytoplankton/num_phytos`</span>, <span class="in">`the_phytos`</span>, <span class="in">`dbase`</span> <span class="pp">|</span> 3; <span class="in">`1,2,3`</span>; csv <span class="pp">|</span> all <span class="in">`phyto/*`</span> rows <span class="pp">|</span> <span class="in">`the_phytos`</span> order defines the <span class="in">`index`</span> <span class="pp">|</span></span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phytoplankton/settling`</span> <span class="pp">|</span> 1 (<span class="in">`_MOB_CONST_`</span>) per group <span class="pp">|</span> <span class="in">`w_p`</span> <span class="pp">|</span> Stokes (3) / motile (4) compute sinking from density and ignore <span class="in">`w_p`</span> <span class="pp">|</span></span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aed_phytoplankton/si_uptake_target_variable`</span> <span class="pp">|</span> <span class="in">`SIL_rsi`</span> <span class="pp">|</span> <span class="in">`K_Si`</span>, <span class="in">`X_sicon`</span> <span class="pp">|</span> requires <span class="in">`aed_silica`</span> active <span class="pp">|</span></span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`phyto/fT_Method`</span> (per group) <span class="pp">|</span> <span class="in">`1`</span> <span class="pp">|</span> <span class="in">`T_opt`</span>, <span class="in">`T_std`</span>, <span class="in">`T_max`</span>, <span class="in">`theta_growth`</span> <span class="pp">|</span> <span class="in">`0`</span> = no temperature limitation <span class="pp">|</span></span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`phyto/lightModel`</span> (per group) <span class="pp">|</span> <span class="in">`0`</span> <span class="pp">|</span> <span class="in">`I_K`</span> <span class="pp">|</span> <span class="in">`1`</span> uses <span class="in">`I_S`</span> instead <span class="pp">|</span></span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`phyto/simDINUptake`</span> / <span class="in">`simINDynamics`</span> <span class="pp">|</span> <span class="in">`1`</span> / <span class="in">`2`</span> <span class="pp">|</span> <span class="in">`K_N`</span> / <span class="in">`X_nmin`</span>,<span class="in">`X_nmax`</span>,<span class="in">`R_nuptake`</span> <span class="pp">|</span> <span class="in">`simINDynamics`</span> 0–1 uses fixed <span class="in">`X_ncon`</span> <span class="pp">|</span></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`phyto/simDIPUptake`</span> / <span class="in">`simIPDynamics`</span> <span class="pp">|</span> <span class="in">`1`</span> / <span class="in">`2`</span> <span class="pp">|</span> <span class="in">`K_P`</span> / <span class="in">`X_pmin`</span>,<span class="in">`X_pmax`</span>,<span class="in">`R_puptake`</span> <span class="pp">|</span> <span class="in">`simIPDynamics`</span> 0–1 uses fixed <span class="in">`X_pcon`</span> <span class="pp">|</span></span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`phyto/simSiUptake`</span> (per group) <span class="pp">|</span> <span class="in">`1`</span> <span class="pp">|</span> <span class="in">`K_Si`</span>, <span class="in">`X_sicon`</span> <span class="pp">|</span> diatom only <span class="pp">|</span></span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a><span class="fu">### Common "parameter looks ignored" traps</span></span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The example <span class="in">`aed_phyto_pars.csv`</span> ships with **diatom `fT_Method = 0`** — its</span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a>  temperature parameters do nothing until set to <span class="in">`1`</span>.</span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The example <span class="in">`aed_phyto_pars.csv`</span> ships with **<span class="in">`simSiUptake = 0`</span> for every</span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a>  group** — <span class="in">`K_Si`</span> / <span class="in">`X_sicon`</span> are inert until switched on.</span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Fsed_*_variable`</span> links not set — the zoned sediment fluxes never reach the</span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a>  modules and the per-module scalars are used instead.</span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommended workflow</span></span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Confirm switches (Section 6) match the intended process representation.</span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Screening SA (Morris) over the full parameter union — ~30–40 parameters.</span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Variance-based SA (Sobol) on the ~10–15 survivors, per-target metrics</span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a>   (hypolimnetic DO depletion rate; NH~4~ / FRP anoxic accumulation;</span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a>   chlorophyll-*a* peak magnitude and timing).</span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Calibrate the Tier-1 subset — roughly: <span class="in">`fsed_oxy`</span>, <span class="in">`theta_sed_oxy`</span>, one</span>
+<span id="cb2-254"><a href="#cb2-254" aria-hidden="true" tabindex="-1"></a>   <span class="in">`r*_minerl`</span>; <span class="in">`fsed_amm`</span>, <span class="in">`rnitrif`</span>; <span class="in">`fsed_frp`</span>, <span class="in">`ksed_frp`</span>; per group</span>
+<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a>   <span class="in">`R_growth`</span>, <span class="in">`I_K`</span>/<span class="in">`I_S`</span>, <span class="in">`T_opt`</span>, <span class="in">`R_resp`</span> — ~12–18 parameters.</span>
+<span id="cb2-256"><a href="#cb2-256" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Physics and DO first, then N and P sediment exchange, then phytoplankton by</span>
+<span id="cb2-257"><a href="#cb2-257" aria-hidden="true" tabindex="-1"></a>   season of dominance.</span>
+<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-259"><a href="#cb2-259" aria-hidden="true" tabindex="-1"></a><span class="fu">## Companion files</span></span>
+<span id="cb2-260"><a href="#cb2-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-264"><a href="#cb2-264" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-params</span></span>
+<span id="cb2-265"><a href="#cb2-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust paths as needed</span></span>
+<span id="cb2-267"><a href="#cb2-267" aria-hidden="true" tabindex="-1"></a>params   <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"../data/processed/aed/aed_sa_calib_params.csv"</span>)</span>
+<span id="cb2-268"><a href="#cb2-268" aria-hidden="true" tabindex="-1"></a>switches <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"../data/processed/aed/aed_sa_calib_switches.csv"</span>)</span>
+<span id="cb2-269"><a href="#cb2-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-270"><a href="#cb2-270" aria-hidden="true" tabindex="-1"></a>params   <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(module, <span class="at">name =</span> <span class="st">"n_parameters"</span>)</span>
+<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a>params   <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(module <span class="sc">==</span> <span class="st">"phytoplankton"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(group)</span>
+<span id="cb2-272"><a href="#cb2-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-273"><a href="#cb2-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`aed_sa_calib_params.csv`** — columns:</span>
+<span id="cb2-275"><a href="#cb2-275" aria-hidden="true" tabindex="-1"></a>  <span class="in">`model, file, name, value, min, max, group, index, module, var_sim`</span>.</span>
+<span id="cb2-276"><a href="#cb2-276" aria-hidden="true" tabindex="-1"></a>  Sediment fluxes listed for zone 1; phytoplankton listed for cyano / diatom /</span>
+<span id="cb2-277"><a href="#cb2-277" aria-hidden="true" tabindex="-1"></a>  green (index 1 / 2 / 3).</span>
+<span id="cb2-278"><a href="#cb2-278" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`aed_sa_calib_switches.csv`** — columns:</span>
+<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a>  <span class="in">`file, name, required_value, enables, module, note`</span>.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
