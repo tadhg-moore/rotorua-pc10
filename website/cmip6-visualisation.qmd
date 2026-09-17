@@ -11,9 +11,7 @@ message: false
 #| echo: false
 #| cache: true
 
-metadata <- readr::read_csv(here::here("data", "processed",
-                                             "niwa_cmip6_metadata.csv"), 
-                                  col_types = readr::cols())
+metadata <- targets::tar_read(cmip6_metadata)
 gcm <- unique(metadata$gcm)
 scenarios <- unique(metadata$scenario)
 cmip_vars <- c("tas", "hurs", "pr", "rsds", "sfcWind")

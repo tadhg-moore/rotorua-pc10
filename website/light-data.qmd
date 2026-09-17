@@ -221,7 +221,7 @@ kw_decomp <- decompose_kw_biotic(
 ```
 
 ```{r}
-#| label: decompose-kw-summary
+#| label: decompose-kw-summary-v2
 print(kw_decomp)
 ```
 
