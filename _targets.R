@@ -534,15 +534,15 @@ list(
   tar_target(
     corr_hyps, fix_hyps(aeme_base, lake_elev = median_lake_level_masl)
   ),
-  tar_target(
-    corr_hyps_file, {
-      out_file <- here::here("data", "processed", "rotorua_data_sh",
-                             "rotorua_hypsograph.csv")
-      readr::write_csv(corr_hyps, file = out_file)
-      out_file
-    },
-    format = "file"
-  ),
+  # tar_target(
+  #   corr_hyps_file, {
+  #     out_file <- here::here("data", "processed", "rotorua_data_sh",
+  #                            "rotorua_hypsograph.csv")
+  #     readr::write_csv(corr_hyps, file = out_file)
+  #     out_file
+  #   },
+  #   format = "file"
+  # ),
   tar_target(
     hyps_no_hole, {
       hyp <- corr_hyps |> 
