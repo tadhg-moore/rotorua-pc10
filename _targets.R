@@ -302,10 +302,20 @@ list(
   ),
   
   
+  # gather_cmip6_metadata() reads from a hardcoded local network drive
+  # ("Z:") that only exists on the machine it was written for — it isn't
+  # reachable from CI. Its output is already committed to git as
+  # data/processed/niwa_cmip6_metadata.csv, so read that directly in CI
+  # instead of trying (and failing) to rebuild it from the network drive.
   tar_target(
     cmip6_metadata, {
-      gather_cmip6_metadata()
-    }, 
+      if (identical(Sys.getenv("CI"), "true")) {
+        readr::read_csv(here::here("data", "processed", "niwa_cmip6_metadata.csv"),
+                         col_types = readr::cols())
+      } else {
+        gather_cmip6_metadata()
+      }
+    },
     cue = tar_cue(mode = "never")
   ),
   
@@ -876,7 +886,8 @@ list(
     cue = tar_cue(mode = "never")
   ),
   tar_target(
-    gcm_point_data_std_df, dplyr::bind_rows(gcm_point_data_std)
+    gcm_point_data_std_df,
+    dplyr::bind_rows(Filter(is.data.frame, gcm_point_data_std))
   ),
   
   tar_target(
