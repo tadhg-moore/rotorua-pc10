@@ -34,6 +34,15 @@ sync_onedrive_folder <- function(src, dest) {
   dest
 }
 
+#' Upload a single local file to OneDrive at `dest`. Used to push up
+#' expensive-to-compute outputs (e.g. CMIP6 processing) so CI can download
+#' already-computed results instead of recomputing them.
+upload_onedrive_file <- function(src, dest) {
+  od <- get_onedrive_session()
+  od$upload_file(src, dest = dest)
+  invisible(dest)
+}
+
 #' Upload a local folder (recursively) to OneDrive at `dest`. Used to push
 #' up expensive-to-compute outputs (e.g. CMIP6 processing) so CI can
 #' download already-computed results instead of recomputing them.
