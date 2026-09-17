@@ -66,6 +66,10 @@ jobs:
             ${{ runner.os }}-targets-
           save-always: true
 
+      - name: Run targets pipeline
+        working-directory: website
+        run: Rscript scripts/build_data.R
+
       - name: Render site
         run: quarto render website   # use 'website' dir
 
