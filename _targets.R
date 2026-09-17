@@ -321,7 +321,7 @@ list(
   ),
   tar_target(
     lernzmp_aeme, aemetools::get_aeme(id = lake_id,
-                                      api_key = Sys.getenv("LERNZMP_API"))
+                                      api_key = Sys.getenv("LERNZMP_KEY"))
   ),
   
   tar_target(
@@ -331,13 +331,17 @@ list(
   
   tar_target(
     lake_shape, 
-    aemetools::get_lake_shape(id = lake_id, 
-                              api_key = Sys.getenv("LERNZMP_API"))
+    ltapi::lt_fetch(
+      table  = "lernzmp_lakes",
+      filter = ltapi::lt_filter(lernzmp_id == "LID11133")
+    )
   ),
   tar_target(
     depth_contours, 
-    aemetools::get_depth_contours(id = lake_id, 
-                                  api_key = Sys.getenv("LERNZMP_API"))
+    ltapi::lt_fetch(
+      table  = "lake_contours",
+      filter = ltapi::lt_filter(lernzmp_id == "LID11133")
+    )
   ),
   
   tar_target(
@@ -357,12 +361,12 @@ list(
   
   tar_target(
     rotorua_buoy_pro_data, get_lake_wqprofiler(type = "pro",
-                                               api_key = Sys.getenv("LERNZMP_API")), 
+                                               api_key = Sys.getenv("LERNZMP_KEY")), 
     # cue = tar_cue(mode = "always")
   ),
   tar_target(
     rotorua_buoy_met_data, get_lake_wqprofiler(type = "met",
-                                               api_key = Sys.getenv("LERNZMP_API")), 
+                                               api_key = Sys.getenv("LERNZMP_KEY")), 
     # cue = tar_cue(mode = "always")
   ),
   tar_target(
