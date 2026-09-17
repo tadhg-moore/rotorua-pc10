@@ -39,6 +39,7 @@ jobs:
             libglpk-dev \
             libnetcdf-dev \
             libpng-dev \
+            libsecret-1-dev \
             libudunits2-dev \
             libx11-dev \
             pandoc
