@@ -72,7 +72,7 @@ perf <- assess_model(aeme, var_sim = c("HYD_temp","NIT_tn","PHS_tp","PHY_tchla",
 
 ## Overview {#overview}
 
-This page documents the **General Lake Model (GLM)** configuration used for simulating the lake's thermal dynamics, water balance, and nutrient cycling. The model is coupled to the **Aquatic EcoDynamics (AED)** library for biogeochemical processes.
+This page documents the **General Lake Model (GLM `r glm_version`)** configuration used for simulating the lake's thermal dynamics, water balance, and nutrient cycling. The model is coupled to the **Aquatic EcoDynamics (AED)** library for biogeochemical processes.
 
 The [AEME](https://limnotrack.com/AEME/) package was used to retrieve and format lake characteristics, boundary conditions, and monitoring data for model configuration and validation. The `glm4.nml` and `aed.nml` files define the physical and biogeochemical model parameters, respectively, while CSV files provide time series of inflows, meteorological forcing, and phytoplankton parameters.
 

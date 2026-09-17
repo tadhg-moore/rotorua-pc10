@@ -7,13 +7,6 @@ project:
     - "*.qmd"
     # - "!cmip6-processing.qmd"
 execute:
-  # TEMPORARY: fully disables code execution for every page, regardless of
-  # any chunk's own `eval: true` — used to get a render that completes
-  # (and lets the pre-render tar_make() finish and cache) while page
-  # content/model-run correctness is verified in a separate pass. Remove
-  # this line (or set back to leaving it unset / true) once ready to
-  # actually execute the qmd content again.
-  enabled: false
   freeze: auto  # re-render only when source changes
   cache: true
   
