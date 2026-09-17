@@ -783,19 +783,34 @@ list(
   #   gcm_spatial_df, dplyr::bind_rows(gcm_spatial_summary)
   # ),
   
-  tar_target(
-    gcm_ts_summary, {
-      # browser()
-      summarise_gcm_ts(variable = cmip_vars, gcm = cmip_gcm, 
-                       files = cmip6_files)
-    },
-    pattern = cross(cmip_vars, cmip_gcm),
-    iteration = "list", 
-    cue = tar_cue(mode = "never")
-  ),
-  tar_target(
-    gcm_ts_df, dplyr::bind_rows(gcm_ts_summary)
-  ),
+  # gcm_ts_summary takes >1 day locally (summarise_gcm_ts() over every
+  # variable x GCM combination) — far too long for CI. In CI, skip it
+  # entirely and download the already-computed gcm_ts_df from OneDrive
+  # instead (push fresh results up with R/sync_cmip6_onedrive.R after
+  # running tar_make() locally).
+  if (identical(Sys.getenv("CI"), "true")) {
+    tar_target(
+      gcm_ts_df,
+      readRDS(sync_onedrive_file("rotorua-pc10/data/processed/gcm_ts_df.rds",
+                                 here::here("data", "processed", "gcm_ts_df.rds"))),
+      cue = tar_cue(mode = "never")
+    )
+  } else {
+    list(
+      tar_target(
+        gcm_ts_summary, {
+          summarise_gcm_ts(variable = cmip_vars, gcm = cmip_gcm,
+                           files = cmip6_files)
+        },
+        pattern = cross(cmip_vars, cmip_gcm),
+        iteration = "list",
+        cue = tar_cue(mode = "never")
+      ),
+      tar_target(
+        gcm_ts_df, dplyr::bind_rows(gcm_ts_summary)
+      )
+    )
+  },
   
   # Buoy data 
   tar_target(
