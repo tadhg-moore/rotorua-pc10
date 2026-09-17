@@ -1097,7 +1097,8 @@ list(
       )
       out_file
     },
-    pattern = map(cmip_vars),
+    pattern = map(cmip_vars), 
+    deployment = "main",
     format = "file"
   )
   
