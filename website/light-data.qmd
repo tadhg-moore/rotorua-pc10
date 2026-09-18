@@ -31,7 +31,7 @@ library(ggplot2)
 library(patchwork)
 library(AEME)
 source("../R/recommend_light_parameterisation.R")
-source("../R/setup_aeme.R")
+source("../R/setup_base_aeme.R")
 
 # This page is specifically about the climate-scenario Kw choice (see
 # subtitle above), so scenario is a real SSP, not "historical" — ssp245 is
@@ -39,16 +39,7 @@ source("../R/setup_aeme.R")
 # should drive this diagnosis.
 path <- "light_test"
 model <- targets::tar_read(model)
-aeme <- setup_aeme(
-  aeme              = targets::tar_read(aeme_base_hyps),
-  model             = model,
-  path              = path,
-  gcm_point_data_df = targets::tar_read(gcm_point_data_df),
-  gcm               = targets::tar_read(cmip_gcm)[1],
-  scenario          = "ssp245",
-  lake_level        = targets::tar_read(sub_lake_level),
-  sim_periods       = targets::tar_read(sim_periods)
-)
+aeme <- setup_base_aeme(path = path)
 ```
 
 ## Static vs. time-varying Kw: the trade-offs
@@ -159,7 +150,7 @@ When Kd and secchi depth are plotted over time, the **interannual variability do
 
 p1 <- ggplot(light_data, aes(x = Date, y = Kd)) +
   geom_line() +
-  geom_point(aes(colour = par_n)) +
+  geom_point() +
   labs(x = "Date", y = "Kd (m⁻¹)", title = "Observed Kd over time") +
   scale_colour_viridis_c(name = "n PAR meas", option = "plasma") +
   theme_minimal()

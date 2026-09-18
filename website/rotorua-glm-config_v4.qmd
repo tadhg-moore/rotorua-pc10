@@ -21,7 +21,7 @@ library(knitr)
 library(kableExtra)
 
 source("../R/plot_aeme_loads.R")
-source("R/setup_aeme.R")
+source("../R/setup_base_aeme.R")
 
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
@@ -33,17 +33,9 @@ glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
 # should represent the baseline.
 path <- "glm_v4"
 model <- targets::tar_read(model)
-aeme <- setup_aeme(
-  aeme              = targets::tar_read(aeme_base_hyps),
-  model             = model,
-  path              = path,
-  gcm_point_data_df = targets::tar_read(gcm_point_data_df),
-  gcm               = targets::tar_read(cmip_gcm)[1],
-  scenario          = "historical",
-  lake_level        = targets::tar_read(sub_lake_level),
-  sim_periods       = targets::tar_read(sim_periods)
-)
-aeme <- AEME::run_aeme(aeme, model = model, path = path, verbose = TRUE)
+# aeme <- setup_base_aeme(path = path)
+aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
+lake_dir <- AEME::get_lake_dir(aeme)
 
 cfg <- configuration(aeme)
 glm4_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
@@ -54,7 +46,6 @@ phyto_cols <- aed_nml$aed_phytoplankton$the_phytos + 1
 inflows <- get_inflows(aeme)
 inflow_humurana <- inflows[["Hamurana"]]
 
-inp <- input(aeme)
 met <- readr::read_csv("../LID11133_rotorua/glm_aed/bcs/meteo_glm.csv")
 phyto_pars <- AEME::read_aed_param_csv("../LID11133_rotorua/glm_aed/aed/aed_phyto_pars.csv")
 phyto_pars <- phyto_pars[, c(1, phyto_cols)]
@@ -65,7 +56,7 @@ period <- paste0(format(aeme_time$start, "%Y"), "–", format(aeme_time$stop, "%
 
 perf <- assess_model(aeme, var_sim = c("HYD_temp","NIT_tn","PHS_tp","PHY_tchla","LKE_lvlwtr")) |> 
   dplyr::mutate(Period = period) |>
-  dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = r2) |> 
+  dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = rs) |> 
   dplyr::select(Variable, Period, RMSE, Bias, R2, n)
 
 ```

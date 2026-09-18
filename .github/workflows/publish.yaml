@@ -70,14 +70,14 @@ jobs:
         working-directory: website
         run: Rscript scripts/build_data.R
 
-      # - name: Render site
-      #   run: quarto render website   # use 'website' dir
-      # 
-      # - name: Publish to GitHub Pages
-      #   uses: quarto-dev/quarto-actions/publish@v2
-      #   with:
-      #     target: gh-pages
-      #     path: website
-      #     render: false
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Render site
+        run: quarto render website   # use 'website' dir
+
+      - name: Publish to GitHub Pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          path: website
+          render: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

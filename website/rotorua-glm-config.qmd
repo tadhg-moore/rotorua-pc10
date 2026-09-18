@@ -22,6 +22,9 @@ library(kableExtra)
 
 source("../R/plot_aeme_loads.R")
 
+AEME::install_glm_aed(version = "3.3.5")
+options(AEME.glm_exec = AEME::glm_exe_path(version = "3.3.5"))
+
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[3], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[3]))
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
