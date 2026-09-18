@@ -60,7 +60,11 @@ list(
     data_raw_dir,
     sync_onedrive_folder("rotorua-pc10/data/raw", here::here("data", "raw")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    # Always re-sync in CI (a fresh checkout has none of this on disk, and
+    # a restored _targets cache can't be trusted alone — see comment on
+    # aeme_onedrive_rds below); locally, sync once then trust the cache so
+    # repeat renders don't re-download every time.
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
@@ -68,28 +72,32 @@ list(
     sync_onedrive_file("rotorua-pc10/LID11133_rotorua/aeme.rds",
                        here::here("LID11133_rotorua", "aeme_download.rds")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    # Always in CI: a restored _targets cache only tracks the file's
+    # hash/path, not its content — on a fresh checkout the actual file
+    # isn't there yet even if the cache says it's "already downloaded",
+    # so CI must always re-fetch. Locally, sync once then trust the cache.
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
     aeme_onedrive_lake_rotorua_dir,
     sync_onedrive_folder("rotorua-pc10/LakeRotorua", here::here("website", "LakeRotorua")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
     aeme_onedrive_bin_dir,
     sync_onedrive_folder("rotorua-pc10/bin", here::here("website", "bin")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
     aeme_onedrive_r_dir,
     sync_onedrive_folder("rotorua-pc10/R", here::here("website", "R")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   
@@ -99,7 +107,15 @@ list(
     sync_onedrive_file("rotorua-pc10/data/processed/rotorua_lakes_area.rds",
                        here::here("data", "processed", "rotorua_lakes_area.rds")),
     format = "file",
-    cue = tar_cue(mode = "always"),
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
+  tar_target(
+    rotorua_era5_hr_file,
+    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly.csv",
+                       here::here("data", "processed", "rotorua_era5_hourly.csv")),
+    format = "file",
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
