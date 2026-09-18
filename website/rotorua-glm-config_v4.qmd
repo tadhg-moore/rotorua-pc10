@@ -35,6 +35,7 @@ path <- "glm_v4"
 model <- targets::tar_read(model)
 # aeme <- setup_base_aeme(path = path)
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
+aeme <- build_aeme(aeme, path = path)
 lake_dir <- AEME::get_lake_dir(aeme)
 
 cfg <- configuration(aeme)
