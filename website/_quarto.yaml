@@ -70,6 +70,8 @@ website:
           - data-request.qmd
           - cmip6-processing.qmd
           - cmip6-visualisation.qmd
+          - href: climate-scenario-workflow.qmd
+            text: "Climate-Scenario Workflow"
       - section: "Notes"
         contents:
           - href: notes.qmd

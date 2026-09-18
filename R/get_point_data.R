@@ -1,46 +1,67 @@
 KELVIN_VARS <- c("tas", "tasmax", "tasmin")
 
-## metscale::extract_climate_point() returns AEME MET_* column names; map them
-## back to the raw CMIP6 short names (matching `cmip_vars`) used throughout
-## this project.
-.met_to_cmip_var <- c(
-  MET_tmpair = "tas",
-  MET_pprain = "pr",
-  MET_wndspd = "sfcWind",
-  MET_radswd = "rsds",
-  MET_humrel = "hurs",
-  MET_radlwd = "rlds",
-  MET_prsttn = "ps"
-)
+#' Extract a time series for a single point from a single NetCDF file
+#'
+#' @param file   Path to a NetCDF/raster file
+#' @param lat    Latitude (WGS84)
+#' @param lon    Longitude (WGS84)
+#' @param method Extraction method passed to terra::extract (default "simple")
+#'
+#' @return A data.frame with columns: date (Date), value (numeric)
+extract_point_timeseries <- function(file, lat, lon, method = "simple") {
+  if (!file.exists(file)) {
+    stop(paste("File does not exist:", file))
+  }
+  
+  point_sf <- sf::st_as_sf(
+    data.frame(lon = lon, lat = lat),
+    coords = c("lon", "lat"),
+    crs = 4326
+  )
+  
+  r <- terra::rast(file)
+  
+  vals <- terra::extract(r, terra::vect(point_sf), method = method, ID = FALSE) |>
+    unlist()
+  
+  time_vals <- get_nc_time(ncfile = file)
+  
+  if (length(vals) != length(time_vals)) {
+    stop(sprintf(
+      "Length mismatch in '%s': %d values but %d time steps",
+      basename(file), length(vals), length(time_vals)
+    ))
+  }
+  
+  data.frame(
+    date  = time_vals,
+    value = vals
+  )
+}
 
 #' Extract point data across multiple CMIP6 files
-#'
-#' Wraps \code{\link[metscale]{extract_climate_point}} to sample the requested
-#' GCM/scenario files at a point, decode the model calendar, and convert units
-#' (Kelvin to Celsius, precipitation to mm/day).
 #'
 #' @param lat            Latitude (WGS84)
 #' @param lon            Longitude (WGS84)
 #' @param lakename       Lake identifier (passed through to output, unused in extraction)
 #' @param gcm            GCM name to filter on
 #' @param scenario       Scenario to filter on
-#' @param cmip_vars      Character vector of CMIP6 short variable names to include
+#' @param cmip_vars      Character vector of variables to include
 #' @param cmip6_files    Character vector of all available file paths
 #' @param cmip6_metadata Data frame with columns: gcm, scenario, variable, filename
-#' @param method         Extraction method passed to
-#'   \code{metscale::extract_climate_point()}: "bilinear" (default) or "nearest"
+#' @param method         Extraction method passed to terra::extract (default "simple")
 #'
 #' @return A data.frame with columns: date, date_char, value, variable, gcm, scenario
 get_point_data <- function(lat, lon, lakename, gcm, scenario, cmip_vars,
-                           cmip6_files, cmip6_metadata, method = "bilinear") {
+                           cmip6_files, cmip6_metadata, method = "simple") {
 
   sel_files <- cmip6_files[grepl(paste0("_", gcm, "_"), cmip6_files) &
                             grepl(paste0("_", scenario, "_"), cmip6_files) ]
-
+  
   if (length(sel_files) == 0) {
     stop(paste("No files found for GCM:", gcm, "and scenario:", scenario))
   }
-
+  
   missing <- sel_files[!file.exists(sel_files)]
   if (length(missing) > 0) {
     stop(paste(
@@ -48,32 +69,26 @@ get_point_data <- function(lat, lon, lakename, gcm, scenario, cmip_vars,
       paste(basename(missing), collapse = "\n ")
     ))
   }
-
-  wide <- metscale::extract_climate_point(
-    path        = sel_files,
-    lon         = lon,
-    lat         = lat,
-    vars        = cmip_vars,
-    experiments = scenario,
-    method      = method,
-    calendar    = "auto",
-    verbose     = FALSE
-  )
-
-  tidyr::pivot_longer(
-    wide,
-    cols = -c(Date, experiment),
-    names_to = "variable",
-    values_to = "value",
-    values_drop_na = TRUE
-  ) |>
-    dplyr::transmute(
-      date      = Date,
-      date_char = Date,
-      value     = value,
-      variable  = unname(.met_to_cmip_var[variable]),
-      gcm       = gcm,
-      scenario  = scenario
+  
+  lapply(sel_files, function(f) {
+    sel_variable <- strsplit(basename(f), "_")[[1]][1]
+    
+    extract_point_timeseries(file = f, lat = lat, lon = lon, method = method) |>
+      dplyr::mutate(
+        date_char = date,
+        # date_char = format(date, "%Y-%m-%d"),
+        variable  = sel_variable,
+        gcm       = gcm,
+        scenario  = scenario
+      ) |> 
+      dplyr::select(date_char, value, variable, gcm, scenario)
+  }) |>
+    dplyr::bind_rows() |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        variable %in% KELVIN_VARS ~ value - 273.15,
+        TRUE ~ value
+      )
     )
 }
 

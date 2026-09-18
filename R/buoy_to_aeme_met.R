@@ -16,7 +16,7 @@ buoy_to_aeme_met <- function(met, unit = c("day", "hour")) {
         mean(sin(WndDir * pi / 180), na.rm = TRUE)^2 +
           mean(cos(WndDir * pi / 180), na.rm = TRUE)^2
       ),
-      MET_prsttn = mean(PrBaro, na.rm = TRUE),
+      MET_prsttn = mean(PrBaro, na.rm = TRUE) * 100,
       MET_wndspd = mean(WndSpd, na.rm = TRUE),
       MET_humrel = mean(HumRel, na.rm = TRUE),
       MET_radswd = mean(RadSWD, na.rm = TRUE),

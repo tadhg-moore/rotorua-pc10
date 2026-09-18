@@ -35,18 +35,20 @@ tar_source(
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
     here::here("R", "calc_alum_inflow.R"),
-    here::here("R", "sync_aeme_onedrive.R")
+    here::here("R", "sync_aeme_onedrive.R"),
+    here::here("R", "scenario_climate_workflow.R"),
+    here::here("R", "plot_gcm_delta_variability.R")
   )
 )
 # Set target options
 cores <- parallel::detectCores(logical = FALSE) - 1
-workers <- pmin(cores, 5)
+workers <- pmin(cores, 8)
 tar_option_set(
   controller = crew_controller_local(workers = workers), 
   error = "continue", 
   storage = "worker", 
   retrieval = "worker",
-  packages = c("dplyr", "ggplot2", "AEME"), # packages needed in your functions
+  packages = c("dplyr", "ggplot2", "AEME", "metscale"), # packages needed in your functions
   format = "rds" # default storage format
 )
 
@@ -1143,12 +1145,151 @@ list(
       )
       out_file
     },
-    pattern = map(cmip_vars), 
+    pattern = map(cmip_vars),
     deployment = "main",
     format = "file"
+  ),
+
+  # 4c. Climate-scenario meteorology (metscale bias-correction -> delta-change
+  #     -> disaggregation, see vignette("scenario-workflow", package = "metscale")) ----
+
+  #* Reference/future windows for delta-change (matches scenario_batch_rotorua.R) ----
+  tar_target(
+    scenario_ref_years, 1995:2014
+  ),
+  tar_target(
+    scenario_tz, "Etc/GMT-12"
+  ),
+
+  #* 1-2. Bias-correct hourly ERA5 against the buoy; bias-corrected daily baseline ----
+  tar_target(
+    era5_hourly_met,
+    read_era5_hourly_met(rotorua_era5_hr_file, lat = lake_meta$latitude,
+                         lon = lake_meta$longitude, tz = scenario_tz)
+  ),
+  tar_target(
+    era5_bias_correction,
+    metscale::fit_met_bias_correction(
+      era5_hourly_met, rotorua_buoy_met_aeme_hr,
+      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel", "MET_prsttn"),
+      method = "scale", by = "doy-loess", verbose = FALSE)
+  ),
+  tar_target(
+    era5_corrected_hourly,
+    metscale::apply_met_bias_correction(
+      era5_hourly_met, era5_bias_correction, expand = TRUE,
+      lat = lake_meta$latitude, lon = lake_meta$longitude,
+      elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
+  ),
+  tar_target(
+    era5_corrected_daily_baseline, {
+      baseline <- metscale::bias_correct_daily_baseline(
+        era5_hourly_met, era5_bias_correction, lat = lake_meta$latitude,
+        lon = lake_meta$longitude, elev = lake_meta$elevation,
+        tz = scenario_tz, verbose = FALSE)
+      ok <- stats::complete.cases(baseline[c("MET_radswd", "MET_tmpair", "MET_pprain",
+                                             "MET_wndspd", "MET_humrel")])
+      baseline[ok, ]
+    }
+  ),
+
+  #* 3. CMIP6 monthly delta-change factors, every GCM x scenario x window ----
+  # Lightweight point extraction (one GCM's already-cropped netCDFs at a
+  # time) -- unlike gcm_point_data/gcm_point_data_std_df above (raw absolute
+  # GCM values), this is the vignette's delta-change quantity: per-month
+  # future-vs-historical change factors, additive for temperature/shortwave
+  # and multiplicative for the bounded/skewed fields.
+  tar_target(
+    gcm_monthly_deltas,
+    compute_gcm_monthly_deltas(
+      gcm = cmip_gcm, cmip6_files = cmip6_files, lon = lake_meta$longitude,
+      lat = lake_meta$latitude, scenarios = cmip_scenarios,
+      ref_years = scenario_ref_years, future_windows = time_periods),
+    pattern = map(cmip_gcm),
+    iteration = "list"
+  ),
+  tar_target(
+    gcm_monthly_deltas_df, dplyr::bind_rows(gcm_monthly_deltas)
+  ),
+  tar_target(
+    gcm_monthly_deltas_file, {
+      out_file <- here::here("data", "processed", "gcm_monthly_deltas.csv")
+      readr::write_csv(gcm_monthly_deltas_df, file = out_file)
+      out_file
+    },
+    format = "file"
+  ),
+
+  #* GCM-variability figure: spread of monthly deltas across GCMs, per variable ----
+  tar_target(
+    gcm_delta_variability_plot,
+    {
+      out_file <- here::here("website", "www", "plots",
+                             "gcm_delta_variability_2071-2100.png")
+      p <- plot_gcm_delta_variability(gcm_monthly_deltas_df, window = "2071-2100")
+      ggsave(filename = out_file, plot = p, width = 11, height = 7, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    gcm_delta_variability_plot_midcentury,
+    {
+      out_file <- here::here("website", "www", "plots",
+                             "gcm_delta_variability_2041-2070.png")
+      p <- plot_gcm_delta_variability(gcm_monthly_deltas_df, window = "2041-2070")
+      ggsave(filename = out_file, plot = p, width = 11, height = 7, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+
+  #* 4. Delta-changed daily baseline + hourly disaggregation, per GCM x
+  #     scenario x window -- 7 GCM x 4 SSP x 3 windows (minus NZESM/ssp585)
+  #     = 83 combinations, each disaggregating ~20-30 years to hourly. Follows
+  #     the same "expensive, skip by default" convention as gcm_ts_summary /
+  #     tutira_cmip6_files above: set cue = tar_cue(mode = "always") locally
+  #     (or tar_make(names = "scenario_hourly_met")) to actually run it.
+  tar_target(
+    scenario_delta_grid, {
+      tidyr::crossing(gcm = cmip_gcm, scenario = cmip_scenarios,
+                      window = names(time_periods)) |>
+        dplyr::filter(!(scenario == "ssp585" & gcm == "NZESM"))
+    }
+  ),
+  tar_target(
+    scenario_daily_met, {
+      deltas <- gcm_monthly_deltas_df |>
+        dplyr::filter(gcm == scenario_delta_grid$gcm,
+                      scenario == scenario_delta_grid$scenario,
+                      window == scenario_delta_grid$window)
+      apply_gcm_delta_to_baseline(era5_corrected_daily_baseline, deltas,
+                                  lat = lake_meta$latitude,
+                                  lon = lake_meta$longitude,
+                                  elev = lake_meta$elevation, tz = scenario_tz)
+    },
+    pattern = map(scenario_delta_grid),
+    iteration = "list",
+    cue = tar_cue(mode = "never")
+  ),
+  tar_target(
+    scenario_hourly_met, {
+      metscale::disaggregate_met_to_hourly(
+        scenario_daily_met, donor = era5_corrected_hourly,
+        method = "fragments", swr = "clearsky", lat = lake_meta$latitude,
+        lon = lake_meta$longitude, elev = lake_meta$elevation, tz = scenario_tz,
+        seed = 42, expand = TRUE, verbose = FALSE)
+    },
+    pattern = map(scenario_daily_met),
+    iteration = "list",
+    cue = tar_cue(mode = "never")
   )
-  
-  
+
+
   # 6. Reporting / Quarto rendering
-  
+
 )

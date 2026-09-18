@@ -1,0 +1,198 @@
+---
+title: "Climate-Scenario Meteorology Workflow"
+format: html
+editor: visual
+warning: false
+message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+library(targets)
+library(dplyr)
+library(ggplot2)
+```
+
+[`cmip6-processing.qmd`](cmip6-processing.qmd) and [`cmip6-visualisation.qmd`](cmip6-visualisation.qmd)
+extract and plot the **raw, absolute** CMIP6/CCAM values at the lake point
+(`gcm_point_data_df`). Raw GCM output is not suitable for directly driving a
+sub-daily lake model: it carries its own absolute-level biases (mean offset,
+distorted seasonal cycle, wrong wind climatology) that would land straight in
+simulated stratification, ice and evaporation, and it is daily on a coarse
+grid with no sub-daily information.
+
+This page instead builds the meteorological forcing the lake model actually
+uses, following the `metscale` package's **bias-correct → delta-change →
+disaggregate** workflow (`vignette("scenario-workflow", package = "metscale")`,
+`vignette("climate-extremes")` for storm/heatwave-focused alternatives):
+
+1. **Bias-correct** hourly ERA5-Land against the buoy record.
+2. Apply each GCM/scenario's **monthly delta-change** signal to the
+   *corrected* baseline (never to the raw reanalysis, and never to the delta
+   itself).
+3. **Disaggregate** the projected daily series back to hourly.
+
+The corrected reanalysis carries real weather --- genuine day-to-day
+persistence, event structure and a real diurnal cycle, all on actual
+calendar dates. Warping it with a model's own future-vs-historical *change*
+(which is far more reliable than the model's absolute output) keeps that
+physical realism while shifting its statistics onto each scenario. See the
+vignette for the full reasoning and the calendar-handling details
+(`NorESM2-MM` runs a `365_day` calendar, `NZESM` a `360_day` calendar --
+`metscale::climate_point_monthly_climatology()` decodes each correctly
+before averaging).
+
+These steps are wired into `_targets.R` as `era5_hourly_met` →
+`era5_bias_correction` → `era5_corrected_hourly` /
+`era5_corrected_daily_baseline` → `gcm_monthly_deltas_df` →
+`scenario_daily_met` → `scenario_hourly_met`, added alongside (not
+replacing) the existing raw `gcm_point_data*` targets.
+
+## 1. Bias-correcting ERA5 against the buoy
+
+```{r}
+#| label: era5-bias-correction
+#| echo: false
+
+bc <- tar_read(era5_bias_correction)
+bc$skill |>
+  filter(stage %in% c("cv_raw", "cv_corrected")) |>
+  mutate(kind = ifelse(grepl("raw", stage), "raw ERA5", "bias-corrected")) |>
+  select(variable, kind, n, bias, mae, rmse, r) |>
+  knitr::kable(digits = 3,
+              caption = "Leave-one-year-out cross-validated skill, hourly ERA5-Land vs. the Rotorua buoy (2011-2026 ERA5-Land record; buoy overlap 2022-2026).")
+```
+
+Air temperature, wind speed, shortwave radiation and relative humidity all
+improve out-of-sample after the monthly `scale` correction (day-of-year
+loess-smoothed offset). **Station pressure (`MET_prsttn`) is a known data
+issue, not yet resolved**: the raw bias between ERA5 (Pa) and the buoy's
+`PrBaro` field is ~96 kPa, an order of magnitude larger than the ~3 kPa
+elevation-offset effect the `metscale` vignette describes for its own site
+-- this looks like a unit mismatch in `buoy_to_aeme_met()` (`PrBaro` likely
+arrives in hPa, not Pa) rather than a real atmospheric difference, and
+should be checked before `MET_prsttn` from this workflow is trusted.
+Rainfall is intentionally left uncorrected (a lake buoy under-catches rain,
+so its totals are not a good bias-correction target); ERA5's own
+precipitation is carried through, as in the vignette.
+
+## 2. Bias-corrected daily baseline
+
+```{r}
+#| label: baseline-summary
+#| echo: false
+
+baseline <- tar_read(era5_corrected_daily_baseline)
+cat(nrow(baseline), "usable days,", format(range(baseline$Date)[1]), "to",
+   format(range(baseline$Date)[2]))
+```
+
+This corrected daily series is what every GCM/scenario's delta-change signal
+is added to in step 3, and the corrected *hourly* series (`era5_corrected_hourly`)
+is the donor for the within-day shape borrowed in step 4.
+
+## 3. CMIP6 monthly delta-change factors, and inter-GCM variability
+
+For each of the 7 downscaled GCMs (`ACCESS-CM2`, `AWI-CM-1-1-MR`,
+`CNRM-CM6-1`, `EC-Earth3`, `GFDL-ESM4`, `NZESM`, `NorESM2-MM`) and each SSP
+(`ssp126`/`ssp245`/`ssp370`/`ssp585`, `NZESM` has no `ssp585` run),
+`compute_gcm_monthly_deltas()` reads that GCM's own already-cropped netCDFs
+directly at the lake point and computes a monthly change factor --
+**additive** for temperature and shortwave, **multiplicative (ratio)** for
+the bounded/skewed fields (rainfall, wind, humidity) -- for three future
+windows against a 1995-2014 historical reference.
+
+The dominant source of uncertainty in this workflow, once the downscaling
+chain and delta-change method are fixed, is *which GCM* drives the
+projection. The figure below makes that spread explicit for the
+end-of-century window:
+
+![Inter-GCM spread in monthly delta-change factors, 2071-2100. Thin lines are individual GCMs, the shaded band spans the GCM min-max range, and the thick line is the GCM mean, for each SSP.](www/plots/gcm_delta_variability_2071-2100.png)
+
+The spread is not uniform across variables. Annual-mean warming under
+`ssp585` ranges from **+2.8 °C (`NorESM2-MM`) to +4.6 °C (`ACCESS-CM2`)** by
+2071-2100 -- a ~1.8 °C spread from GCM choice alone, on top of the ~3.5 °C
+spread already visible between the lowest (`ssp126`) and highest (`ssp585`)
+emissions pathway. Shortwave and rainfall change factors span, and in some
+months straddle, both sides of no-change (ratio = 1 / delta = 0) across the
+GCM ensemble, meaning some models project a *drier* or *cloudier* Rotorua
+in a given month under the same scenario that others project the opposite
+sign for. Wind and humidity changes are comparatively modest and more
+consistent in sign across GCMs. The mid-century window shows the same
+pattern at reduced magnitude:
+
+![Inter-GCM spread in monthly delta-change factors, 2041-2070.](www/plots/gcm_delta_variability_2041-2070.png)
+
+**Practical implication for lake modelling:** a single-GCM projection (as
+the previous `scenario_batch_rotorua.R` operational script and the
+`metscale` vignette both use, `NorESM2-MM`) understates the true range of
+plausible future forcing -- it sits toward the *low* end of the warming
+spread shown here. Any lake-response conclusion sensitive to warming
+magnitude (stratification strength/duration, hypolimnetic anoxia onset)
+should be checked against more than one GCM, not just the emissions
+scenario.
+
+## 4. Delta-changed baseline and hourly disaggregation
+
+`scenario_daily_met` applies each GCM/scenario/window's monthly deltas to
+the corrected daily baseline (`apply_gcm_delta_to_baseline()`), and
+`scenario_hourly_met` disaggregates the result to hourly with
+`metscale::disaggregate_met_to_hourly()`, borrowing the within-day shape of
+`era5_corrected_hourly` (method of fragments) and reconstructing shortwave
+from clear-sky solar geometry -- identical to steps 3-4 of
+`vignette("scenario-workflow")`, just run once per combination of
+`scenario_delta_grid` (7 GCM × 4 SSP × 3 windows, minus `NZESM`/`ssp585` =
+83 combinations).
+
+That is enough runs (each disaggregating 20-30 years to hourly) that, like
+`gcm_ts_summary` and `tutira_cmip6_files` elsewhere in this pipeline, both
+targets are gated with `cue = tar_cue(mode = "never")` so a routine
+`tar_make()` does not trigger them. Build them explicitly with:
+
+```r
+targets::tar_make(names = c("scenario_daily_met", "scenario_hourly_met"))
+```
+
+or invalidate just the combinations that changed with `tar_invalidate()` /
+`tar_cue(mode = "always")` per branch.
+
+## How this feeds into the lake model
+
+`scenario_hourly_met` is the AEME `MET_*`-formatted hourly forcing GLM-AED
+needs for a climate-scenario simulation, one branch per GCM/scenario/window
+combination. The intended path from here into a model run is:
+
+1. `AEME::add_met(aeme, met = scenario_hourly_met[[i]])` for the branch of
+   interest, in place of the placeholder `gcm_point_data_std_df`-based
+   forcing in the commented-out `aeme_sims` target.
+2. `AEME::set_time()` with the corresponding `sim_periods$ssp` window
+   (10-year spin-up, matching the existing convention for historical runs).
+3. `AEME::build_aeme()` / `AEME::run_aeme()` as for the calibration runs in
+   `aeme_glm4`.
+
+Because `scenario_delta_grid` already carries `gcm`, `scenario` and `window`
+as columns, the same `pattern = map(scenario_delta_grid)` branching used to
+build `scenario_hourly_met` extends directly to a per-combination
+`AEME::run_aeme()` target once the model-build step above is wired in --
+each of the 83 branches becomes one lake simulation, and the GCM-variability
+figure above is then the basis for interpreting how much of the *simulated*
+spread across those 83 runs is driven by meteorological forcing choice
+(GCM), scenario, or window, versus lake-model internal dynamics.
+
+## Caveats
+
+Both the bias-correction and the delta-change step assume **stationarity**
+-- a transfer function fitted on the ERA5/buoy overlap period is asserted to
+hold under a future climate, and the `scale` method used here rescales the
+*observed* daily sequence rather than reshaping its day-to-day variability
+(see `?metscale::scenario_workflow`). The buoy overlap (2022-2026) is short
+relative to the vignette's recommendation of a long reanalysis record and
+20-year climate windows; the ERA5-only record (2011-2026) is longer and
+used for the daily baseline and hourly donor, but the *fit* of the bias
+correction itself is necessarily anchored to the shorter buoy overlap.
+Treat the across-scenario spread as a lower bound on total uncertainty, and
+fix the `MET_prsttn` unit issue noted in step 1 before using corrected
+station pressure downstream.
