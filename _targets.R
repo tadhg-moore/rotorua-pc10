@@ -1248,6 +1248,35 @@ list(
     deployment = "main"
   ),
 
+  #* GCM-consensus figure: box-and-whisker of each GCM's 12 monthly deltas,
+  #  to distinguish agreement between models from within-model seasonality ----
+  tar_target(
+    gcm_delta_boxplot,
+    {
+      out_file <- here::here("website", "www", "plots",
+                             "gcm_delta_boxplot_2071-2100.png")
+      p <- plot_gcm_delta_boxplot(gcm_monthly_deltas_df, window = "2071-2100")
+      ggsave(filename = out_file, plot = p, width = 11, height = 7, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    gcm_delta_boxplot_midcentury,
+    {
+      out_file <- here::here("website", "www", "plots",
+                             "gcm_delta_boxplot_2041-2070.png")
+      p <- plot_gcm_delta_boxplot(gcm_monthly_deltas_df, window = "2041-2070")
+      ggsave(filename = out_file, plot = p, width = 11, height = 7, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+
   #* 4. Delta-changed daily baseline + hourly disaggregation, per GCM x
   #     scenario x window -- 7 GCM x 4 SSP x 3 windows (minus NZESM/ssp585)
   #     = 83 combinations, each disaggregating ~20-30 years to hourly. Follows
