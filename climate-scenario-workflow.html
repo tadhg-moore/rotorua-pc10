@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Climate-Scenario Meteorology Workflow – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1c0535d037eb8813b585731018da8aa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Tasks</a></li><li class="breadcrumb-item"><a href="./climate-scenario-workflow.html">Climate-Scenario Workflow</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm_aed_alum_stress_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#bias-correcting-era5-against-the-buoy" id="toc-bias-correcting-era5-against-the-buoy" class="nav-link active" data-scroll-target="#bias-correcting-era5-against-the-buoy">1. Bias-correcting ERA5 against the buoy</a></li>
+  <li><a href="#bias-corrected-daily-baseline" id="toc-bias-corrected-daily-baseline" class="nav-link" data-scroll-target="#bias-corrected-daily-baseline">2. Bias-corrected daily baseline</a></li>
+  <li><a href="#cmip6-monthly-delta-change-factors-and-inter-gcm-variability" id="toc-cmip6-monthly-delta-change-factors-and-inter-gcm-variability" class="nav-link" data-scroll-target="#cmip6-monthly-delta-change-factors-and-inter-gcm-variability">3. CMIP6 monthly delta-change factors, and inter-GCM variability</a></li>
+  <li><a href="#delta-changed-baseline-and-hourly-disaggregation" id="toc-delta-changed-baseline-and-hourly-disaggregation" class="nav-link" data-scroll-target="#delta-changed-baseline-and-hourly-disaggregation">4. Delta-changed baseline and hourly disaggregation</a></li>
+  <li><a href="#how-this-feeds-into-the-lake-model" id="toc-how-this-feeds-into-the-lake-model" class="nav-link" data-scroll-target="#how-this-feeds-into-the-lake-model">How this feeds into the lake model</a></li>
+  <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats">Caveats</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Tasks</a></li><li class="breadcrumb-item"><a href="./climate-scenario-workflow.html">Climate-Scenario Workflow</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Climate-Scenario Meteorology Workflow</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="./cmip6-processing.html"><code>cmip6-processing.qmd</code></a> and <a href="./cmip6-visualisation.html"><code>cmip6-visualisation.qmd</code></a> extract and plot the <strong>raw, absolute</strong> CMIP6/CCAM values at the lake point (<code>gcm_point_data_df</code>). Raw GCM output is not suitable for directly driving a sub-daily lake model: it carries its own absolute-level biases (mean offset, distorted seasonal cycle, wrong wind climatology) that would land straight in simulated stratification, ice and evaporation, and it is daily on a coarse grid with no sub-daily information.</p>
+<p>This page instead builds the meteorological forcing the lake model actually uses, following the <code>metscale</code> package’s <strong>bias-correct → delta-change → disaggregate</strong> workflow (<code>vignette("scenario-workflow", package = "metscale")</code>, <code>vignette("climate-extremes")</code> for storm/heatwave-focused alternatives):</p>
+<ol type="1">
+<li><strong>Bias-correct</strong> hourly ERA5-Land against the buoy record.</li>
+<li>Apply each GCM/scenario’s <strong>monthly delta-change</strong> signal to the <em>corrected</em> baseline (never to the raw reanalysis, and never to the delta itself).</li>
+<li><strong>Disaggregate</strong> the projected daily series back to hourly.</li>
+</ol>
+<p>The corrected reanalysis carries real weather — genuine day-to-day persistence, event structure and a real diurnal cycle, all on actual calendar dates. Warping it with a model’s own future-vs-historical <em>change</em> (which is far more reliable than the model’s absolute output) keeps that physical realism while shifting its statistics onto each scenario. See the vignette for the full reasoning and the calendar-handling details (<code>NorESM2-MM</code> runs a <code>365_day</code> calendar, <code>NZESM</code> a <code>360_day</code> calendar – <code>metscale::climate_point_monthly_climatology()</code> decodes each correctly before averaging).</p>
+<p>These steps are wired into <code>_targets.R</code> as <code>era5_hourly_met</code> → <code>era5_bias_correction</code> → <code>era5_corrected_hourly</code> / <code>era5_corrected_daily_baseline</code> → <code>gcm_monthly_deltas_df</code> → <code>scenario_daily_met</code> → <code>scenario_hourly_met</code>, added alongside (not replacing) the existing raw <code>gcm_point_data*</code> targets.</p>
+<section id="bias-correcting-era5-against-the-buoy" class="level2">
+<h2 class="anchored" data-anchor-id="bias-correcting-era5-against-the-buoy">1. Bias-correcting ERA5 against the buoy</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Leave-one-year-out cross-validated skill, hourly ERA5-Land vs.&nbsp;the Rotorua buoy (2011-2026 ERA5-Land record; buoy overlap 2022-2026).</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: left;">kind</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">bias</th>
+<th style="text-align: right;">mae</th>
+<th style="text-align: right;">rmse</th>
+<th style="text-align: right;">r</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">MET_tmpair</td>
+<td style="text-align: left;">raw ERA5</td>
+<td style="text-align: right;">32487</td>
+<td style="text-align: right;">-1.555</td>
+<td style="text-align: right;">1.732</td>
+<td style="text-align: right;">1.994</td>
+<td style="text-align: right;">0.959</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MET_tmpair</td>
+<td style="text-align: left;">bias-corrected</td>
+<td style="text-align: right;">32487</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.994</td>
+<td style="text-align: right;">1.249</td>
+<td style="text-align: right;">0.958</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MET_wndspd</td>
+<td style="text-align: left;">raw ERA5</td>
+<td style="text-align: right;">32472</td>
+<td style="text-align: right;">-4.066</td>
+<td style="text-align: right;">4.136</td>
+<td style="text-align: right;">5.400</td>
+<td style="text-align: right;">0.627</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MET_wndspd</td>
+<td style="text-align: left;">bias-corrected</td>
+<td style="text-align: right;">32472</td>
+<td style="text-align: right;">-0.019</td>
+<td style="text-align: right;">3.054</td>
+<td style="text-align: right;">3.872</td>
+<td style="text-align: right;">0.502</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MET_radswd</td>
+<td style="text-align: left;">raw ERA5</td>
+<td style="text-align: right;">30033</td>
+<td style="text-align: right;">9.049</td>
+<td style="text-align: right;">57.007</td>
+<td style="text-align: right;">105.424</td>
+<td style="text-align: right;">0.910</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MET_radswd</td>
+<td style="text-align: left;">bias-corrected</td>
+<td style="text-align: right;">30033</td>
+<td style="text-align: right;">-0.954</td>
+<td style="text-align: right;">55.070</td>
+<td style="text-align: right;">103.021</td>
+<td style="text-align: right;">0.911</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MET_humrel</td>
+<td style="text-align: left;">raw ERA5</td>
+<td style="text-align: right;">31559</td>
+<td style="text-align: right;">6.908</td>
+<td style="text-align: right;">9.478</td>
+<td style="text-align: right;">12.229</td>
+<td style="text-align: right;">0.735</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MET_humrel</td>
+<td style="text-align: left;">bias-corrected</td>
+<td style="text-align: right;">31559</td>
+<td style="text-align: right;">-0.054</td>
+<td style="text-align: right;">8.431</td>
+<td style="text-align: right;">10.943</td>
+<td style="text-align: right;">0.688</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MET_prsttn</td>
+<td style="text-align: left;">raw ERA5</td>
+<td style="text-align: right;">32487</td>
+<td style="text-align: right;">-1102.993</td>
+<td style="text-align: right;">1102.993</td>
+<td style="text-align: right;">1104.610</td>
+<td style="text-align: right;">0.997</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MET_prsttn</td>
+<td style="text-align: left;">bias-corrected</td>
+<td style="text-align: right;">32487</td>
+<td style="text-align: right;">-0.046</td>
+<td style="text-align: right;">53.790</td>
+<td style="text-align: right;">70.888</td>
+<td style="text-align: right;">0.996</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Air temperature, wind speed, shortwave radiation and relative humidity all improve out-of-sample after the monthly <code>scale</code> correction (day-of-year loess-smoothed offset). <strong>Station pressure (<code>MET_prsttn</code>) is a known data issue, not yet resolved</strong>: the raw bias between ERA5 (Pa) and the buoy’s <code>PrBaro</code> field is ~96 kPa, an order of magnitude larger than the ~3 kPa elevation-offset effect the <code>metscale</code> vignette describes for its own site – this looks like a unit mismatch in <code>buoy_to_aeme_met()</code> (<code>PrBaro</code> likely arrives in hPa, not Pa) rather than a real atmospheric difference, and should be checked before <code>MET_prsttn</code> from this workflow is trusted. Rainfall is intentionally left uncorrected (a lake buoy under-catches rain, so its totals are not a good bias-correction target); ERA5’s own precipitation is carried through, as in the vignette.</p>
+</section>
+<section id="bias-corrected-daily-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="bias-corrected-daily-baseline">2. Bias-corrected daily baseline</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>5479 usable days, 2011-01-02 to 2026-01-01</code></pre>
+</div>
+</div>
+<p>This corrected daily series is what every GCM/scenario’s delta-change signal is added to in step 3, and the corrected <em>hourly</em> series (<code>era5_corrected_hourly</code>) is the donor for the within-day shape borrowed in step 4.</p>
+</section>
+<section id="cmip6-monthly-delta-change-factors-and-inter-gcm-variability" class="level2">
+<h2 class="anchored" data-anchor-id="cmip6-monthly-delta-change-factors-and-inter-gcm-variability">3. CMIP6 monthly delta-change factors, and inter-GCM variability</h2>
+<p>For each of the 7 downscaled GCMs (<code>ACCESS-CM2</code>, <code>AWI-CM-1-1-MR</code>, <code>CNRM-CM6-1</code>, <code>EC-Earth3</code>, <code>GFDL-ESM4</code>, <code>NZESM</code>, <code>NorESM2-MM</code>) and each SSP (<code>ssp126</code>/<code>ssp245</code>/<code>ssp370</code>/<code>ssp585</code>, <code>NZESM</code> has no <code>ssp585</code> run), <code>compute_gcm_monthly_deltas()</code> reads that GCM’s own already-cropped netCDFs directly at the lake point and computes a monthly change factor – <strong>additive</strong> for temperature and shortwave, <strong>multiplicative (ratio)</strong> for the bounded/skewed fields (rainfall, wind, humidity) – for three future windows against a 1995-2014 historical reference.</p>
+<p>The dominant source of uncertainty in this workflow, once the downscaling chain and delta-change method are fixed, is <em>which GCM</em> drives the projection. The figure below makes that spread explicit for the end-of-century window:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="www/plots/gcm_delta_variability_2071-2100.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Inter-GCM spread in monthly delta-change factors, 2071-2100. Thin lines are individual GCMs, the shaded band spans the GCM min-max range, and the thick line is the GCM mean, for each SSP."><img src="www/plots/gcm_delta_variability_2071-2100.png" class="img-fluid figure-img" alt="Inter-GCM spread in monthly delta-change factors, 2071-2100. Thin lines are individual GCMs, the shaded band spans the GCM min-max range, and the thick line is the GCM mean, for each SSP."></a></p>
+<figcaption>Inter-GCM spread in monthly delta-change factors, 2071-2100. Thin lines are individual GCMs, the shaded band spans the GCM min-max range, and the thick line is the GCM mean, for each SSP.</figcaption>
+</figure>
+</div>
+<p>The spread is not uniform across variables. Annual-mean warming under <code>ssp585</code> ranges from <strong>+2.8 °C (<code>NorESM2-MM</code>) to +4.6 °C (<code>ACCESS-CM2</code>)</strong> by 2071-2100 – a ~1.8 °C spread from GCM choice alone, on top of the ~3.5 °C spread already visible between the lowest (<code>ssp126</code>) and highest (<code>ssp585</code>) emissions pathway. Shortwave and rainfall change factors span, and in some months straddle, both sides of no-change (ratio = 1 / delta = 0) across the GCM ensemble, meaning some models project a <em>drier</em> or <em>cloudier</em> Rotorua in a given month under the same scenario that others project the opposite sign for. Wind and humidity changes are comparatively modest and more consistent in sign across GCMs. The mid-century window shows the same pattern at reduced magnitude:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="www/plots/gcm_delta_variability_2041-2070.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Inter-GCM spread in monthly delta-change factors, 2041-2070."><img src="www/plots/gcm_delta_variability_2041-2070.png" class="img-fluid figure-img" alt="Inter-GCM spread in monthly delta-change factors, 2041-2070."></a></p>
+<figcaption>Inter-GCM spread in monthly delta-change factors, 2041-2070.</figcaption>
+</figure>
+</div>
+<p><strong>Practical implication for lake modelling:</strong> a single-GCM projection (as the previous <code>scenario_batch_rotorua.R</code> operational script and the <code>metscale</code> vignette both use, <code>NorESM2-MM</code>) understates the true range of plausible future forcing – it sits toward the <em>low</em> end of the warming spread shown here. Any lake-response conclusion sensitive to warming magnitude (stratification strength/duration, hypolimnetic anoxia onset) should be checked against more than one GCM, not just the emissions scenario.</p>
+</section>
+<section id="delta-changed-baseline-and-hourly-disaggregation" class="level2">
+<h2 class="anchored" data-anchor-id="delta-changed-baseline-and-hourly-disaggregation">4. Delta-changed baseline and hourly disaggregation</h2>
+<p><code>scenario_daily_met</code> applies each GCM/scenario/window’s monthly deltas to the corrected daily baseline (<code>apply_gcm_delta_to_baseline()</code>), and <code>scenario_hourly_met</code> disaggregates the result to hourly with <code>metscale::disaggregate_met_to_hourly()</code>, borrowing the within-day shape of <code>era5_corrected_hourly</code> (method of fragments) and reconstructing shortwave from clear-sky solar geometry – identical to steps 3-4 of <code>vignette("scenario-workflow")</code>, just run once per combination of <code>scenario_delta_grid</code> (7 GCM × 4 SSP × 3 windows, minus <code>NZESM</code>/<code>ssp585</code> = 83 combinations).</p>
+<p>That is enough runs (each disaggregating 20-30 years to hourly) that, like <code>gcm_ts_summary</code> and <code>tutira_cmip6_files</code> elsewhere in this pipeline, both targets are gated with <code>cue = tar_cue(mode = "never")</code> so a routine <code>tar_make()</code> does not trigger them. Build them explicitly with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_make</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"scenario_daily_met"</span>, <span class="st">"scenario_hourly_met"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>or invalidate just the combinations that changed with <code>tar_invalidate()</code> / <code>tar_cue(mode = "always")</code> per branch.</p>
+</section>
+<section id="how-this-feeds-into-the-lake-model" class="level2">
+<h2 class="anchored" data-anchor-id="how-this-feeds-into-the-lake-model">How this feeds into the lake model</h2>
+<p><code>scenario_hourly_met</code> is the AEME <code>MET_*</code>-formatted hourly forcing GLM-AED needs for a climate-scenario simulation, one branch per GCM/scenario/window combination. The intended path from here into a model run is:</p>
+<ol type="1">
+<li><code>AEME::add_met(aeme, met = scenario_hourly_met[[i]])</code> for the branch of interest, in place of the placeholder <code>gcm_point_data_std_df</code>-based forcing in the commented-out <code>aeme_sims</code> target.</li>
+<li><code>AEME::set_time()</code> with the corresponding <code>sim_periods$ssp</code> window (10-year spin-up, matching the existing convention for historical runs).</li>
+<li><code>AEME::build_aeme()</code> / <code>AEME::run_aeme()</code> as for the calibration runs in <code>aeme_glm4</code>.</li>
+</ol>
+<p>Because <code>scenario_delta_grid</code> already carries <code>gcm</code>, <code>scenario</code> and <code>window</code> as columns, the same <code>pattern = map(scenario_delta_grid)</code> branching used to build <code>scenario_hourly_met</code> extends directly to a per-combination <code>AEME::run_aeme()</code> target once the model-build step above is wired in – each of the 83 branches becomes one lake simulation, and the GCM-variability figure above is then the basis for interpreting how much of the <em>simulated</em> spread across those 83 runs is driven by meteorological forcing choice (GCM), scenario, or window, versus lake-model internal dynamics.</p>
+</section>
+<section id="caveats" class="level2">
+<h2 class="anchored" data-anchor-id="caveats">Caveats</h2>
+<p>Both the bias-correction and the delta-change step assume <strong>stationarity</strong> – a transfer function fitted on the ERA5/buoy overlap period is asserted to hold under a future climate, and the <code>scale</code> method used here rescales the <em>observed</em> daily sequence rather than reshaping its day-to-day variability (see <code>?metscale::scenario_workflow</code>). The buoy overlap (2022-2026) is short relative to the vignette’s recommendation of a long reanalysis record and 20-year climate windows; the ERA5-only record (2011-2026) is longer and used for the daily baseline and hourly donor, but the <em>fit</em> of the bias correction itself is necessarily anchored to the shorter buoy overlap. Treat the across-scenario spread as a lower bound on total uncertainty, and fix the <code>MET_prsttn</code> unit issue noted in step 1 before using corrected station pressure downstream.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Climate-Scenario Meteorology Workflow"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">warning:</span><span class="co"> false</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="an">message:</span><span class="co"> false</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">`cmip6-processing.qmd`</span><span class="co">](cmip6-processing.qmd)</span> and <span class="co">[</span><span class="ot">`cmip6-visualisation.qmd`</span><span class="co">](cmip6-visualisation.qmd)</span> extract and plot the **raw, absolute** CMIP6/CCAM values at the lake point (<span class="in">`gcm_point_data_df`</span>). Raw GCM output is not suitable for directly driving a sub-daily lake model: it carries its own absolute-level biases (mean offset, distorted seasonal cycle, wrong wind climatology) that would land straight in simulated stratification, ice and evaporation, and it is daily on a coarse grid with no sub-daily information.</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>This page instead builds the meteorological forcing the lake model actually uses, following the <span class="in">`metscale`</span> package's **bias-correct → delta-change → disaggregate** workflow (<span class="in">`vignette("scenario-workflow", package = "metscale")`</span>, <span class="in">`vignette("climate-extremes")`</span> for storm/heatwave-focused alternatives):</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Bias-correct** hourly ERA5-Land against the buoy record.</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Apply each GCM/scenario's **monthly delta-change** signal to the *corrected* baseline (never to the raw reanalysis, and never to the delta itself).</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Disaggregate** the projected daily series back to hourly.</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>The corrected reanalysis carries real weather --- genuine day-to-day persistence, event structure and a real diurnal cycle, all on actual calendar dates. Warping it with a model's own future-vs-historical *change* (which is far more reliable than the model's absolute output) keeps that physical realism while shifting its statistics onto each scenario. See the vignette for the full reasoning and the calendar-handling details (<span class="in">`NorESM2-MM`</span> runs a <span class="in">`365_day`</span> calendar, <span class="in">`NZESM`</span> a <span class="in">`360_day`</span> calendar -- <span class="in">`metscale::climate_point_monthly_climatology()`</span> decodes each correctly before averaging).</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>These steps are wired into <span class="in">`_targets.R`</span> as <span class="in">`era5_hourly_met`</span> → <span class="in">`era5_bias_correction`</span> → <span class="in">`era5_corrected_hourly`</span> / <span class="in">`era5_corrected_daily_baseline`</span> → <span class="in">`gcm_monthly_deltas_df`</span> → <span class="in">`scenario_daily_met`</span> → <span class="in">`scenario_hourly_met`</span>, added alongside (not replacing) the existing raw <span class="in">`gcm_point_data*`</span> targets.</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Bias-correcting ERA5 against the buoy</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: era5-bias-correction</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>bc <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(era5_bias_correction)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>bc<span class="sc">$</span>skill <span class="sc">|&gt;</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(stage <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"cv_raw"</span>, <span class="st">"cv_corrected"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">kind =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"raw"</span>, stage), <span class="st">"raw ERA5"</span>, <span class="st">"bias-corrected"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable, kind, n, bias, mae, rmse, r) <span class="sc">|&gt;</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>              <span class="at">caption =</span> <span class="st">"Leave-one-year-out cross-validated skill, hourly ERA5-Land vs. the Rotorua buoy (2011-2026 ERA5-Land record; buoy overlap 2022-2026)."</span>)</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>Air temperature, wind speed, shortwave radiation and relative humidity all improve out-of-sample after the monthly <span class="in">`scale`</span> correction (day-of-year loess-smoothed offset). **Station pressure (`MET_prsttn`) is a known data issue, not yet resolved**: the raw bias between ERA5 (Pa) and the buoy's <span class="in">`PrBaro`</span> field is \~96 kPa, an order of magnitude larger than the \~3 kPa elevation-offset effect the <span class="in">`metscale`</span> vignette describes for its own site -- this looks like a unit mismatch in <span class="in">`buoy_to_aeme_met()`</span> (<span class="in">`PrBaro`</span> likely arrives in hPa, not Pa) rather than a real atmospheric difference, and should be checked before <span class="in">`MET_prsttn`</span> from this workflow is trusted. Rainfall is intentionally left uncorrected (a lake buoy under-catches rain, so its totals are not a good bias-correction target); ERA5's own precipitation is carried through, as in the vignette.</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Bias-corrected daily baseline</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: baseline-summary</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(era5_corrected_daily_baseline)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">nrow</span>(baseline), <span class="st">"usable days,"</span>, <span class="fu">format</span>(<span class="fu">range</span>(baseline<span class="sc">$</span>Date)[<span class="dv">1</span>]), <span class="st">"to"</span>,</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>   <span class="fu">format</span>(<span class="fu">range</span>(baseline<span class="sc">$</span>Date)[<span class="dv">2</span>]))</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>This corrected daily series is what every GCM/scenario's delta-change signal is added to in step 3, and the corrected *hourly* series (<span class="in">`era5_corrected_hourly`</span>) is the donor for the within-day shape borrowed in step 4.</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. CMIP6 monthly delta-change factors, and inter-GCM variability</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>For each of the 7 downscaled GCMs (<span class="in">`ACCESS-CM2`</span>, <span class="in">`AWI-CM-1-1-MR`</span>, <span class="in">`CNRM-CM6-1`</span>, <span class="in">`EC-Earth3`</span>, <span class="in">`GFDL-ESM4`</span>, <span class="in">`NZESM`</span>, <span class="in">`NorESM2-MM`</span>) and each SSP (<span class="in">`ssp126`</span>/<span class="in">`ssp245`</span>/<span class="in">`ssp370`</span>/<span class="in">`ssp585`</span>, <span class="in">`NZESM`</span> has no <span class="in">`ssp585`</span> run), <span class="in">`compute_gcm_monthly_deltas()`</span> reads that GCM's own already-cropped netCDFs directly at the lake point and computes a monthly change factor -- **additive** for temperature and shortwave, **multiplicative (ratio)** for the bounded/skewed fields (rainfall, wind, humidity) -- for three future windows against a 1995-2014 historical reference.</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>The dominant source of uncertainty in this workflow, once the downscaling chain and delta-change method are fixed, is *which GCM* drives the projection. The figure below makes that spread explicit for the end-of-century window:</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="al">![Inter-GCM spread in monthly delta-change factors, 2071-2100. Thin lines are individual GCMs, the shaded band spans the GCM min-max range, and the thick line is the GCM mean, for each SSP.](www/plots/gcm_delta_variability_2071-2100.png)</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>The spread is not uniform across variables. Annual-mean warming under <span class="in">`ssp585`</span> ranges from **+2.8 °C (`NorESM2-MM`) to +4.6 °C (`ACCESS-CM2`)** by 2071-2100 -- a \~1.8 °C spread from GCM choice alone, on top of the \~3.5 °C spread already visible between the lowest (<span class="in">`ssp126`</span>) and highest (<span class="in">`ssp585`</span>) emissions pathway. Shortwave and rainfall change factors span, and in some months straddle, both sides of no-change (ratio = 1 / delta = 0) across the GCM ensemble, meaning some models project a *drier* or *cloudier* Rotorua in a given month under the same scenario that others project the opposite sign for. Wind and humidity changes are comparatively modest and more consistent in sign across GCMs. The mid-century window shows the same pattern at reduced magnitude:</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="al">![Inter-GCM spread in monthly delta-change factors, 2041-2070.](www/plots/gcm_delta_variability_2041-2070.png)</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>**Practical implication for lake modelling:** a single-GCM projection (as the previous <span class="in">`scenario_batch_rotorua.R`</span> operational script and the <span class="in">`metscale`</span> vignette both use, <span class="in">`NorESM2-MM`</span>) understates the true range of plausible future forcing -- it sits toward the *low* end of the warming spread shown here. Any lake-response conclusion sensitive to warming magnitude (stratification strength/duration, hypolimnetic anoxia onset) should be checked against more than one GCM, not just the emissions scenario.</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Delta-changed baseline and hourly disaggregation</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="in">`scenario_daily_met`</span> applies each GCM/scenario/window's monthly deltas to the corrected daily baseline (<span class="in">`apply_gcm_delta_to_baseline()`</span>), and <span class="in">`scenario_hourly_met`</span> disaggregates the result to hourly with <span class="in">`metscale::disaggregate_met_to_hourly()`</span>, borrowing the within-day shape of <span class="in">`era5_corrected_hourly`</span> (method of fragments) and reconstructing shortwave from clear-sky solar geometry -- identical to steps 3-4 of <span class="in">`vignette("scenario-workflow")`</span>, just run once per combination of <span class="in">`scenario_delta_grid`</span> (7 GCM × 4 SSP × 3 windows, minus <span class="in">`NZESM`</span>/<span class="in">`ssp585`</span> = 83 combinations).</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>That is enough runs (each disaggregating 20-30 years to hourly) that, like <span class="in">`gcm_ts_summary`</span> and <span class="in">`tutira_cmip6_files`</span> elsewhere in this pipeline, both targets are gated with <span class="in">`cue = tar_cue(mode = "never")`</span> so a routine <span class="in">`tar_make()`</span> does not trigger them. Build them explicitly with:</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_make</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"scenario_daily_met"</span>, <span class="st">"scenario_hourly_met"</span>))</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>or invalidate just the combinations that changed with <span class="in">`tar_invalidate()`</span> / <span class="in">`tar_cue(mode = "always")`</span> per branch.</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## How this feeds into the lake model</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="in">`scenario_hourly_met`</span> is the AEME <span class="in">`MET_*`</span>-formatted hourly forcing GLM-AED needs for a climate-scenario simulation, one branch per GCM/scenario/window combination. The intended path from here into a model run is:</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span><span class="in">`AEME::add_met(aeme, met = scenario_hourly_met[[i]])`</span> for the branch of interest, in place of the placeholder <span class="in">`gcm_point_data_std_df`</span>-based forcing in the commented-out <span class="in">`aeme_sims`</span> target.</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span><span class="in">`AEME::set_time()`</span> with the corresponding <span class="in">`sim_periods$ssp`</span> window (10-year spin-up, matching the existing convention for historical runs).</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span><span class="in">`AEME::build_aeme()`</span> / <span class="in">`AEME::run_aeme()`</span> as for the calibration runs in <span class="in">`aeme_glm4`</span>.</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>Because <span class="in">`scenario_delta_grid`</span> already carries <span class="in">`gcm`</span>, <span class="in">`scenario`</span> and <span class="in">`window`</span> as columns, the same <span class="in">`pattern = map(scenario_delta_grid)`</span> branching used to build <span class="in">`scenario_hourly_met`</span> extends directly to a per-combination <span class="in">`AEME::run_aeme()`</span> target once the model-build step above is wired in -- each of the 83 branches becomes one lake simulation, and the GCM-variability figure above is then the basis for interpreting how much of the *simulated* spread across those 83 runs is driven by meteorological forcing choice (GCM), scenario, or window, versus lake-model internal dynamics.</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>Both the bias-correction and the delta-change step assume **stationarity** -- a transfer function fitted on the ERA5/buoy overlap period is asserted to hold under a future climate, and the <span class="in">`scale`</span> method used here rescales the *observed* daily sequence rather than reshaping its day-to-day variability (see `?metscale::scenario_workflow`). The buoy overlap (2022-2026) is short relative to the vignette's recommendation of a long reanalysis record and 20-year climate windows; the ERA5-only record (2011-2026) is longer and used for the daily baseline and hourly donor, but the *fit* of the bias correction itself is necessarily anchored to the shorter buoy overlap. Treat the across-scenario spread as a lower bound on total uncertainty, and fix the <span class="in">`MET_prsttn`</span> unit issue noted in step 1 before using corrected station pressure downstream.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
