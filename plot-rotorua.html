@@ -826,17 +826,7 @@ green_rsp_p
  PHY_diatom_set_p     aed_phytoplankton   3D   PHY
  PHY_diatom_fI        aed_phytoplankton   3D   PHY
  PHY_diatom_fNit      aed_phytoplankton   3D   PHY
- PHY_diatom_fPho      aed_phytoplankton   3D   PHY
- PHY_diatom_fSil      aed_phytoplankton   3D   PHY
- PHY_diatom_fT        aed_phytoplankton   3D   PHY
- PHY_diatom_fSal      aed_phytoplankton   3D   PHY
- PHY_diatom_gpp_c     aed_phytoplankton   3D   PHY
- PHY_diatom_rsp_c     aed_phytoplankton   3D   PHY
- PHY_diatom_exc_c     aed_phytoplankton   3D   PHY
- PHY_diatom_mor_c     aed_phytoplankton   3D   PHY
- PHY_diatom_gpp_n     aed_phytoplankton   3D   PHY
- PHY_diatom_rsp_n     aed_phytoplankton   3D   PHY
- PHY_diatomtic   &gt; PHY_upt_dic
+tic   &gt; PHY_upt_dic
        D( 110) water column diagnostic   &gt; PHY_set
        D( 111) water column diagnostic   &gt; PHY_par
        D( 112) water column diagnostic   &gt; TOT_tn
@@ -873,9 +863,17 @@ green_rsp_p
        D(  26) bottom/surface diagnostic ~ OGM_pop_res
        D(  27) bottom/surface diagnostic ~ PHY_phy_swi_c
        D(  28) bottom/surface diagnostic ~ PHY_phy_swi_n
-       D(  29) bottom/surface_exc_n     aed_phytoplankton   3D   PHY
- diagnostic ~ PHY_phy_swi_p
-       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
+       D(  29) bottom/surface PHY_diatom_fPho      aed_phytoplankton   3D   PHY
+ PHY_diatom_fSil      aed_phytoplankton   3D   PHY
+ PHY_diatom_fT        aed_phytoplankton   3D   PHY
+ PHY_diatom_fSal      aed_phytoplankton   3D   PHY
+ PHY_diatom_gpp_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_rsp_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_exc_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_mor_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_gpp_n     aed_phytoplankton   3D   PHY
+ PHY_diatom_rsp_n     aed_phytoplankton   3D   PHY
+ PHY_diatom_exc_n     aed_phytoplankton   3D   PHY
  PHY_diatom_mor_n     aed_phytoplankton   3D   PHY
  PHY_diatom_gpp_p     aed_phytoplankton   3D   PHY
  PHY_diatom_rsp_p     aed_phytoplankton   3D   PHY
@@ -905,14 +903,16 @@ green_rsp_p
  ALU_uptake_s         aed_alum            SZ   ALU
  ALU_fpH              aed_alum            3D   ALU
 
- PARTICLES:
+ PARTICLES diagnostic ~ PHY_phy_swi_p
+       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
+:
    No particle variables
 
   -------------------------------------------------------------------
 
      DBG calling initialise_lake
      DBG entered initialise_lake
-     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x55e39f9421d0 lake_depth=42.650000
+     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x562bfe60a1d0 lake_depth=42.650000
      DBG initialise_lake returned
 
      ----------  AED config : end  ----------
@@ -921,7 +921,7 @@ green_rsp_p
 Heat pump disabled (heat_pump_switch = 0)
 Oxygenation disabled
 
-     Wall clock start time :  Fri Sep 18 20:02:34 2026
+     Wall clock start time :  Sat Sep 19 21:14:00 2026
 
      Simulation begins...
      Running day  2454649, 0.27% of days complete
@@ -1290,7 +1290,7 @@ Oxygenation disabled
      Running day  2455012, 99.45% of days complete
      Running day  2455013, 99.73% of days complete
 
-     Wall clock finish time : Fri Sep 18 20:02:39 2026
+     Wall clock finish time : Sat Sep 19 21:14:05 2026
      Wall clock runtime was 5 seconds : 00:00:05 [hh:mm:ss]
 
     Model Run Complete
