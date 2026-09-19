@@ -70,6 +70,45 @@ The spread is not uniform across variables. Annual-mean warming under `ssp585` r
 
 ![Inter-GCM spread in monthly delta-change factors, 2041-2070.](www/plots/gcm_delta_variability_2041-2070.png)
 
+Collapsing each GCM's 12 monthly values into a single box per model makes the same GCM-consensus-vs-disagreement question easier to read at a glance, independent of the seasonal cycle:
+
+![GCM consensus in delta-change factors, 2071-2100. Each box summarises one GCM's 12 monthly values; overlapping boxes indicate GCM consensus, separated boxes indicate disagreement between models.](www/plots/gcm_delta_boxplot_2071-2100.png)
+
+![GCM consensus in delta-change factors, 2041-2070.](www/plots/gcm_delta_boxplot_2041-2070.png)
+
+The table below summarises the same `gcm_monthly_deltas_df` as an annual-mean change per variable, scenario and window, averaged across GCMs (with the GCM min-max range in parentheses) -- a compact numeric counterpart to the figures above.
+
+```{r}
+#| label: scenario-change-table
+#| echo: false
+
+deltas_df <- tar_read(gcm_monthly_deltas_df)
+
+var_labels <- c(MET_tmpair = "Air temperature (°C)",
+               MET_radswd = "Shortwave radiation (W/m²)",
+               MET_pprain = "Rainfall (%)",
+               MET_wndspd = "Wind speed (%)",
+               MET_humrel = "Relative humidity (%)")
+
+annual <- deltas_df |>
+  group_by(gcm, scenario, window, variable, kind) |>
+  summarise(annual_delta = mean(delta, na.rm = TRUE), .groups = "drop") |>
+  mutate(annual_change = ifelse(kind == "ratio", (annual_delta - 1) * 100, annual_delta))
+
+annual |>
+  group_by(scenario, window, variable) |>
+  summarise(mean = mean(annual_change, na.rm = TRUE),
+           min = min(annual_change, na.rm = TRUE),
+           max = max(annual_change, na.rm = TRUE), .groups = "drop") |>
+  mutate(variable = factor(var_labels[variable], unname(var_labels)),
+        value = sprintf("%.1f (%.1f to %.1f)", mean, min, max)) |>
+  select(scenario, window, variable, value) |>
+  tidyr::pivot_wider(names_from = variable, values_from = value) |>
+  arrange(window, scenario) |>
+  knitr::kable(
+    caption = "Annual-mean scenario change by variable, scenario and future window, averaged across GCMs (mean, GCM min-max range in parentheses). Temperature and shortwave are absolute changes; rainfall, wind and humidity are percent change from the historical baseline.")
+```
+
 **Practical implication for lake modelling:** a single-GCM projection (as the previous `scenario_batch_rotorua.R` operational script and the `metscale` vignette both use, `NorESM2-MM`) understates the true range of plausible future forcing -- it sits toward the *low* end of the warming spread shown here. Any lake-response conclusion sensitive to warming magnitude (stratification strength/duration, hypolimnetic anoxia onset) should be checked against more than one GCM, not just the emissions scenario.
 
 ## 4. Delta-changed baseline and hourly disaggregation
