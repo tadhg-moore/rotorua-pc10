@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Climate-Scenario Extreme &amp; Storm-Event Analysis – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1c0535d037eb8813b585731018da8aa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Tasks</a></li><li class="breadcrumb-item"><a href="./climate-extreme-events.html">Extreme &amp; Storm Events</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm_aed_alum_stress_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#method" id="toc-method" class="nav-link active" data-scroll-target="#method">Method</a></li>
+  <li><a href="#change-in-extremestorm-event-indices" id="toc-change-in-extremestorm-event-indices" class="nav-link" data-scroll-target="#change-in-extremestorm-event-indices">Change in extreme/storm-event indices</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats">Caveats</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Tasks</a></li><li class="breadcrumb-item"><a href="./climate-extreme-events.html">Extreme &amp; Storm Events</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Climate-Scenario Extreme &amp; Storm-Event Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="./climate-scenario-workflow.html"><code>climate-scenario-workflow.qmd</code></a> builds <code>scenario_hourly_met</code> – the AEME <code>MET_*</code>-formatted hourly forcing for every GCM x SSP x future-window combination (7 GCMs x 4 SSPs x 3 windows, minus <code>NZESM</code>/<code>ssp585</code> = 81 branches), by applying each GCM/scenario’s monthly delta-change signal to the bias-corrected daily ERA5 baseline and disaggregating back to hourly against the bias-corrected hourly ERA5 record.</p>
+<p>This page uses that same hourly forcing to ask a narrower question: <strong>how does the frequency and intensity of extreme/storm-scale events change</strong>, not just the monthly-mean climate? Sub-daily (hourly) data matters here because heavy-rain intensity, wind-storm duration and short heatwaves are sub-daily-to-daily phenomena that a monthly delta-change factor alone cannot resolve – they only show up once the delta has been re-expanded to hourly.</p>
+<section id="method" class="level2">
+<h2 class="anchored" data-anchor-id="method">Method</h2>
+<p>For every branch of <code>scenario_hourly_met</code>, and separately for the bias-corrected historical baseline (<code>era5_corrected_hourly</code>, 1995-2014), <code>compute_annual_extreme_indices()</code> (<a href="../R/summarise_climate_extremes.R">R/summarise_climate_extremes.R</a>) computes one row per calendar year for:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Index</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rx1day</code></td>
+<td>Annual maximum daily rainfall (mm)</td>
+</tr>
+<tr class="even">
+<td><code>heavy_rain_days</code></td>
+<td>Days/year with daily rainfall above the historical p95 (wet days only)</td>
+</tr>
+<tr class="odd">
+<td><code>extreme_rain_days</code></td>
+<td>Days/year above the historical p99</td>
+</tr>
+<tr class="even">
+<td><code>hot_days</code></td>
+<td>Days/year with daily maximum air temperature above the historical p95</td>
+</tr>
+<tr class="odd">
+<td><code>wsdi</code></td>
+<td>Warm-spell duration index: days/year in spells of &gt;=3 consecutive hot days</td>
+</tr>
+<tr class="even">
+<td><code>max_wind</code></td>
+<td>Annual maximum hourly wind speed (m/s)</td>
+</tr>
+<tr class="odd">
+<td><code>storm_wind_hours</code></td>
+<td>Hours/year with hourly wind speed above the historical p95</td>
+</tr>
+<tr class="even">
+<td><code>severe_wind_hours</code></td>
+<td>Hours/year above the historical p99</td>
+</tr>
+<tr class="odd">
+<td><code>storm_events</code></td>
+<td>Number of separate contiguous spells/year above the wind p95 threshold</td>
+</tr>
+</tbody>
+</table>
+<p>Every threshold (<code>compute_extreme_thresholds()</code>) is fixed <strong>once</strong>, from the bias-corrected hourly baseline over the same 1995-2014 reference window used for the GCM delta-change calculation, and then applied unchanged to every future branch. That keeps “heavy rain” and “storm wind” meaning the same absolute thing in every period, so a change in frequency is a genuine intensification/frequency signal rather than an artefact of a moving definition.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Fixed extreme-event thresholds, from the bias-corrected hourly ERA5 baseline, 1995-2014.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Index</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Rainfall p95 (wet days)</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">mm/day</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rainfall p99 (wet days)</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">mm/day</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hourly wind p95</td>
+<td style="text-align: left;">14.8</td>
+<td style="text-align: left;">m/s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hourly wind p99</td>
+<td style="text-align: left;">18.1</td>
+<td style="text-align: left;">m/s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Daily max temperature p95</td>
+<td style="text-align: left;">24.4</td>
+<td style="text-align: left;">°C</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Each branch’s 20-30 annual values are then averaged into one mean-annual number per GCM/scenario/window (<code>summarise_branch_extremes()</code>), and the figure/tables below summarise those 81 branch-means as a GCM-ensemble mean and range per scenario/window, against the same baseline period’s mean-annual values (shown in the table above’s row context, or as the dashed line in the figure).</p>
+</section>
+<section id="change-in-extremestorm-event-indices" class="level2">
+<h2 class="anchored" data-anchor-id="change-in-extremestorm-event-indices">Change in extreme/storm-event indices</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="www/plots/extreme_indices_summary.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="www/plots/extreme_indices_summary.png" class="img-fluid figure-img" style="width:100.0%"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Rainfall and heat extremes: GCM-ensemble mean (min–max range) [% change vs.&nbsp;baseline], by scenario and window.</caption>
+<colgroup>
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 19%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">scenario</th>
+<th style="text-align: left;">window</th>
+<th style="text-align: left;">Extreme rain days</th>
+<th style="text-align: left;">Heavy rain days</th>
+<th style="text-align: left;">Hot days</th>
+<th style="text-align: left;">Max daily rain (mm)</th>
+<th style="text-align: left;">Warm-spell days</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">41.8 (35.1–50.1) [+129%]</td>
+<td style="text-align: left;">64.9 (61.6–66.6) [+20596%]</td>
+<td style="text-align: left;">31.4 (25.3–40.2) [+206%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">48.7 (31.5–61.3) [+167%]</td>
+<td style="text-align: left;">64.5 (63.1–66.2) [+20468%]</td>
+<td style="text-align: left;">38.6 (22.2–52.1) [+277%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">47.7 (40.1–55.7) [+161%]</td>
+<td style="text-align: left;">63.8 (61.8–66.1) [+20262%]</td>
+<td style="text-align: left;">38.2 (32.4–44.5) [+273%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">49.2 (42.2–55.9) [+169%]</td>
+<td style="text-align: left;">64.0 (62.5–66.0) [+20323%]</td>
+<td style="text-align: left;">38.8 (30.9–45.8) [+278%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">50.5 (42.4–57.9) [+177%]</td>
+<td style="text-align: left;">64.2 (61.4–66.0) [+20368%]</td>
+<td style="text-align: left;">40.3 (32.9–49.5) [+293%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">63.4 (46.4–75.1) [+247%]</td>
+<td style="text-align: left;">65.9 (62.7–68.7) [+20906%]</td>
+<td style="text-align: left;">52.5 (36.6–64.8) [+412%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">67.2 (59.4–84.6) [+268%]</td>
+<td style="text-align: left;">64.4 (62.4–67.4) [+20435%]</td>
+<td style="text-align: left;">56.7 (48.8–73.8) [+453%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">75.6 (57.2–94.2) [+314%]</td>
+<td style="text-align: left;">63.6 (60.2–66.6) [+20194%]</td>
+<td style="text-align: left;">64.6 (45.2–84.3) [+530%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">58.1 (38.3–81.2) [+218%]</td>
+<td style="text-align: left;">65.1 (60.5–66.6) [+20667%]</td>
+<td style="text-align: left;">47.9 (29.5–71.8) [+368%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">72.2 (57.2–109.0) [+296%]</td>
+<td style="text-align: left;">64.2 (60.4–68.5) [+20366%]</td>
+<td style="text-align: left;">61.4 (44.3–99.7) [+499%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">89.1 (74.4–112.5) [+388%]</td>
+<td style="text-align: left;">64.2 (60.1–65.7) [+20363%]</td>
+<td style="text-align: left;">79.2 (64.4–103.7) [+672%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">0.0 (0.0–0.0) [NaN%]</td>
+<td style="text-align: left;">94.9 (75.1–115.0) [+420%]</td>
+<td style="text-align: left;">65.1 (63.8–67.8) [+20668%]</td>
+<td style="text-align: left;">84.4 (64.2–107.8) [+724%]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs.&nbsp;baseline], by scenario and window. See the caveat below before treating these as a clean climate signal.</caption>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">scenario</th>
+<th style="text-align: left;">window</th>
+<th style="text-align: left;">Max hourly wind (m/s)</th>
+<th style="text-align: left;">Severe wind hours</th>
+<th style="text-align: left;">Storm events</th>
+<th style="text-align: left;">Storm wind hours</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">22.0 (21.9–22.1) [-6%]</td>
+<td style="text-align: left;">51.4 (48.4–53.9) [-41%]</td>
+<td style="text-align: left;">55.3 (53.5–57.9) [-42%]</td>
+<td style="text-align: left;">259.1 (254.6–265.9) [-41%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">22.0 (21.9–22.2) [-6%]</td>
+<td style="text-align: left;">52.1 (47.9–57.5) [-41%]</td>
+<td style="text-align: left;">56.3 (53.6–58.5) [-41%]</td>
+<td style="text-align: left;">263.2 (252.4–275.3) [-40%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">22.0 (22.0–22.2) [-6%]</td>
+<td style="text-align: left;">52.1 (47.2–55.1) [-41%]</td>
+<td style="text-align: left;">56.1 (53.1–58.6) [-41%]</td>
+<td style="text-align: left;">260.1 (249.1–272.1) [-41%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2015-2040</td>
+<td style="text-align: left;">22.0 (21.8–22.2) [-6%]</td>
+<td style="text-align: left;">50.5 (47.6–52.8) [-42%]</td>
+<td style="text-align: left;">55.3 (53.2–57.4) [-42%]</td>
+<td style="text-align: left;">257.3 (245.1–262.8) [-41%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">22.1 (21.8–22.5) [-6%]</td>
+<td style="text-align: left;">53.9 (49.6–57.2) [-39%]</td>
+<td style="text-align: left;">55.8 (52.2–58.9) [-41%]</td>
+<td style="text-align: left;">262.0 (249.2–269.0) [-40%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">22.1 (21.9–22.3) [-6%]</td>
+<td style="text-align: left;">49.8 (46.8–54.6) [-43%]</td>
+<td style="text-align: left;">52.6 (49.8–55.7) [-45%]</td>
+<td style="text-align: left;">249.7 (241.0–261.3) [-43%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">22.1 (21.8–22.3) [-6%]</td>
+<td style="text-align: left;">50.6 (46.0–56.0) [-42%]</td>
+<td style="text-align: left;">52.9 (49.3–58.1) [-44%]</td>
+<td style="text-align: left;">253.1 (243.8–264.8) [-42%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2041-2070</td>
+<td style="text-align: left;">22.3 (21.9–22.5) [-5%]</td>
+<td style="text-align: left;">52.5 (43.1–59.1) [-40%]</td>
+<td style="text-align: left;">50.7 (47.6–53.2) [-47%]</td>
+<td style="text-align: left;">249.7 (230.5–259.4) [-43%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp126</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">22.0 (21.8–22.5) [-6%]</td>
+<td style="text-align: left;">51.0 (41.8–57.9) [-42%]</td>
+<td style="text-align: left;">53.3 (50.2–55.1) [-44%]</td>
+<td style="text-align: left;">253.4 (228.4–263.5) [-42%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp245</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">22.1 (21.9–22.5) [-6%]</td>
+<td style="text-align: left;">52.1 (48.4–57.7) [-41%]</td>
+<td style="text-align: left;">51.3 (46.8–54.3) [-46%]</td>
+<td style="text-align: left;">249.1 (235.2–259.4) [-43%]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ssp370</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">22.3 (21.9–22.5) [-5%]</td>
+<td style="text-align: left;">48.8 (42.2–56.9) [-44%]</td>
+<td style="text-align: left;">48.5 (44.3–51.9) [-49%]</td>
+<td style="text-align: left;">238.1 (215.4–262.9) [-46%]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ssp585</td>
+<td style="text-align: left;">2071-2100</td>
+<td style="text-align: left;">22.2 (21.8–22.6) [-6%]</td>
+<td style="text-align: left;">47.1 (40.8–51.4) [-46%]</td>
+<td style="text-align: left;">46.7 (43.7–49.9) [-51%]</td>
+<td style="text-align: left;">231.8 (217.4–243.1) [-47%]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<p><strong>Rainfall.</strong> <code>heavy_rain_days</code> and <code>extreme_rain_days</code> increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture – but the ensemble range across GCMs is wide relative to the mean shift, and for <code>rx1day</code> several GCMs actually project little change or a slight decrease at some windows (the ratio-based delta-change method here rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows – see the stationarity caveat in <code>climate-scenario-workflow.qmd</code>).</p>
+<p><strong>Heat.</strong> <code>hot_days</code> and <code>wsdi</code> (warm-spell duration) show the clearest, most consistent scenario/window gradient of the three groups – both increase substantially and near-monotonically from <code>ssp126</code> to <code>ssp585</code> and from the near-term to the end-of-century window, with comparatively narrow GCM spread. This is the expected signature of a monotonic mean-warming delta applied to a fixed threshold: as the whole distribution shifts up, an increasing share of days cross a <em>fixed, historical</em> p95 threshold.</p>
+<p><strong>Wind storms – treat with caution.</strong> The wind-storm indices show a large apparent increase in <code>storm_wind_hours</code>/<code>severe_wind_hours</code>/<code>storm_events</code> under every scenario, including <code>ssp126</code>, where the underlying monthly wind delta-change factors are close to 1 (see <code>gcm_monthly_deltas_df</code>, <code>MET_wndspd</code> deltas mostly 0.7-1.1 across GCMs). Checking one branch directly (<code>ACCESS-CM2</code>/<code>ssp126</code>/2071-2100) shows why: the delta-adjusted <strong>daily</strong> target has a mean wind speed of 7.4 m/s, but the <strong>disaggregated hourly</strong> series for the same branch has a mean of 8.4 m/s – about 14% higher than its own daily target, with the p95/p99/max hourly values shifted up to match. <code>metscale::disaggregate_met_to_hourly()</code> reshapes the wind <em>vector</em> components (<code>MET_wnduvu</code>/<code>MET_wnduvv</code>) directly and recomputes <code>MET_wndspd</code> from them; its own documentation states this makes the re-aggregated speed track the <em>vector</em> daily mean, which should be smaller than or equal to the scalar daily mean, not larger. The direction of the discrepancy seen here is the opposite of what the package describes, which points to a disaggregation-side effect inflating hourly wind variance beyond what the daily delta implies, rather than a genuine climate signal. <strong>The rainfall and heat indices above are not affected</strong> – <code>metscale</code> conserves daily rainfall totals and daily-mean temperature exactly during disaggregation, only wind carries this vector-based exception. Until this is investigated further (or the wind-storm indices are recomputed from <code>scenario_daily_met</code> mean wind directly, foregoing sub-daily storm detail), the wind-storm numbers in this page should be read as an upper bound / directionally suggestive at best, not a quantitative projection.</p>
+<p><strong>Practical implication for lake modelling.</strong> Heavy-rain and warm-spell frequency both increase with scenario severity in a way that is directionally robust across the GCM ensemble, and both are levers on lake response that matter beyond the monthly-mean forcing already explored in <code>climate-scenario-workflow.qmd</code>: more frequent heavy-rain days translate to more frequent high-inflow/nutrient-loading pulses, and longer warm spells extend the window over which thermal stratification can strengthen and hypolimnetic anoxia can develop. Any storm-driven-mixing conclusion that depends on the wind-storm numbers here should wait for the disaggregation issue above to be resolved.</p>
+</section>
+<section id="caveats" class="level2">
+<h2 class="anchored" data-anchor-id="caveats">Caveats</h2>
+<p>In addition to the caveats already noted in <code>climate-scenario-workflow.qmd</code> (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known <code>MET_prsttn</code> unit issue):</p>
+<ul>
+<li><strong>Wind-storm indices are likely inflated</strong> by the vector-component disaggregation behaviour described above and should not yet be used quantitatively.</li>
+<li>Thresholds are fixed from a single 20-year historical window (1995-2014); a longer reference record would narrow the threshold estimates themselves, independent of the future-scenario uncertainty already visible in the GCM ensemble spread.</li>
+<li>Extreme indices here are derived from the delta-changed <em>reanalysis</em> sequence, not from the GCM’s own extremes – by construction they inherit the historical record’s actual extreme <em>events</em> (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Climate-Scenario Extreme &amp; Storm-Event Analysis"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">warning:</span><span class="co"> false</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">message:</span><span class="co"> false</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">`climate-scenario-workflow.qmd`</span><span class="co">](climate-scenario-workflow.qmd)</span> builds <span class="in">`scenario_hourly_met`</span> -- the AEME <span class="in">`MET_*`</span>-formatted hourly forcing for every GCM x SSP x future-window combination (7 GCMs x 4 SSPs x 3 windows, minus <span class="in">`NZESM`</span>/<span class="in">`ssp585`</span> = 81 branches), by applying each GCM/scenario's monthly delta-change signal to the bias-corrected daily ERA5 baseline and disaggregating back to hourly against the bias-corrected hourly ERA5 record.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>This page uses that same hourly forcing to ask a narrower question: **how does the frequency and intensity of extreme/storm-scale events change**, not just the monthly-mean climate? Sub-daily (hourly) data matters here because heavy-rain intensity, wind-storm duration and short heatwaves are sub-daily-to-daily phenomena that a monthly delta-change factor alone cannot resolve -- they only show up once the delta has been re-expanded to hourly.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Method</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>For every branch of <span class="in">`scenario_hourly_met`</span>, and separately for the bias-corrected historical baseline (<span class="in">`era5_corrected_hourly`</span>, 1995-2014), <span class="in">`compute_annual_extreme_indices()`</span> (<span class="co">[</span><span class="ot">R/summarise_climate_extremes.R</span><span class="co">](../R/summarise_climate_extremes.R)</span>) computes one row per calendar year for:</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Index <span class="pp">|</span> Definition <span class="pp">|</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`rx1day`</span> <span class="pp">|</span> Annual maximum daily rainfall (mm) <span class="pp">|</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`heavy_rain_days`</span> <span class="pp">|</span> Days/year with daily rainfall above the historical p95 (wet days only) <span class="pp">|</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`extreme_rain_days`</span> <span class="pp">|</span> Days/year above the historical p99 <span class="pp">|</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`hot_days`</span> <span class="pp">|</span> Days/year with daily maximum air temperature above the historical p95 <span class="pp">|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`wsdi`</span> <span class="pp">|</span> Warm-spell duration index: days/year in spells of &gt;=3 consecutive hot days <span class="pp">|</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`max_wind`</span> <span class="pp">|</span> Annual maximum hourly wind speed (m/s) <span class="pp">|</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`storm_wind_hours`</span> <span class="pp">|</span> Hours/year with hourly wind speed above the historical p95 <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`severe_wind_hours`</span> <span class="pp">|</span> Hours/year above the historical p99 <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`storm_events`</span> <span class="pp">|</span> Number of separate contiguous spells/year above the wind p95 threshold <span class="pp">|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>Every threshold (<span class="in">`compute_extreme_thresholds()`</span>) is fixed **once**, from the bias-corrected hourly baseline over the same 1995-2014 reference window used for the GCM delta-change calculation, and then applied unchanged to every future branch. That keeps "heavy rain" and "storm wind" meaning the same absolute thing in every period, so a change in frequency is a genuine intensification/frequency signal rather than an artefact of a moving definition.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: thresholds-table</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>th <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(extreme_thresholds)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">Index =</span> <span class="fu">c</span>(<span class="st">"Rainfall p95 (wet days)"</span>, <span class="st">"Rainfall p99 (wet days)"</span>,</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Hourly wind p95"</span>, <span class="st">"Hourly wind p99"</span>, <span class="st">"Daily max temperature p95"</span>),</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, <span class="fu">unlist</span>(th[<span class="fu">c</span>(<span class="st">"rain_p95"</span>, <span class="st">"rain_p99"</span>, <span class="st">"wind_p95"</span>, <span class="st">"wind_p99"</span>, <span class="st">"tmax_p95"</span>)])),</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">Units =</span> <span class="fu">c</span>(<span class="st">"mm/day"</span>, <span class="st">"mm/day"</span>, <span class="st">"m/s"</span>, <span class="st">"m/s"</span>, <span class="st">"°C"</span>)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Fixed extreme-event thresholds, from the bias-corrected hourly ERA5 baseline, 1995-2014."</span>)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>Each branch's 20-30 annual values are then averaged into one mean-annual number per GCM/scenario/window (<span class="in">`summarise_branch_extremes()`</span>), and the figure/tables below summarise those 81 branch-means as a GCM-ensemble mean and range per scenario/window, against the same baseline period's mean-annual values (shown in the table above's row context, or as the dashed line in the figure).</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Change in extreme/storm-event indices</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: extreme-indices-plot</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 8.5</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"www/plots/extreme_indices_summary.png"</span>)</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: extreme-summary-tables</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>extremes_df <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(scenario_extreme_indices_df)</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(baseline_extreme_indices)</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>fmt_index_table <span class="ot">&lt;-</span> <span class="cf">function</span>(indices, labels, caption) {</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  extremes_df <span class="sc">|&gt;</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(indices), <span class="at">names_to =</span> <span class="st">"index"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(scenario, window, index) <span class="sc">|&gt;</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>                     <span class="at">min  =</span> <span class="fu">min</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>                     <span class="at">max  =</span> <span class="fu">max</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>      <span class="at">base =</span> baseline[[index]],</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>      <span class="at">pct  =</span> <span class="dv">100</span> <span class="sc">*</span> (mean <span class="sc">-</span> base) <span class="sc">/</span> base,</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>      <span class="at">cell =</span> <span class="fu">sprintf</span>(<span class="st">"%.1f (%.1f–%.1f) [%+.0f%%]"</span>, mean, min, max, pct)</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">factor</span>(labels[index], <span class="fu">unname</span>(labels))) <span class="sc">|&gt;</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(scenario, window, index, cell) <span class="sc">|&gt;</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> index, <span class="at">values_from =</span> cell) <span class="sc">|&gt;</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(window, scenario) <span class="sc">|&gt;</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>    knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> caption)</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>rain_heat_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">rx1day =</span> <span class="st">"Max daily rain (mm)"</span>, <span class="at">heavy_rain_days =</span> <span class="st">"Heavy rain days"</span>,</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">extreme_rain_days =</span> <span class="st">"Extreme rain days"</span>, <span class="at">hot_days =</span> <span class="st">"Hot days"</span>, <span class="at">wsdi =</span> <span class="st">"Warm-spell days"</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_index_table</span>(<span class="fu">names</span>(rain_heat_labels), rain_heat_labels,</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Rainfall and heat extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window."</span>)</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: wind-summary-table</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>wind_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_wind =</span> <span class="st">"Max hourly wind (m/s)"</span>, <span class="at">storm_wind_hours =</span> <span class="st">"Storm wind hours"</span>,</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">severe_wind_hours =</span> <span class="st">"Severe wind hours"</span>, <span class="at">storm_events =</span> <span class="st">"Storm events"</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_index_table</span>(<span class="fu">names</span>(wind_labels), wind_labels,</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window. See the caveat below before treating these as a clean climate signal."</span>)</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discussion</span></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>**Rainfall.** <span class="in">`heavy_rain_days`</span> and <span class="in">`extreme_rain_days`</span> increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for <span class="in">`rx1day`</span> several GCMs actually project little change or a slight decrease at some windows (the ratio-based delta-change method here rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in <span class="in">`climate-scenario-workflow.qmd`</span>).</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>**Heat.** <span class="in">`hot_days`</span> and <span class="in">`wsdi`</span> (warm-spell duration) show the clearest, most consistent scenario/window gradient of the three groups -- both increase substantially and near-monotonically from <span class="in">`ssp126`</span> to <span class="in">`ssp585`</span> and from the near-term to the end-of-century window, with comparatively narrow GCM spread. This is the expected signature of a monotonic mean-warming delta applied to a fixed threshold: as the whole distribution shifts up, an increasing share of days cross a *fixed, historical* p95 threshold.</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>**Wind storms -- treat with caution.** The wind-storm indices show a large apparent increase in `storm_wind_hours`/`severe_wind_hours`/`storm_events` under every scenario, including `ssp126`, where the underlying monthly wind delta-change factors are close to 1 (see `gcm_monthly_deltas_df`, `MET_wndspd` deltas mostly 0.7-1.1 across GCMs). Checking one branch directly (`ACCESS-CM2`/`ssp126`/2071-2100) shows why: the delta-adjusted **daily** target has a mean wind speed of 7.4 m/s, but the **disaggregated hourly** series for the same branch has a mean of 8.4 m/s -- about 14% higher than its own daily target, with the p95/p99/max hourly values shifted up to match. `metscale::disaggregate_met_to_hourly()` reshapes the wind *vector* components (`MET_wnduvu`/`MET_wnduvv`) directly and recomputes `MET_wndspd` from them; its own documentation states this makes the re-aggregated speed track the *vector* daily mean, which should be smaller than or equal to the scalar daily mean, not larger. The direction of the discrepancy seen here is the opposite of what the package describes, which points to a disaggregation-side effect inflating hourly wind variance beyond what the daily delta implies, rather than a genuine climate signal. **The rainfall and heat indices above are not affected** -- <span class="in">`metscale`</span> conserves daily rainfall totals and daily-mean temperature exactly during disaggregation, only wind carries this vector-based exception. Until this is investigated further (or the wind-storm indices are recomputed from <span class="in">`scenario_daily_met`</span> mean wind directly, foregoing sub-daily storm detail), the wind-storm numbers in this page should be read as an upper bound / directionally suggestive at best, not a quantitative projection.</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>**Practical implication for lake modelling.** Heavy-rain and warm-spell frequency both increase with scenario severity in a way that is directionally robust across the GCM ensemble, and both are levers on lake response that matter beyond the monthly-mean forcing already explored in <span class="in">`climate-scenario-workflow.qmd`</span>: more frequent heavy-rain days translate to more frequent high-inflow/nutrient-loading pulses, and longer warm spells extend the window over which thermal stratification can strengthen and hypolimnetic anoxia can develop. Any storm-driven-mixing conclusion that depends on the wind-storm numbers here should wait for the disaggregation issue above to be resolved.</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>In addition to the caveats already noted in <span class="in">`climate-scenario-workflow.qmd`</span> (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known <span class="in">`MET_prsttn`</span> unit issue):</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Wind-storm indices are likely inflated** by the vector-component disaggregation behaviour described above and should not yet be used quantitatively.</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Thresholds are fixed from a single 20-year historical window (1995-2014); a longer reference record would narrow the threshold estimates themselves, independent of the future-scenario uncertainty already visible in the GCM ensemble spread.</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

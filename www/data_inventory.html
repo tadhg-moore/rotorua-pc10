@@ -56,12 +56,12 @@ tr:hover td{background:#faf9f6}
 </head>
 <body>
 <h1>Data Inventory — Rotorua Lake Modelling</h1>
-<p class="meta">Generated 2026-09-19 21:10 UTC</p>
+<p class="meta">Generated 2026-09-20 23:44 UTC</p>
 
 <div class="stats">
-  <div class="stat"><div class="stat-val">29</div><div class="stat-lbl">Datasets</div></div>
+  <div class="stat"><div class="stat-val">30</div><div class="stat-lbl">Datasets</div></div>
   <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Spatial</div></div>
-  <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Categories</div></div>
+  <div class="stat"><div class="stat-val">6</div><div class="stat-lbl">Categories</div></div>
 </div>
 
 <div class="card">
@@ -70,6 +70,7 @@ tr:hover td{background:#faf9f6}
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('Observations',this)">Observations</button>
     <button class="filter-btn" onclick="setFilter('Climate',this)">Climate</button>
+    <button class="filter-btn" onclick="setFilter('Other',this)">Other</button>
     <button class="filter-btn" onclick="setFilter('GCM / CMIP6',this)">GCM / CMIP6</button>
     <button class="filter-btn" onclick="setFilter('Spatial',this)">Spatial</button>
     <button class="filter-btn" onclick="setFilter('Model config',this)">Model config</button>
@@ -106,6 +107,7 @@ const DATA = [
 {name:'light_data',cat:'Observations',source:'Derived – ctd_par joined with chem_data',temporal:'Irregular',period:'2003-08-20 to 2025-08-20',spatial:false,dims:'147 rows x 7 cols',cols:'Date, par_n, Kd, chla, secchi, turbidity, Kd_est',cls:'tbl_df, tbl, data.frame',notes:'Combined light/turbidity/chlorophyll/Secchi time series'},
 {name:'niwa_met_daily',cat:'Climate',source:'NIWA climate station #1770',temporal:'Hourly',period:'1981-12-31 to 2026-02-27',spatial:false,dims:'170,649 rows x 9 cols',cols:'station_id, file_variable, file_subtype, file_frequency, datetime_utc, date, variable_raw, value ... (+1 more)',cls:'tbl_df, tbl, data.frame',notes:'Evaporation (3 methods), radiation, rainfall, temperature, wind'},
 {name:'niwa_met_hourly_files',cat:'Climate',source:'NIWA climate station #1770',temporal:'Static',period:'N/A',spatial:false,dims:'5 file paths',cols:'',cls:'character',notes:'Hourly met file paths – auto-listed from data/raw/niwa_climate/'},
+{name:'niwa_met_hourly_aeme',cat:'Other',source:'Unknown',temporal:'Sub-hourly',period:'1981-06-12 to 2025-10-28',spatial:false,dims:'327,154 rows x 7 cols',cols:'Date, MET_tmpair, MET_humrel, MET_radswd, MET_pprain, MET_wndspd, MET_prsttn',cls:'data.frame',notes:''},
 {name:'cmip6_metadata',cat:'GCM / CMIP6',source:'CMIP6 archive – gather_cmip6_metadata()',temporal:'Static',period:'N/A',spatial:false,dims:'332 rows x 14 cols',cols:'filename, basename, variable, scenario, gcm, model, timestep, spatial_res ... (+6 more)',cls:'spec_tbl_df, tbl_df, tbl, data.frame',notes:'7 GCMs x 5 scenarios; spatial resolution and calendar per model'},
 {name:'gcm_point_data_df',cat:'GCM / CMIP6',source:'Derived – point extraction from cmip6_files at lake centroid',temporal:'Daily',period:'1960-01-01 to 2100-12-31',spatial:false,dims:'6,775,716 rows x 5 cols',cols:'gcm, scenario, variable, date, value',cls:'tbl_df, tbl, data.frame',notes:'Daily met series: tas, hurs, pr, rsds, sfcWind'},
 {name:'gcm_point_data_std_df',cat:'GCM / CMIP6',source:'Derived – Gregorian-standardised gcm_point_data_df',temporal:'Daily',period:'1960-01-01 to 2100-12-31',spatial:false,dims:'988,421 rows x 8 cols',cols:'date, hurs, pr, rsds, sfcWind, tas, gcm, scenario',cls:'data.frame',notes:'Gregorian-calendar standardised version of gcm_point_data_df'},
