@@ -1446,11 +1446,27 @@ list(
   ),
 
   #* 5. Extreme/storm-event indices from the hourly met, baseline vs each
-  #     GCM x scenario x window branch -- thresholds fixed from the
-  #     historical baseline so frequency changes are directly interpretable ----
+  #     GCM x scenario x window branch -- thresholds fixed from a
+  #     historical reference so frequency changes are directly interpretable.
+  #     Rainfall thresholds use the 125-year Whakarewarewa record
+  #     (`pc10_climate_met`) rather than the 20-year ERA5 window -- far more
+  #     robust for a p95/p99 estimate, and independent of the reanalysis
+  #     chain the scenarios themselves are built from. Wind/heat thresholds
+  #     still come from the bias-corrected ERA5 hourly baseline, which has
+  #     no long-record alternative at this site. ----
+  tar_target(
+    whaka_rain_record, extract_long_rain_record(pc10_climate_met)
+  ),
+  tar_target(
+    whaka_rain_thresholds, compute_long_rain_thresholds(whaka_rain_record)
+  ),
+  tar_target(
+    whaka_rain_return_levels, compute_rain_return_levels(whaka_rain_record)
+  ),
   tar_target(
     extreme_thresholds,
-    compute_extreme_thresholds(era5_corrected_hourly, scenario_ref_years)
+    compute_extreme_thresholds(era5_corrected_hourly, scenario_ref_years,
+                               rain_thresholds = whaka_rain_thresholds)
   ),
   tar_target(
     baseline_extreme_indices, {
@@ -1458,7 +1474,7 @@ list(
       yr  <- as.integer(format(day, "%Y"))
       ann <- compute_annual_extreme_indices(
         era5_corrected_hourly[yr %in% scenario_ref_years, ], extreme_thresholds)
-      as.list(dplyr::summarise(ann, dplyr::across(-year, mean, na.rm = TRUE)))
+      as.list(dplyr::summarise(ann, dplyr::across(-year, \(x) mean(x, na.rm = TRUE))))
     }
   ),
   tar_target(

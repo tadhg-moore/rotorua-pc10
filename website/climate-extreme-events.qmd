@@ -21,6 +21,12 @@ library(ggplot2)
 
 This page uses that same hourly forcing to ask a narrower question: **how does the frequency and intensity of extreme/storm-scale events change**, not just the monthly-mean climate? Sub-daily (hourly) data matters here because heavy-rain intensity, wind-storm duration and short heatwaves are sub-daily-to-daily phenomena that a monthly delta-change factor alone cannot resolve -- they only show up once the delta has been re-expanded to hourly.
 
+This is a rebuild of an earlier version of this page, incorporating two changes made since:
+
+1.  **A rainfall unit bug fix.** [`met-source-comparison.qmd`](met-source-comparison.qmd) caught `MET_pprain` reading ~1000x too high from ERA5's raw units; every rainfall figure below is recomputed against the corrected series.
+2.  **Wind is now disaggregated as a plain scalar, not a vector.** `metscale::disaggregate_met_to_hourly()` was reshaping wind via its u/v vector components, which was found to inflate disaggregated hourly wind speed beyond its own delta-adjusted daily target. `apply_gcm_delta_to_baseline()` and the `scenario_hourly_met` target now strip `MET_wnduvu`/`MET_wnduvv`/`MET_wnddir` before disaggregation, so wind speed is shaped directly from the donor's own wind-speed pattern -- direction isn't needed for this lake model. See the wind section below for the corrected numbers.
+3.  **Rainfall thresholds now use the 125-year Whakarewarewa rain-gauge record** (`pc10_climate_met`, via BOPRC/PC10 -- see [`met-source-comparison.qmd`](met-source-comparison.qmd)) instead of the 20-year ERA5 window, and a return-level table is now possible for the first time.
+
 ## Method
 
 For every branch of `scenario_hourly_met`, and separately for the bias-corrected historical baseline (`era5_corrected_hourly`, 1995-2014), `compute_annual_extreme_indices()` ([R/summarise_climate_extremes.R](../R/summarise_climate_extremes.R)) computes one row per calendar year for:
@@ -28,8 +34,8 @@ For every branch of `scenario_hourly_met`, and separately for the bias-corrected
 | Index | Definition |
 |---|---|
 | `rx1day` | Annual maximum daily rainfall (mm) |
-| `heavy_rain_days` | Days/year with daily rainfall above the historical p95 (wet days only) |
-| `extreme_rain_days` | Days/year above the historical p99 |
+| `heavy_rain_days` | Days/year with daily rainfall above the p95 (wet days only) |
+| `extreme_rain_days` | Days/year above the p99 |
 | `hot_days` | Days/year with daily maximum air temperature above the historical p95 |
 | `wsdi` | Warm-spell duration index: days/year in spells of >=3 consecutive hot days |
 | `max_wind` | Annual maximum hourly wind speed (m/s) |
@@ -37,23 +43,71 @@ For every branch of `scenario_hourly_met`, and separately for the bias-corrected
 | `severe_wind_hours` | Hours/year above the historical p99 |
 | `storm_events` | Number of separate contiguous spells/year above the wind p95 threshold |
 
-Every threshold (`compute_extreme_thresholds()`) is fixed **once**, from the bias-corrected hourly baseline over the same 1995-2014 reference window used for the GCM delta-change calculation, and then applied unchanged to every future branch. That keeps "heavy rain" and "storm wind" meaning the same absolute thing in every period, so a change in frequency is a genuine intensification/frequency signal rather than an artefact of a moving definition.
+Thresholds (`compute_extreme_thresholds()`) are fixed **once** and applied unchanged to every future branch, so "heavy rain" and "storm wind" mean the same absolute thing in every period -- a change in frequency is then a genuine intensification/frequency signal, not an artefact of a moving definition. Wind and temperature thresholds still come from the bias-corrected ERA5 hourly baseline (1995-2014) -- there's no long-record alternative for those at this site. **Rainfall thresholds now come from the 125-year Whakarewarewa daily rain-gauge record** (`compute_long_rain_thresholds()`, on `pc10_climate_met`) rather than the 20-year ERA5 window: 20 years is thin for estimating a p95/p99 event, and the long, independently-measured record is unaffected by anything in the reanalysis/bias-correction/delta-change chain the scenarios themselves are built from.
 
 ```{r}
 #| label: thresholds-table
 #| echo: false
 
 th <- tar_read(extreme_thresholds)
+wr <- tar_read(whaka_rain_thresholds)
 data.frame(
   Index = c("Rainfall p95 (wet days)", "Rainfall p99 (wet days)",
            "Hourly wind p95", "Hourly wind p99", "Daily max temperature p95"),
   Value = sprintf("%.1f", unlist(th[c("rain_p95", "rain_p99", "wind_p95", "wind_p99", "tmax_p95")])),
-  Units = c("mm/day", "mm/day", "m/s", "m/s", "°C")
+  Units = c("mm/day", "mm/day", "m/s", "m/s", "°C"),
+  Source = c(sprintf("Whakarewarewa rain gauge, %d–%d (%d yr)", as.integer(format(wr$start, "%Y")),
+                     as.integer(format(wr$end, "%Y")), wr$n_years),
+            sprintf("Whakarewarewa rain gauge, %d–%d (%d yr)", as.integer(format(wr$start, "%Y")),
+                     as.integer(format(wr$end, "%Y")), wr$n_years),
+            "Bias-corrected ERA5, 1995-2014", "Bias-corrected ERA5, 1995-2014",
+            "Bias-corrected ERA5, 1995-2014")
 ) |>
-  knitr::kable(caption = "Fixed extreme-event thresholds, from the bias-corrected hourly ERA5 baseline, 1995-2014.")
+  knitr::kable(caption = "Fixed extreme-event thresholds and their source record.")
 ```
 
-Each branch's 20-30 annual values are then averaged into one mean-annual number per GCM/scenario/window (`summarise_branch_extremes()`), and the figure/tables below summarise those 81 branch-means as a GCM-ensemble mean and range per scenario/window, against the same baseline period's mean-annual values (shown in the table above's row context, or as the dashed line in the figure).
+### How much does the longer rainfall record change the threshold?
+
+```{r}
+#| label: era5-vs-whaka-threshold
+#| echo: false
+
+era5_hourly <- tar_read(era5_corrected_hourly)
+day <- as.Date(era5_hourly$Date)
+yr  <- as.integer(format(day, "%Y"))
+ref <- era5_hourly[yr %in% tar_read(scenario_ref_years), ]
+era5_daily_rain <- tapply(ref$MET_pprain * 1000, as.Date(ref$Date), sum, na.rm = TRUE)
+era5_wet <- era5_daily_rain[era5_daily_rain >= 1]
+era5_p95 <- stats::quantile(era5_wet, 0.95, names = FALSE)
+era5_p99 <- stats::quantile(era5_wet, 0.99, names = FALSE)
+
+data.frame(
+  Threshold = c("p95", "p99"),
+  `Whakarewarewa (125 yr)` = sprintf("%.1f mm", c(wr$rain_p95, wr$rain_p99)),
+  `ERA5-only (20 yr, 1995-2014)` = sprintf("%.1f mm", c(era5_p95, era5_p99)),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Wet-day rainfall percentile thresholds: the 125-year Whakarewarewa gauge vs. the 20-year ERA5 baseline window used previously.")
+```
+
+### Long-record return levels
+
+With 125 years of daily rainfall, annual-maximum return levels can be estimated directly, well beyond what any 20-30 year GCM/reanalysis window here could support. `compute_rain_return_levels()` fits a Gumbel (extreme-value type I) distribution to the annual maxima by the method of moments:
+
+```{r}
+#| label: return-levels-table
+#| echo: false
+
+tar_read(whaka_rain_return_levels) |>
+  dplyr::rename(`Return period (years)` = return_period_years,
+               `Daily rainfall (mm)` = rx1day_mm) |>
+  knitr::kable(digits = 1,
+              caption = "Gumbel return-level estimates for annual-maximum daily rainfall, Whakarewarewa 1901-present.")
+```
+
+These are a fixed, historically-grounded reference point -- e.g. how the scenario ensemble's projected `rx1day` (below) compares to a present-day 1-in-20 or 1-in-50 year event -- independent of any GCM or bias-correction choice made elsewhere in this pipeline.
+
+Each `scenario_hourly_met` branch's 20-30 annual values are then averaged into one mean-annual number per GCM/scenario/window (`summarise_branch_extremes()`), and the figure/tables below summarise those 81 branch-means as a GCM-ensemble mean and range per scenario/window, against the same baseline period's mean-annual values (dashed line in the figure).
 
 ## Change in extreme/storm-event indices
 
@@ -112,23 +166,24 @@ wind_labels <- c(
   severe_wind_hours = "Severe wind hours", storm_events = "Storm events"
 )
 fmt_index_table(names(wind_labels), wind_labels,
-                "Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window. See the caveat below before treating these as a clean climate signal.")
+                "Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window.")
 ```
 
 ## Discussion
 
-**Rainfall.** `heavy_rain_days` and `extreme_rain_days` increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for `rx1day` several GCMs actually project little change or a slight decrease at some windows (the ratio-based delta-change method here rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in `climate-scenario-workflow.qmd`).
+**Rainfall.** `heavy_rain_days` and `extreme_rain_days` increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for `rx1day` several GCMs project little change or a slight decrease at some windows (the ratio-based delta-change method rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in `climate-scenario-workflow.qmd`). Anchoring the rainfall thresholds to the 125-year Whakarewarewa record instead of the 20-year ERA5 window matters here specifically because a 20-year sample gives a noisy p95/p99 estimate -- with a long, independent record the "heavy"/"extreme" definitions themselves are far more stable, so a projected change in frequency is more trustworthy as an actual signal rather than partly an artefact of which 20 years happened to set the threshold.
 
 **Heat.** `hot_days` and `wsdi` (warm-spell duration) show the clearest, most consistent scenario/window gradient of the three groups -- both increase substantially and near-monotonically from `ssp126` to `ssp585` and from the near-term to the end-of-century window, with comparatively narrow GCM spread. This is the expected signature of a monotonic mean-warming delta applied to a fixed threshold: as the whole distribution shifts up, an increasing share of days cross a *fixed, historical* p95 threshold.
 
-**Wind storms -- treat with caution.** The wind-storm indices show a large apparent increase in `storm_wind_hours`/`severe_wind_hours`/`storm_events` under every scenario, including `ssp126`, where the underlying monthly wind delta-change factors are close to 1 (see `gcm_monthly_deltas_df`, `MET_wndspd` deltas mostly 0.7-1.1 across GCMs). Checking one branch directly (`ACCESS-CM2`/`ssp126`/2071-2100) shows why: the delta-adjusted **daily** target has a mean wind speed of 7.4 m/s, but the **disaggregated hourly** series for the same branch has a mean of 8.4 m/s -- about 14% higher than its own daily target, with the p95/p99/max hourly values shifted up to match. `metscale::disaggregate_met_to_hourly()` reshapes the wind *vector* components (`MET_wnduvu`/`MET_wnduvv`) directly and recomputes `MET_wndspd` from them; its own documentation states this makes the re-aggregated speed track the *vector* daily mean, which should be smaller than or equal to the scalar daily mean, not larger. The direction of the discrepancy seen here is the opposite of what the package describes, which points to a disaggregation-side effect inflating hourly wind variance beyond what the daily delta implies, rather than a genuine climate signal. **The rainfall and heat indices above are not affected** -- `metscale` conserves daily rainfall totals and daily-mean temperature exactly during disaggregation, only wind carries this vector-based exception. Until this is investigated further (or the wind-storm indices are recomputed from `scenario_daily_met` mean wind directly, foregoing sub-daily storm detail), the wind-storm numbers in this page should be read as an upper bound / directionally suggestive at best, not a quantitative projection.
+**Wind storms.** With the vector-disaggregation fix, wind speed is now shaped directly from the donor's own hourly wind-speed pattern rather than being recomputed from reshaped u/v components, removing the disaggregation-side inflation flagged in the previous version of this page (disaggregated hourly wind no longer runs systematically higher than its own delta-adjusted daily target). The wind-storm indices above should now be read as a direct read on the GCM ensemble's wind delta-change signal, which -- per `gcm_monthly_deltas_df` -- is close to 1 (little change) for most GCM/scenario combinations, with a modest number of outlier models/months driving any larger shifts. Wind remains the index group with the least physical basis for a strong climate-change signal at monthly delta-change resolution, since storm-scale wind events are a synoptic-scale phenomenon that a monthly mean factor is a weak proxy for.
 
-**Practical implication for lake modelling.** Heavy-rain and warm-spell frequency both increase with scenario severity in a way that is directionally robust across the GCM ensemble, and both are levers on lake response that matter beyond the monthly-mean forcing already explored in `climate-scenario-workflow.qmd`: more frequent heavy-rain days translate to more frequent high-inflow/nutrient-loading pulses, and longer warm spells extend the window over which thermal stratification can strengthen and hypolimnetic anoxia can develop. Any storm-driven-mixing conclusion that depends on the wind-storm numbers here should wait for the disaggregation issue above to be resolved.
+**Practical implication for lake modelling.** Heavy-rain and warm-spell frequency both increase with scenario severity in a way that is directionally robust across the GCM ensemble, and both are levers on lake response that matter beyond the monthly-mean forcing already explored in `climate-scenario-workflow.qmd`: more frequent heavy-rain days translate to more frequent high-inflow/nutrient-loading pulses, and longer warm spells extend the window over which thermal stratification can strengthen and hypolimnetic anoxia can develop. The return-level table above gives a fixed, long-record reference point (e.g. a 1-in-50-year daily rainfall total) against which to judge whether a given scenario/window's mean `rx1day` represents a meaningfully more frequent extreme, rather than reasoning from the 20-30 year scenario windows alone.
 
 ## Caveats
 
-In addition to the caveats already noted in `climate-scenario-workflow.qmd` (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known `MET_prsttn` unit issue):
+In addition to the caveats already noted in `climate-scenario-workflow.qmd` (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known `MET_prsttn` unit issue) and `met-source-comparison.qmd` (PC10's weak day-to-day correlation with the buoy for rainfall, r ~ 0.12 -- a long-run climatology/threshold use like this is far less sensitive to that than a day-by-day bias-correction reference would be):
 
-- **Wind-storm indices are likely inflated** by the vector-component disaggregation behaviour described above and should not yet be used quantitatively.
-- Thresholds are fixed from a single 20-year historical window (1995-2014); a longer reference record would narrow the threshold estimates themselves, independent of the future-scenario uncertainty already visible in the GCM ensemble spread.
+- The Whakarewarewa gauge is a land station, not over the lake; its absolute rainfall total may differ from true over-lake rainfall even though its long-run climatology is the best available basis for a stable extreme-event threshold at this site.
+- The Gumbel method-of-moments fit is a simple, standard estimator but not the only reasonable choice (e.g. GEV with a shape parameter, or L-moments); treat the return-level table as indicative rather than a design-standard flood estimate.
+- Wind and temperature thresholds still come from only 20 years of ERA5 (1995-2014) -- no equivalently long, independent wind/temperature record exists at this site the way it does for rainfall.
 - Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.
