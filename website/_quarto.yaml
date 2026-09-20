@@ -72,6 +72,10 @@ website:
           - cmip6-visualisation.qmd
           - href: climate-scenario-workflow.qmd
             text: "Climate-Scenario Workflow"
+          - href: met-source-comparison.qmd
+            text: "Met Source Comparison"
+          - href: climate-extreme-events.qmd
+            text: "Extreme & Storm Events"
       - section: "Notes"
         contents:
           - href: notes.qmd

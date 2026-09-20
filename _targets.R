@@ -25,19 +25,24 @@ tar_source(
     here::here("R", "update_hyps.R"),
     here::here("R", "get_point_data.R"),
     here::here("R", "extract_lake_level.R"),
+    here::here("R", "extract_pc10_data.R"),
+    here::here("R", "compare_met_sources.R"),
     here::here("R", "read_ctd.R"),
     here::here("R", "standardise_to_gregorian.R"),
     here::here("R", "estimate_sed_zones.R"),
     here::here("R", "buoy_to_aeme_met.R"),
     here::here("R", "read_niwa_climate_file.R"),
     here::here("R", "niwa_to_aeme_met.R"),
+    here::here("R", "niwa_hourly_to_aeme_met.R"),
     here::here("R", "format_dyresm_inflow.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
     here::here("R", "calc_alum_inflow.R"),
     here::here("R", "sync_aeme_onedrive.R"),
     here::here("R", "scenario_climate_workflow.R"),
-    here::here("R", "plot_gcm_delta_variability.R")
+    here::here("R", "plot_gcm_delta_variability.R"),
+    here::here("R", "summarise_climate_extremes.R"),
+    here::here("R", "plot_climate_extremes.R")
   )
 )
 # Set target options
@@ -167,7 +172,21 @@ list(
                                          "BulkExport-FL150407-20251215152116.zip"),
     format = "file"
   ),
-  
+  tar_target(
+    bop_pc10_zip_folder, file.path(data_raw_dir, "PC10_data_Jun26.zip"),
+    format = "file"
+  ),
+  tar_target(
+    pc10_data_dir, unzip_pc10_data(bop_pc10_zip_folder),
+    format = "file"
+  ),
+  tar_target(
+    pc10_climate_data, extract_pc10_climate(pc10_data_dir)
+  ),
+  tar_target(
+    pc10_climate_met, pc10_climate_to_aeme_met(pc10_climate_data)
+  ),
+
   # CTD Excel file
   tar_target(
     ctd_excel_file,
@@ -413,10 +432,15 @@ list(
     # cue = tar_cue(mode = "always")
   ),
   tar_target(
-    rotorua_buoy_met_aeme_dly, buoy_to_aeme_met(rotorua_buoy_met_data)
+    buoy_met_height, 2.0 # m above water surface
   ),
   tar_target(
-    rotorua_buoy_met_aeme_hr, buoy_to_aeme_met(rotorua_buoy_met_data, unit = "hour")
+    rotorua_buoy_met_aeme_dly, buoy_to_aeme_met(rotorua_buoy_met_data,
+                                                buoy_met_height)
+  ),
+  tar_target(
+    rotorua_buoy_met_aeme_hr, buoy_to_aeme_met(rotorua_buoy_met_data,
+                                               buoy_met_height, unit = "hour")
   ),
   
   # NIWA met to AEME data
@@ -426,6 +450,14 @@ list(
         dplyr::bind_rows() |>
         niwa_to_aeme_met()
     }
+  ),
+  # NIWA hourly met, combined into the same Date + MET_* wide layout as
+  # rotorua_buoy_met_aeme_hr / era5_hourly_met so it can also be handed to
+  # metscale::fit_met_bias_correction() as a (longer-record) alternative or
+  # supplement to the buoy when bias-correcting era5_hourly_met.
+  tar_target(
+    niwa_met_hourly_aeme,
+    niwa_hourly_to_aeme_met(niwa_met_hourly_files, tz = scenario_tz)
   ),
   tar_target(
     ctd_data, read_ctd(file = ctd_excel_file)
@@ -504,6 +536,7 @@ list(
         # ── Climate ───────────────────────────────────────────────────────
         niwa_met_daily         = niwa_met_daily,
         niwa_met_hourly_files  = niwa_met_hourly_files,  # character vector of paths
+        niwa_met_hourly_aeme   = niwa_met_hourly_aeme,
         
         # ── GCM / CMIP6 ───────────────────────────────────────────────────
         cmip6_metadata         = cmip6_metadata,
@@ -1171,7 +1204,8 @@ list(
     era5_bias_correction,
     metscale::fit_met_bias_correction(
       era5_hourly_met, rotorua_buoy_met_aeme_hr,
-      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel", "MET_prsttn"),
+      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel",
+              "MET_prsttn", "MET_pprain"),
       method = "scale", by = "doy-loess", verbose = FALSE)
   ),
   tar_target(
@@ -1181,6 +1215,89 @@ list(
       lat = lake_meta$latitude, lon = lake_meta$longitude,
       elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
   ),
+
+  #* Extend the buoy record using the airport station's long history ----
+  # The buoy only spans ~5 years, which is thin for a doy-loess seasonal
+  # correction. Fit a land (airport) -> lake (buoy) transfer function over
+  # their short overlap window, then apply it to the full airport record to
+  # synthesize a lake-equivalent series spanning decades instead of 5 years
+  # -- giving fit_met_bias_correction() a longer, still lake-representative
+  # reference to bias-correct ERA5 against. See era5_corrected_hourly_extended
+  # below for validation against the buoy-only correction before relying on
+  # this outside the buoy's own overlap window.
+  tar_target(
+    niwa_buoy_overlap_window,
+    range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE)
+  ),
+  tar_target(
+    niwa_to_buoy_bias_correction, {
+      niwa_overlap <- niwa_met_hourly_aeme |>
+        dplyr::filter(Date >= niwa_buoy_overlap_window[1],
+                      Date <= niwa_buoy_overlap_window[2])
+      metscale::fit_met_bias_correction(
+        niwa_overlap, rotorua_buoy_met_aeme_hr,
+        vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel", "MET_prsttn"),
+        method = "scale", by = "doy-loess", verbose = FALSE)
+    }
+  ),
+  # expand = FALSE here: expand_met() derives extra atmospheric variables
+  # (cloud cover, downwelling longwave, etc.) that this intermediate target
+  # doesn't need -- it's only used as a fit_met_bias_correction() reference
+  # below, not as forcing data. expand = TRUE also requires MET_radswd,
+  # MET_tmpair and MET_pprain simultaneously non-NA on every row, which
+  # this station's data can't satisfy: the airport's radiation sensor and
+  # temperature sensor only ever overlap on 44 calendar days across the
+  # entire 44-year record (radiation stopped in 2020; temperature's own
+  # "Mean Temperature" field wasn't populated until 2023), so that filter
+  # collapsed to zero rows.
+  tar_target(
+    niwa_met_hourly_lake_equiv,
+    metscale::apply_met_bias_correction(
+      niwa_met_hourly_aeme, niwa_to_buoy_bias_correction, verbose = FALSE)
+  ),
+
+  #* Bias-correct ERA5 against the extended (buoy-quality, airport-length)
+  #  lake-equivalent series instead of the raw 5-year buoy record ----
+  # Note: MET_wndspd and MET_radswd aren't in niwa_to_buoy_bias_correction's
+  # models (the airport's wind and radiation sensors have ~no valid readings
+  # during the buoy's 2022-2026 window -- 0 radiation pairs, 2 wind pairs),
+  # so those two columns pass through this fit as raw, buoy-uncorrected
+  # airport values rather than lake-equivalent ones. Treat those two
+  # variables' results here cautiously versus era5_bias_correction.
+  tar_target(
+    era5_bias_correction_extended,
+    metscale::fit_met_bias_correction(
+      era5_hourly_met, niwa_met_hourly_lake_equiv,
+      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel",
+              "MET_prsttn", "MET_pprain"),
+      method = "scale", by = "doy-loess", verbose = FALSE)
+  ),
+  tar_target(
+    era5_corrected_hourly_extended,
+    metscale::apply_met_bias_correction(
+      era5_hourly_met, era5_bias_correction_extended, expand = TRUE,
+      lat = lake_meta$latitude, lon = lake_meta$longitude,
+      elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
+  ),
+
+  #* Compare all four raw met sources (buoy, airport, ERA5, PC10) against
+  #  each other -- a QA check on this pipeline's existing bias-correction
+  #  chain, and a way to see whether PC10's longer temp/RH/rain records
+  #  are worth using to extend it the way the airport already is. ----
+  tar_target(
+    met_source_comparison,
+    compare_met_sources(buoy = rotorua_buoy_met_aeme_hr,
+                        airport = niwa_met_hourly_aeme,
+                        era5 = era5_hourly_met,
+                        pc10 = pc10_climate_met)
+  ),
+  tar_target(
+    met_source_comparison_plot,
+    plot_met_source_comparison(
+      met_source_comparison,
+      window = range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE))
+  ),
+
   tar_target(
     era5_corrected_daily_baseline, {
       baseline <- metscale::bias_correct_daily_baseline(
@@ -1307,8 +1424,18 @@ list(
   ),
   tar_target(
     scenario_hourly_met, {
+      # `scenario_daily_met` no longer carries MET_wnduvu/MET_wnduvv/MET_wnddir
+      # (see apply_gcm_delta_to_baseline()); strip them from the donor too, so
+      # disaggregate_met_to_hourly() treats MET_wndspd as a plain scalar
+      # mean-conserved variable (fragments-shaped from the donor's own wind-speed
+      # pattern) rather than taking its wind-vector code path -- direction is
+      # not needed for this lake model and the vector recomputation was
+      # distorting the disaggregated hourly wind speed (see
+      # website/climate-extreme-events.qmd).
+      donor <- era5_corrected_hourly
+      donor[c("MET_wnddir", "MET_wnduvu", "MET_wnduvv")] <- NULL
       metscale::disaggregate_met_to_hourly(
-        scenario_daily_met, donor = era5_corrected_hourly,
+        scenario_daily_met, donor = donor,
         method = "fragments", swr = "clearsky", lat = lake_meta$latitude,
         lon = lake_meta$longitude, elev = lake_meta$elevation, tz = scenario_tz,
         seed = 42, expand = TRUE, verbose = FALSE)
@@ -1316,8 +1443,59 @@ list(
     pattern = map(scenario_daily_met),
     iteration = "list",
     cue = tar_cue(mode = "never")
-  )
+  ),
 
+  #* 5. Extreme/storm-event indices from the hourly met, baseline vs each
+  #     GCM x scenario x window branch -- thresholds fixed from the
+  #     historical baseline so frequency changes are directly interpretable ----
+  tar_target(
+    extreme_thresholds,
+    compute_extreme_thresholds(era5_corrected_hourly, scenario_ref_years)
+  ),
+  tar_target(
+    baseline_extreme_indices, {
+      day <- as.Date(era5_corrected_hourly$Date)
+      yr  <- as.integer(format(day, "%Y"))
+      ann <- compute_annual_extreme_indices(
+        era5_corrected_hourly[yr %in% scenario_ref_years, ], extreme_thresholds)
+      as.list(dplyr::summarise(ann, dplyr::across(-year, mean, na.rm = TRUE)))
+    }
+  ),
+  tar_target(
+    scenario_extreme_indices,
+    summarise_branch_extremes(
+      scenario_hourly_met, extreme_thresholds,
+      gcm = scenario_delta_grid$gcm, scenario = scenario_delta_grid$scenario,
+      window = scenario_delta_grid$window),
+    pattern = map(scenario_hourly_met, scenario_delta_grid),
+    iteration = "list"
+  ),
+  tar_target(
+    scenario_extreme_indices_df, dplyr::bind_rows(scenario_extreme_indices)
+  ),
+  tar_target(
+    scenario_extreme_indices_file, {
+      out_file <- here::here("data", "processed", "scenario_extreme_indices.csv")
+      readr::write_csv(scenario_extreme_indices_df, file = out_file)
+      out_file
+    },
+    format = "file"
+  ),
+  tar_target(
+    extreme_indices_plot, {
+      out_file <- here::here("website", "www", "plots", "extreme_indices_summary.png")
+      p <- plot_extreme_index_summary(
+        scenario_extreme_indices_df, baseline_extreme_indices,
+        indices = c("rx1day", "heavy_rain_days", "extreme_rain_days",
+                   "max_wind", "storm_wind_hours", "storm_events",
+                   "hot_days", "wsdi"))
+      ggsave(filename = out_file, plot = p, width = 12, height = 9, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  )
 
   # 6. Reporting / Quarto rendering
 

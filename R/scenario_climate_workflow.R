@@ -19,6 +19,14 @@ read_era5_hourly_met <- function(file, lat, lon, tz = "Etc/GMT-12") {
   era5$Date <- as.POSIXct(era5$Date, tz = "UTC", format = "%Y-%m-%dT%H:%M:%SZ")
   attr(era5$Date, "tzone") <- tz
   era5 <- era5[!is.na(era5$Date), ]
+  # Source file stores MET_pprain in mm/hour; every other AEME MET_pprain
+  # series in this pipeline (buoy, airport, PC10) is metres accumulated
+  # over the row's own timestep, so convert here once rather than carrying
+  # the mismatch downstream (era5_bias_correction doesn't correct pprain,
+  # so an unconverted value would flow uncorrected into every scenario).
+  if ("MET_pprain" %in% names(era5)) {
+    era5$MET_pprain <- era5$MET_pprain / 1000
+  }
   attr(era5, "tz")  <- tz
   attr(era5, "lat") <- lat
   attr(era5, "lon") <- lon
@@ -125,6 +133,13 @@ apply_gcm_delta_to_baseline <- function(baseline, deltas, lat, lon, elev, tz) {
   keep <- intersect(c("Date", "MET_radswd", "MET_tmpair", "MET_pprain",
                       "MET_humrel", "MET_wndspd", "MET_prsttn"), names(out))
   em <- metscale::expand_met(out[, keep], lat = lat, lon = lon, elev = elev, tz = tz)
+  ## expand_met() always derives MET_wnddir/MET_wnduvu/MET_wnduvv, but with no
+  ## direction in `keep` these are a fictitious constant-direction decomposition
+  ## of MET_wndspd, not a real wind vector. Drop them so downstream disaggregation
+  ## shapes MET_wndspd directly (as a plain scalar mean, like temperature) instead
+  ## of taking metscale's wind-vector code path -- direction is not needed here
+  ## and reconstructing it this way was distorting disaggregated wind speed.
+  em[c("MET_wnddir", "MET_wnduvu", "MET_wnduvv")] <- NULL
   attr(em, "tz") <- tz; attr(em, "lat") <- lat; attr(em, "lon") <- lon
   em
 }

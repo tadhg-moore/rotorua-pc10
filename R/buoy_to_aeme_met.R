@@ -1,8 +1,9 @@
-buoy_to_aeme_met <- function(met, unit = c("day", "hour")) {
+buoy_to_aeme_met <- function(met, meas_height = 2, unit = c("day", "hour")) {
   met_aeme <- met |> 
     dplyr::mutate(
       DateTime = lubridate::as_datetime(met$DateTime, tz = "Pacific/Auckland"),
       Date = lubridate::round_date(DateTime, unit = unit),
+      WndSpd = metscale::wind_at_height(WndSpd, from = meas_height, to = 10),
       PpRain = PpRain / 1000
     ) |>
     dplyr::group_by(Date) |>

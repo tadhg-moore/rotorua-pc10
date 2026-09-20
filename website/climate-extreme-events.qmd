@@ -1,0 +1,134 @@
+---
+title: "Climate-Scenario Extreme & Storm-Event Analysis"
+format: html
+editor: visual
+warning: false
+message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+library(targets)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+[`climate-scenario-workflow.qmd`](climate-scenario-workflow.qmd) builds `scenario_hourly_met` -- the AEME `MET_*`-formatted hourly forcing for every GCM x SSP x future-window combination (7 GCMs x 4 SSPs x 3 windows, minus `NZESM`/`ssp585` = 81 branches), by applying each GCM/scenario's monthly delta-change signal to the bias-corrected daily ERA5 baseline and disaggregating back to hourly against the bias-corrected hourly ERA5 record.
+
+This page uses that same hourly forcing to ask a narrower question: **how does the frequency and intensity of extreme/storm-scale events change**, not just the monthly-mean climate? Sub-daily (hourly) data matters here because heavy-rain intensity, wind-storm duration and short heatwaves are sub-daily-to-daily phenomena that a monthly delta-change factor alone cannot resolve -- they only show up once the delta has been re-expanded to hourly.
+
+## Method
+
+For every branch of `scenario_hourly_met`, and separately for the bias-corrected historical baseline (`era5_corrected_hourly`, 1995-2014), `compute_annual_extreme_indices()` ([R/summarise_climate_extremes.R](../R/summarise_climate_extremes.R)) computes one row per calendar year for:
+
+| Index | Definition |
+|---|---|
+| `rx1day` | Annual maximum daily rainfall (mm) |
+| `heavy_rain_days` | Days/year with daily rainfall above the historical p95 (wet days only) |
+| `extreme_rain_days` | Days/year above the historical p99 |
+| `hot_days` | Days/year with daily maximum air temperature above the historical p95 |
+| `wsdi` | Warm-spell duration index: days/year in spells of >=3 consecutive hot days |
+| `max_wind` | Annual maximum hourly wind speed (m/s) |
+| `storm_wind_hours` | Hours/year with hourly wind speed above the historical p95 |
+| `severe_wind_hours` | Hours/year above the historical p99 |
+| `storm_events` | Number of separate contiguous spells/year above the wind p95 threshold |
+
+Every threshold (`compute_extreme_thresholds()`) is fixed **once**, from the bias-corrected hourly baseline over the same 1995-2014 reference window used for the GCM delta-change calculation, and then applied unchanged to every future branch. That keeps "heavy rain" and "storm wind" meaning the same absolute thing in every period, so a change in frequency is a genuine intensification/frequency signal rather than an artefact of a moving definition.
+
+```{r}
+#| label: thresholds-table
+#| echo: false
+
+th <- tar_read(extreme_thresholds)
+data.frame(
+  Index = c("Rainfall p95 (wet days)", "Rainfall p99 (wet days)",
+           "Hourly wind p95", "Hourly wind p99", "Daily max temperature p95"),
+  Value = sprintf("%.1f", unlist(th[c("rain_p95", "rain_p99", "wind_p95", "wind_p99", "tmax_p95")])),
+  Units = c("mm/day", "mm/day", "m/s", "m/s", "°C")
+) |>
+  knitr::kable(caption = "Fixed extreme-event thresholds, from the bias-corrected hourly ERA5 baseline, 1995-2014.")
+```
+
+Each branch's 20-30 annual values are then averaged into one mean-annual number per GCM/scenario/window (`summarise_branch_extremes()`), and the figure/tables below summarise those 81 branch-means as a GCM-ensemble mean and range per scenario/window, against the same baseline period's mean-annual values (shown in the table above's row context, or as the dashed line in the figure).
+
+## Change in extreme/storm-event indices
+
+```{r}
+#| label: extreme-indices-plot
+#| echo: false
+#| fig-width: 11
+#| fig-height: 8.5
+#| out-width: 100%
+
+knitr::include_graphics("www/plots/extreme_indices_summary.png")
+```
+
+```{r}
+#| label: extreme-summary-tables
+#| echo: false
+
+extremes_df <- tar_read(scenario_extreme_indices_df)
+baseline <- tar_read(baseline_extreme_indices)
+
+fmt_index_table <- function(indices, labels, caption) {
+  extremes_df |>
+    tidyr::pivot_longer(dplyr::all_of(indices), names_to = "index", values_to = "value") |>
+    dplyr::group_by(scenario, window, index) |>
+    dplyr::summarise(mean = mean(value, na.rm = TRUE),
+                     min  = min(value, na.rm = TRUE),
+                     max  = max(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      base = baseline[[index]],
+      pct  = 100 * (mean - base) / base,
+      cell = sprintf("%.1f (%.1f–%.1f) [%+.0f%%]", mean, min, max, pct)
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(index = factor(labels[index], unname(labels))) |>
+    dplyr::select(scenario, window, index, cell) |>
+    tidyr::pivot_wider(names_from = index, values_from = cell) |>
+    dplyr::arrange(window, scenario) |>
+    knitr::kable(caption = caption)
+}
+
+rain_heat_labels <- c(
+  rx1day = "Max daily rain (mm)", heavy_rain_days = "Heavy rain days",
+  extreme_rain_days = "Extreme rain days", hot_days = "Hot days", wsdi = "Warm-spell days"
+)
+fmt_index_table(names(rain_heat_labels), rain_heat_labels,
+                "Rainfall and heat extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window.")
+```
+
+```{r}
+#| label: wind-summary-table
+#| echo: false
+
+wind_labels <- c(
+  max_wind = "Max hourly wind (m/s)", storm_wind_hours = "Storm wind hours",
+  severe_wind_hours = "Severe wind hours", storm_events = "Storm events"
+)
+fmt_index_table(names(wind_labels), wind_labels,
+                "Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window. See the caveat below before treating these as a clean climate signal.")
+```
+
+## Discussion
+
+**Rainfall.** `heavy_rain_days` and `extreme_rain_days` increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for `rx1day` several GCMs actually project little change or a slight decrease at some windows (the ratio-based delta-change method here rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in `climate-scenario-workflow.qmd`).
+
+**Heat.** `hot_days` and `wsdi` (warm-spell duration) show the clearest, most consistent scenario/window gradient of the three groups -- both increase substantially and near-monotonically from `ssp126` to `ssp585` and from the near-term to the end-of-century window, with comparatively narrow GCM spread. This is the expected signature of a monotonic mean-warming delta applied to a fixed threshold: as the whole distribution shifts up, an increasing share of days cross a *fixed, historical* p95 threshold.
+
+**Wind storms -- treat with caution.** The wind-storm indices show a large apparent increase in `storm_wind_hours`/`severe_wind_hours`/`storm_events` under every scenario, including `ssp126`, where the underlying monthly wind delta-change factors are close to 1 (see `gcm_monthly_deltas_df`, `MET_wndspd` deltas mostly 0.7-1.1 across GCMs). Checking one branch directly (`ACCESS-CM2`/`ssp126`/2071-2100) shows why: the delta-adjusted **daily** target has a mean wind speed of 7.4 m/s, but the **disaggregated hourly** series for the same branch has a mean of 8.4 m/s -- about 14% higher than its own daily target, with the p95/p99/max hourly values shifted up to match. `metscale::disaggregate_met_to_hourly()` reshapes the wind *vector* components (`MET_wnduvu`/`MET_wnduvv`) directly and recomputes `MET_wndspd` from them; its own documentation states this makes the re-aggregated speed track the *vector* daily mean, which should be smaller than or equal to the scalar daily mean, not larger. The direction of the discrepancy seen here is the opposite of what the package describes, which points to a disaggregation-side effect inflating hourly wind variance beyond what the daily delta implies, rather than a genuine climate signal. **The rainfall and heat indices above are not affected** -- `metscale` conserves daily rainfall totals and daily-mean temperature exactly during disaggregation, only wind carries this vector-based exception. Until this is investigated further (or the wind-storm indices are recomputed from `scenario_daily_met` mean wind directly, foregoing sub-daily storm detail), the wind-storm numbers in this page should be read as an upper bound / directionally suggestive at best, not a quantitative projection.
+
+**Practical implication for lake modelling.** Heavy-rain and warm-spell frequency both increase with scenario severity in a way that is directionally robust across the GCM ensemble, and both are levers on lake response that matter beyond the monthly-mean forcing already explored in `climate-scenario-workflow.qmd`: more frequent heavy-rain days translate to more frequent high-inflow/nutrient-loading pulses, and longer warm spells extend the window over which thermal stratification can strengthen and hypolimnetic anoxia can develop. Any storm-driven-mixing conclusion that depends on the wind-storm numbers here should wait for the disaggregation issue above to be resolved.
+
+## Caveats
+
+In addition to the caveats already noted in `climate-scenario-workflow.qmd` (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known `MET_prsttn` unit issue):
+
+- **Wind-storm indices are likely inflated** by the vector-component disaggregation behaviour described above and should not yet be used quantitatively.
+- Thresholds are fixed from a single 20-year historical window (1995-2014); a longer reference record would narrow the threshold estimates themselves, independent of the future-scenario uncertainty already visible in the GCM ensemble spread.
+- Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.
