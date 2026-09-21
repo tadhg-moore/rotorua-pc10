@@ -47,6 +47,48 @@ Air temperature, wind speed, shortwave radiation and relative humidity all impro
 
 **Update**: rainfall (`MET_pprain`) is now included in this correction, having previously been left uncorrected on the assumption that the buoy gauge was an unreliable target. A multi-source comparison (buoy vs. airport vs. ERA5 vs. BOPRC/PC10 stations -- see [`met-source-comparison.qmd`](met-source-comparison.qmd)) found no evidence the buoy under-reads rain relative to the land stations, but did surface a real **unit bug**: the raw ERA5-Land CSV stores `MET_pprain` in mm/hour, not the m/hour every other source in this pipeline uses, which was silently inflating ERA5 rainfall \~1000x wherever it passed uncorrected. That's fixed at the source in `read_era5_hourly_met()`. The buoy's rain record is still noisier than its other variables (weak correlation with the long land records), so treat the corrected `MET_pprain` here with more caution than temperature/humidity/wind -- see the comparison page for the numbers.
 
+**Further update -- found and fixed**: comparing the raw buoy `PpRain` record against its own known climatology surfaced a systematic \~10x inflation from the start of the record (Feb 2022) through October 2023 -- mean daily rain of \~47 mm/day (annualising to \~17,000 mm/yr, physically impossible for Rotorua) versus \~4 mm/day (\~1,500 mm/yr, matching raw ERA5 and the 125-year Whakarewarewa gauge closely) from late October 2023 onward. The root cause is a recording-unit change at the buoy on 2023-10-23, not an instrument calibration drift: before that date `PpRain` was logged in mm/10min (not mm) and `WndSpd` in knots (not m/s). Both are now converted in `rotorua_buoy_met_data` (`_targets.R`) -- `PpRain / 10` and `WndSpd * 0.514444` -- for the pre-2023-10-23 rows before being combined with the already-correct-unit rows after it, so `era5_bias_correction` now fits against a consistently-unit'd buoy record across its full span. The plots below reflect whatever `era5_bias_correction`/`era5_corrected_hourly` build was current when last rendered -- re-render this page after a fresh `tar_make()` to confirm the corrected distribution's tail now tracks the buoy/long-record rainfall instead of overshooting it.
+
+### Bias-correction diagnostics: wind speed and rainfall
+
+The skill table above summarises cross-validated numeric performance; the figures below show what the correction is actually doing to the daily time series and distribution, for the two variables most consequential downstream (wind drives the storm indices in `climate-extreme-events.qmd`, rainfall drives the heavy-rain indices there).
+
+```{r}
+#| label: bc-wind-timeseries
+#| echo: false
+#| out-width: 100%
+
+knitr::include_graphics("www/plots/era5_bc_timeseries_wind.png")
+```
+
+```{r}
+#| label: bc-wind-distribution
+#| echo: false
+#| out-width: 80%
+
+knitr::include_graphics("www/plots/era5_bc_distribution_wind.png")
+```
+
+Wind speed is expected to be the cleaner case: the corrected series should track the buoy's day-to-day variability more closely than raw ERA5 does, and the corrected distribution should sit closer to the buoy's than the raw distribution -- check the two plots above confirm that once rendered from a build that includes the `rotorua_buoy_met_data` knots-to-m/s fix above.
+
+```{r}
+#| label: bc-rain-timeseries
+#| echo: false
+#| out-width: 100%
+
+knitr::include_graphics("www/plots/era5_bc_timeseries_rain.png")
+```
+
+```{r}
+#| label: bc-rain-distribution
+#| echo: false
+#| out-width: 80%
+
+knitr::include_graphics("www/plots/era5_bc_distribution_rain.png")
+```
+
+Rainfall is the variable to check most carefully here, given the buoy unit issue above: if these plots were last rendered from a build of `era5_bias_correction`/`era5_corrected_hourly` that predates the `rotorua_buoy_met_data` unit fix, expect the corrected distribution's upper tail to sit well beyond both the raw ERA5 and the buoy's own post-fix distribution, and the time series to show the correction pulling rainfall up hardest during the pre-October-2023 window. A rebuild after the fix should bring the corrected distribution back in line with raw ERA5 and the long-record rainfall data -- re-render this page after `tar_make()` and check these two plots specifically before trusting `MET_pprain` downstream.
+
 ## 2. Bias-corrected daily baseline
 
 ```{r}

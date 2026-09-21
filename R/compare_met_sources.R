@@ -54,7 +54,7 @@ met_daily_long <- function(sources) {
 #'   variable x non-reference source: n, overlap window, bias, MAE, RMSE, r)
 compare_met_sources <- function(...,
                                 vars = c("MET_tmpair", "MET_humrel",
-                                        "MET_pprain"),
+                                        "MET_pprain", "MET_wndspd"),
                                 reference = "buoy") {
   sources <- list(...)
   stopifnot(reference %in% names(sources))
@@ -96,7 +96,7 @@ compare_met_sources <- function(...,
 
 plot_met_source_comparison <- function(comparison, window = NULL,
                                        vars = c("MET_tmpair", "MET_humrel",
-                                               "MET_pprain")) {
+                                               "MET_pprain", "MET_wndspd")) {
   d <- comparison$long |> dplyr::filter(variable %in% vars)
   if (!is.null(window)) {
     d <- d |> dplyr::filter(Date >= window[1], Date <= window[2])

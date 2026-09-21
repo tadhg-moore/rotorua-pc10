@@ -42,7 +42,8 @@ tar_source(
     here::here("R", "scenario_climate_workflow.R"),
     here::here("R", "plot_gcm_delta_variability.R"),
     here::here("R", "summarise_climate_extremes.R"),
-    here::here("R", "plot_climate_extremes.R")
+    here::here("R", "plot_climate_extremes.R"),
+    here::here("R", "plot_bias_correction.R")
   )
 )
 # Set target options
@@ -434,8 +435,7 @@ list(
           DateTime = as.POSIXct(DateTime, tz = "Etc/GMT-12")
         )
       # Before 2023-10-23 windpseed and rainfall were collected in different units
-      browser()
-      met_pre <- met |> 
+      met_pre <- met |>
         dplyr::filter(
           DateTime < as.POSIXct("2023-10-23 00:00:00", tz = "Pacific/Auckland")
         ) |> 
@@ -1238,6 +1238,61 @@ list(
       elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
   ),
 
+  #* Bias-correction diagnostics: raw vs. corrected vs. buoy, time series and
+  #  distribution, for the two variables most consequential for the
+  #  scenario workflow -- wind speed (drives storm/mixing indices) and
+  #  rainfall (drives heavy-rain indices, and known to be sensitive to
+  #  the buoy's own data quality -- see climate-extreme-events.qmd) ----
+  tar_target(
+    era5_bc_timeseries_wind, {
+      out_file <- here::here("website", "www", "plots", "era5_bc_timeseries_wind.png")
+      p <- plot_bias_correction_timeseries(era5_hourly_met, era5_corrected_hourly,
+                                           rotorua_buoy_met_aeme_hr, "MET_wndspd")
+      ggsave(filename = out_file, plot = p, width = 10, height = 4, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    era5_bc_distribution_wind, {
+      out_file <- here::here("website", "www", "plots", "era5_bc_distribution_wind.png")
+      p <- plot_bias_correction_distribution(era5_hourly_met, era5_corrected_hourly,
+                                             rotorua_buoy_met_aeme_hr, "MET_wndspd")
+      ggsave(filename = out_file, plot = p, width = 7, height = 4.5, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    era5_bc_timeseries_rain, {
+      out_file <- here::here("website", "www", "plots", "era5_bc_timeseries_rain.png")
+      p <- plot_bias_correction_timeseries(era5_hourly_met, era5_corrected_hourly,
+                                           rotorua_buoy_met_aeme_hr, "MET_pprain")
+      ggsave(filename = out_file, plot = p, width = 10, height = 4, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    era5_bc_distribution_rain, {
+      out_file <- here::here("website", "www", "plots", "era5_bc_distribution_rain.png")
+      p <- plot_bias_correction_distribution(era5_hourly_met, era5_corrected_hourly,
+                                             rotorua_buoy_met_aeme_hr, "MET_pprain",
+                                             wet_only = TRUE, log1p_transform = TRUE)
+      ggsave(filename = out_file, plot = p, width = 7, height = 4.5, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+
   #* Extend the buoy record using the airport station's long history ----
   # The buoy only spans ~5 years, which is thin for a doy-loess seasonal
   # correction. Fit a land (airport) -> lake (buoy) transfer function over
@@ -1311,13 +1366,16 @@ list(
     compare_met_sources(buoy = rotorua_buoy_met_aeme_hr,
                         airport = niwa_met_hourly_aeme,
                         era5 = era5_hourly_met,
-                        pc10 = pc10_climate_met)
+                        pc10 = pc10_climate_met,
+                        vars = c("MET_tmpair", "MET_humrel", "MET_pprain",
+                                "MET_wndspd"))
   ),
   tar_target(
     met_source_comparison_plot,
     plot_met_source_comparison(
       met_source_comparison,
-      window = range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE))
+      window = range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE),
+      vars = c("MET_tmpair", "MET_humrel", "MET_pprain", "MET_wndspd"))
   ),
 
   tar_target(

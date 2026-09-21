@@ -31,7 +31,11 @@ The airport and PC10 stations were chosen from BOPRC/NIWA's larger station netwo
 
 ## Comparing the raw sources against the buoy
 
-`met_source_comparison` aggregates all four sources to daily values and scores the airport, ERA5 and PC10 against the buoy — the only source with a direct claim to being "true" lake conditions — over whatever window each pair overlaps (2022 onward, bounded by the buoy).
+`met_source_comparison` aggregates all four sources to daily values and scores the airport, ERA5 and PC10 against the buoy — the only source with a direct claim to being "true" lake conditions — over whatever window each pair overlaps (2022 onward, bounded by the buoy), for temperature, humidity, rainfall and wind speed.
+
+::: {.callout-note}
+The buoy's own wind speed and rainfall had a unit bug of their own, now fixed in `rotorua_buoy_met_data`: before 2023-10-23 the buoy logged wind in knots and rain in mm/10 min, while later records use m/s and mm directly. The stats and plot below reflect the corrected series.
+:::
 
 ```{r}
 #| label: comparison-stats
@@ -47,7 +51,7 @@ cmp$stats |>
 #| label: comparison-plot
 #| echo: false
 #| fig-height: 8
-#| fig-cap: "Daily air temperature, relative humidity and rainfall from all four sources, over the buoy's record."
+#| fig-cap: "Daily air temperature, relative humidity, rainfall and wind speed from all four sources, over the buoy's record."
 
 tar_read(met_source_comparison_plot)
 ```
@@ -56,7 +60,8 @@ tar_read(met_source_comparison_plot)
 
 -   **Air temperature** — every land/reanalysis source reads \~1–1.5 °C colder than the buoy, which is the expected lake-thermal-inertia effect (water buffers diurnal and seasonal swings that land stations don't), not a data error. ERA5 tracks the buoy's day-to-day shape best (r ≈ 0.99) despite the largest mean offset; PC10 has the weakest correlation (r ≈ 0.85) of the three.
 -   **Relative humidity** — all sources read more humid than the buoy on average. Correlation is much weaker across the board than for temperature, and **PC10's RH correlation with the buoy is very weak (r ≈ 0.28)** — treat PC10 RH as a rough guide, not a precise match to lake conditions.
--   **Rainfall** — airport and PC10 both track the buoy's rain total closely on average (bias ≈ 0). PC10's *day-to-day* correlation with the buoy is weak (r ≈ 0.12), consistent with either real small-scale spatial variability in rainfall (rain is far patchier than temperature) or gauge-timing noise, rather than a systematic error — its long-run total still agrees.
+-   **Rainfall** — now that the buoy's own unit bug is fixed, all three sources track the buoy's rain total closely on average (bias within \~0.003 m/day of the buoy in every case). Day-to-day correlation is decent for airport and ERA5 (r ≈ 0.75–0.80) but still weak for PC10 (r ≈ 0.10) — consistent with real small-scale spatial variability in rainfall (it's far patchier than temperature) rather than a systematic PC10 error, since its long-run total still agrees.
+-   **Wind speed** — two very different problems show up here. **Airport vs. buoy has almost no usable overlap (n = 2 paired days)**: the airport's wind sensor has essentially no valid readings during the buoy's 2022–2026 window, which is why `niwa_to_buoy_bias_correction` already leaves wind uncorrected (documented in `_targets.R` as "\< 60 paired records — not corrected"). This isn't new, but it's now visible directly in the comparison rather than only in a warning message. **ERA5 vs. buoy has a real, substantial low bias**: ERA5 wind averages \~2.9 m/s below the buoy (buoy mean \~5.4 m/s, so ERA5 reads roughly 45% low) with a reasonably strong correlation (r ≈ 0.89) — a real reanalysis wind-speed underestimate, not a units problem, and the reason `MET_wndspd` is already one of the variables `era5_bias_correction` explicitly corrects. PC10 has no wind station at all.
 
 ## A real bug this comparison caught
 
@@ -85,9 +90,11 @@ bc$skill |>
 1.  **Caught a forcing bug before it reached the model.** The ERA5 rain unit error above would have meant every ERA5-driven scenario — including every future GCM projection, since deltas are applied to the ERA5 baseline — ran with rainfall roughly 3 orders of magnitude too high. A single-source pipeline has no way to notice this; comparing independent sources does.
 2.  **Validates the existing buoy → airport extension.** `climate-scenario-workflow.qmd` already extends the short (\~4.5 yr) buoy record using the 44-year airport record (`niwa_to_buoy_bias_correction` → `niwa_met_hourly_lake_equiv`) so `era5_bias_correction_extended` has a longer, still lake-representative reference. PC10's independent record over the same window is a natural cross-check on that extension, since it comes from different instrumentation and a different network (BOPRC, not NIWA).
 3.  **PC10's 1901–present rainfall record is the longest available context for Rotorua rainfall**, over 40 years longer than the airport's. That's directly useful for `summarise_climate_extremes.R` / [`climate-extreme-events.qmd`](climate-extreme-events.qmd)'s historical-extremes framing, and as a long-run independent check on whatever ERA5 rainfall climatology ends up driving the historical baseline and scenario deltas.
-4.  **Flags where to be careful.** PC10's weak correlation with the buoy for RH and rainfall (r ≈ 0.28 and 0.12) means it shouldn't be used as a `fit_met_bias_correction()` reference for those variables the way the airport is — its value here is historical context and cross-validation, not as a second forcing bridge.
+4.  **Flags where to be careful.** PC10's weak correlation with the buoy for RH and rainfall (r ≈ 0.28 and 0.10) means it shouldn't be used as a `fit_met_bias_correction()` reference for those variables the way the airport is — its value here is historical context and cross-validation, not as a second forcing bridge.
+5.  **Confirms wind speed needs ERA5, not the airport, as its correction source.** Wind is one of the most consequential variables for a lake model (it drives mixing and surface heat flux directly), and this comparison makes the choice already baked into the pipeline visible and justified: the airport can't calibrate the buoy's wind (n = 2 overlapping days), but ERA5 has 1,377 overlapping days with a clear, correctable bias (\~45% low, r ≈ 0.89) — exactly the situation `era5_bias_correction`'s `MET_wndspd` scale correction is built for.
 
 ## Caveats carried over from `climate-scenario-workflow.qmd`
 
 -   **Station pressure (`MET_prsttn`)** has a suspected unit issue in `buoy_to_aeme_met()` (raw bias vs. ERA5 \~96 kPa, an order of magnitude too large to be a real elevation effect) — not yet resolved, unrelated to the rainfall fix above.
 -   PC10 has **no radiation or wind data**, so `pc10_climate_met` is a partial forcing (temp/RH/rain only) — useful for comparison and historical context, not as a standalone forcing source.
+-   **Airport wind speed is effectively unvalidated against the buoy** (2 overlapping days) — `era5_bias_correction`'s wind correction rests on the ERA5-buoy comparison alone, with no independent land-station check the way temperature/humidity have via the airport.
