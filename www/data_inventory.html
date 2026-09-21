@@ -56,7 +56,7 @@ tr:hover td{background:#faf9f6}
 </head>
 <body>
 <h1>Data Inventory — Rotorua Lake Modelling</h1>
-<p class="meta">Generated 2026-09-21 00:29 UTC</p>
+<p class="meta">Generated 2026-09-21 01:36 UTC</p>
 
 <div class="stats">
   <div class="stat"><div class="stat-val">30</div><div class="stat-lbl">Datasets</div></div>
@@ -99,7 +99,7 @@ const DATA = [
 {name:'rotorua_inflow_list',cat:'Observations',source:'Chris McBride – previous DYRESM load modelling',temporal:'Static',period:'N/A',spatial:false,dims:'list of 14',cols:'',cls:'list',notes:'Per-stream inflow list, formatted from Rotorua_inf_final.csv'},
 {name:'alum_dosing',cat:'Observations',source:'Bay of Plenty RC – alum dosing plant records (Excel)',temporal:'Daily',period:'2006-06-15 to 2026-02-28',spatial:false,dims:'7,199 rows x 3 cols',cols:'Date, utuhina_alum_l_per_day, puarenga_alum_l_per_day',cls:'tbl_df, tbl, data.frame',notes:'Daily alum dose (L/day) to Utuhina & Puarenga streams'},
 {name:'rotorua_buoy_pro_data',cat:'Observations',source:'LERNZMP API – lake WQ profiler (lake_id 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'444,700 rows x 16 cols',cols:'DateTime, DptSns, TmpWtr, Cond, SpCond, TurbRT, FlChlr, profile_id ... (+8 more)',cls:'data.frame',notes:'Lake Rotorua water-column profiler (temperature, DO, etc.)'},
-{name:'rotorua_buoy_met_data',cat:'Observations',source:'LERNZMP API – lake met station (lake_id 11133)',temporal:'Static',period:'N/A',spatial:false,dims:'471,975 rows x 9 cols',cols:'DateTime, RadSWD, TmpAir, HumRel, PrBaro, WndSpd, PpRain, RadClr ... (+1 more)',cls:'data.frame',notes:'Meteorological observations from the on-lake buoy'},
+{name:'rotorua_buoy_met_data',cat:'Observations',source:'LERNZMP API – lake met station (lake_id 11133)',temporal:'Sub-hourly',period:'2022-02-21 to 2026-09-21',spatial:false,dims:'472,899 rows x 9 cols',cols:'DateTime, RadSWD, TmpAir, HumRel, PrBaro, WndSpd, PpRain, RadClr ... (+1 more)',cls:'data.frame',notes:'Meteorological observations from the on-lake buoy'},
 {name:'ctd_data',cat:'Observations',source:'Bay of Plenty RC – Excel (bop_wq/)',temporal:'Monthly',period:'2003-03-19 to 2025-12-16',spatial:false,dims:'85,039 rows x 5 cols',cols:'Site, Depth (m), Date, variable, value',cls:'tbl_df, tbl, data.frame',notes:'Lake Rotorua CTD depth profiles – full record'},
 {name:'ctd_par',cat:'Observations',source:'Derived – format_par_ts(ctd_data)',temporal:'Irregular',period:'2003-08-20 to 2025-08-20',spatial:false,dims:'147 rows x 4 cols',cols:'Date, Kd, r2, n',cls:'tbl_df, tbl, data.frame',notes:'Light extinction (Kd) time series derived from CTD PAR profiles'},
 {name:'chem_data',cat:'Observations',source:'Bay of Plenty RC – Excel (bop_wq/)',temporal:'Monthly',period:'1990-02-04 to 2025-06-17',spatial:false,dims:'1,953 rows x 19 cols',cols:'LakeName, LocationName, StationName, AquariusID, Date, DepthFrom, DepthTo, TP (mg/m^3) ... (+11 more)',cls:'tbl_df, tbl, data.frame',notes:'Lake chemistry records filtered to Rotorua sites (All_data sheet)'},

@@ -468,9 +468,9 @@ No 'particles' config, assuming no particles
      libaed built using gfortran version           13 .           3 .           0
       Processing aed_models config from aed/aed.nml
          aed_sedflux configuration
-     No 'outflow' config, assuming no outflows
            ******************************* 
            module aed_sedflux : configured for zone_averaging 
+     No 'outflow' config, assuming no outflows
            ******************************* 
          aed_noncohesive configuration
            ******************************* 
@@ -725,7 +725,16 @@ No 'particles' config, assuming no particles
        D(  62) water column diagnostic   &gt; PHY_green_fSil
        D(  63) water column diagnostic   &gt; PHY_green_fT
        D(  64) water column diagnostic   &gt; PHY_green_fSal
-  SZ   OGM
+       D(  65) water column diagnostic   &gt; PHY_green_gpp_c
+       D(  66) water column diagnostic   &gt; PHY_green_rsp_c
+       D(  67) water column diagnostic   &gt; PHY_green_exc_c
+       D(  68) water column diagnostic   &gt; PHY_green_mor_c
+       D(  69) water column diagnostic   &gt; PHY_green_gpp_n
+       D(  70) water column diagnostic   &gt; PHY_green_rsp_n
+       D(  71) water column diagnostic   &gt; PHY_green_exc_n
+       D(  72) water column diagnostic   &gt; PHY_green_mor_n
+       D(  73) water column diagnostic   &gt; PHY_green_gpp_p
+       D(  74) water column diagnostic   &gt; PHY_  SZ   OGM
  OGM_poc_res          aed_organic_matter  SZ   OGM
  OGM_pon_res          aed_organic_matter  SZ   OGM
  OGM_pop_res          aed_organic_matter  SZ   OGM
@@ -760,16 +769,12 @@ No 'particles' config, assuming no particles
  PHY_cyano_mor_c      aed_phytoplankton   3D   PHY
  PHY_cyano_gpp_n      aed_phytoplankton   3D   PHY
  PHY_cyano_rsp_n      aed_phytoplankton   3D   PHY
-       D(  65) water column diagnostic   &gt; PHY_green_gpp_c
-       D(  66) water column diagnostic   &gt; PHY_green_rsp_c
-       D(  67) water column diagnostic   &gt; PHY_green_exc_c
-       D(  68) water column diagnostic   &gt; PHY_green_mor_c
-       D(  69) water column diagnostic   &gt; PHY_green_gpp_n
-       D(  70) water column diagnostic   &gt; PHY_green_rsp_n
-       D(  71) water column diagnostic   &gt; PHY_green_exc_n
-       D(  72) water column diagnostic   &gt; PHY_green_mor_n
-       D(  73) water column diagnostic   &gt; PHY_green_gpp_p
-       D(  74) water column diagnostic   &gt; PHY_green_rsp_p
+ PHY_cyano_exc_n      aed_phytoplankton   3D   PHY
+ PHY_cyano_mor_n      aed_phytoplankton   3D   PHY
+ PHY_cyano_gpp_p      aed_phytoplankton   3D   PHY
+ PHY_cyano_rsp_p      aed_phytoplankton   3D   PHY
+ PHY_cyano_exc_p      aed_phytoplankton   3D   PHY
+green_rsp_p
        D(  75) water column diagnostic   &gt; PHY_green_exc_p
        D(  76) water column diagnostic   &gt; PHY_green_mor_p
        D(  77) water column diagnostic   &gt; PHY_diatom_NtoP
@@ -793,12 +798,18 @@ No 'particles' config, assuming no particles
        D(  95) water column diagnostic   &gt; PHY_diatom_gpp_p
        D(  96) water column diagnostic   &gt; PHY_diatom_rsp_p
        D(  97) water column diagnostic   &gt; PHY_diatom_exc_p
-       D(  98) water column diagnostic   &gt;  PHY_cyano_exc_n      aed_phytoplankton   3D   PHY
- PHY_cyano_mor_n      aed_phytoplankton   3D   PHY
- PHY_cyano_gpp_p      aed_phytoplankton   3D   PHY
- PHY_cyano_rsp_p      aed_phytoplankton   3D   PHY
- PHY_cyano_exc_p      aed_phytoplankton   3D   PHY
- PHY_cyano_mor_p      aed_phytoplankton   3D   PHY
+       D(  98) water column diagnostic   &gt; PHY_diatom_mor_p
+       D(  99) water column diagnostic   &gt; PHY_tchla
+       D( 100) water column diagnostic   &gt; PHY_tphy
+       D( 101) water column diagnostic   &gt; PHY_in
+       D( 102) water column diagnostic   &gt; PHY_ip
+       D( 103) water column diagnostic   &gt; PHY_gpp
+       D( 104) water column diagnostic   &gt; PHY_ncp
+       D( 105) water column diagnostic   &gt; PHY_upt_no3
+       D( 106) water column diagnostic   &gt; PHY_upt_nh4
+       D( 107) water column diagnostic   &gt; PHY_upt_n2
+       D( 108) water column diagnostic   &gt; PHY_upt_po4
+       D( 109) water column diagnos PHY_cyano_mor_p      aed_phytoplankton   3D   PHY
  PHY_green_NtoP       aed_phytoplankton   3D   PHY
  PHY_green_set_c      aed_phytoplankton   3D   PHY
  PHY_green_set_n      aed_phytoplankton   3D   PHY
@@ -818,32 +829,7 @@ No 'particles' config, assuming no particles
  PHY_green_exc_n      aed_phytoplankton   3D   PHY
  PHY_green_mor_n      aed_phytoplankton   3D   PHY
  PHY_green_gpp_p      aed_phytoplankton   3D   PHY
- PHY_green_rsp_p      aed_phytoplankton   3D   PHY
- PHY_green_exc_p      aed_phytoplankton   3D   PHY
- PHY_green_mor_p      aed_phytoplankton   3D   PHY
- PHY_diatom_NtoP      aed_phytoplankton   3D   PHY
- PHY_diatom_set_c     aed_phytoplankton   3D   PHY
- PHY_diatom_set_n     aed_phytoplankton   3D   PHY
- PHY_diatom_set_p     aed_phytoplankton   3D   PHY
- PHY_diatom_fI        aed_phytoplankton   3D   PHY
- PHY_diatom_fNit      aed_phytoplankton   3D   PHY
- PHY_diatom_fPho      aed_phytoplankton   3D   PHY
- PHY_diatom_fSil      aed_phytoplankton   3D   PHY
- PHY_diatom_fT        aed_phytoplankton   3D   PHY
- PHY_diatom_fSal      aed_phytoplankton   3D   PHY
- PHY_diatom_gpp_c     aed_phytoplankton   3D   PHY
- PHY_diatomPHY_diatom_mor_p
-       D(  99) water column diagnostic   &gt; PHY_tchla
-       D( 100) water column diagnostic   &gt; PHY_tphy
-       D( 101) water column diagnostic   &gt; PHY_in
-       D( 102) water column diagnostic   &gt; PHY_ip
-       D( 103) water column diagnostic   &gt; PHY_gpp
-       D( 104) water column diagnostic   &gt; PHY_ncp
-       D( 105) water column diagnostic   &gt; PHY_upt_no3
-       D( 106) water column diagnostic   &gt; PHY_upt_nh4
-       D( 107) water column diagnostic   &gt; PHY_upt_n2
-       D( 108) water column diagnostic   &gt; PHY_upt_po4
-       D( 109) water column diagnostic   &gt; PHY_upt_dic
+tic   &gt; PHY_upt_dic
        D( 110) water column diagnostic   &gt; PHY_set
        D( 111) water column diagnostic   &gt; PHY_par
        D( 112) water column diagnostic   &gt; TOT_tn
@@ -860,17 +846,21 @@ No 'particles' config, assuming no particles
        D(   6) bottom/surface diagnostic ~ NCS_swi_dz
        D(   7) bottom/surface diagnostic ~ NCS_resus
        D(   8) bottom/surface diagnostic ~ NCS_d_taub
-       D(   9) bottom/surface diagnostic ~ OXY_oxy_dsf
-       D(  10) bottom/surface diagnostic ~ OXY_oxy_atm
-       D(  11) bottom/surface diagnostic ~ SIL_dsf_rsi
-       D(  12) bottom/surface diagnostic ~ NIT_amm_dsf
-       D(  13) bottom/surface diagnostic ~ NIT_nit_dsf
-       D(  14) bottom/surface diagnostic ~ PHS_frp_dsf
-       D(  15) bottom/surface diagnostic ~ OGM_toc_sed
-       D(  16) bottom/surface diagnostic ~ OGM_ton_sed
-       D(  17) bottom/surface diagnostic ~ OGM_top_sed
-       D(  18) bottom/surface diagnostic ~ OGM_poc_swi
-     _rsp_c     aed_phytoplankton   3D   PHY
+ PHY_green_rsp_p      aed_phytoplankton   3D   PHY
+ PHY_green_exc_p      aed_phytoplankton   3D   PHY
+ PHY_green_mor_p      aed_phytoplankton   3D   PHY
+ PHY_diatom_NtoP      aed_phytoplankton   3D   PHY
+ PHY_diatom_set_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_set_n     aed_phytoplankton   3D   PHY
+ PHY_diatom_set_p     aed_phytoplankton   3D   PHY
+ PHY_diatom_fI        aed_phytoplankton   3D   PHY
+ PHY_diatom_fNit      aed_phytoplankton   3D   PHY
+ PHY_diatom_fPho      aed_phytoplankton   3D   PHY
+ PHY_diatom_fSil      aed_phytoplankton   3D   PHY
+ PHY_diatom_fT        aed_phytoplankton   3D   PHY
+ PHY_diatom_fSal      aed_phytoplankton   3D   PHY
+ PHY_diatom_gpp_c     aed_phytoplankton   3D   PHY
+ PHY_diatom_rsp_c     aed_phytoplankton   3D   PHY
  PHY_diatom_exc_c     aed_phytoplankton   3D   PHY
  PHY_diatom_mor_c     aed_phytoplankton   3D   PHY
  PHY_diatom_gpp_n     aed_phytoplankton   3D   PHY
@@ -895,7 +885,32 @@ No 'particles' config, assuming no particles
  PHY_set              aed_phytoplankton   3D   PHY
  PHY_par              aed_phytoplankton   3D   PHY
  PHY_phy_swi_c        aed_phytoplankton   SZ   PHY
- PHY_phy_swi_n        aed_phytoplankton   SZ   PHY
+ PHY_phy_sw       D(   9) bottom/surface diagnostic ~ OXY_oxy_dsf
+       D(  10) bottom/surface diagnostic ~ OXY_oxy_atm
+       D(  11) bottom/surface diagnostic ~ SIL_dsf_rsi
+       D(  12) bottom/surface diagnostic ~ NIT_amm_dsf
+       D(  13) bottom/surface diagnostic ~ NIT_nit_dsf
+       D(  14) bottom/surface diagnostic ~ PHS_frp_dsf
+       D(  15) bottom/surface diagnostic ~ OGM_toc_sed
+       D(  16) bottom/surface diagnostic ~ OGM_ton_sed
+       D(  17) bottom/surface diagnostic ~ OGM_top_sed
+       D(  18) bottom/surface diagnostic ~ OGM_poc_swi
+       D(  19) bottom/surface diagnostic ~ OGM_doc_swi
+       D(  20) bottom/surface diagnostic ~ OGM_pon_swi
+       D(  21) bottom/surface diagnostic ~ OGM_don_swi
+       D(  22) bottom/surface diagnostic ~ OGM_pop_swi
+       D(  23) bottom/surface diagnostic ~ OGM_dop_swi
+       D(  24) bottom/surface diagnostic ~ OGM_poc_res
+       D(  25) bottom/surface diagnostic ~ OGM_pon_res
+       D(  26) bottom/surface diagnostic ~ OGM_pop_res
+       D(  27) bottom/surface diagnostic ~ PHY_phy_swi_c
+       D(  28) bottom/surface diagnostic ~ PHY_phy_swi_n
+       D(  29) bottom/surface diagnostic ~ PHY_phy_swi_p
+       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
+
+     ----------  AED config : end  ----------
+
+i_n        aed_phytoplankton   SZ   PHY
  PHY_phy_swi_p        aed_phytoplankton   SZ   PHY
  TOT_tn               aed_totals          3D   TOT
  TOT_tp               aed_totals          3D   TOT
@@ -912,28 +927,13 @@ No 'particles' config, assuming no particles
 
      DBG calling initialise_lake
      DBG entered initialise_lake
-     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x55cb9e2501d0 lake_d  D(  19) bottom/surface diagnostic ~ OGM_doc_swi
-       D(  20) bottom/surface diagnostic ~ OGM_pon_swi
-       D(  21) bottom/surface diagnostic ~ OGM_don_swi
-       D(  22) bottom/surface diagnostic ~ OGM_pop_swi
-       D(  23) bottom/surface diagnostic ~ OGM_dop_swi
-       D(  24) bottom/surface diagnostic ~ OGM_poc_res
-       D(  25) bottom/surface diagnostic ~ OGM_pon_res
-       D(  26) bottom/surface diagnostic ~ OGM_pop_res
-       D(  27) bottom/surface diagnostic ~ PHY_phy_swi_c
-       D(  28) bottom/surface diagnostic ~ PHY_phy_swi_n
-       D(  29) bottom/surface diagnostic ~ PHY_phy_swi_p
-       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
-
-     ----------  AED config : end  ----------
-
-epth=42.650000
+     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x5640c78a41d0 lake_depth=42.650000
      DBG initialise_lake returned
      WQ plugin active: included Num_WQ_Vars = 28
 Heat pump disabled (heat_pump_switch = 0)
 Oxygenation disabled
 
-     Wall clock start time :  Mon Sep 21 00:33:12 2026
+     Wall clock start time :  Mon Sep 21 01:40:00 2026
 
      Simulation begins...
      Running day  2454649, 0.27% of days complete
@@ -1302,8 +1302,8 @@ Oxygenation disabled
      Running day  2455012, 99.45% of days complete
      Running day  2455013, 99.73% of days complete
 
-     Wall clock finish time : Mon Sep 21 00:33:16 2026
-     Wall clock runtime was 4 seconds : 00:00:04 [hh:mm:ss]
+     Wall clock finish time : Mon Sep 21 01:40:05 2026
+     Wall clock runtime was 5 seconds : 00:00:05 [hh:mm:ss]
 
     Model Run Complete
     -------------------------------------------------------</code></pre>
