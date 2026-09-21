@@ -23,7 +23,7 @@ This page uses that same hourly forcing to ask a narrower question: **how does t
 
 This is a rebuild of an earlier version of this page, incorporating two changes made since:
 
-1.  **A rainfall unit bug fix.** [`met-source-comparison.qmd`](met-source-comparison.qmd) caught `MET_pprain` reading ~1000x too high from ERA5's raw units; every rainfall figure below is recomputed against the corrected series.
+1.  **A rainfall unit bug fix.** [`met-source-comparison.qmd`](met-source-comparison.qmd) caught `MET_pprain` reading \~1000x too high from ERA5's raw units; every rainfall figure below is recomputed against the corrected series.
 2.  **Wind is now disaggregated as a plain scalar, not a vector.** `metscale::disaggregate_met_to_hourly()` was reshaping wind via its u/v vector components, which was found to inflate disaggregated hourly wind speed beyond its own delta-adjusted daily target. `apply_gcm_delta_to_baseline()` and the `scenario_hourly_met` target now strip `MET_wnduvu`/`MET_wnduvv`/`MET_wnddir` before disaggregation, so wind speed is shaped directly from the donor's own wind-speed pattern -- direction isn't needed for this lake model. See the wind section below for the corrected numbers.
 3.  **Rainfall thresholds now use the 125-year Whakarewarewa rain-gauge record** (`pc10_climate_met`, via BOPRC/PC10 -- see [`met-source-comparison.qmd`](met-source-comparison.qmd)) instead of the 20-year ERA5 window, and a return-level table is now possible for the first time.
 
@@ -32,12 +32,12 @@ This is a rebuild of an earlier version of this page, incorporating two changes 
 For every branch of `scenario_hourly_met`, and separately for the bias-corrected historical baseline (`era5_corrected_hourly`, 1995-2014), `compute_annual_extreme_indices()` ([R/summarise_climate_extremes.R](../R/summarise_climate_extremes.R)) computes one row per calendar year for:
 
 | Index | Definition |
-|---|---|
+|------------------------------------|------------------------------------|
 | `rx1day` | Annual maximum daily rainfall (mm) |
 | `heavy_rain_days` | Days/year with daily rainfall above the p95 (wet days only) |
 | `extreme_rain_days` | Days/year above the p99 |
 | `hot_days` | Days/year with daily maximum air temperature above the historical p95 |
-| `wsdi` | Warm-spell duration index: days/year in spells of >=3 consecutive hot days |
+| `wsdi` | Warm-spell duration index: days/year in spells of \>=3 consecutive hot days |
 | `max_wind` | Annual maximum hourly wind speed (m/s) |
 | `storm_wind_hours` | Hours/year with hourly wind speed above the historical p95 |
 | `severe_wind_hours` | Hours/year above the historical p99 |
@@ -181,9 +181,9 @@ fmt_index_table(names(wind_labels), wind_labels,
 
 ## Caveats
 
-In addition to the caveats already noted in `climate-scenario-workflow.qmd` (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known `MET_prsttn` unit issue) and `met-source-comparison.qmd` (PC10's weak day-to-day correlation with the buoy for rainfall, r ~ 0.12 -- a long-run climatology/threshold use like this is far less sensitive to that than a day-by-day bias-correction reference would be):
+In addition to the caveats already noted in `climate-scenario-workflow.qmd` (stationarity of the bias-correction and delta-change transfer functions, the short buoy overlap period, and the known `MET_prsttn` unit issue) and `met-source-comparison.qmd` (PC10's weak day-to-day correlation with the buoy for rainfall, r \~ 0.12 -- a long-run climatology/threshold use like this is far less sensitive to that than a day-by-day bias-correction reference would be):
 
-- The Whakarewarewa gauge is a land station, not over the lake; its absolute rainfall total may differ from true over-lake rainfall even though its long-run climatology is the best available basis for a stable extreme-event threshold at this site.
-- The Gumbel method-of-moments fit is a simple, standard estimator but not the only reasonable choice (e.g. GEV with a shape parameter, or L-moments); treat the return-level table as indicative rather than a design-standard flood estimate.
-- Wind and temperature thresholds still come from only 20 years of ERA5 (1995-2014) -- no equivalently long, independent wind/temperature record exists at this site the way it does for rainfall.
-- Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.
+-   The Whakarewarewa gauge is a land station, not over the lake; its absolute rainfall total may differ from true over-lake rainfall even though its long-run climatology is the best available basis for a stable extreme-event threshold at this site.
+-   The Gumbel method-of-moments fit is a simple, standard estimator but not the only reasonable choice (e.g. GEV with a shape parameter, or L-moments); treat the return-level table as indicative rather than a design-standard flood estimate.
+-   Wind and temperature thresholds still come from only 20 years of ERA5 (1995-2014) -- no equivalently long, independent wind/temperature record exists at this site the way it does for rainfall.
+-   Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.
