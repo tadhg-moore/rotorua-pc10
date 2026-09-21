@@ -47,7 +47,7 @@ tar_source(
 )
 # Set target options
 cores <- parallel::detectCores(logical = FALSE) - 1
-workers <- pmin(cores, 8)
+workers <- pmin(cores, 5)
 tar_option_set(
   controller = crew_controller_local(workers = workers), 
   error = "continue", 
@@ -427,8 +427,30 @@ list(
     # cue = tar_cue(mode = "always")
   ),
   tar_target(
-    rotorua_buoy_met_data, get_lake_wqprofiler(type = "met",
-                                               api_key = Sys.getenv("LERNZMP_KEY")), 
+    rotorua_buoy_met_data, {
+      met <- get_lake_wqprofiler(type = "met",
+                          api_key = Sys.getenv("LERNZMP_KEY")) |> 
+        dplyr::mutate(
+          DateTime = as.POSIXct(DateTime, tz = "Etc/GMT-12")
+        )
+      # Before 2023-10-23 windpseed and rainfall were collected in different units
+      browser()
+      met_pre <- met |> 
+        dplyr::filter(
+          DateTime < as.POSIXct("2023-10-23 00:00:00", tz = "Pacific/Auckland")
+        ) |> 
+        dplyr::mutate(
+          PpRain = PpRain / 10, # mm/10min -> mm
+          WndSpd = WndSpd * 0.514444 # knots -> m/s
+        )
+      met_post <- met |> 
+        dplyr::filter(
+          DateTime >= as.POSIXct("2023-10-23 00:00:00", tz = "Pacific/Auckland")
+        )
+      dplyr::bind_rows(met_pre, met_post) |> 
+        dplyr::arrange(DateTime)
+      
+    }, 
     # cue = tar_cue(mode = "always")
   ),
   tar_target(
