@@ -84,10 +84,10 @@ era5_p99 <- stats::quantile(era5_wet, 0.99, names = FALSE)
 data.frame(
   Threshold = c("p95", "p99"),
   `Whakarewarewa (125 yr)` = sprintf("%.1f mm", c(wr$rain_p95, wr$rain_p99)),
-  `ERA5-only (20 yr, 1995-2014)` = sprintf("%.1f mm", c(era5_p95, era5_p99)),
+  `ERA5-only (15 yr, 2011-2025)` = sprintf("%.1f mm", c(era5_p95, era5_p99)),
   check.names = FALSE
 ) |>
-  knitr::kable(caption = "Wet-day rainfall percentile thresholds: the 125-year Whakarewarewa gauge vs. the 20-year ERA5 baseline window used previously.")
+  knitr::kable(caption = "Wet-day rainfall percentile thresholds: the 125-year Whakarewarewa gauge vs. the 15-year ERA5 baseline window used previously.")
 ```
 
 ### Long-record return levels
