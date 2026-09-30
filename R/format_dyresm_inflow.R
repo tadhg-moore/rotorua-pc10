@@ -14,7 +14,6 @@ format_dyresm_inflow <- function(rotorua_inflow_file, rotorua_inflow_id_file,
   inf_nums <- inf_id |> 
     dplyr::distinct(InfNum) |> 
     dplyr::pull(InfNum)
-  i <- 1
   list_inf <- lapply(inf_nums, \(i) {
     dat <- inf |> 
       dplyr::filter(InfNum == i) |> 
@@ -26,6 +25,10 @@ format_dyresm_inflow <- function(rotorua_inflow_file, rotorua_inflow_id_file,
         PH = dplyr::case_when(
           PH < 5 ~ median(PH),
           .default = PH
+        ),
+        VOL = dplyr::case_when(
+          VOL < 0 ~ 0,
+          .default = VOL
         )
       )
     inflow_name <- inf_id |> 
