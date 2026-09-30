@@ -7,6 +7,12 @@
 library(targets)
 library(tarchetypes)    # optional, for dynamic branching / commands
 library(crew)
+
+# download.file(
+#   "https://raw.githubusercontent.com/limnotrack/f_rotorua/main/R/qc_funs.R",
+#   destfile = "R/qc_funs.R",
+#   mode = "wb"
+# )
 # Source R scripts (functions) ----
 tar_source(
   c(
@@ -43,7 +49,9 @@ tar_source(
     here::here("R", "plot_gcm_delta_variability.R"),
     here::here("R", "summarise_climate_extremes.R"),
     here::here("R", "plot_climate_extremes.R"),
-    here::here("R", "plot_bias_correction.R")
+    here::here("R", "plot_bias_correction.R"),
+    here::here("R", "qc_funs.R"),
+    here::here("R", "load_old_buoy_data.R")
   )
 )
 # Set target options
@@ -109,6 +117,20 @@ list(
     deployment = "main"
   ),
   
+  tar_target(
+    rotorua_old_buoy_data_url, "https://github.com/limnotrack/f_rotorua/releases/download/v0.0.1/rotorua_data_qc.zip"
+  ),
+  tar_target(
+    rotorua_old_buoy_data_zip, {
+      dest <- here::here("data", "processed")
+      download.file(rotorua_old_buoy_data_url, destfile = file.path(dest, "rotorua_data_qc.zip"))
+      file.path(dest, "rotorua_data_qc.zip")
+    },
+    format = "file"
+  ),
+  tar_target(
+    rotorua_old_buoy_data, load_old_buoy_data(rotorua_old_buoy_data_zip)
+  ),
   # 0. Define constants ----
   tar_target(
     rotorua_catchment_bbox_file,
