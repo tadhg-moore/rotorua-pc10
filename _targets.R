@@ -178,6 +178,10 @@ list(
     format = "file"
   ),
   tar_target(
+    era5_daily_rds_file, file.path(data_raw_dir, "LID_11133.rds"),
+    format = "file"
+  ),
+  tar_target(
     pc10_data_dir, unzip_pc10_data(bop_pc10_zip_folder),
     format = "file"
   ),
@@ -1214,6 +1218,11 @@ list(
   ),
   tar_target(
     scenario_tz, "Etc/GMT-12"
+  ),
+  
+  # Era5 daily data
+  tar_target(
+    era5_daily, readRDS(era5_daily_rds_file)
   ),
 
   #* 1-2. Bias-correct hourly ERA5 against the buoy; bias-corrected daily baseline ----
