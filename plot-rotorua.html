@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1c0535d037eb8813b585731018da8aa3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-761fc14e25ebc0e942fc86aa4dfe65fb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -468,6 +468,7 @@ No 'particles' config, assuming no particles
      libaed built using gfortran version           13 .           3 .           0
       Processing aed_models config from aed/aed.nml
          aed_sedflux configuration
+     No 'outflow' config, assuming no outflows
            ******************************* 
            module aed_sedflux : configured for zone_averaging 
            ******************************* 
@@ -479,7 +480,6 @@ No 'particles' config, assuming no particles
            ******************************* 
            module aed_oxygen : configured for zone_averaging 
            ******************************* 
-     No 'outflow' config, assuming no outflows
          aed_silica configuration
            ******************************* 
            module aed_silica : configured for zone_averaging 
@@ -846,9 +846,7 @@ green_rsp_p
  PHY_diatom_rsp_c     aed_phytoplankton   3D   PHY
  PHY_diatom_exc_c     aed_phytoplankton   3D   PHY
  PHY_diatom_mor_c     aed_phytoplankton   3D   PHY
- PHY_diatom_gpp_n     aed_phytoplankton   3D   PHY
- PHY_diatom_rsp_n     aed_phytoplankton   3D   PHY
- PHY_diatomtic   &gt; PHY_upt_dic
+tic   &gt; PHY_upt_dic
        D( 110) water column diagnostic   &gt; PHY_set
        D( 111) water column diagnostic   &gt; PHY_par
        D( 112) water column diagnostic   &gt; TOT_tn
@@ -885,15 +883,15 @@ green_rsp_p
        D(  26) bottom/surface diagnostic ~ OGM_pop_res
        D(  27) bottom/surface diagnostic ~ PHY_phy_swi_c
        D(  28) bottom/surface diagnostic ~ PHY_phy_swi_n
-       D(  29) bottom/surface_exc_n     aed_phytoplankton   3D   PHY
+       D(  29) bottom/surface PHY_diatom_gpp_n     aed_phytoplankton   3D   PHY
+ PHY_diatom_rsp_n     aed_phytoplankton   3D   PHY
+ PHY_diatom_exc_n     aed_phytoplankton   3D   PHY
  PHY_diatom_mor_n     aed_phytoplankton   3D   PHY
  PHY_diatom_gpp_p     aed_phytoplankton   3D   PHY
  PHY_diatom_rsp_p     aed_phytoplankton   3D   PHY
  PHY_diatom_exc_p     aed_phytoplankton   3D   PHY
  PHY_diatom_mor_p     aed_phytoplankton   3D   PHY
  PHY_tchla            aed_phytoplankton   3D   PHY
- diagnostic ~ PHY_phy_swi_p
-       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
  PHY_tphy             aed_phytoplankton   3D   PHY
  PHY_in               aed_phytoplankton   3D   PHY
  PHY_ip               aed_phytoplankton   3D   PHY
@@ -924,8 +922,10 @@ green_rsp_p
 
      DBG calling initialise_lake
      DBG entered initialise_lake
-     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x55db3884d1d0 lake_depth=42.650000
+     DBG init_profiles: num_heights=0 num_depths=2 the_heights=(nil) the_depths=0x55bb027931d0 lake_depth=42.650000
      DBG initialise_lake returned
+ diagnostic ~ PHY_phy_swi_p
+       D(  30) bottom/surface diagnostic ~ ALU_uptake_s
 
      ----------  AED config : end  ----------
 
@@ -933,7 +933,7 @@ green_rsp_p
 Heat pump disabled (heat_pump_switch = 0)
 Oxygenation disabled
 
-     Wall clock start time :  Mon Sep 21 01:57:14 2026
+     Wall clock start time :  Wed Sep 30 03:12:57 2026
 
      Simulation begins...
      Running day  2454649, 0.27% of days complete
@@ -1302,7 +1302,7 @@ Oxygenation disabled
      Running day  2455012, 99.45% of days complete
      Running day  2455013, 99.73% of days complete
 
-     Wall clock finish time : Mon Sep 21 01:57:19 2026
+     Wall clock finish time : Wed Sep 30 03:13:02 2026
      Wall clock runtime was 5 seconds : 00:00:05 [hh:mm:ss]
 
     Model Run Complete
