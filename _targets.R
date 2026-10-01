@@ -492,6 +492,11 @@ list(
                                                buoy_met_height, unit = "hour")
   ),
   
+  tar_target(
+    all_buoy_met_data, dplyr::bind_rows(old_buoy_met_hr_aeme,
+                                        rotorua_buoy_met_aeme_hr)
+  ),
+  
   # NIWA met to AEME data
   tar_target(
     niwa_met_aeme, {
@@ -562,7 +567,8 @@ list(
       names(flows) <- names(rotorua_inflow_list)
       return(flows)
     }, 
-    pattern = map(ratio_al_p)
+    pattern = map(ratio_al_p),
+    iteration = "list"
   ),
   
   #* Data inventory ----
@@ -1254,18 +1260,36 @@ list(
     read_era5_hourly_met(rotorua_era5_hr_file, lat = lake_meta$latitude,
                          lon = lake_meta$longitude, tz = scenario_tz)
   ),
+  # Rain is corrected in two stages (see met-source-comparison.qmd): ERA5
+  # rain is "wet" in ~41% of hours vs ~15% on the buoy, which a monthly scale
+  # cannot fix. Stage 1 quantile-maps rain onto the buoy distribution (eqm:
+  # fixes wet-hour frequency and intensity); stage 2 (inside
+  # era5_bias_correction) puts the total back on the buoy with a monthly
+  # scale. All downstream targets use era5_hourly_met_rainqm, not the raw
+  # ERA5, as the input to era5_bias_correction.
+  tar_target(
+    era5_rain_eqm_correction,
+    metscale::fit_met_bias_correction(
+      era5_hourly_met, all_buoy_met_data, vars = "MET_pprain",
+      method = "eqm", nquantiles = 100, verbose = FALSE)
+  ),
+  tar_target(
+    era5_hourly_met_rainqm,
+    metscale::apply_met_bias_correction(
+      era5_hourly_met, era5_rain_eqm_correction, verbose = FALSE)
+  ),
   tar_target(
     era5_bias_correction,
     metscale::fit_met_bias_correction(
-      era5_hourly_met, rotorua_buoy_met_aeme_hr,
+      era5_hourly_met_rainqm, all_buoy_met_data,
       vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel",
-              "MET_prsttn", "MET_pprain"),
+               "MET_prsttn", "MET_pprain"),
       method = "scale", by = "doy-loess", verbose = FALSE)
   ),
   tar_target(
     era5_corrected_hourly,
     metscale::apply_met_bias_correction(
-      era5_hourly_met, era5_bias_correction, expand = TRUE,
+      era5_hourly_met_rainqm, era5_bias_correction, expand = TRUE,
       lat = lake_meta$latitude, lon = lake_meta$longitude,
       elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
   ),
@@ -1279,7 +1303,7 @@ list(
     era5_bc_timeseries_wind, {
       out_file <- here::here("website", "www", "plots", "era5_bc_timeseries_wind.png")
       p <- plot_bias_correction_timeseries(era5_hourly_met, era5_corrected_hourly,
-                                           rotorua_buoy_met_aeme_hr, "MET_wndspd")
+                                           all_buoy_met_data, "MET_wndspd")
       ggsave(filename = out_file, plot = p, width = 10, height = 4, dpi = 150,
             create.dir = TRUE)
       out_file
@@ -1291,7 +1315,7 @@ list(
     era5_bc_distribution_wind, {
       out_file <- here::here("website", "www", "plots", "era5_bc_distribution_wind.png")
       p <- plot_bias_correction_distribution(era5_hourly_met, era5_corrected_hourly,
-                                             rotorua_buoy_met_aeme_hr, "MET_wndspd")
+                                             all_buoy_met_data, "MET_wndspd")
       ggsave(filename = out_file, plot = p, width = 7, height = 4.5, dpi = 150,
             create.dir = TRUE)
       out_file
@@ -1303,7 +1327,7 @@ list(
     era5_bc_timeseries_rain, {
       out_file <- here::here("website", "www", "plots", "era5_bc_timeseries_rain.png")
       p <- plot_bias_correction_timeseries(era5_hourly_met, era5_corrected_hourly,
-                                           rotorua_buoy_met_aeme_hr, "MET_pprain")
+                                           all_buoy_met_data, "MET_pprain")
       ggsave(filename = out_file, plot = p, width = 10, height = 4, dpi = 150,
             create.dir = TRUE)
       out_file
@@ -1315,7 +1339,7 @@ list(
     era5_bc_distribution_rain, {
       out_file <- here::here("website", "www", "plots", "era5_bc_distribution_rain.png")
       p <- plot_bias_correction_distribution(era5_hourly_met, era5_corrected_hourly,
-                                             rotorua_buoy_met_aeme_hr, "MET_pprain",
+                                             all_buoy_met_data, "MET_pprain",
                                              wet_only = TRUE, log1p_transform = TRUE)
       ggsave(filename = out_file, plot = p, width = 7, height = 4.5, dpi = 150,
             create.dir = TRUE)
@@ -1336,7 +1360,7 @@ list(
   # this outside the buoy's own overlap window.
   tar_target(
     niwa_buoy_overlap_window,
-    range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE)
+    range(all_buoy_met_data$Date, na.rm = TRUE)
   ),
   tar_target(
     niwa_to_buoy_bias_correction, {
@@ -1344,7 +1368,7 @@ list(
         dplyr::filter(Date >= niwa_buoy_overlap_window[1],
                       Date <= niwa_buoy_overlap_window[2])
       metscale::fit_met_bias_correction(
-        niwa_overlap, rotorua_buoy_met_aeme_hr,
+        niwa_overlap, all_buoy_met_data,
         vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel", "MET_prsttn"),
         method = "scale", by = "doy-loess", verbose = FALSE)
     }
@@ -1395,7 +1419,7 @@ list(
   #  are worth using to extend it the way the airport already is. ----
   tar_target(
     met_source_comparison,
-    compare_met_sources(buoy = rotorua_buoy_met_aeme_hr,
+    compare_met_sources(buoy = all_buoy_met_data,
                         airport = niwa_met_hourly_aeme,
                         era5 = era5_hourly_met,
                         pc10 = pc10_climate_met,
@@ -1406,14 +1430,14 @@ list(
     met_source_comparison_plot,
     plot_met_source_comparison(
       met_source_comparison,
-      window = range(rotorua_buoy_met_aeme_hr$Date, na.rm = TRUE),
+      window = range(all_buoy_met_data$Date, na.rm = TRUE),
       vars = c("MET_tmpair", "MET_humrel", "MET_pprain", "MET_wndspd"))
   ),
 
   tar_target(
     era5_corrected_daily_baseline, {
       baseline <- metscale::bias_correct_daily_baseline(
-        era5_hourly_met, era5_bias_correction, lat = lake_meta$latitude,
+        era5_hourly_met_rainqm, era5_bias_correction, lat = lake_meta$latitude,
         lon = lake_meta$longitude, elev = lake_meta$elevation,
         tz = scenario_tz, verbose = FALSE)
       ok <- stats::complete.cases(baseline[c("MET_radswd", "MET_tmpair", "MET_pprain",
