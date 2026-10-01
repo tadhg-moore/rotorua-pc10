@@ -79,9 +79,8 @@
       "Encoding": "UTF-8",
       "Language": "en-GB",
       "LazyData": "true",
-      "Config/roxygen2/version": "8.0.0",
+      "Config/roxygen2/version": "8.1.0",
       "Roxygen": "list(markdown = TRUE)",
-      "RoxygenNote": "8.0.0",
       "Author": "Tadhg Moore [aut, cre] (ORCID: <https://orcid.org/0000-0002-3834-8868>), Christopher McBride [aut] (ORCID: <https://orcid.org/0000-0001-5784-9767>)",
       "RemoteType": "github",
       "Remotes": "github::limnotrack/aemetools, github::limnotrack/bathytools, github::limnotrack/ltapi",
@@ -89,7 +88,7 @@
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "AEME",
       "RemoteRef": "dev",
-      "RemoteSha": "c4817d3f3c53fe95983bc62f6a6aca42ed3204f6"
+      "RemoteSha": "42cc88b37acba1203f8d14a2f8a16e04e0699c11"
     },
     "AzureAuth": {
       "Package": "AzureAuth",
@@ -3636,8 +3635,7 @@
       "Encoding": "UTF-8",
       "LazyData": "true",
       "Roxygen": "list(markdown = TRUE)",
-      "Config/roxygen2/version": "8.0.0",
-      "RoxygenNote": "7.3.2",
+      "Config/roxygen2/version": "8.1.0",
       "Author": "Tadhg Moore [aut, cre] (ORCID: <https://orcid.org/0000-0002-3834-8868>)",
       "Maintainer": "Tadhg Moore <tadhg@limnotrack.com>",
       "RemoteType": "github",
@@ -3646,7 +3644,7 @@
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "metscale",
       "RemoteRef": "main",
-      "RemoteSha": "9ec32821f2c4bcc414929f6f40cea67749de7ccf"
+      "RemoteSha": "64da8f8fd287f7f30a68397f457f22c5f94f9d24"
     },
     "mime": {
       "Package": "mime",
