@@ -131,6 +131,7 @@ list(
   tar_target(
     rotorua_old_buoy_data, load_old_buoy_data(rotorua_old_buoy_data_zip)
   ),
+  tar_target(old_buoy_met_hr_aeme, old_buoy_met_data(rotorua_old_buoy_data, 1.5)),
   # 0. Define constants ----
   tar_target(
     rotorua_catchment_bbox_file,
@@ -458,12 +459,12 @@ list(
       met <- get_lake_wqprofiler(type = "met",
                           api_key = Sys.getenv("LERNZMP_KEY")) |> 
         dplyr::mutate(
-          DateTime = as.POSIXct(DateTime, tz = "Etc/GMT-12")
+          DateTime = lubridate::as_datetime(DateTime, tz = scenario_tz)
         )
       # Before 2023-10-23 windpseed and rainfall were collected in different units
       met_pre <- met |>
         dplyr::filter(
-          DateTime < as.POSIXct("2023-10-23 00:00:00", tz = "Pacific/Auckland")
+          DateTime < as.POSIXct("2023-10-23 00:00:00", tz = scenario_tz)
         ) |> 
         dplyr::mutate(
           PpRain = PpRain / 10, # mm/10min -> mm
@@ -471,7 +472,7 @@ list(
         )
       met_post <- met |> 
         dplyr::filter(
-          DateTime >= as.POSIXct("2023-10-23 00:00:00", tz = "Pacific/Auckland")
+          DateTime >= as.POSIXct("2023-10-23 00:00:00", tz = scenario_tz)
         )
       dplyr::bind_rows(met_pre, met_post) |> 
         dplyr::arrange(DateTime)

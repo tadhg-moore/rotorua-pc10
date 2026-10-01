@@ -30,7 +30,10 @@ load_old_buoy_data <- function(zip_folder) {
   qc_filters <- readr::read_csv(file.path(dir, "qc_filters.csv"), 
                                 col_types = readr::cols())
   
-  data_wide <- readr::read_csv(file.path(dir, "rotorua_qc.csv"), show_col_types = FALSE)
+  data_wide <- readr::read_csv(file.path(dir, "rotorua_qc.csv"), show_col_types = FALSE) |> 
+    dplyr::mutate(
+      datetime = lubridate::force_tz(datetime, tzone = "Etc/GMT-12")
+    )
   
   data <- data_wide |> 
     tidyr::pivot_longer(
@@ -48,4 +51,37 @@ load_old_buoy_data <- function(zip_folder) {
     ) 
   head(data)
   return(data)
+}
+
+old_buoy_met_data <- function(data, height = 1.5) {
+  met_vars <- c("h_rh", "pr_baro", "r_clrsky", "r_swd", "t_air", "w_dir",
+                "w_gust", "w_spd", "pp_rain")
+  met <- data |> 
+    # dplyr::mutate(
+    #   datetime = lubridate::with_tz(datetime, tzone = "UTC")
+    # ) |>
+    dplyr::filter(var_abbr %in% met_vars, !is.na(qc_value)) |>
+    dplyr::select(datetime, var_abbr, qc_value) |>
+    tidyr::pivot_wider(names_from = var_abbr, values_from = qc_value)
+  
+  met <- met |> 
+    dplyr::mutate(
+      MET_wndspd = w_spd * 0.514444, # convert knots to m/s
+      MET_wndspd = metscale::wind_at_height(MET_wndspd, from = height, 10),
+      pr_baro = (pr_baro * 100), # - 3509
+      pr_baro = dplyr::case_when(
+        datetime > as.POSIXct("2008-06-15") ~ pr_baro - 3509,
+      ),
+      pp_rain = pp_rain / 1000
+    ) |> 
+    dplyr::select(-w_spd) |>
+    dplyr::rename(
+      Date = datetime,
+      MET_tmpair = t_air,
+      MET_humrel = h_rh,
+      MET_pprain = pp_rain,
+      MET_prsttn = pr_baro,
+      MET_wnddir = w_dir
+    )
+  return(met)
 }
