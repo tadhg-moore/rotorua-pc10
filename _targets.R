@@ -170,9 +170,9 @@ list(
   ),
   
   tar_target(
-    aeme_weir_params, format_weir_params(crest_elev = glm_weir_params$crest_elev,
-                                         crest_factor = glm_weir_params$crest_factor,
-                                         crest_width = ohau_weir_width)
+    weir_params, format_weir_params(crest_elev = glm_weir_params$crest_elev,
+                                    crest_factor = glm_weir_params$crest_factor,
+                                    crest_width = ohau_weir_width)
   ),
   
   # 0. Define constants ----
