@@ -20,7 +20,7 @@ buoy_to_aeme_met <- function(met, meas_height = 2, unit = c("day", "hour")) {
       .mean_spd = mean(wnd_spd_valid, na.rm = TRUE),
       
       MET_prsttn = mean(PrBaro, na.rm = TRUE) * 100,
-      MET_wndspd = mean(WndSpd, na.rm = TRUE) * 0.5144444, # knots to m/s
+      MET_wndspd = mean(WndSpd, na.rm = TRUE), # * 0.5144444, # knots to m/s
       MET_humrel = mean(HumRel, na.rm = TRUE),
       MET_radswd = mean(RadSWD, na.rm = TRUE),
       MET_pprain = sum(PpRain, na.rm = TRUE),
