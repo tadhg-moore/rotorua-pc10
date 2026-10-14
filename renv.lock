@@ -27,7 +27,7 @@
         "cli",
         "clitable",
         "digest",
-        "dplyr",
+        "dplyr (>= 1.1.0)",
         "ggplot2",
         "gh",
         "glue",
@@ -61,6 +61,7 @@
       ],
       "Suggests": [
         "aemetools (>= 0.0.0.9000)",
+        "arrow",
         "bathytools (>= 0.0.0.9000)",
         "DT",
         "htmltools",
@@ -87,8 +88,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "AEME",
-      "RemoteRef": "dev",
-      "RemoteSha": "42cc88b37acba1203f8d14a2f8a16e04e0699c11"
+      "RemoteRef": "main",
+      "RemoteSha": "18591555cb5eff9795d19842aec7fad6fb3e2637"
     },
     "AzureAuth": {
       "Package": "AzureAuth",
