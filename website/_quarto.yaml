@@ -64,7 +64,7 @@ website:
             text: "Alum Model"
           - href: aed-alum-module.qmd
             text: "Simplified Alum Module"
-          - href: glm_aed_alum_stress_tests.qmd
+          - href: glm-aed-alum-stress-tests.qmd
             text: "GLM-AED aed_alum Stress Tests"
           - href: alum-dosing-sanila-msc-thesis.qmd
             text: "Sanila Thesis Notes"
