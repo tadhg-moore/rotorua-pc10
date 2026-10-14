@@ -42,10 +42,14 @@ website:
             text: "Modelling Updates"
       - section: "Lake Models"
         contents:
-          - href: rotorua-glm-config.qmd
-            text: "GLM Config"
+          # - href: rotorua-glm-config.qmd
+          #   text: "GLM Config"
           - href: rotorua-glm-config_v4.qmd
             text: "GLM Config (v4)"
+          - href: rotorua-glm-latest-run.qmd
+            text: "Latest Run"
+          - href: ohau-weir-glm-setup.qmd
+            text: "Ōhau Weir & GLM Outflow"
           - href: rotorua-inflows.qmd
             text: "Inflows"
           - href: light-data.qmd
