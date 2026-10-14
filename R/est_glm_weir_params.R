@@ -40,6 +40,8 @@ format_weir_params <- function(crest_elev, crest_factor, crest_width) {
     dplyr::mutate(
       model = "glm_aed",
       file = "glm4.nml",
+      group = NA_character_,
+      index = NA_integer_,
       min = dplyr::case_when(
         name == "morphometry/crest_elev" ~ crest_elev - 0.2,
         name == "outflow/crest_factor" ~ crest_factor - 0.1,
@@ -51,7 +53,7 @@ format_weir_params <- function(crest_elev, crest_factor, crest_width) {
         TRUE ~ value
       )
     ) |> 
-    dplyr::select(model, file, name, value, min, max)
+    dplyr::select(model, file, name, value, min, max, group, index)
   return(weir_params)
 }
 

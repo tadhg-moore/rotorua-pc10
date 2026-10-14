@@ -1,0 +1,393 @@
+---
+title: "Ōhau Channel Weir and GLM Outflow Setup"
+subtitle: "From the physical weir, stoplogs and gauged level/flow to the GLM crest elevation, width and factor"
+author: "Tadhg Moore"
+date: last-modified
+date-format: "DD MMMM YYYY"
+fig-width: 9
+fig-height: 5
+fig-dpi: 150
+execute:
+  cache: false
+---
+
+::: {.callout-note}
+Lake Rotorua has a single surface outflow, the Ōhau Channel, which is controlled by a
+weir with removable stoplogs. GLM cannot represent a two-level crest with stoplogs, so we
+replace it with **one equivalent crest** (elevation, width, and a dimensionless factor)
+fitted to the gauged lake level and channel discharge. This page documents the physical
+weir, the data used, and how the GLM parameters are derived.
+:::
+
+```{r setup}
+#| include: false
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+
+theme_set(theme_minimal(base_size = 12))
+options(knitr.kable.NA = "")
+
+source(here::here("R", "plot_rotorua_weir_profile.R"))
+source(here::here("R", "est_glm_weir_params.R"))
+source(here::here("R", "rotorua_weir_flow.R"))
+
+store <- here::here("_targets")
+flow_level <- targets::tar_read(ohau_flow_level, store = store)
+weir_fit <- targets::tar_read(glm_weir_params, store = store)
+weir_params <- targets::tar_read(weir_params, store = store)
+
+# Physical weir geometry (m)
+channel_width_m <- 26
+lower_width_m <- 4.6
+upper_width_m <- channel_width_m - lower_width_m
+lower_crest_m <- 278.166
+upper_crest_m <- 279.316
+stoplog_height_m <- 0.270
+cd <- 0.565
+
+levels_ref <- c(
+  "Install trigger" = 279.776,
+  "Remove trigger" = 279.966,
+  "Consented maximum" = 280.076
+)
+
+# GLM fit
+crest_elev <- weir_fit$crest_elev
+crest_factor <- weir_fit$crest_factor
+```
+
+## 1. The physical weir
+
+The weir spans the **26 m wide** Ōhau Channel. It has two crest levels:
+
+- a narrow, deep **lower crest** (4.6 m wide, 278.166 m) in the centre of the channel, and
+- a higher **upper crest** (279.316 m) across the remaining 21.4 m.
+
+Up to three **stoplogs**, each 0.270 m high, can be stacked on the lower crest to raise the
+low-flow control level. Their installation and removal are tied to lake-level triggers.
+
+```{r weir-table}
+#| echo: false
+tibble::tribble(
+  ~Item, ~Value, ~Unit,
+  "Channel width", channel_width_m, "m",
+  "Lower crest width", lower_width_m, "m",
+  "Upper crest width (total, both sides)", upper_width_m, "m",
+  "Lower crest elevation", lower_crest_m, "m a.s.l.",
+  "Upper crest elevation", upper_crest_m, "m a.s.l.",
+  "Stoplog height (each)", stoplog_height_m, "m",
+  "Number of stoplogs", NA, "0 to 3",
+  "Lower crest with 3 stoplogs", lower_crest_m + 3 * stoplog_height_m, "m a.s.l.",
+  "Stoplog install trigger", levels_ref[["Install trigger"]], "m a.s.l.",
+  "Stoplog remove trigger", levels_ref[["Remove trigger"]], "m a.s.l.",
+  "Consented maximum lake level", levels_ref[["Consented maximum"]], "m a.s.l."
+) |>
+  kbl(digits = 3) |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+### Weir diagram
+
+The across-channel profile (looking downstream) is shown below for 0 to 3 stoplogs. Stoplogs
+stack on the lower crest; with three installed the lower section (`r round(lower_crest_m + 3 * stoplog_height_m, 3)` m)
+is almost level with the upper crest (`r upper_crest_m` m). Horizontal lines are the
+lake-level references.
+
+```{r weir-profile}
+#| fig-height: 7
+#| fig-cap: "Across-channel weir crest profile with 0–3 stoplogs. Schematic."
+plot_rotorua_weir_profile()
+```
+
+## 2. Observed lake level and outflow
+
+Lake level (`Lake Level.Moturiki`) and channel discharge (`Discharge.Primary`) at the Ōhau
+Channel site (BoPRC site FL150407) are joined on timestamp.
+
+```{r data-summary}
+#| echo: false
+fl <- flow_level |> filter(is.finite(level), is.finite(flow))
+tibble::tibble(
+  Variable = c("Records with both level and flow", "Start", "End",
+               "Level range (m)", "Flow range (m³/s)", "Median flow (m³/s)"),
+  Value = c(
+    format(nrow(fl), big.mark = ","),
+    format(min(fl$Date), "%Y-%m-%d"),
+    format(max(fl$Date), "%Y-%m-%d"),
+    paste(round(range(fl$level), 2), collapse = " – "),
+    paste(round(range(fl$flow), 1), collapse = " – "),
+    round(median(fl$flow), 1)
+  )
+) |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+```{r timeseries}
+#| fig-height: 6
+#| fig-cap: "Daily mean lake level (top) and Ōhau Channel discharge (bottom), with weir elevations and stoplog triggers marked."
+daily <- fl |>
+  mutate(day = as.Date(Date)) |>
+  group_by(day) |>
+  summarise(level = mean(level), flow = mean(flow), .groups = "drop")
+
+p_lvl <- ggplot(daily, aes(day, level)) +
+  geom_line(linewidth = 0.3, colour = "grey30") +
+  geom_hline(yintercept = upper_crest_m, colour = "grey50", linetype = "solid") +
+  geom_hline(
+    data = tibble::enframe(levels_ref, "reference", "y"),
+    aes(yintercept = y, colour = reference, linetype = reference)
+  ) +
+  scale_colour_manual(values = c("Install trigger" = "#0072B2",
+                                 "Remove trigger" = "#D55E00",
+                                 "Consented maximum" = "#009E73"), name = NULL) +
+  scale_linetype_manual(values = c("Install trigger" = "dotted",
+                                   "Remove trigger" = "dashed",
+                                   "Consented maximum" = "solid"), name = NULL) +
+  labs(x = NULL, y = "Lake level (m a.s.l.)")
+
+p_flow <- ggplot(daily, aes(day, flow)) +
+  geom_line(linewidth = 0.3, colour = "#0072B2") +
+  labs(x = NULL, y = "Discharge (m³/s)")
+
+patchwork::wrap_plots(p_lvl, p_flow, ncol = 1)
+```
+
+Every observation sits above the upper crest, so flow is always passing over the whole
+weir. The stoplogs only change how much of the flow goes over the lower versus upper section.
+
+### Level–flow relationship
+
+```{r level-flow}
+#| fig-cap: "Gauged discharge against lake level, coloured by year."
+fl |>
+  mutate(year = lubridate::year(Date)) |>
+  slice_sample(n = min(60000, nrow(fl))) |>
+  ggplot(aes(level, flow, colour = year)) +
+  geom_point(size = 0.4, alpha = 0.5) +
+  scale_colour_viridis_c() +
+  labs(x = "Lake level (m a.s.l.)", y = "Discharge (m³/s)", colour = "Year")
+```
+
+The cloud has spread at any given level: stoplog configuration, vegetation and gauge
+hysteresis all change the effective rating over time. A single curve can only capture the
+central tendency.
+
+## 3. Physical weir rating curves
+
+For each stoplog count the discharge is the sum of the flow over the lower and the upper
+sections, each treated as a broad-crested rectangular weir at critical flow:
+
+$$
+Q = 1.705\, C_d \Big[\, b_{low}\,(h - z_{low})_+^{3/2} + b_{up}\,(h - z_{up})_+^{3/2} \Big]
+$$
+
+where $1.705 = \tfrac{2}{3}\sqrt{2g/3}$ is the critical-flow broad-crested weir
+coefficient (SI units), $h$ is lake level, $z_{low} = 278.166 + n \times 0.270$ is the
+lower crest with $n$ stoplogs, $z_{up} = 279.316$, $b_{low} = 4.6$ m, $b_{up} = 21.4$ m,
+and $C_d =$ `r cd` is an empirical discharge coefficient. This is
+`rotorua_weir_flow()` / `generate_rotorua_weir_curves()` in
+[R/rotorua_weir_flow.R](../R/rotorua_weir_flow.R), as used in `compare_rating_curve.R`.
+
+```{r curves}
+lvl_seq <- seq(upper_crest_m, max(fl$level, na.rm = TRUE) + 0.05, by = 0.01)
+curves <- generate_rotorua_weir_curves(
+  level_range_m = range(lvl_seq), by_m = 0.01, cd = cd
+)
+```
+
+```{r curves-plot}
+#| fig-cap: "Gauged level–flow data (grey) with the physical weir rating curve for 0–3 stoplogs."
+ggplot() +
+  geom_point(data = slice_sample(fl, n = min(40000, nrow(fl))),
+             aes(level, flow), size = 0.3, alpha = 0.3, colour = "grey60") +
+  geom_line(data = curves,
+            aes(level_m, flow_m3s, colour = factor(n_stoplogs)), linewidth = 0.9) +
+  scale_colour_viridis_d(name = "Stoplogs") +
+  labs(x = "Lake level (m a.s.l.)", y = "Discharge (m³/s)")
+```
+
+```{r curves-by-year}
+#| fig-height: 9
+#| fig-cap: "Same comparison split by year."
+fl |>
+  mutate(year = factor(lubridate::year(Date))) |>
+  group_by(year) |>
+  slice_sample(n = 3000) |>
+  ungroup() |>
+  ggplot(aes(level, flow)) +
+  geom_point(size = 0.3, colour = "grey50") +
+  geom_line(data = curves, aes(level_m, flow_m3s, colour = factor(n_stoplogs))) +
+  facet_wrap(~year) +
+  scale_colour_viridis_d(name = "Stoplogs") +
+  labs(x = "Lake level (m a.s.l.)", y = "Discharge (m³/s)")
+```
+
+## 4. How GLM represents the outflow
+
+GLM treats the lake outflow as a single rectangular broad-crested weir. When the water
+level $h$ is above the crest, outflow is
+
+$$
+Q = \tfrac{2}{3}\, f_c \sqrt{2g}\; w_c\, (h - z_c)_+^{3/2}
+$$
+
+with three parameters in the `.nml`:
+
+| GLM parameter | Namelist entry | Meaning |
+|---|---|---|
+| Crest elevation $z_c$ | `&morphometry` `crest_elev` | Height of the single equivalent crest (m a.s.l.) |
+| Crest width $w_c$ | `&outflow` `crest_width` | Width of the weir (m) |
+| Crest factor $f_c$ | `&outflow` `crest_factor` | Dimensionless discharge coefficient, a free scaling on flow |
+
+Because the physical weir has two crest levels and a stoplog configuration that changes
+through time, the GLM parameters are **not** measured, they are fitted so that the single
+crest reproduces the gauged rating.
+
+### Choices
+
+- **Crest width** is fixed at the full channel width, **26 m** (`ohau_weir_width` target),
+  so $w_c$ is not fitted and the factor absorbs the loss in effective width.
+- **Crest elevation** and **crest factor** are fitted by least squares on all paired
+  observations (`flow >= 0`, finite level and flow).
+- For any trial crest elevation $z_c$ the best factor has a closed form. With
+  $q_i = \tfrac{2}{3}\sqrt{2g}\; w_c (h_i - z_c)_+^{3/2}$,
+
+$$
+f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
+$$
+
+  and `optimize()` then searches $z_c$ between the lower and upper physical crests
+  (278.166–279.316 m) to minimise the sum of squared errors.
+
+This is implemented in `est_glm_weir_params()` ([R/est_glm_weir_params.R](../R/est_glm_weir_params.R)),
+run by the `glm_weir_params` target, and written to the model by `format_weir_params()`.
+
+```{r fit-result}
+#| echo: false
+tibble::tribble(
+  ~Parameter, ~`GLM name`, ~Value, ~`How set`,
+  "Crest elevation", "morphometry/crest_elev", round(crest_elev, 4), "Fitted",
+  "Crest width", "outflow/crest_width", channel_width_m, "Fixed (channel width)",
+  "Crest factor", "outflow/crest_factor", round(crest_factor, 4), "Fitted (closed form)",
+  "Number of outlets", "outflow/num_outlet", 0, "Fixed (surface weir only)"
+) |>
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+### Fit against observations
+
+```{r fit-plot}
+#| fig-cap: "Gauged discharge (points) and the GLM single-crest rating (red)."
+fl$est_flow <- glm_weir_outflow(fl$level, crest_factor, crest_elev, channel_width_m)
+
+rating <- tibble::tibble(level = lvl_seq) |>
+  mutate(flow = glm_weir_outflow(level, crest_factor, crest_elev, channel_width_m))
+
+ggplot() +
+  geom_point(data = slice_sample(fl, n = min(40000, nrow(fl))),
+             aes(level, flow), size = 0.3, alpha = 0.3, colour = "grey60") +
+  geom_line(data = rating, aes(level, flow), colour = "red", linewidth = 1) +
+  geom_vline(xintercept = crest_elev, linetype = "dashed", colour = "#D55E00") +
+  labs(x = "Lake level (m a.s.l.)", y = "Discharge (m³/s)")
+```
+
+```{r fit-stats}
+#| echo: false
+resid <- fl$flow - fl$est_flow
+tibble::tibble(
+  Metric = c("RMSE (m³/s)", "Bias, mean(obs − est) (m³/s)", "R²",
+             "Sum(estimated) / Sum(observed)"),
+  Value = c(
+    sqrt(mean(resid^2)),
+    mean(resid),
+    cor(fl$flow, fl$est_flow)^2,
+    sum(fl$est_flow) / sum(fl$flow)
+  )
+) |>
+  kbl(digits = 3) |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+### Equivalent crest versus the real weir
+
+The fitted crest (`r round(crest_elev, 3)` m) falls between the lower crest and the upper
+crest. This is expected: it is a flow-weighted compromise between a narrow section that
+passes water at low heads and a wide, higher section that dominates at high heads.
+
+```{r glm-vs-actual}
+#| fig-height: 7
+#| fig-cap: "Actual weir (0 and 2 stoplogs) against the GLM single-crest approximation (dashed)."
+patchwork::wrap_plots(
+  plot_rotorua_glm_weir_comparison(crest_elev, crest_factor, n_stoplogs = 0),
+  plot_rotorua_glm_weir_comparison(crest_elev, crest_factor, n_stoplogs = 2),
+  ncol = 1, guides = "collect"
+)
+```
+
+The crest factor does not move the drawn crest. It scales flow. Note the GLM equation
+uses $\tfrac{2}{3}\sqrt{2g} = `r round((2/3)*sqrt(2*9.81), 3)`$ as its base coefficient,
+whereas the physical curves use $1.705\,C_d$ = `r round(1.705 * cd, 3)`. Per metre of
+crest width at the same head, the fitted GLM coefficient is
+$`r round((2/3)*sqrt(2*9.81), 3)` \times `r round(crest_factor, 3)` = `r round((2/3)*sqrt(2*9.81)*crest_factor, 3)`$,
+of similar magnitude to the physical `r round(1.705 * cd, 3)`. The GLM crest sits lower
+than the upper crest, so it compensates for the physical weir's higher crest with a
+slightly higher unit coefficient over the full 26 m.
+
+### Rating comparison: physical vs GLM
+
+```{r glm-vs-physical}
+#| fig-cap: "GLM equivalent rating compared with the physical weir rating for 0–3 stoplogs."
+ggplot() +
+  geom_line(data = curves, aes(level_m, flow_m3s, colour = factor(n_stoplogs)),
+            linewidth = 0.7) +
+  geom_line(data = rating, aes(level, flow, linetype = "GLM single crest"),
+            colour = "red", linewidth = 1.1) +
+  scale_colour_viridis_d(name = "Physical weir\nstoplogs") +
+  scale_linetype_manual(values = c("GLM single crest" = "dashed"), name = NULL) +
+  labs(x = "Lake level (m a.s.l.)", y = "Discharge (m³/s)")
+```
+
+## 5. Writing the parameters into GLM
+
+`format_weir_params()` returns the table that the calibration workflow applies to
+`glm4.nml`. The `min` and `max` columns are the parameter bounds for calibration: ±0.2 m
+on the crest elevation, and −0.1 / +0.2 on the factor.
+
+```{r nml-params}
+#| echo: false
+weir_params |>
+  select(name, value, min, max) |>
+  kbl(digits = 4) |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+Resulting namelist entries:
+
+```
+&morphometry
+   crest_elev   = <crest_elev>      ! fitted
+/
+&outflow
+   num_outlet   = 0                 ! surface weir only; no submerged outlet
+   crest_width  = 26.0              ! channel width
+   crest_factor = <crest_factor>    ! fitted
+/
+```
+
+### Caveats
+
+- **One curve for all stoplog states.** The fit pools all years and stoplog
+  configurations; stoplog history is not used. The GLM rating is a compromise, so it will
+  overpredict flow in periods when logs are in and underpredict when they are out
+  (the scatter at a given level in the figure above shows this spread).
+- **Pooled fit weights high flows.** Least squares on flow is driven by the large
+  discharges, so the low-head end of the rating is less well matched.
+- **Fitted crest is an effective value.** It should not be compared with a surveyed crest
+  level, and the bounds for calibration (±0.2 m) are deliberately narrow around it.
+- **Datum.** Both level and crest elevations are in Moturiki datum, which must match the
+  datum of the lake hypsograph used in GLM (see the `crest_elev` row in the config notes).
