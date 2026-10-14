@@ -16,14 +16,15 @@ library(dplyr)
 library(ggplot2)
 ```
 
-This page compares the meteorological data sources available for Lake Rotorua, describes what each one brings to the model forcing built in [`climate-scenario-workflow.qmd`](climate-scenario-workflow.qmd), and documents a couple of data-quality issues this comparison caught along the way. See [`data.qmd`](data.qmd) for full source/access details on every dataset in the pipeline, including these four.
+This page compares the meteorological data sources available for Lake Rotorua, describes what each one brings to the model forcing built in [`climate-scenario-workflow.qmd`](climate-scenario-workflow.qmd), and documents the data-quality issues this comparison has caught along the way (a rainfall unit mismatch, a doubled wind-unit conversion on the buoy, ERA5 "drizzle", and a drifting buoy humidity sensor). See [`data.qmd`](data.qmd) for full source/access details on every dataset in the pipeline, including these five.
 
-## The four sources
+## The five sources
 
 | Source | Target(s) | Record | What it measures | Where it's strong | Where it's weak |
-|----|----|----|----|----|----|
+|------------|------------|------------|------------|------------|------------|
 | **Lake buoy** | `all_buoy_met_data` = `old_buoy_met_hr_aeme` (2007–22) + `rotorua_buoy_met_aeme_hr` (2022–present) | 2007–present (\~19 yr, two loggers) | On-lake met station: temp, RH, wind, pressure, rain; shortwave radiation on the new buoy only | The only source actually measured *over the lake surface* — the ground truth for lake-effect corrections. The two loggers agree closely where they can be compared (see below), so they splice into one record | Old buoy has no shortwave radiation; \~15% of hourly records missing for some variables; rain gauge is noisy |
-| **Airport (NIWA #1770)** | `niwa_met_hourly_aeme` | 1981–2025 (44 yr) | Full met suite at a fixed land station | Long, high-quality, consistent instrumentation | Land-station bias vs. the lake (colder, drier air; needs the buoy transfer function to be lake-representative) |
+| **Airport (NIWA #1770)** | `niwa_met_hourly_aeme` | 1981–2025 (44 yr) | Nominally a full met suite at a fixed land station | Longest record; good temperature/RH | Wind and radiation have little or no overlap with the buoy window; daily rain is incomplete (\~250 mm/yr); land-station bias vs. the lake |
+| **Airport (MetService NZROA)** | `airport_met_aeme` (from `airport_met`) | Jan 1993 – Jun 2023 (30 yr) | Hourly temp, RH, station pressure, rain, shortwave radiation, wind speed and direction | Complete, independent hourly record with a real rain gauge, shortwave and wind; overlaps the old buoy for 16 years | Ends June 2023; wind, rain and radiation are *hour-ending* values; station pressure missing for \~32 % of hours; land station |
 | **ERA5-Land (reanalysis)** | `era5_hourly_met` | 2011–present | Gridded reanalysis, full met suite | Continuous, gap-free, extends into the future for scenario work | Coarse grid cell (not lake-specific); its own biases need correcting against real observations |
 | **PC10 / BOPRC stations** | `pc10_climate_met` | Temp/RH: 2006–present (Edmund Rd); Rain: **1901–present** (Whakarewarewa) | Temp, RH, rain only — no radiation or wind | Rain record is by far the longest of any source here; independent of NIWA's instrumentation | No radiation/wind; weaker correlation with the buoy than the airport (see comparison below) |
 
@@ -31,11 +32,10 @@ The airport and PC10 stations were chosen from BOPRC/NIWA's larger station netwo
 
 ## Comparing the raw sources against the buoy
 
-`met_source_comparison` aggregates all four sources to daily values and scores the airport, ERA5 and PC10 against the buoy — the only source with a direct claim to being "true" lake conditions — over whatever window each pair overlaps, for temperature, humidity, rainfall and wind speed. Since the old buoy data were added (`all_buoy_met_data`), that window now reaches back to **mid-2007** rather than 2022, so each comparison rests on up to \~16 years of daily pairs instead of \~4.
+`met_source_comparison` aggregates all five sources to daily values and scores the NIWA airport, MetService airport, ERA5 and PC10 against the buoy — the only source with a direct claim to being "true" lake conditions — over whatever window each pair overlaps, for temperature, humidity, rainfall, wind speed, shortwave radiation and station pressure. Since the old buoy data were added (`all_buoy_met_data`), that window reaches back to **mid-2007**, so most comparisons rest on up to \~16 years of daily pairs.
 
 ::: callout-note
-The buoy's own wind speed and rainfall had a unit bug of their own, now fixed in `rotorua_buoy_met_data`: before 2023-10-23 the buoy logged wind in knots and rain in mm/10 min, while later records use m/s and mm directly. The stats and plot below reflect the corrected series.
-:::
+**Wind units.** Buoy wind is in m/s and is extrapolated to 10 m (from 2 m on the new buoy and 1.5 m on the old one). A duplicated knots→m/s conversion was being applied to buoy wind that was already in m/s, scaling it by 0.514; it was removed in `buoy_to_aeme_met()` (and the old-buoy equivalent) in October 2026. Before the fix the buoy's mean 10 m wind was \~2.8 m/s; it is now \~5.4 m/s. That change moves ERA5's apparent wind bias from \~−0.2 m/s to \~−2.8 m/s, so **every wind result on this page reflects the corrected series**, and earlier versions of this page that reported a small ERA5 wind bias were wrong. Separately, the buoy's own rain had a unit bug, fixed in `rotorua_buoy_met_data`: before 2023-10-23 it logged rain in mm/10 min, while later records use mm.
 
 ```{r}
 #| label: comparison-stats
@@ -51,35 +51,39 @@ cmp$stats |>
 #| label: comparison-plot
 #| echo: false
 #| fig-height: 8
-#| fig-cap: "Daily air temperature, relative humidity, rainfall and wind speed from all four sources, over the buoy's record (2007–present)."
+#| fig-cap: "Daily air temperature, relative humidity, rainfall and wind speed from all five sources, over the buoy's record (2007–present)."
 
 tar_read(met_source_comparison_plot)
 ```
 
 **What this shows:**
 
--   **Air temperature** — every land/reanalysis source reads colder than the buoy: airport −0.95 °C, PC10 −1.00 °C and ERA5 −1.48 °C on daily means. That is the expected lake-thermal-inertia effect (water buffers swings that land stations don't) plus ERA5's grid-cell offset, not a data error. ERA5 tracks the buoy's day-to-day shape best (r ≈ 0.99) despite the largest mean offset; the airport is close behind (r ≈ 0.98); PC10 is weakest (r ≈ 0.86, MAE ≈ 1.9 °C).
--   **Relative humidity** — all sources read more humid than the buoy: ERA5 +7.5 %, airport +6.4 %, PC10 +3.1 %. Correlation is much weaker than for temperature (airport r ≈ 0.84, ERA5 r ≈ 0.78), and **PC10's RH correlation with the buoy is very weak (r ≈ 0.32)** — treat PC10 RH as a rough guide, not a precise match to lake conditions.
--   **Rainfall** — mean daily totals agree well (bias within \~0.002 m/day for every source; airport slightly low at −0.002). Day-to-day skill is best for ERA5 (r ≈ 0.77), then the airport (r ≈ 0.59), and essentially absent for PC10 (r ≈ 0.06) — consistent with real small-scale spatial variability in rainfall (far patchier than temperature) rather than a systematic PC10 error, since its long-run total still agrees.
--   **Wind speed** — the picture changed once the old buoy was added. **The airport now has 679 paired days** (up from 2 against the new buoy alone): it reads about 0.7 m/s *higher* than the buoy (r ≈ 0.82), so it is usable for wind calibration, though the overlap ends in 2023. **ERA5 reads only \~0.24 m/s low** (buoy mean \~2.8 m/s, i.e. \~9 % low) with r ≈ 0.89 on 5,079 days. The much larger "\~45 % low" ERA5 deficit reported in an earlier version of this page was driven by the buoy's pre-October-2023 knots-vs-m/s issue, not by ERA5, and no longer appears. PC10 has no wind station.
+-   **Air temperature** — every land/reanalysis source reads colder than the buoy: NIWA airport −0.95 °C, MetService airport −0.92 °C, PC10 −1.00 °C and ERA5 −1.48 °C on daily means. The offset is stable year to year (ERA5 − buoy is −1.3 to −1.7 °C in every year 2011–2025), so it is a real and consistent difference between lake-surface air and land/grid-cell air rather than drift. ERA5 tracks the buoy's day-to-day shape best (r ≈ 0.99); both airports follow at r ≈ 0.98; PC10 is weakest (r ≈ 0.86, MAE ≈ 1.9 °C).
+-   **Relative humidity** — all sources read more humid than the buoy: ERA5 +7.5 %, NIWA airport +6.4 %, MetService +6.1 %, PC10 +3.1 %. This is *not* simply a lake effect: the two land stations and ERA5 agree with each other (hourly ERA5 − MetService is only +0.6 %, r = 0.88), and the buoy's offset is not constant — the annual ERA5 − buoy RH bias is +2–3 % in 2022–23, +9.5 % in 2024, +13 % in 2025 and +48 % in the 2026 data (buoy mean RH 47 %). **The buoy RH sensor looks drifty or faulty, particularly from 2024 on** (see the hourly section). PC10 RH has very weak correlation with the buoy (r ≈ 0.32).
+-   **Rainfall** — mean daily totals agree well. The MetService gauge matches the buoy almost exactly (bias ≈ 0, **r ≈ 0.86**, the best rain agreement of any source), ERA5 is next (bias +0.0004 m/day, r ≈ 0.77), then the NIWA airport (r ≈ 0.59, biased low because its daily rain is incomplete), and PC10 is essentially uncorrelated day to day (r ≈ 0.06) despite agreeing on long-run totals — consistent with real small-scale spatial variability in rain rather than a PC10 error.
+-   **Wind speed** — the buoy (10 m) averages \~5.4 m/s, well above every other source: MetService airport −1.7 m/s (r ≈ 0.89), NIWA airport −2.1 m/s (r ≈ 0.82, only 679 days), and **ERA5 −2.8 m/s (r ≈ 0.89, 5,079 days), i.e. about 52 % below the buoy**. Even against the land MetService station ERA5 is 1.2 m/s low on matched hours, so ERA5 under-reads wind generally and the buoy is windier than both land stations (open-water fetch plus the 2 m → 10 m extrapolation). PC10 has no wind station.
+-   **Shortwave radiation** — only the MetService airport (r ≈ 0.97, bias −5 W/m² over 469 days of overlap with the new buoy, Feb 2022–Jun 2023) and ERA5 (r ≈ 0.84, bias −10 W/m² over 1,404 days) can be compared; the NIWA airport has no overlap with the buoy.
+-   **Station pressure** — all sources differ from the buoy by a nearly constant offset (r ≥ 0.996): MetService −0.13 kPa, ERA5 −1.10 kPa and NIWA airport +3.29 kPa. MetService (station height 285 m) is by far the closest.
 
-## Hourly comparison: old buoy, new buoy and ERA5
+## Hourly comparison: buoys, MetService airport and ERA5
 
-The daily comparison scores sources against a single combined buoy series. This section looks at the old (2007–22) and new (2022–) buoys separately, at hourly resolution, alongside ERA5 — the only gap-free source that overlaps both. It answers two questions the daily view cannot: **(1) can the two buoy loggers be treated as one record?** and **(2) what are ERA5's biases on matched hours, variable by variable, including shortwave, pressure and wind direction?** The old and new buoys never overlap in time, so they can only be compared with each other directly through their distributions and indirectly through ERA5.
+The daily comparison scores sources against a single combined buoy series. This section looks at hourly resolution and brings in four series: the old buoy (2007–22), the new buoy (2022–), ERA5, and the MetService airport record (1993–Jun 2023), which is the only independent, complete hourly station in the set and overlaps the old buoy for 16 years. It answers three questions the daily view cannot: **(1) can the two buoy loggers be treated as one record?**, **(2) what are ERA5's biases on matched hours, variable by variable, including shortwave, pressure and wind direction?** and **(3) is the buoy itself a trustworthy reference for each variable?** The old and new buoys never overlap in time, so they are compared with each other through their distributions and indirectly through ERA5 and MetService.
 
-All three series are floored to the hour (the old buoy logs on `:45` stamps) and duplicate hours are dropped, keeping the first value so wind direction is never averaged arithmetically.
+All series are floored to the hour (the old buoy logs every 15 minutes, so the `:00` record is kept) and duplicate hours are dropped, keeping the first value so wind direction is never averaged arithmetically. MetService rain, wind and radiation are hour-*ending* values (they describe the hour preceding the stamp); MetService wind is the hourly mean where recorded and the 10-minute mean otherwise.
 
 ```{r}
 #| label: hourly-setup
 
 era5_hourly_met          <- tar_read(era5_hourly_met)
+airport_met_aeme         <- tar_read(airport_met_aeme)
 old_buoy_met_hr_aeme     <- tar_read(old_buoy_met_hr_aeme)
 rotorua_buoy_met_aeme_hr <- tar_read(rotorua_buoy_met_aeme_hr)
 
 dfs <- list(
   "Buoy (new, 2022-)"   = rotorua_buoy_met_aeme_hr,
   "Buoy (old, 2007-22)" = old_buoy_met_hr_aeme,
-  "ERA5"                = era5_hourly_met
+  "ERA5"                = era5_hourly_met,
+  "MetService airport"  = airport_met_aeme
 )
 
 # Variables shared by at least two sources (missing ones are filled with NA)
@@ -98,7 +102,8 @@ var_labels <- c(
 
 cols <- c("Buoy (new, 2022-)"   = "#1b9e77",
           "Buoy (old, 2007-22)" = "#d95f02",
-          "ERA5"                = "#7570b3")
+          "ERA5"                = "#7570b3",
+          "MetService airport"  = "#e7298a")
 
 prep <- function(df) {
   for (v in setdiff(vars, names(df))) df[[v]] <- NA_real_
@@ -161,7 +166,55 @@ knitr::kable(summary_stats, digits = 2,
              caption = "Hourly summary statistics by variable and source (full record of each).")
 ```
 
-**The two buoy loggers are statistically interchangeable.** Mean air temperature (14.0 °C both), wind speed (2.75 vs 2.80 m/s), relative humidity (75.3 vs 74.9 %) and pressure (98.34 kPa both) match to within a few percent, so there is no sign of a step change at the 2022 handover. ERA5's matched-hour offsets are also nearly identical against each logger (see below), which is independent confirmation. This is what justifies `all_buoy_met_data` being treated as a single \~19-year lake reference. ERA5 differs from both: it is \~1.5 °C cooler, \~8 % more humid (and saturates — median RH 87 % vs 77 %), has a wider temperature range (SD 4.6 vs 4.0 °C), and a slightly lower mean wind speed (2.48 vs 2.8 m/s). Shortwave is only available on the new buoy, where means agree (165 vs 170 W/m²).
+**The two buoy loggers are statistically interchangeable for temperature, wind and pressure.** Mean air temperature (14.0 °C both), 10 m wind speed (5.45 vs 5.34 m/s) and pressure (98.34 kPa both) match to within about 2 %, so there is no sign of a step change at the 2022 handover, and ERA5's matched-hour offsets for these variables are nearly identical against each logger (below). Relative humidity is the exception (see the annual-bias table). The land and reanalysis series differ from the buoys in consistent ways: ERA5 is \~1.5 °C cooler, more humid (mean 83 % vs 75 %; median 87 % vs 77 %), has a wider temperature range (SD 4.6 vs 4.0 °C) and a much lower mean wind (2.48 vs \~5.4 m/s). The MetService airport sits in between on wind (3.58 m/s), is cooler than the buoys (12.7 °C, with a much wider range of −5 to 30 °C), is more humid (81 %), and reads 98.20 kPa station pressure (the buoys 98.34 kPa). Shortwave means agree across the three sources that measure it (new buoy 165, ERA5 170, MetService 167 W/m²).
+
+### Is the buoy a stable reference? Annual bias by year
+
+Because ERA5 and the MetService airport are independent of the buoy and of each other, year-by-year bias against them shows whether a buoy sensor has drifted. A real, physical offset (such as lake vs. land air temperature) should be steady; sensor drift should not.
+
+```{r}
+#| label: hourly-annual-bias
+
+b_all <- bind_rows(dfs_h[["Buoy (old, 2007-22)"]], dfs_h[["Buoy (new, 2022-)"]])
+era5_h <- dfs_h[["ERA5"]]
+ms_h   <- dfs_h[["MetService airport"]]
+
+yr_bias <- function(ref, test, v, lab) {
+  inner_join(select(ref, Date, ref = all_of(v)),
+             select(test, Date, test = all_of(v)), by = "Date") |>
+    filter(!is.na(ref), !is.na(test)) |>
+    mutate(yr = lubridate::year(Date)) |>
+    group_by(yr) |>
+    summarise(bias = mean(test - ref), .groups = "drop") |>
+    mutate(comparison = lab, variable = v)
+}
+
+annual_bias <- bind_rows(
+  yr_bias(b_all, era5_h, "MET_tmpair", "ERA5 - buoy"),
+  yr_bias(b_all, era5_h, "MET_humrel", "ERA5 - buoy"),
+  yr_bias(b_all, era5_h, "MET_wndspd", "ERA5 - buoy"),
+  yr_bias(ms_h,  era5_h, "MET_tmpair", "ERA5 - MetService"),
+  yr_bias(ms_h,  era5_h, "MET_humrel", "ERA5 - MetService"),
+  yr_bias(ms_h,  era5_h, "MET_wndspd", "ERA5 - MetService")
+) |>
+  mutate(variable = factor(variable, levels = vars, labels = var_labels[vars]))
+
+annual_bias |>
+  tidyr::pivot_wider(names_from = comparison, values_from = bias) |>
+  arrange(variable, yr) |>
+  knitr::kable(digits = 2, caption = "Annual mean hourly bias of ERA5 against the buoys and against the MetService airport.")
+
+ggplot(annual_bias, aes(yr, bias, colour = comparison)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line() + geom_point(size = 1.5) +
+  facet_wrap(~ variable, scales = "free_y", ncol = 1) +
+  scale_colour_manual(values = c("ERA5 - buoy" = "#1b9e77", "ERA5 - MetService" = "#e7298a")) +
+  theme_minimal() + theme(legend.position = "bottom") +
+  labs(title = "Annual ERA5 bias vs. buoy and vs. MetService airport",
+       x = NULL, y = "Mean bias (ERA5 - reference)", colour = NULL)
+```
+
+**Temperature and wind offsets are steady; the RH offset is not.** ERA5 − buoy temperature stays between −1.3 and −1.7 °C every year (and ERA5 − MetService between −0.3 and −0.7 °C), and ERA5 − buoy wind between −2.6 and −3.4 m/s, so those are stable properties of the sources. ERA5 − MetService RH is within about ±1–2 % in every year. Against the buoy, however, the RH bias wanders from +5 % to +9.5 % through 2011–2020, falls to +2–3 % in 2022–23, then rises to +9.5 % (2024), +13 % (2025) and +48 % in 2026, when the buoy reports a mean RH of only 47 %. That pattern points to calibration drift or a failing sensor rather than a lake effect, and it matters because `era5_bias_correction` currently fits `MET_humrel` against this buoy record.
 
 ### Distributions
 
@@ -217,14 +270,15 @@ ggplot(lin_long, aes(source, value, fill = source)) +
 
 Rainfall is zero-inflated, so it is compared by wet-hour fraction and by the distribution of non-zero hours rather than by mean and SD alone.
 
-All three series are now in the same unit (m/hour — the old buoy's maximum is 0.046 m/hr, in line with the others), so no rescaling is needed; `rain_scale` is kept at 1 as a hook in case that changes.
+All four series are now in the same unit (m/hour — the old buoy's maximum is 0.046 m/hr and the MetService maximum 0.047 m/hr, in line with the others), so no rescaling is needed; `rain_scale` is kept at 1 as a hook in case that changes.
 
 ```{r}
 #| label: hourly-rain
 
 rain_scale <- c("Buoy (new, 2022-)"   = 1,
                 "Buoy (old, 2007-22)" = 1,
-                "ERA5"                = 1)    # edit once units are confirmed
+                "ERA5"                = 1,
+                "MetService airport"  = 1)    # edit once units are confirmed
 
 rain <- met_all |>
   filter(!is.na(MET_pprain)) |>
@@ -254,7 +308,7 @@ rain |>
        y = "F(x)", colour = NULL)
 ```
 
-**ERA5 gets the rain total right but not its character.** Mean hourly rain is similar across sources (≈ 0.00014–0.00018 m/hr), but ERA5 is "wet" in **41 % of hours versus 15–16 % on both buoys**, and its wet hours are weaker (mean 0.43 mm/hr vs 0.9–1.1 mm/hr; 95th percentile 2.1 vs 4.5–5.5 mm/hr; maximum 21 vs 28–46 mm/hr). That is the classic reanalysis drizzle pattern — light rain spread over too many hours with extremes smoothed away. The two buoys agree with each other (old buoy slightly heavier in the upper tail). For lake forcing this matters mostly for event-scale inflow and extremes; daily and longer totals are fine.
+**ERA5 gets the rain total right but not its character.** Mean hourly rain is similar across sources (≈ 0.00014–0.00018 m/hr), but ERA5 is "wet" in **41 % of hours versus 12–16 % on both buoys and the MetService gauge**, and its wet hours are weaker (mean 0.43 mm/hr vs 0.9–1.3 mm/hr; 95th percentile 2.1 vs 4.5–5.5 mm/hr; maximum 21 vs 28–47 mm/hr). That is the classic reanalysis drizzle pattern — light rain spread over too many hours with extremes smoothed away. The two buoys and the independent MetService gauge agree with each other, which is strong evidence that the buoy rain gauge is not the problem. For lake forcing this matters mostly for event-scale inflow and extremes; daily and longer totals are fine.
 
 ### Wind direction
 
@@ -289,9 +343,9 @@ met_all |>
   knitr::kable(digits = 2, caption = "Circular mean wind direction (°) and mean resultant length by source.")
 ```
 
-### Matched-hour comparison: ERA5 vs. each buoy
+### Matched-hour comparison: ERA5, MetService and the buoys
 
-To remove sampling differences between periods, ERA5 is paired with each buoy on hours where both have valid data. Bias is ERA5 minus buoy, so a negative wind bias means ERA5 reads low.
+To remove sampling differences between periods, series are paired on hours where both have valid data: ERA5 against each buoy, ERA5 against the MetService airport, and MetService against each buoy. Bias is the second-named series minus the first-named reference, i.e. ERA5 − buoy, ERA5 − MetService, and MetService − buoy, so a negative wind bias means the first series reads low.
 
 ```{r}
 #| label: hourly-paired
@@ -314,7 +368,10 @@ pair_vars <- c("MET_tmpair", "MET_prsttn", "MET_wndspd", "MET_humrel",
 pairs_all <- bind_rows(
   list(
     "ERA5 vs new buoy" = paired(dfs_h[["Buoy (new, 2022-)"]],   dfs_h[["ERA5"]], pair_vars),
-    "ERA5 vs old buoy" = paired(dfs_h[["Buoy (old, 2007-22)"]], dfs_h[["ERA5"]], pair_vars)
+    "ERA5 vs old buoy" = paired(dfs_h[["Buoy (old, 2007-22)"]], dfs_h[["ERA5"]], pair_vars),
+    "ERA5 vs MetService" = paired(dfs_h[["MetService airport"]], dfs_h[["ERA5"]], pair_vars),
+    "MetService vs new buoy" = paired(dfs_h[["Buoy (new, 2022-)"]], dfs_h[["MetService airport"]], pair_vars),
+    "MetService vs old buoy" = paired(dfs_h[["Buoy (old, 2007-22)"]], dfs_h[["MetService airport"]], pair_vars)
   ),
   .id = "pair"
 )
@@ -342,25 +399,27 @@ pairs_all |>
   knitr::kable(digits = 1, caption = "Wind direction: signed (ERA5 − buoy) and absolute angular difference (°).")
 ```
 
-**What the matched hours show** (bias is ERA5 − buoy; results are almost identical for the old and new buoy):
+**What the matched hours show:**
 
-| Variable | Bias | r | Reading |
-|----|----|----|----|
-| Air temperature | −1.5 °C (RMSE \~2.0) | 0.96 | Consistent cold offset; shape well captured |
-| Relative humidity | +6.9 % (new) / +7.7 % (old) | 0.73 / 0.83 | Largest distributional mismatch (KS 0.32–0.41); ERA5 saturates too often |
-| Wind speed | −0.26 / −0.24 m/s (RMSE \~1.0–1.1) | 0.76 / 0.71 | Small mean bias but only moderate hourly skill |
-| Shortwave (new buoy only) | +9 W/m² (RMSE 105) | 0.91 | Good; error is mostly cloud timing |
-| Station pressure | **−1.10 kPa** | 0.997 | Near-perfect shape, constant offset — see caveats |
-| Wind direction | +5° (new) / −3° (old) | — | Mean absolute difference 45–51°: ERA5 gets the prevailing flow, not the hourly direction |
+| Variable | ERA5 − new buoy | ERA5 − old buoy | ERA5 − MetService | MetService − new / old buoy | Reading |
+|------------|------------|------------|------------|------------|------------|
+| Air temperature | −1.56 °C (r 0.96) | −1.46 °C (r 0.96) | −0.51 °C (r 0.96) | −1.00 / −0.91 °C (r 0.93 / 0.94) | ERA5 is close to the land station; the buoy is warmer than both |
+| Relative humidity | +6.9 % (r 0.73) | +7.7 % (r 0.83) | +0.6 % (r 0.88) | +0.6 / +6.7 % (r 0.92 / 0.89) | ERA5 ≈ MetService; the buoy RH disagrees and changes over time (see annual bias) |
+| Wind speed | −2.92 m/s (r 0.76) | −2.78 m/s (r 0.71) | −1.16 m/s (r 0.77) | −1.58 / −1.73 m/s (r 0.84 / 0.74) | ERA5 reads \~50 % below the buoy and \~30 % below the land station |
+| Shortwave | +9 W/m² (r 0.91) | — | −2 W/m² (r 0.95) | −5.5 W/m² (r 0.95; new buoy only) | Good everywhere; ERA5 matches MetService almost exactly |
+| Station pressure | −1.10 kPa (r 0.997) | −1.10 kPa (r 0.998) | −0.97 kPa (r 0.998) | −0.09 / −0.14 kPa (r ≥ 0.999) | Near-perfect shape; constant elevation-type offset for ERA5 |
+| Wind direction | +5° bias, 46° mean abs. diff. | −3°, 51° | +1°, 39° | +15° / −4°, 42° / 62° | ERA5 gets the prevailing flow, not hourly direction |
 
-Wind roses agree on the prevailing flow (circular mean 247°, 255° and 253° — WSW–W for the new buoy, old buoy and ERA5), but the old buoy's directional concentration is weaker ($\bar R$ = 0.13 vs 0.21–0.22), which may reflect a different sensor or exposure rather than a different wind climate.
+The comparison that matters most for the humidity result is the second column pair: the new buoy and the MetService airport agree on RH over their 2022–23 overlap (+0.6 %), the old buoy and MetService do not (+6.7 %), and ERA5 agrees with MetService throughout. The buoy's RH is therefore the odd one out, not ERA5.
+
+Wind roses agree on the prevailing flow (circular mean 247°, 255°, 253° and 237° for the new buoy, old buoy, ERA5 and MetService — WSW–W throughout). Directional concentration is similar for the new buoy and ERA5 ($\bar R$ = 0.21 and 0.22) but weaker for the old buoy (0.13) and the MetService airport (0.11), which may reflect a different sensor or exposure rather than a different wind climate.
 
 ::: panel-tabset
 ## Scatter
 
 ```{r}
 #| label: hourly-scatter
-#| fig-height: 9
+#| fig-height: 14
 
 pairs_all |>
   filter(variable != "MET_wnddir") |>
@@ -368,16 +427,16 @@ pairs_all |>
   geom_bin2d(bins = 60) +
   geom_abline(colour = "red") +
   scale_fill_viridis_c(trans = "log10") +
-  facet_wrap(pair ~ variable, scales = "free", nrow = 2, drop = FALSE) +
+  facet_wrap(pair ~ variable, scales = "free", ncol = 5, drop = FALSE) +
   theme_minimal() +
-  labs(title = "Matched hours: ERA5 (y) vs buoy (x)", x = "Buoy", y = "ERA5")
+  labs(title = "Matched hours: test (y) vs reference (x)", x = "Reference (buoy / MetService)", y = "Test (ERA5 / MetService)")
 ```
 
 ## QQ
 
 ```{r}
 #| label: hourly-qq
-#| fig-height: 9
+#| fig-height: 14
 
 probs <- seq(0.01, 0.99, by = 0.01)
 
@@ -390,13 +449,13 @@ pairs_all |>
   geom_abline(colour = "red") +
   facet_wrap(pair ~ variable, scales = "free") +
   theme_minimal() +
-  labs(title = "QQ plot: ERA5 vs buoy quantiles", x = "Buoy", y = "ERA5")
+  labs(title = "QQ plot: test vs reference quantiles", x = "Reference (buoy / MetService)", y = "Test (ERA5 / MetService)")
 ```
 :::
 
 ### Diurnal cycle
 
-The mean diurnal cycle is also a quick check for timezone offsets: if ERA5 radiation peaks at a different hour to the buoys, the series are on different clocks (the timezone table above shows what each `Date` column is stored in).
+The mean diurnal cycle is also a quick check for timestamp conventions: if the sources' radiation peaks at different hours, their clocks or averaging conventions differ (the timezone table above shows what each `Date` column is stored in).
 
 ```{r}
 #| label: hourly-peak-hour
@@ -412,7 +471,34 @@ met_all |>
   knitr::kable(digits = 0, caption = "Hour of peak mean shortwave radiation, by source.")
 ```
 
-Mean shortwave peaks at hour 12 on the new buoy but hour 13 in ERA5, a one-hour offset. All three `Date` columns carry the same fixed-offset timezone (`Etc/GMT-12`, NZST, no daylight saving), so this is not a timezone mismatch in the stored data; it is more likely a timestamp-convention difference (e.g. ERA5 fluxes labelled at the end of the accumulation hour versus the buoy's instantaneous or start-of-hour values) and is worth confirming before using ERA5 radiation for sub-daily work. (The larger ERA5 peak mean, 546 vs 457 W/m², partly reflects ERA5's complete record versus the buoy's gaps, and the hourly matched bias is only +9 W/m².)
+Mean shortwave peaks at hour 12 on the new buoy but hour 13 in ERA5 and the MetService airport. All four `Date` columns carry the same fixed-offset timezone (`Etc/GMT-12`, NZST, no daylight saving), so this is not a timezone mismatch in the stored data. ERA5 and MetService values are hour-*ending* (they describe the preceding hour), whereas the buoy stamp is instantaneous or hour-centred, so the series are offset by roughly 30–60 minutes. The lag table below shows the effect on hourly skill is small, but it is worth knowing for sub-daily radiation work.
+
+```{r}
+#| label: hourly-lag
+
+lag_r <- function(ref, test, v, k) {
+  t2 <- test
+  t2$Date <- t2$Date - k * 3600
+  d <- inner_join(select(ref, Date, a = all_of(v)), select(t2, Date, b = all_of(v)), by = "Date")
+  d <- filter(d, !is.na(a), !is.na(b))
+  cor(d$a, d$b)
+}
+
+lag_grid <- tidyr::expand_grid(
+  variable = c("MET_radswd", "MET_tmpair"),
+  pair = c("new buoy vs ERA5", "new buoy vs MetService", "ERA5 vs MetService"),
+  lag_h = -2:2
+)
+lag_grid$r <- purrr::pmap_dbl(lag_grid, \(variable, pair, lag_h) {
+  ref  <- switch(pair, "ERA5 vs MetService" = dfs_h[["ERA5"]], dfs_h[["Buoy (new, 2022-)"]])
+  test <- switch(pair, "new buoy vs ERA5" = dfs_h[["ERA5"]], dfs_h[["MetService airport"]])
+  lag_r(ref, test, variable, lag_h)
+})
+
+lag_grid |>
+  tidyr::pivot_wider(names_from = lag_h, values_from = r, names_prefix = "lag ") |>
+  knitr::kable(digits = 3, caption = "Hourly correlation after shifting the second series by 0, ±1 and ±2 hours (positive lag = second series shifted later).")
+```
 
 ```{r}
 #| label: hourly-diurnal
@@ -468,17 +554,21 @@ The comparisons above are all of *raw* ERA5. `era5_bias_correction` fits a day-o
 #| label: era5-skill-all
 #| echo: false
 
-bc$skill |>
+bind_rows(
+  bc$skill |> mutate(reference = "buoy"),
+  tar_read(era5_humrel_correction)$skill |> mutate(reference = "MetService airport")
+) |>
   filter(stage %in% c("cv_raw", "cv_corrected")) |>
   mutate(kind = ifelse(grepl("raw", stage), "raw ERA5", "bias-corrected")) |>
-  select(variable, kind, n, bias, rmse, r, kge) |>
+  select(variable, reference, kind, n, bias, rmse, r, kge) |>
   knitr::kable(digits = 3,
-              caption = "Cross-validated ERA5 skill against the combined buoy record, raw vs. bias-corrected (all variables).")
+              caption = "Cross-validated ERA5 skill, raw vs. bias-corrected, against the combined buoy record (all variables except humidity) and the MetService airport (humidity).")
 ```
 
--   **Temperature, humidity and pressure improve a lot**: temperature bias −1.48 → 0.00 °C and RMSE 2.00 → 1.33 °C; humidity RMSE 11.9 → 9.3 % (KGE 0.58 → 0.61); pressure bias −1,103 Pa → 0 and RMSE 1,104 → 59 Pa.
--   **Wind**: the mean bias is removed but hourly RMSE is unchanged (≈ 1.06 m/s, r ≈ 0.73) — a scale correction fixes the mean, not the hourly timing error visible in the matched-hour scatter.
--   **Shortwave**: already unbiased (+9 W/m²); correction gives only a small gain, and it is fit on the new buoy alone (\~30,000 hours).
+-   **Wind is now the largest correction**: bias −2.82 → 0.00 m/s, RMSE 3.52 → 2.06 m/s and KGE 0.19 → 0.72, with correlation unchanged (r ≈ 0.73) — a scale correction fixes the mean, not the hourly timing error visible in the matched-hour scatter.
+-   **Temperature and pressure improve a lot**: temperature bias −1.48 → 0.00 °C and RMSE 2.00 → 1.33 °C; pressure bias −1,103 Pa → 0 and RMSE 1,104 → 59 Pa.
+-   **Humidity** is now fit to the MetService airport (`airport_met_aeme`, 108,630 matched hours, 2011–Jun 2023) rather than the buoy, as a separate stage in front of `era5_bias_correction` (target `era5_humrel_correction`). Raw ERA5 already agrees closely with that station (bias +0.6 %, r 0.88), so the correction is small: cross-validated RMSE 7.15 → 7.08 %, KGE 0.828 → 0.837, and the mean bias goes to zero. It lowers ERA5's mean RH only from 83.0 % to 82.4 %, whereas fitting to the buoy lowered it to 80–81 %. Against the buoys the corrected series still reads \~2 % above the 2022–23 new buoy and \~7 % above the 2011–2020 old buoy, which is the buoy offset described below, not an ERA5 error.
+-   **Shortwave**: already close to unbiased (+9 W/m²); correction gives only a small gain, and it is fit on the new buoy alone (\~30,000 hours).
 -   **Rain**: no gain from `scale` (above). Quantile mapping followed by a monthly scale does fix wet-hour frequency and intensity — see the next subsection.
 
 ### Fixing ERA5 rainfall: quantile mapping vs. scaling
@@ -575,7 +665,7 @@ j |>
 
 #### Cross-check against independent gauges
 
-Because the corrections are fit to the buoy, the buoy cannot also validate them. The same variants are therefore scored at daily resolution against the buoy, the airport and PC10 gauges (daily totals in mm).
+Because the corrections are fit to the buoy, the buoy cannot also validate them. The same variants are therefore scored at daily resolution against the buoy, the NIWA airport, the MetService airport and PC10 gauges (daily totals in mm), and at hourly resolution against the MetService gauge, which is the only fully independent hourly rain record.
 
 ```{r}
 #| label: rain-daily-crosscheck
@@ -587,10 +677,12 @@ dv <- purrr::map(rain_variants, \(d) d |>
 
 w <- tar_read(met_source_comparison)$wide |>
   filter(variable == "MET_pprain") |>
-  transmute(Date, buoy = buoy * 1000, airport = airport * 1000, pc10 = pc10 * 1000)
+  transmute(Date, buoy = buoy * 1000, airport = airport * 1000,
+            metservice = metservice * 1000, pc10 = pc10 * 1000)
 for (n in names(dv)) w[[n]] <- dv[[n]]$v[match(w$Date, dv[[n]]$Date)]
 
-ref_names <- c(buoy = "Buoy", airport = "Airport", pc10 = "PC10")
+ref_names <- c(buoy = "Buoy", airport = "Airport (NIWA)", metservice = "MetService airport",
+               pc10 = "PC10")
 daily_tab <- purrr::map_dfr(names(ref_names), \(ref) {
   d <- filter(w, !is.na(.data[[ref]]), !is.na(raw))
   purrr::map_dfr(c(ref, names(rain_variants)), \(x) {
@@ -607,16 +699,42 @@ daily_tab <- purrr::map_dfr(names(ref_names), \(ref) {
       r = if (x == ref) NA_real_ else cor(d[[ref]], y))
   })
 })
-knitr::kable(daily_tab, digits = 1,
+knitr::kable(daily_tab, digits = 2,
              caption = "Daily rain (mm/day) of ERA5 variants vs. each gauge, on days both have data. Wet day = ≥ 1 mm.")
 ```
 
 -   **Buoy:** `eqm+scale` matches the buoy's annual total (1,445 vs. 1,446 mm/yr), p95 (21.8 vs. 21.2 mm/day) and maximum (267 vs. 281 mm/day); raw ERA5 has 44 % wet days against the buoy's 27 %, and the `eqm`-based variants 25 %. The upper tail is slightly over-stretched (p99 71 vs. 65 mm/day).
--   **PC10 (Whakarewarewa gauge)** is the most useful independent check on totals: it reads 1,514 mm/yr, between the buoy (1,446) and raw ERA5 (1,576). `eqm+scale` (1,451) is within 4 % of it, so the buoy total is not obviously under-catching, though the true value may be slightly higher than the buoy's. PC10's p95 (22.1 mm/day) is matched by `eqm+scale` (21.9). Its wet-day fraction (35 %) lies between the buoy-corrected series (25 %) and raw ERA5 (44 %), but a once-daily gauge reading probably smears wet days across two calendar days and inflates the count, so this is not a clean target. Its daily correlation with ERA5 is very low in every case (r < 0.1), as in the earlier source comparison.
--   **Airport:** this check is **inconclusive**. The airport's daily rainfall averages only 0.7 mm/day (\~250 mm/yr) on days it is "valid", roughly a fifth of every other gauge, so its rain series appears incomplete (many days probably contain only some of the 3-hourly observations) and cannot be used to judge totals or wet-day frequency. It is excluded from the conclusions below, and its aggregation is worth checking before it is used as a rain reference.
+-   **MetService airport (independent hourly gauge)** is the strongest check, because it shares no instrument with the buoy: it reads **1,470 mm/yr** on matched days, between the buoy (1,446) and PC10 (1,514). On matched hours its wet-hour fraction is 12.6 %, mean wet-hour rain 1.33 mm/hr and p95 5.0 mm/hr; `eqm+scale` gives 15.3 %, 1.09 and 5.4 mm/hr and a total of 1,461 mm/yr — **within 1 % of the MetService total**, whereas raw ERA5 is 8 % high (1,589) with 42 % wet hours and weak wet-hour intensity (0.43 mm/hr). At daily resolution `eqm+scale` reaches the MetService p95 (21.7 vs. 22.2 mm/day) but slightly under-counts wet days (24.9 % vs. 32.3 %) and over-stretches the extreme tail (p99 73 vs. 54 mm/day; maximum 244 vs. 157 mm/day), consistent with the buoy's heavier tail.
+-   **PC10 (Whakarewarewa gauge)** reads 1,514 mm/yr, so `eqm+scale` (1,451) is within 4 % of it. Its p95 (22.1 mm/day) is matched by `eqm+scale` (21.9). PC10's wet-day fraction (35 %) is the highest of the gauges, but a once-daily reading probably smears wet days across two calendar days and inflates the count. Its daily correlation with ERA5 is very low in every case (r < 0.1), as in the source comparison above.
+-   **NIWA airport:** this check is **inconclusive**. Its daily rainfall averages only 0.7 mm/day (\~250 mm/yr) on days it is "valid", roughly a fifth of every other gauge, so its rain series appears incomplete (many days probably contain only some of the 3-hourly observations) and cannot be used to judge totals or wet-day frequency. The MetService record now fills that role.
 -   **Daily skill:** all `eqm` variants have somewhat higher daily RMSE than `scale` against the buoy (9.5 vs. 8.7 mm/day for `eqm+scale`) with similar r (0.77), consistent with the hourly double penalty.
 
-**Recommendation (now implemented in the pipeline):** use **`MET_pprain = "eqm"` followed by a monthly `scale`** for the historical ERA5 baseline. That fixes drizzle frequency, wet-hour intensity and the tail, keeps the total on the buoy, and is consistent with PC10's independent total to within \~4 %. Because the second stage is fit on the output of the first, it needs two chained calls rather than a single `method =` vector:
+```{r}
+#| label: rain-hourly-metservice
+
+ms <- fl(airport_met_aeme) |> rename(obs = MET_pprain) |> filter(!is.na(obs))
+for (n in names(rain_variants)) {
+  v <- fl(rain_variants[[n]])
+  ms[[n]] <- v$MET_pprain[match(ms$Date, v$Date)]
+}
+ms <- filter(ms, !is.na(raw))
+purrr::map_dfr(c("obs", names(rain_variants)), \(x) {
+  y <- ms[[x]]
+  tibble::tibble(
+    series = if (x == "obs") "MetService (reference)" else paste("ERA5", x),
+    n_hours = nrow(ms),
+    wet_fraction_pct = 100 * mean(y > 0),
+    mean_wet_mm_hr = 1000 * mean(y[y > 0]),
+    p95_wet_mm_hr = 1000 * quantile(y[y > 0], 0.95),
+    max_mm_hr = 1000 * max(y),
+    total_mm_yr = 1000 * mean(y) * 8766,
+    r_hourly = if (x == "obs") NA_real_ else cor(ms$obs, y))
+}) |>
+  knitr::kable(digits = 2,
+               caption = "Hourly rain: ERA5 variants vs. the MetService airport gauge (independent of the buoy), matched hours.")
+```
+
+**Recommendation (now implemented in the pipeline):** use **`MET_pprain = "eqm"` followed by a monthly `scale`** for the historical ERA5 baseline. That fixes drizzle frequency, wet-hour intensity and the bulk of the tail, keeps the total on the buoy, and is consistent with the independent MetService total to within 1 % and PC10 to within \~4 %. Because the second stage is fit on the output of the first, it needs two chained calls rather than a single `method =` vector:
 
 In `_targets.R` this is `era5_rain_eqm_correction` → `era5_hourly_met_rainqm` (stage 1), then `era5_bias_correction` fitted on `era5_hourly_met_rainqm` (stage 2, together with the other variables), with `era5_corrected_hourly` and `era5_corrected_daily_baseline` built from `era5_hourly_met_rainqm`. The equivalent standalone code is:
 
@@ -641,23 +759,25 @@ era5_rain_corrected <- metscale::apply_met_bias_correction(era5_eqm, bc_rain_sca
 **`expand_met()` rounding (fixed).** `metscale::expand_met()` previously rounded every column to 3 decimals. Rain is in m/hr, so that quantised it to whole millimetres: in testing it cut the corrected wet-hour fraction from 15.2 % to 4.9 % and erased all the drizzle correction (and coarsened earlier `era5_corrected_hourly` rain). It now rounds to 6 decimals and the pipeline calls `apply_met_bias_correction(expand = TRUE)` directly. `era5_corrected_daily_baseline` rounds daily totals to 6 decimals too, so it is unaffected.
 :::
 
-Caveats: hourly timing is unchanged (r stays ≈ 0.5) — this corrects the *distribution*, not when rain falls. The hourly mapping is only as good as the buoy gauge, and the airport could not confirm that. The quantile map caps ERA5 extremes at the buoy's observed maximum.
+Caveats: hourly timing is unchanged (r stays ≈ 0.5) — this corrects the *distribution*, not when rain falls. The quantile map caps ERA5 extremes at the buoy's observed maximum, and the extreme daily tail ends up somewhat heavier than the MetService gauge shows.
 
 ## How this improves lake model forcing
 
-1.  **The buoy reference is now \~19 years, not \~4.5.** Adding the old buoy lets the day-of-year corrections in `era5_bias_correction` and `niwa_to_buoy_bias_correction` train on \~130,000 hourly pairs instead of \~40,000, and the hourly comparison above shows the two loggers are consistent enough to splice. All the daily statistics at the top of this page are correspondingly more robust than the earlier 2022-only version.
+1.  **The buoy reference is now \~19 years, not \~4.5.** Adding the old buoy lets the day-of-year corrections in `era5_bias_correction` and `niwa_to_buoy_bias_correction` train on \~130,000 hourly pairs instead of \~40,000, and the hourly comparison shows the two loggers agree on temperature, wind and pressure.
 2.  **Caught a forcing bug before it reached the model.** The ERA5 rain unit error above would have meant every ERA5-driven scenario — including every future GCM projection, since deltas are applied to the ERA5 baseline — ran with rainfall roughly 3 orders of magnitude too high. A single-source pipeline has no way to notice this; comparing independent sources does.
-3.  **The buoy → airport extension is better supported for temperature and humidity.** `niwa_to_buoy_bias_correction` now trains on the full buoy overlap (2007–present) and cuts airport-vs-buoy RMSE from 2.02 → 1.74 °C (temperature) and 9.2 → 6.5 % (humidity) with the bias removed. The resulting `niwa_met_hourly_lake_equiv` series is the reference for `era5_bias_correction_extended`, which on its own cross-validation cuts ERA5 temperature RMSE from 2.08 → 1.45 °C and humidity from 10.2 → 7.0 %. PC10's independent record over the same window remains a cross-check on that extension (different instrumentation and network — BOPRC, not NIWA).
-4.  **PC10's 1901–present rainfall record is the longest available context for Rotorua rainfall**, over 40 years longer than the airport's. That's directly useful for `summarise_climate_extremes.R` / [`climate-extreme-events.qmd`](climate-extreme-events.qmd)'s historical-extremes framing, and as a long-run independent check on whatever ERA5 rainfall climatology ends up driving the historical baseline and scenario deltas.
-5.  **Flags where to be careful.** PC10's weak correlation with the buoy for RH and rainfall (r ≈ 0.32 and 0.06) means it shouldn't be used as a `fit_met_bias_correction()` reference for those variables the way the airport is — its value is historical context and cross-validation, not a second forcing bridge.
-6.  **Wind now has two usable correction sources, and ERA5 is the safer one.** The airport has enough overlap with the buoy (679 daily / \~15,000 hourly pairs) to fit a correction (hourly bias 0.66 → 0 m/s, RMSE 1.83 → 1.40, cross-validated 1.51) — but it reads *high* and its sensor record ends in 2023. ERA5 has a small bias (−0.24 m/s), full coverage and r ≈ 0.89 daily, so `era5_bias_correction`'s `MET_wndspd` correction remains the primary route for future-looking forcing.
-7.  **Wind direction and shortwave timing check out.** ERA5 reproduces the prevailing WSW–W flow and the shortwave daily cycle (r = 0.91 hourly), so using ERA5-derived direction and radiation in the model is defensible, with the caveat that hourly direction errors average \~45–50°.
+3.  **Wind is the largest bias in the forcing, and it is now correctly sized.** With the doubled unit conversion removed, ERA5 reads \~2.8 m/s (\~52 %) below the buoy's 10 m wind, not \~0.2 m/s. Wind drives mixing and surface heat flux directly, so `era5_bias_correction`'s `MET_wndspd` scale correction (cross-validated RMSE 3.52 → 2.06 m/s, KGE 0.19 → 0.72) is one of the most consequential steps in the pipeline. The land stations cannot substitute: the MetService airport also reads 1.7 m/s below the buoy, so the correction really is a land/reanalysis → lake transfer and depends on the buoy's 2 m/1.5 m → 10 m extrapolation being right.
+4.  **The buoy → airport extension helps temperature and humidity, less so wind.** `niwa_to_buoy_bias_correction` trains on the full buoy overlap (2007–present) and cuts NIWA-airport-vs-buoy RMSE from 2.02 → 1.74 °C (temperature) while humidity, which uses the 2022–23 buoy only in this fit, shows no cross-validated gain (RMSE 5.7 → 6.6 %; in-sample 5.7 → 5.5 %); wind is corrected for bias (−2.3 → −0.1 m/s) but with only modest gains in RMSE (3.18 → 2.94 m/s) and weak correlation (r ≈ 0.63). `era5_bias_correction_extended` cuts ERA5 temperature RMSE from 2.08 → 1.45 °C and humidity from 7.3 → 7.0 %.
+5.  **A second, independent hourly station is now available.** The MetService airport record (1993–Jun 2023) has a real rain gauge, shortwave and wind, and agrees with ERA5 on temperature (−0.5 °C), humidity (+0.6 %) and shortwave (−2 W/m²). It validates the rain correction independently of the buoy, exposes the buoy RH drift, and is a candidate for extending reference records back before 2007 (for variables where it agrees well with the buoy: temperature, pressure, rain).
+6.  **PC10's 1901–present rainfall record is the longest available context for Rotorua rainfall**, over 40 years longer than the airports'. That's directly useful for `summarise_climate_extremes.R` / [`climate-extreme-events.qmd`](climate-extreme-events.qmd)'s historical-extremes framing, and as a long-run independent check on whatever ERA5 rainfall climatology ends up driving the historical baseline and scenario deltas. Its weak daily correlation with the buoy for RH and rain (r ≈ 0.32 and 0.06) means it shouldn't be used as a `fit_met_bias_correction()` reference for those variables.
+7.  **Wind direction and shortwave timing check out.** ERA5 reproduces the prevailing WSW–W flow (hourly mean absolute direction error \~39–50°) and the shortwave daily cycle (r = 0.91 against the new buoy and 0.95 against MetService), so ERA5-derived direction and radiation are defensible for the model.
 
 ## Caveats
 
--   **Station pressure (`MET_prsttn`) — earlier "unit issue" is now explained.** The buoy logs sensible station pressure (\~98.3 kPa on both loggers). ERA5 reads a near-constant **1.1 kPa lower** (r = 0.997), which is a grid-cell elevation difference of order 100 m, not a units error; the airport reads \~3.3 kPa *higher* than the buoy. All offsets are removed by the scale corrections (ERA5 RMSE falls to \~60 Pa), but the raw ERA5 and airport pressures should not be used uncorrected.
--   **`era5_bias_correction_extended` wind and shortwave rest on almost no data.** Its fit has only 69 wind and 64 shortwave paired hours (28 and 10 in cross-validation), versus \~120,000 for temperature/humidity — so for `MET_wndspd` and `MET_radswd` prefer `era5_bias_correction`. The comment in `_targets.R` describing these as "uncorrected airport values" predates the old buoy being added to the reference and is worth revisiting.
--   **The airport has no shortwave overlap with the buoy**, and the old buoy has no shortwave at all, so shortwave is validated on the new buoy's \~30,000 hours only.
--   **ERA5 rain is wet too often** (41 % of hours vs 15–16 %) with weak hourly intensity; fine for totals, less so for event-scale extremes. The current `scale` rain correction does not address this; `eqm` followed by `scale` does (see "Fixing ERA5 rainfall"). The airport's daily rain series also looks incomplete (\~250 mm/yr) and shouldn't be used as a rain reference yet.
+-   **Buoy relative humidity is not a reliable reference, so ERA5 humidity is corrected against the MetService airport instead.** The old buoy (2007–22) reads \~5–9.5 % below ERA5 and the MetService airport, and the new buoy's offset drifts from +2–3 % in 2022–23 to +9.5 % (2024), +13 % (2025) and +48 % in 2026 (mean RH 47 %). `era5_bias_correction` therefore no longer corrects `MET_humrel`; `era5_humrel_correction` fits it to `airport_met_aeme` (1993–Jun 2023, so the fit covers 2011–Jun 2023 of ERA5), and the correction is applied before the buoy-based one. `buoy_met_fit_ref` keeps buoy RH only for 2022-01-01 to 2023-12-31 for the remaining buoy-referenced fits (`niwa_to_buoy_bias_correction` and, through it, `era5_bias_correction_extended`, which still corrects humidity against that lake-equivalent series). `all_buoy_met_data` and the comparisons above still include all buoy RH. The airport station is a land station, so any lake effect on humidity (the buoy is the only lake-surface sensor) is not captured; the airport fit assumes the same land–lake humidity relationship ERA5 already has.
+-   **Station pressure (`MET_prsttn`).** The buoys log sensible station pressure (\~98.3 kPa on both loggers; the MetService airport 98.2 kPa). ERA5 reads a near-constant **1.1 kPa lower** (r = 0.997), a grid-cell elevation difference of order 100 m, not a units error; the NIWA airport reads \~3.3 kPa *higher*. All offsets are removed by the scale corrections (ERA5 RMSE falls to \~60 Pa), but raw ERA5 and NIWA pressures should not be used uncorrected.
+-   **`era5_bias_correction_extended` wind and shortwave rest on almost no data.** Its cross-validation has only 28 wind and 10 shortwave paired hours (versus \~130,000 for temperature/humidity), so for `MET_wndspd` and `MET_radswd` prefer `era5_bias_correction`. The comment in `_targets.R` describing these as "uncorrected airport values" predates the old buoy being added to the reference and is worth revisiting.
+-   **Shortwave is validated on limited data.** The old buoy has no shortwave, the NIWA airport has none that overlaps the buoy, and the MetService airport overlaps the new buoy only from Feb 2022 to Jun 2023 (\~11,000 hours), so ERA5 shortwave rests on the new buoy (\~30,000 hours) plus that MetService overlap.
+-   **Sub-daily timing.** The buoy stamps are offset from ERA5/MetService hour-ending stamps by roughly 30–60 minutes (see the diurnal section). This matters for hourly radiation and temperature, not for daily results.
+-   **ERA5 rain is wet too often** (41 % of hours vs 12–16 %) with weak hourly intensity; fine for totals, less so for event-scale extremes. The current `scale` rain correction does not address this; `eqm` followed by `scale` does (see "Fixing ERA5 rainfall"). `era5_bias_correction_extended` still uses plain `scale` for rain.
 -   PC10 has **no radiation or wind data**, so `pc10_climate_met` is a partial forcing (temp/RH/rain only) — useful for comparison and historical context, not as a standalone forcing source.
--   **Hour-stamp de-duplication.** `prep()` in the hourly section drops a large number of duplicated hour stamps (first value kept); this is harmless for the comparisons here but means the hourly buoy tables contain many sub-hourly or repeated rows.
+-   **Hour-stamp de-duplication.** `prep()` in the hourly section drops a large number of duplicated hour stamps (first value kept); the old buoy's 15-minute rows are reduced to the `:00` record. This is harmless for the comparisons here but means sub-hourly information is not used.
