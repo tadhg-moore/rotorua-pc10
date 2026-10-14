@@ -51,7 +51,10 @@ tar_source(
     here::here("R", "plot_climate_extremes.R"),
     here::here("R", "plot_bias_correction.R"),
     here::here("R", "qc_funs.R"),
-    here::here("R", "load_old_buoy_data.R")
+    here::here("R", "load_old_buoy_data.R"),
+    here::here("R", "read_met_service_xl.R"),
+    here::here("R", "read_bop_csv_url.R"),
+    here::here("R", "est_glm_weir_params.R")
   )
 )
 # Set target options
@@ -132,6 +135,46 @@ list(
     rotorua_old_buoy_data, load_old_buoy_data(rotorua_old_buoy_data_zip)
   ),
   tar_target(old_buoy_met_hr_aeme, old_buoy_met_data(rotorua_old_buoy_data, 1.5)),
+  
+  # level data
+  tar_target(
+    rotorua_level_data_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Lake%20Level.Moturiki%40FL150407&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=122&_=1791861502718"
+  ),
+  tar_target(
+    rotorua_level_data, read_bop_csv_url(rotorua_level_data_url)
+  ),
+  
+  tar_target(
+    rotorua_flow_data_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Discharge.Primary%40FL150407&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=141&_=1791861409538"
+  ),
+  tar_target(
+    rotorua_flow_data, read_bop_csv_url(rotorua_flow_data_url)
+  ),
+  
+  tar_target(
+    ohau_flow_level, {
+      dplyr::left_join(rotorua_flow_data, rotorua_level_data,
+                       by = c("Timestamp (UTC+12:00)")) |>
+        dplyr::rename(
+          Date = `Timestamp (UTC+12:00)`,
+          level = `Value (m)`,
+          flow = `Value (m^3/s)`
+        ) |>  
+        dplyr::select(Date, level, flow)
+    }
+  ),
+  tar_target(ohau_weir_width, 26.0),
+  
+  tar_target(
+    glm_weir_params, est_glm_weir_params(ohau_flow_level, ohau_weir_width)
+  ),
+  
+  tar_target(
+    aeme_weir_params, format_weir_params(crest_elev = glm_weir_params$crest_elev,
+                                         crest_factor = glm_weir_params$crest_factor,
+                                         crest_width = ohau_weir_width)
+  ),
+  
   # 0. Define constants ----
   tar_target(
     rotorua_catchment_bbox_file,
@@ -213,6 +256,17 @@ list(
   ),
   tar_target(
     pc10_climate_met, pc10_climate_to_aeme_met(pc10_climate_data)
+  ),
+  
+  # Met service data
+  tar_target(
+    airport_met_service_file, file.path(data_raw_dir, "met_service",
+                                "Hourly_NZROA_Jan1993_Jun2023.xlsx"),
+    format = "file"
+  ),
+  
+  tar_target(
+    airport_met, read_met_service_xl(airport_met_service_file, tz = scenario_tz)
   ),
 
   # CTD Excel file
