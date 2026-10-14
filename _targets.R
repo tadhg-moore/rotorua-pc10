@@ -268,6 +268,7 @@ list(
   tar_target(
     airport_met, read_met_service_xl(airport_met_service_file, tz = scenario_tz)
   ),
+  tar_target(airport_met_aeme, airport_met_to_aeme_met(airport_met)),
 
   # CTD Excel file
   tar_target(
@@ -549,6 +550,23 @@ list(
   tar_target(
     all_buoy_met_data, dplyr::bind_rows(old_buoy_met_hr_aeme,
                                         rotorua_buoy_met_aeme_hr)
+  ),
+  # Buoy record used as the *reference* when fitting bias corrections: buoy
+  # relative humidity is restricted to 2022-01-01 .. 2023-12-31 (new buoy
+  # only; everything else set to NA). The old-buoy RH reads ~5-9% below ERA5
+  # and the MetService airport, and the new buoy's RH drifts from 2024 on
+  # (ERA5 - buoy RH bias: +2-3% in 2022-23, +10% 2024, +13% 2025, +48% 2026),
+  # whereas in 2022-23 it agrees with the MetService airport to <1%. See
+  # met-source-comparison.qmd. Other variables and the raw buoy record
+  # (all_buoy_met_data) are unchanged.
+  tar_target(
+    buoy_met_fit_ref, {
+      ref <- all_buoy_met_data
+      rh_ok <- ref$Date >= as.POSIXct("2022-01-01", tz = "Etc/GMT-12") &
+        ref$Date < as.POSIXct("2024-01-01", tz = "Etc/GMT-12")
+      ref$MET_humrel[!rh_ok] <- NA_real_
+      ref
+    }
   ),
   
   # NIWA met to AEME data
@@ -1332,18 +1350,34 @@ list(
     metscale::apply_met_bias_correction(
       era5_hourly_met, era5_rain_eqm_correction, verbose = FALSE)
   ),
+  # Relative humidity is corrected against the MetService airport record
+  # (airport_met_aeme, 1993-Jun 2023) instead of the buoy: buoy RH is
+  # unreliable (old buoy ~5-9% below ERA5 and the airport; new buoy drifts
+  # from 2024). See met-source-comparison.qmd. Applied as a pre-stage, like
+  # rain, so era5_bias_correction (buoy) no longer corrects MET_humrel.
+  tar_target(
+    era5_humrel_correction,
+    metscale::fit_met_bias_correction(
+      era5_hourly_met, airport_met_aeme, vars = "MET_humrel",
+      method = "scale", by = "doy-loess", verbose = FALSE)
+  ),
+  tar_target(
+    era5_hourly_met_stage1,
+    metscale::apply_met_bias_correction(
+      era5_hourly_met_rainqm, era5_humrel_correction, verbose = FALSE)
+  ),
   tar_target(
     era5_bias_correction,
     metscale::fit_met_bias_correction(
-      era5_hourly_met_rainqm, all_buoy_met_data,
-      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel",
+      era5_hourly_met_stage1, buoy_met_fit_ref,
+      vars = c("MET_tmpair", "MET_wndspd", "MET_radswd",
                "MET_prsttn", "MET_pprain"),
       method = "scale", by = "doy-loess", verbose = FALSE)
   ),
   tar_target(
     era5_corrected_hourly,
     metscale::apply_met_bias_correction(
-      era5_hourly_met_rainqm, era5_bias_correction, expand = TRUE,
+      era5_hourly_met_stage1, era5_bias_correction, expand = TRUE,
       lat = lake_meta$latitude, lon = lake_meta$longitude,
       elev = lake_meta$elevation, tz = scenario_tz, verbose = FALSE)
   ),
@@ -1422,7 +1456,7 @@ list(
         dplyr::filter(Date >= niwa_buoy_overlap_window[1],
                       Date <= niwa_buoy_overlap_window[2])
       metscale::fit_met_bias_correction(
-        niwa_overlap, all_buoy_met_data,
+        niwa_overlap, buoy_met_fit_ref,
         vars = c("MET_tmpair", "MET_wndspd", "MET_radswd", "MET_humrel", "MET_prsttn"),
         method = "scale", by = "doy-loess", verbose = FALSE)
     }
@@ -1475,23 +1509,25 @@ list(
     met_source_comparison,
     compare_met_sources(buoy = all_buoy_met_data,
                         airport = niwa_met_hourly_aeme,
+                        metservice = airport_met_aeme,
                         era5 = era5_hourly_met,
                         pc10 = pc10_climate_met,
                         vars = c("MET_tmpair", "MET_humrel", "MET_pprain",
-                                "MET_wndspd"))
+                                "MET_wndspd", "MET_radswd", "MET_prsttn"))
   ),
   tar_target(
     met_source_comparison_plot,
     plot_met_source_comparison(
       met_source_comparison,
       window = range(all_buoy_met_data$Date, na.rm = TRUE),
-      vars = c("MET_tmpair", "MET_humrel", "MET_pprain", "MET_wndspd"))
+      vars = c("MET_tmpair", "MET_humrel", "MET_pprain", "MET_wndspd",
+               "MET_radswd"))
   ),
 
   tar_target(
     era5_corrected_daily_baseline, {
       baseline <- metscale::bias_correct_daily_baseline(
-        era5_hourly_met_rainqm, era5_bias_correction, lat = lake_meta$latitude,
+        era5_hourly_met_stage1, era5_bias_correction, lat = lake_meta$latitude,
         lon = lake_meta$longitude, elev = lake_meta$elevation,
         tz = scenario_tz, verbose = FALSE)
       ok <- stats::complete.cases(baseline[c("MET_radswd", "MET_tmpair", "MET_pprain",
