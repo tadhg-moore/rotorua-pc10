@@ -11,7 +11,7 @@
   "Packages": {
     "AEME": {
       "Package": "AEME",
-      "Version": "0.4.0",
+      "Version": "0.4.0.9000",
       "Source": "GitHub",
       "Type": "Package",
       "Title": "Aquatic Ecosystem Model Ensemble",
@@ -88,8 +88,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "AEME",
-      "RemoteRef": "main",
-      "RemoteSha": "18591555cb5eff9795d19842aec7fad6fb3e2637"
+      "RemoteRef": "dev",
+      "RemoteSha": "0f7431b7c8c9bec6797f9393107a4b57c9164336"
     },
     "AzureAuth": {
       "Package": "AzureAuth",
