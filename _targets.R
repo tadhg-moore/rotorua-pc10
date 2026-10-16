@@ -54,7 +54,8 @@ tar_source(
     here::here("R", "load_old_buoy_data.R"),
     here::here("R", "read_met_service_xl.R"),
     here::here("R", "read_bop_csv_url.R"),
-    here::here("R", "est_glm_weir_params.R")
+    here::here("R", "est_glm_weir_params.R"),
+    here::here("R", "build_calib_base_aeme.R")
   )
 )
 # Set target options
@@ -135,6 +136,7 @@ list(
     rotorua_old_buoy_data, load_old_buoy_data(rotorua_old_buoy_data_zip)
   ),
   tar_target(old_buoy_met_hr_aeme, old_buoy_met_data(rotorua_old_buoy_data, 1.5)),
+  tar_target(old_buoy_wq, old_buoy_wq_data(rotorua_old_buoy_data)),
   
   # level data
   tar_target(
@@ -1130,7 +1132,6 @@ list(
   # 3. Model execution ----
   tar_target(
     aeme_glm4, {
-      browser()
       params <- dplyr::bind_rows(glm_sed_param_meas, meas_param, 
                                  aed_alum_params)
       aeme <- aeme_base |> 
@@ -1150,7 +1151,29 @@ list(
     },
     pattern = map(rotorua_inflow_list_matrix)
   ),
-  
+
+  # Baseline GLM-AED object for the staged PEST++ calibration (calibration/).
+  # The calibration itself is NOT a target: see calibration/README.md.
+  tar_target(
+    aeme_base_file,
+    build_calib_base_aeme(
+      aeme_download_file = "LID11133_rotorua/aeme_download.rds",
+      hyps_no_hole = hyps_no_hole,
+      era5_corrected_hourly = era5_corrected_hourly,
+      inflows = rotorua_inflow_list_matrix[[1]],
+      zone_heights = zone_heights,
+      weir_params = weir_params,
+      aed_models_alum = aed_models_alum,
+      model = model,
+      ext_elev = ext_elev,
+      alum_nml_file = "website/LakeRotorua/aed/aed_original.nml",
+      out_file = "aeme_base.rds",
+      build_path = "calibration/base_build",
+      old_buoy_wq = old_buoy_wq
+    ),
+    format = "file"
+  ),
+
   # tar_target(
   #   baseline_aeme, {
   #     # inp <- AEME::input(aeme_base_hyps)
