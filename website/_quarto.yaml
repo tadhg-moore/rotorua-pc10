@@ -5,6 +5,7 @@ project:
     - www/
   render:
     - "*.qmd"
+    - "!rotorua-glm-config.qmd"
     # - "!cmip6-processing.qmd"
 execute:
   freeze: auto  # re-render only when source changes
