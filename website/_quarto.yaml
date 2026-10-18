@@ -59,6 +59,16 @@ website:
             text: "Output Plots (v4)"
           - href: aed_calibration_sa_plan.qmd
             text: "Calibration & SA Plan"
+          - href: rotorua-calibration-staged.qmd
+            text: "Staged Calibration (first cut)"
+          - href: csps-metrics.qmd
+            text: "CSPS Metrics & Targets"
+          - href: calibration-step1-physics-oxygen.qmd
+            text: "Calibration Step 1: Physics and Oxygen"
+          - href: sensitivity-csps.qmd
+            text: "CSPS Sensitivity Analysis"
+          - href: climate-impact-strategy.qmd
+            text: "Climate Impact Strategy (draft)"
       - section: "Alum Dosing"
         contents:
           - href: alum-model.qmd
@@ -67,6 +77,8 @@ website:
             text: "Simplified Alum Module"
           - href: glm-aed-alum-stress-tests.qmd
             text: "GLM-AED aed_alum Stress Tests"
+          - href: rotorua-alum-scenarios.qmd
+            text: "Alum Scenarios (Rotorua GLM-AED)"
           - href: alum-dosing-sanila-msc-thesis.qmd
             text: "Sanila Thesis Notes"
       - section: "Tasks"

@@ -19,9 +19,11 @@ library(patchwork)
 library(AEME)
 library(knitr)
 library(kableExtra)
+library(targets)
 
 source("../R/plot_aeme_loads.R")
 source("../R/setup_base_aeme.R")
+source("../R/scenario_climate_workflow.R")
 
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
@@ -35,27 +37,105 @@ path <- "glm_v4"
 model <- targets::tar_read(model)
 # aeme <- setup_base_aeme(path = path)
 aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
-aeme <- build_aeme(aeme, path = path)
+
+# Meteorology: switch from the daily forcing to the processed hourly ERA5
+# series (data/processed/rotorua_era5_hourly.csv) — build_aeme()/build_glm()
+# detect the sub-daily timestep and set &meteorology/subdaily accordingly.
+lake_meta <- AEME::lake(aeme)
+era5_met <- read_era5_hourly_met("../data/processed/rotorua_era5_hourly.csv",
+                                  lat = lake_meta$latitude,
+                                  lon = lake_meta$longitude)
+
+corr_hyps <- targets::tar_read(corr_hyps)
+hyps_no_hole <- targets::tar_read(hyps_no_hole)
+hyps_adj <- min(hyps_no_hole$elev) - min(corr_hyps$elev)
+
+# AED calibration parameter set from the sensitivity-analysis screening csv.
+# aed_sed_const2d/* rows are applied automatically by build_aeme() via
+# set_aed_sed_const2d(); every other aed.nml/aed_phyto_pars.csv row is
+# written by hand below once the config files exist on disk.
+calib_params <- readr::read_csv("../data/processed/aed/aed_sa_calib_params.csv",
+                                 show_col_types = FALSE)
+
+# Measured 5-zone sediment configuration from the _targets.R calibration
+# pipeline (targets: zone_heights, glm_sed_param_meas, meas_param) — read via
+# targets::tar_read() so this page always reflects whatever is currently
+# committed to the pipeline instead of a copy that can drift out of sync.
+# `glm_sed_param_meas` (built from `zone_heights`) sets up the GLM &sediment
+# zone structure itself (n_zones, zone_heights, sed_heat_Ksoil, ...);
+# `meas_param` overrides it with the measured sed_temp/sed_vwc/aed_sed_const2d
+# values (Kaylee Campbell internal loading study) for each of the 5 zones.
+# Both "sediment/*" and "aed_sed_const2d/*" rows are applied automatically by
+# build_aeme() below; the handful of scalar aed.nml rows (Ksed_oxy, etc.) are
+# written by hand alongside calib_params further down.
+zone_heights <- targets::tar_read(zone_heights)
+zone_heights <- zone_heights[-1] - hyps_adj
+glm_sed_param_meas <- targets::tar_read(glm_sed_param_meas)
+AEME::glm_sed_params(n_zones = length(zone_heights), zone_heights = zone_heights)
+meas_param <- targets::tar_read(meas_param)
+
+meas_param |> 
+  dplyr::filter(file == "aed.nml" & grepl("^aed_sed_const2d/fsed_", name)) |>
+  dplyr::select(file, name, index, value) |>
+  dplyr::arrange(name, index)
+
+all_param <- dplyr::bind_rows(meas_param, glm_sed_param_meas) |> 
+  dplyr::anti_join(calib_params, by = c("file", "name", "index"))
+
+dups <- all_param |> 
+  dplyr::group_by(file, name, index) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  dplyr::filter(n > 1)
+
+
+aeme <- aeme |>
+  AEME::remove_param() |> 
+  AEME::add_met(era5_met) |> 
+  AEME::add_hypsograph(hyps_no_hole) |> 
+  AEME::add_param(all_param) 
+
 lake_dir <- AEME::get_lake_dir(aeme)
+
+aed_file <- file.path(lake_dir, "glm_aed", "aed", "aed.nml")
+phyto_file <- file.path(lake_dir, "glm_aed", "aed", "aed_phyto_pars.csv")
+
+aed_nml_obj <- AEME::read_nml(aed_file)
+# Disable N2O simulation (aed_nitrogen/simn2o: 2 -> 0).
+aed_nml_obj[["aed_nitrogen"]][["simn2o"]] <- 0
+
+AEME::write_nml(aed_nml_obj, file = aed_file)
 
 cfg <- configuration(aeme)
 glm4_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
-aed_nml <- cfg[["glm_aed"]][["bgc"]][["aed"]]
+# Re-read aed.nml rather than using cfg$glm_aed$bgc$aed, since that slot was
+# populated by build_aeme() before the calibration-parameter/simn2o edits
+# above were written to the file.
+aed_nml <- AEME::read_nml(aed_file)
 
 phyto_cols <- aed_nml$aed_phytoplankton$the_phytos + 1
 
 inflows <- get_inflows(aeme)
 inflow_humurana <- inflows[["Hamurana"]]
 
-met <- readr::read_csv("../LID11133_rotorua/glm_aed/bcs/meteo_glm.csv")
-phyto_pars <- AEME::read_aed_param_csv("../LID11133_rotorua/glm_aed/aed/aed_phyto_pars.csv")
+met <- readr::read_csv(file.path(lake_dir, "glm_aed", "bcs", "meteo_glm.csv"))
+phyto_pars <- AEME::read_aed_param_csv(phyto_file)
 phyto_pars <- phyto_pars[, c(1, phyto_cols)]
+
+sim_period <- AEME::suggest_sim_period(aeme)
+
+aeme <- tar_read(aeme_baseline)
+
+aeme <- aeme |>
+  # AEME::set_sim_period(sim_period) |> 
+  build_aeme(path = path) |>
+  run_aeme()
+
 
 # Model performance
 aeme_time <- time(aeme)
 period <- paste0(format(aeme_time$start, "%Y"), "–", format(aeme_time$stop, "%Y"))
 
-perf <- assess_model(aeme, var_sim = c("HYD_temp","NIT_tn","PHS_tp","PHY_tchla","LKE_lvlwtr")) |> 
+perf <- assess_aeme(aeme, var_sim = c("HYD_temp", "LKE_lvlwtr")) |> 
   dplyr::mutate(Period = period) |>
   dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = rs) |> 
   dplyr::select(Variable, Period, RMSE, Bias, R2, n)
@@ -123,6 +203,9 @@ plot_glm_config(aeme = aeme, return_widget = TRUE)
   using ERA5 reanalysis where needed.
 - **WWTP**: Treated effluent from Rotorua WWTP is included as a point-source inflow.
 - **AED modules active**: NIT (nitrogen), PHO (phosphorus), OGM (organic matter), PHY (phytoplankton).
+- **Sediment**: 5-zone benthic configuration (`benthic_mode = 2`); zone-specific oxygen/N/P
+  fluxes and sediment heat-model parameters from measured internal loading data — see the
+  "Sediment zones" tab below.
 :::
 
 ---
@@ -213,8 +296,8 @@ hamurana_preview |>
 ### `meteo_glm.csv`
 
 ::: {.callout-note appearance="minimal"}
-Daily meteorological forcing file sourced from ERA5: shortwave radiation, longwave radiation,
-cloud cover, air temperature, relative humidity, wind speed (u/v components), and rainfall.
+Hourly meteorological forcing file sourced from ERA5: shortwave radiation, longwave radiation,
+air temperature, relative humidity, wind speed, and rainfall.
 :::
 
 ```{=html}
@@ -260,6 +343,50 @@ phyto_pars |>
   kable_styling(bootstrap_options = c("striped","condensed","hover"),
                 full_width = TRUE) |>
   column_spec(1, bold = TRUE)
+```
+
+```{=html}
+</details>
+```
+
+### Sediment zones
+
+::: {.callout-note appearance="minimal"}
+Five-zone benthic configuration (`benthic_mode = 2`) — zone boundaries and measured
+sediment heat/oxygen/nutrient flux values, from the Kaylee Campbell internal loading
+study (repeat of Bergen 2004). Zone 1 is the deepest (24–47.65 m pit); zone 5 is the
+shallowest. Sourced from the `_targets.R` calibration pipeline (`zone_heights`,
+`glm_sed_param_meas`, `meas_param` targets) rather than duplicated here, so this table
+always matches whatever is currently committed to the pipeline.
+:::
+
+```{=html}
+<details>
+<summary style="cursor:pointer; font-weight:600; margin-bottom:0.5em;">
+  Zone boundaries and measured sediment parameters
+</summary>
+```
+
+```{r sediment-zones}
+#| echo: false
+
+data.frame(zone = seq_along(zone_heights), zone_height_m = zone_heights) |>
+  kbl(caption = "Sediment zone upper boundary heights (m above lake bottom, 0 = deepest point)") |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"), full_width = FALSE)
+
+meas_param |>
+  dplyr::filter(!is.na(index), name != "sediment/n_zones") |>
+  dplyr::select(name, index, value) |>
+  tidyr::pivot_wider(names_from = index, values_from = value, names_prefix = "zone ") |>
+  kbl(caption = "Measured sediment fluxes and heat-model parameters, by zone",
+      digits = 4) |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"), full_width = TRUE)
+
+meas_param |>
+  dplyr::filter(is.na(index)) |>
+  dplyr::select(name, value, min, max) |>
+  kbl(caption = "Scalar (non-zoned) sediment-flux modifiers", digits = 4) |>
+  kable_styling(bootstrap_options = c("striped","condensed","hover"), full_width = FALSE)
 ```
 
 ```{=html}
@@ -329,7 +456,7 @@ plot_output(aeme, var_sim = "HYD_schstb")
 #| fig-cap: "Simulated lake water level relative to the Ohau Channel weir crest (279.6 m a.s.l.)."
 #| fig-height: 3.5
 
-plot_output(aeme, var_sim = "LKE_lvlwtr", )
+plot_output(aeme, var_sim = "LKE_lvlwtr")
 
 ```
 

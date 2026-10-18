@@ -1,0 +1,235 @@
+---
+title: "Climate-Change Impact Strategy for Lake Rotorua"
+subtitle: "Nutrient dynamics, trophic state (TLI4) and alum dosing under CMIP6 scenarios"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+**Status: draft strategy.** It builds on components that already exist in this project and lists what still has to be done before the projections can be trusted. Numbers marked *estimate* are my planning figures, not measurements.
+
+## Purpose and questions
+
+The aim is to estimate how climate change alters nutrient dynamics and the trophic state of Lake Rotorua, and how much alum dosing could offset it. Three questions drive the design:
+
+1. **Climate effect.** With catchment loads and alum dosing held as they are now, how do water temperature, stratification, bottom-water oxygen, internal P release, chlorophyll-a and `LKE_tli4` change by mid and late century, and how large is that change compared with year-to-year variability?
+2. **Management response.** How does the effect of alum dosing (present operations, more, less, none) change under each climate? Put another way, how much more or less alum is needed to hold `LKE_tli4` at a chosen target?
+3. **Uncertainty.** How much of the spread comes from the GCM, the emissions pathway, the catchment response, the alum behaviour, and the model parameters?
+
+## What is already in the project
+
+| Component | Where | What it gives us |
+|---|---|---|
+| Bias-corrected hourly baseline | `era5_corrected_hourly`, `era5_corrected_daily_baseline` (ERA5-Land 2011 to 2026, corrected against the buoy) | Realistic weather to perturb |
+| CMIP6 delta factors | `gcm_monthly_deltas_df` (7 GCMs × SSP126/245/370/585 × windows 2015–2040, 2041–2070, 2071–2100, against 1995 to 2014; `NZESM` has no SSP585) | Monthly change factors (additive for temperature and shortwave, ratio for rain, wind, humidity) |
+| Scenario forcing | `scenario_daily_met` → `scenario_hourly_met` (83 combinations, gated off by default) | Hourly AEME forcing per GCM × SSP × window |
+| Extreme-event indices | `scenario_extreme_indices`, `climate-extreme-events.qmd` | Storm and heatwave frequency, for interpretation |
+| Alum dosing history and scenario tools | `alum_dosing`, `calc_alum_inflow()`, `scale_alum_inflows()`, `scripts/alum/01_run_scenarios.R`, [alum scenarios page](rotorua-alum-scenarios.qmd) | Dose in the Utuhina and Puarenga inflows, and scenarios on dose, binding capacity, settling and resuspension |
+| Calibrated model | `aeme_base.rds` plus the staged PEST++ calibration (`calibration/`, [calibration page](rotorua-calibration-staged.qmd)) | The GLM-AED model and parameter sets |
+| Trophic metrics | `LKE_tlic`, `LKE_tlin`, `LKE_tlip`, `LKE_tlise`, `LKE_tli3`, `LKE_tli4` (AEME derived variables) | TLI computed daily by the model |
+| Historical catchment inflows | `rotorua_inflow_list` (13 inflows, daily, 1959 to 2022, including geothermal and WWTP) | Flow and nutrient inputs |
+
+`LKE_tli4` is computed by AEME each day from the epilimnion mean of chlorophyll-a, total nitrogen and total phosphorus, and the euphotic depth (`LKE_photic`) used as the Secchi term. It therefore depends on total P, total N and light, not on FRP.
+
+## Gaps to close before running projections
+
+The calibration has to describe the quantities that drive the metrics. Status after the corrected calibration run ([calibration page](rotorua-calibration-staged.qmd)):
+
+| # | Gap | Why it matters | Status and action |
+|---|---|---|---|
+| 1 | TP, TN and Secchi/light are not calibration targets | `LKE_tli4` is built from them | **Open.** Add `PHS_tp`, `NIT_tn` and light extinction/Secchi to the targets (about 1,455 TP, 1,441 TN and 783 Secchi observations exist) |
+| 2 | Bottom-water anoxia | Internal P release and stratification effects depend on it | **Improved.** Oxygen KGE 0.69; sediment oxygen demand needed about 4 times the measured values; `CHM_oxynal` is now a target. Check the anoxic days against observations before use |
+| 3 | Chlorophyll-a timing | One of the four TLI4 terms and the main response variable | **Partly.** KGE 0.20, r = 0.24 (was negative); log1p scoring used. Still weak; phytoplankton temperature parameters (`T_opt`) not yet calibrated |
+| 4 | FRP and ammonium | Alum is the main management lever; ammonium feeds TN | FRP is unbiased but r is only 0.03 to 0.19. **Ammonium is poor (KGE about −0.6) and uninvestigated** |
+| 5 | **Rainfall units in `era5_corrected_hourly`** | Rain was about 42 times too small in the model forcing until the calibration base was corrected (`build_calib_base_aeme()`); the delta-change ratio for rain is unit-free but the baseline is not | **Open.** Fix once at source (the `era5_corrected_hourly` target), then re-check `scenario_hourly_met` |
+| 6 | **Unit bug in `aemetools`** | `aemetools` converted oxygen, FRP, ammonium and nitrate a second time when comparing with observations, so any calibration or sensitivity run through `calib_aeme()`/`sa_aeme()` in this environment scored the wrong values | **Worked around** with a private patched copy for the calibration. The scenario runs read output through `AEME` directly, so they are not affected, but the upstream package needs fixing |
+| 7 | Stage 3 was calibrated without alum | The lake was dosed throughout the calibration window | **Open.** Re-run stage 3 with alum on from the start (dosing history) |
+| 8 | Barely identified parameters sit at their bounds | Wind, crest elevation, sediment temperature amplitude, `rpoc_hydrol` and diatom `R_growth` | Treat as structural uncertainty; test the sensitivity of projections to them |
+| 9 | No validation of TLI4 itself | We should know the model reproduces the observed annual TLI | Hindcast 2011 to 2022 and compare annual TLI4 and its components with the observed record |
+| 10 | Inflows are historical only | Climate also changes flow, load and stream temperature | Inflow adaptation (below) |
+
+## Design
+
+### Overview
+
+```{mermaid}
+flowchart LR
+  A[ERA5 baseline<br/>bias-corrected] --> C[Scenario forcing<br/>GCM x SSP x window]
+  B[CMIP6 monthly deltas] --> C
+  D[Historical inflows<br/>1959-2022] --> E[Inflow adaptation<br/>flow, load, temperature]
+  C --> E
+  C --> F[GLM-AED runs]
+  E --> F
+  G[Alum scenarios] --> F
+  H[Parameter ensemble<br/>from calibration] --> F
+  F --> I[Daily output<br/>nutrients, DO, TLI4]
+  I --> J[Annual and seasonal metrics<br/>variance partitioning]
+```
+
+### Climate forcing
+
+- Use the existing delta-change forcing (`scenario_hourly_met`). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.
+- Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.
+- **How the ERA5 record maps to the climate windows.** The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (`scenario_ref_years`), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).
+- The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.
+- **NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. The one thing to verify is that `metscale::climate_point_monthly_climatology()` assigns NZESM days to calendar months correctly (the repository already handles 360-day time in `R/summarise_gcm_ts.R` and `R/standardise_to_gregorian.R`). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.
+- Keep **hindcast** (no delta) as the reference, and compare future windows with it, not with observations.
+- Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on `NorESM2-MM` alone, which is at the low end.
+- Assumption to state clearly: delta-change keeps present variability and sequences, so it will not capture changes in the frequency of persistent calm spells beyond what the monthly means imply. The extreme-event indices are used to check this.
+
+
+### Simulation length
+
+A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:
+
+- **Variability.** Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).
+- **Rare events.** Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.
+- **Slow state variables.** Sediment P pools, benthic alum pools and the legacy effect of stopping or changing dosing evolve over 10 to 30 years, so they need a spin-up of 5 to 10 years and, for the alum questions, runs long enough to see the response.
+
+What is needed to get 30 years:
+
+| Item | Status | Action |
+|---|---|---|
+| Weather baseline 1991 to 2020 | The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected | Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) |
+| Inflows | The historical inflow series covers 1959 to 2022, so 1991 to 2020 is available | None, but check the inflow record is consistent through the period |
+| Alum dosing in the baseline | Dosing history starts in 2006 and 2010 | Use a constant present-day dose for the slices (scenario A1) rather than the history |
+
+**Time slices or transient runs.** Use 30-year time slices (a stationary climate per window, 5 to 10 years of spin-up) as the main design. Add a small number of *transient* runs for the alum questions that depend on timing and legacy: for example 2 to 3 GCMs under SSP245 and SSP585, run continuously from 2015 to 2100 with the monthly deltas interpolated between windows. A slice cannot show how long P from a stopped dose lingers or how fast the benthic alum pool builds.
+
+**Cost.** Thirty years roughly doubles the 15-year cost per run, so the full design below needs about 20 hours rather than about 11. A tiered plan keeps it manageable: 30-year slices for the core scenarios and the hindcast, and 15-year slices (the 2011 to 2025 weather) for the large sweeps over alum parameters and inflow tiers. Check the two give the same signal on the pilot set before relying on the shorter runs.
+
+**Do we need 1970 to 2100 runs?** No, not for the main questions. With delta-change, a continuous run to 2100 would need a trend in the forcing that the monthly-window deltas do not provide, and the slices already answer "what is the lake like under climate X". Transient runs are only justified for timing and legacy questions (A4 below), and are optional for now.
+
+### Spin-up and equilibrium
+
+How long a run must be depends on which state variable carries memory:
+
+| Component | Memory | Consequence |
+|---|---|---|
+| Water column nutrients, chlorophyll-a, temperature | Months to about 1 to 2 years (residence time; *check against modelled outflow*) | A 2 to 3 year spin-up is enough |
+| Sediment P pools, benthic alum pools | Many years | 5 to 10 years of spin-up, and this is what matters for alum |
+
+For the **alum on/off** comparison the question decides the design:
+
+- *Equilibrium contrast* (A0 versus A1, each in its own steady state): spin each case up under its own dosing, then run the 30 years. This is the default for the slices, and it needs the full 5 to 10 year spin-up because the sediment and alum pools differ between the cases. Spin up by looping the first 5 to 10 years of the baseline weather (or using 1988 to 1990 plus a loop).
+- *Transient response* (what happens after dosing stops from today's state): needs a continuous run from the present state and a long enough record to see the legacy P decline. Keep this as the small optional set (A4).
+
+Check that the spin-up is adequate empirically, once, on the pilot: run a slice twice back to back and compare the first and last 10 years of annual `LKE_tli4`, sediment P and benthic alum pools. If the drift is small relative to the climate signal and to the A0–A1 difference, the spin-up is sufficient.
+
+### Inflows (three tiers)
+
+**Initial phase.** Climate-adjusted inflows do not exist yet, so the first runs use **T1 only** (historical 1991 to 2020 inflows, which are coherent with the ERA5 weather years) with **two alum cases**: A0 (none) and A1 (present flow-paced dose). Optionally shift stream temperature with the air-temperature delta (T1+, a cheap and defensible adjustment). State plainly that flow and load are unchanged while rainfall changes, so results are a lower bound on the catchment-driven change. T2 and T3 and alum cases A2 to A5 are later phases.
+
+Climate also changes what enters the lake, and this is likely to matter as much as in-lake warming for nutrients.
+
+| Tier | Inflow treatment | Purpose |
+|---|---|---|
+| T1 | Historical inflows unchanged | Isolates the direct lake response to weather and temperature |
+| T2 | Scale flow with the rainfall delta (with a runoff elasticity) and the evapotranspiration implied by the temperature delta; scale loads with flow through a load–discharge exponent; shift stream temperature with air temperature | Plausible catchment response without a catchment model |
+| T3 | Drive a catchment model with the scenario forcing (if the catchment model used to make the 1959 to 2022 inflow series can be run) | Best available, and the way to test T2 |
+
+Run T1 and T2 for the full ensemble and T3 for a subset if available. The alum dose is proportional to flow in the dosed streams, so T2 also changes the alum delivered, which is a real climate–management interaction and is kept.
+
+### Alum scenarios
+
+Built on `scale_alum_inflows()`; efficiency uses the factor already defined as `ratio_al_p`.
+
+| Code | Dosing | Rationale |
+|---|---|---|
+| A0 | None | Counterfactual |
+| A1 | Present operations (Utuhina and Puarenga, flow-paced at about 1 mg Al/L) | Business as usual |
+| A2 | A1 with doubled dose | Management response |
+| A3 | A1 with half dose | Reduced effort |
+| A4 | Dosing stops at a set date | Legacy P release from sediment |
+| A5 | Adaptive dose: increases when modelled lake TLI4 or FRP is above a target | Inverse question: dose needed to hold the target |
+
+Alum behaviour is treated as an uncertainty dimension, using the thesis-based ranges in [the thesis notes](alum-dosing-sanila-msc-thesis.qmd) and the calibration page: floc settling 0.3 to 1.5 m/d, binding efficiency (Al:P) from 0.15 (field, about 7:1) to 1.4 (jar test, 0.7:1), resuspension on or off. The stage 4 sensitivity check showed that, in the calibrated model, the FRP fit is nearly insensitive to the alum parameters within their ranges and that removing the dose raises mean FRP by only about 30%. The alum response in the projections is therefore uncertain and should be explored through these ranges, not taken from a single fitted value.
+
+### Parameter and structural uncertainty
+
+- Use a small parameter ensemble from the calibration posterior (about 5 members from the final `pestpp-ies` ensemble), plus the alum efficiency and settling range above.
+- Add structural checks: switch temperature dependence of sediment P release and mineralisation (`theta_*`) between default and a stronger response; test phytoplankton `T_opt` shifts, since adaptation is unknown.
+- Do not tune the model to future conditions. Parameters stay fixed at their calibrated values.
+
+### Metrics
+
+| Group | Variables | Reported as |
+|---|---|---|
+| Trophic state | `LKE_tli4`, `LKE_tlic`, `LKE_tlin`, `LKE_tlip`, `LKE_tlise` | Annual mean, change from hindcast, probability of exceeding the management target (BOPRC's target for Lake Rotorua is 4.2; verify) |
+| Nutrients | TP, TN, FRP, ammonium, nitrate (epilimnion and bottom) | Annual and seasonal means; TN:TP |
+| Phytoplankton | Chlorophyll-a, cyanobacteria | Annual mean, days above bloom threshold, bloom timing |
+| Oxygen and stratification | Bottom-water oxygen, `CHM_oxynal` (anoxic layers), days anoxic, stratified days, Schmidt stability | Days per year, onset and duration |
+| Internal loading | Benthic FRP and P fluxes, alum pools (`ALU_ben_*`), P mass balance | Tonnes P per year, internal vs external share |
+| Hydrology | Water level, outflow, evaporation, residence time | Annual means, extremes |
+
+TLI uses annual means in regulatory practice. Keep the daily series, but report the annual metric as the headline and show the seasonal cycle separately.
+
+## Experimental design and compute budget
+
+**Initial phase (current scope):** 83 GCM × SSP × window combinations × 2 alum cases (A0, A1) × T1 inflows = 166 runs, plus the hindcast. At 5 to 6 minutes per 30 + 5 year run and about 2 runs per minute on six workers this is roughly 3 to 4 hours of wall time; pilot with 3 GCMs first (about 36 runs). The phases below are the fuller design for when inflow scenarios exist.
+
+*Estimate:* a 15 + 3 year run takes about 1 minute of GLM time plus 1 to 2 minutes to read the output when only the needed variables are requested, so about 3 minutes per run, and a 30 + 5 year run about 5 to 6 minutes. Six workers give about 2 runs per minute for 15-year runs. The table below uses 15-year runs for the sweeps; the core scenarios and the hindcast use 30-year slices (see *Simulation length*).
+
+| Phase | Runs | Estimated time |
+|---|---|---|
+| P1 Hindcast and validation | 5 parameter members × 2 alum cases | under 1 hour |
+| P2 Pilot (T1 inflows) | 3 GCMs × 2 SSPs × 2 windows × 3 alum (A0, A1, A2) = 36 | about 20 minutes |
+| P3 Main climate ensemble (T1 and T2) | 27 GCM–SSP combinations × 2 windows (2041–2070, 2071–2100) × 2 inflow tiers × 3 alum (A0, A1, A2) = 324 | about 3 hours |
+| P4 Alum scenarios (full set A0 to A5) | 27 × 2 × 6 × 2 tiers = 648 | about 5.5 hours |
+| P5 Parameter ensemble (reduced) | 5 members × SSP245 and SSP585 × 7 GCMs × late window × A1 = 70 | about 40 minutes |
+| P6 Structural checks and T3 subset | about 100 | about 1 hour |
+
+About 1,200 runs. With 15-year runs that is about 11 hours; with all of them at 30 years it would be about 20 hours, which is why the design is tiered. Run it as a `targets` pipeline, not a PEST script: these are deterministic, independent and benefit from caching, unlike the calibration. Use a `crew` controller with a worker count below the physical core count.
+
+## Analysis plan
+
+1. **Hindcast check.** Compare the 2011 to 2022 hindcast (the period with water-quality observations) annual TLI4 and components with observed, per year. State the skill and bias explicitly and carry them into the interpretation.
+2. **Climate signal.** For each metric, compute future minus hindcast per run. Report the ensemble median, the GCM range, and the fraction of runs agreeing in sign.
+3. **Signal against variability.** Compare the climate change with the spread of annual values within the hindcast (internal variability). A change smaller than that is reported as such.
+4. **Variance partitioning.** Decompose the spread into GCM, SSP, window, inflow tier, alum scenario and parameter member (ANOVA or mixed model). This answers question 3.
+5. **Alum response curves.** For each climate, plot TLI4 and FRP against alum dose multiplier and efficiency, and read off the dose that holds the target. Report the extra dose required by climate.
+6. **Process attribution.** Compare T1 and T2 inflows and A0 and A1 alum to separate in-lake warming, catchment input and alum effects. Use simple factorial contrasts.
+7. **Event view.** Link the extreme-event indices (storms, heatwaves) to bloom and anoxia days in the runs where those change most.
+
+## Deliverables and layout
+
+- `scenarios/` with scripts `10_build_scenario_aeme.R` (forcing, inflows, alum, parameter set → Aeme object), `11_run_scenarios.R` (targets-based, one branch per run, daily lake-mean and epilimnion/hypolimnion series only), `12_metrics.R` (annual and seasonal metrics, TLI), and `13_analysis.R`.
+- Summary tables as CSV in `data/processed/scenarios/` so the website pages do not re-run models.
+- Quarto pages: results by metric, alum response curves, uncertainty partitioning, and a short non-technical summary.
+
+## Risks and how they are handled
+
+| Risk | Handling |
+|---|---|
+| Calibration still weak for chl-a, TP, TN | Gap list above; present results as *change from the model's own hindcast*, and state hindcast skill |
+| Catchment response unknown | Tiers T1 to T3; report T1 as a lower bound on change |
+| Alum behaviour poorly constrained by data | Scenario dimension with thesis ranges; do not report a single efficiency |
+| Delta-change misses changes in variability and extremes | Check against extreme-event indices; state the limitation |
+| Compute | Tiered design; run the pilot first and re-estimate time per run before committing |
+| Pipeline fragility (long runs, large netCDF) | Request only the variables needed; store small summaries, not netCDF; cache by branch |
+| Rainfall unit issue in the forcing | Fix at source and add a unit and annual-total check to the pipeline |
+
+## Sequence
+
+1. Close the open calibration gaps (TP, TN and Secchi targets, ammonium, stage 3 with alum on) and fix the rainfall units and the `aemetools` unit bug at source.
+2. Hindcast and TLI4 validation (P1). **Go or no-go on skill before continuing.**
+3. Pilot (P2); re-time the run and refine the design.
+4. Main ensemble and alum scenarios (P3, P4), then parameter and structural checks (P5, P6).
+5. Analysis and reporting.
+
+## Open questions
+
+- Which TLI4 target or threshold should be used for management (for example BOPRC's 4.2), and is annual mean TLI4 the right headline metric?
+- Is a catchment model available that can be driven with the scenario forcing (T3), and who owns the 1959 to 2022 inflow series?
+- Are there planned changes in dosing locations, dose rates or the Ōhau weir operation that should be scenarios in their own right?
+- For alum on/off, is the equilibrium contrast (each case spun up under its own dosing) the question of interest, or the transient response after stopping from today's state?
+- Should land-use or point-source changes (WWTP, geothermal) be included, or is the question climate only?

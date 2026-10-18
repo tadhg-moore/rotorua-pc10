@@ -1173,6 +1173,9 @@ list(
     ),
     format = "file"
   ),
+  tar_target(
+    aeme_baseline, readRDS(aeme_base_file)
+  ),
 
   # tar_target(
   #   baseline_aeme, {

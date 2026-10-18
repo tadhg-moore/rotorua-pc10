@@ -1,0 +1,149 @@
+---
+title: "Calibration Step 1: Physics and Oxygen"
+subtitle: "Polymixis and bottom-water anoxia, hourly forcing, wind unscaled, alum off"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+img <- "images/step1"
+kab <- function(x, ...) kable(x, ...) |> kable_styling(full_width = FALSE, bootstrap_options = c("striped", "condensed"))
+rd <- function(f) read.csv(file.path(img, f))
+phi1 <- rd("phi_pass1.csv"); phi2 <- rd("phi_pass2.csv")
+res1 <- rd("residuals_pass1.csv"); res2 <- rd("residuals_pass2.csv")
+par1 <- rd("params_pass1.csv"); par2 <- rd("params_pass2.csv")
+sig1 <- rd("signatures_pass1.csv")
+```
+
+## Purpose
+
+This is the first step of the staged plan that follows the [sensitivity analysis](sensitivity-csps.qmd): calibrate the physics and the oxygen dynamics together, using the process signatures of the [CSPS framework](csps-metrics.qmd) as well as state errors, with the alum module off, because alum does not change physics or oxygen. The target behaviour is a polymictic lake that stratifies for days at a time, mixes again, and develops short bottom-water anoxia.
+
+## Set-up
+
+-   **Forcing:** the hourly bias-corrected ERA5 series. The sensitivity analysis showed that daily forcing has less mixing energy, so mixing parameters fitted on it would not transfer.
+-   **Wind is not scaled.** The wind is measured on the lake, so the wind scaling factor is fixed at 1 (earlier calibrations settled on 1.64, which was compensating for other errors). Heat and mixing errors are absorbed by the heat-flux coefficients and mixing coefficients instead.
+-   **Alum off:** the dosed inflow concentration is set to zero. Phytoplankton and the other biogeochemical parameters are held at the earlier calibrated values (the phytoplankton parameters are calibrated in the next step).
+-   **Period:** 2012-07 to 2022-06, the span with both hourly forcing and the inflow series, plus a 540-day spin-up. **Calibration window 2012-07 to 2018-12**; the years **2019-01 to 2022-06 are held out** and are only used to check the result.
+-   **Free parameters (27):** the radiation, air-temperature and humidity scalings; the heat-flux coefficients `ce`, `ch`, `cd`; the light extinction `Kw`; five mixing coefficients (`coef_mix_shear` is inert and fixed); the sediment oxygen demand in four zones with `ksed_oxy` and `theta_sed_oxy`; and eight organic-matter parameters (mineralisation and hydrolysis rates, their temperature coefficients and half-saturations, `f_an`, particle settling `w_pom`).
+-   **What is fitted (28 residuals, each in units of the lake's tolerance or a fixed scale, so every metric counts equally):**
+    -   16 process signatures: stratified fraction (all year, summer, winter), temperature difference statistics, spells per year, spell length, bottom temperature, anoxic fraction (below 2 and 1 mg/L), bottom oxygen statistics, the share of years with anoxia, and the oxygen decline rate in stratified spells.
+    -   Bias and RMSE of temperature and oxygen in the surface, middle and bottom layers.
+-   **Method:** an ensemble smoother with multiple data assimilation (ES-MDA), 80 members, 6 assimilation steps, run in parallel (560 model runs). It gives an ensemble rather than one parameter set.
+
+## Result
+
+```{r}
+#| fig-height: 3.6
+#| fig-width: 7
+op <- par(mar = c(4, 4, 1, 1))
+plot(phi1$iteration, phi1$median_phi_cal, type = "b", pch = 19, log = "y", ylim = c(0.5, 10), xlab = "Iteration (0 = prior ensemble)", ylab = "Error score phi (mean squared residual)")
+lines(phi1$iteration, phi1$best_phi_cal, type = "b", pch = 17, col = 2)
+lines(phi1$iteration, phi1$median_phi_val, type = "b", pch = 1, col = 4, lty = 2)
+abline(h = mean(res1$baseline_cal^2), lty = 3, col = "grey50")
+legend("topright", c("Ensemble median, calibration years", "Best member, calibration years", "Ensemble median, held-out years", "Baseline (previous parameters, wind = 1)"), col = c(1, 2, 4, "grey50"), pch = c(19, 17, 1, NA), lty = c(1, 1, 2, 3), bty = "n", cex = 0.8)
+par(op)
+```
+
+```{r}
+phi_f <- function(x) round(mean(x^2), 2)
+kab(data.frame(Window = c("Calibration (2012-07 to 2018-12)", "Held out (2019-01 to 2022-06)"),
+               `Baseline phi` = c(phi_f(res1$baseline_cal), phi_f(res1$baseline_val)),
+               `Calibrated phi` = c(phi_f(res1$best_cal), phi_f(res1$best_val)), check.names = FALSE),
+    caption = "Mean squared normalised residual, before and after calibration.")
+```
+
+The error score falls by about 75% in both windows, and the held-out years improve as much as the years that were fitted, so the result is not overfitted. All 560 runs completed.
+
+```{r}
+lab <- c(mix_f_strat = "Stratified days (all year)", mix_f_strat_summer = "Stratified days, Dec-Apr", mix_f_strat_winter = "Stratified days, Jun-Aug",
+         mix_dT_p95 = "95th percentile surface minus bottom temperature", mix_dT_mean_summer = "Mean surface minus bottom temperature, Dec-Apr",
+         mix_spells_per_yr = "Stratified spells per year", mix_spell_median_d = "Median spell length", mix_spell_p90_d = "90th percentile spell length",
+         mix_bot_temp_summer = "Bottom temperature, Dec-Apr", anox_f_lt2 = "Days with bottom oxygen < 2 mg/L", anox_f_lt2_summer = "As above, Dec-Apr",
+         anox_f_lt1_summer = "Days < 1 mg/L, Dec-Apr", anox_do_mean_summer = "Mean bottom oxygen, Dec-Apr", anox_do_p10 = "10th percentile bottom oxygen",
+         anox_f_years_with_event = "Years with anoxia", anox_do_decline_strat = "Oxygen decline in stratified spells")
+```
+
+```{r}
+# observed value differs by window, so report observed per window
+so <- sig1 |> filter(run == "Calibrated", signature %in% names(lab)) |> select(signature, window, observed) |> tidyr::pivot_wider(names_from = window, values_from = observed, names_prefix = "obs_")
+sm <- sig1 |> filter(signature %in% names(lab)) |> mutate(key = paste(window, run)) |> select(signature, key, simulated, tol) |>
+  tidyr::pivot_wider(names_from = key, values_from = simulated)
+t2 <- so |> left_join(sm, by = "signature") |> mutate(Signature = lab[signature]) |>
+  transmute(Signature, `Observed (cal)` = obs_cal, `Baseline (cal)` = `cal Baseline`, `Calibrated (cal)` = `cal Calibrated`,
+            `Observed (val)` = obs_val, `Baseline (val)` = `val Baseline`, `Calibrated (val)` = `val Calibrated`, Tolerance = tol) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+kab(t2, caption = "Process signatures: observed, baseline and calibrated (cal = calibration years, val = held-out years). The tolerance is the observed year-to-year standard deviation.")
+```
+
+![Stratification (surface minus bottom temperature), bottom temperature and bottom oxygen over the last calibration year and the held-out years. The calibrated model follows the observed short stratification episodes and the anoxic dips of bottom oxygen in the years it was not fitted to.](images/step1/series_pass1.png){#fig-series}
+
+What changed with calibration (values from the residual table):
+
+```{r}
+st <- res1 |> filter(grepl("HYD_temp|CHM_oxy", metric)) |>
+  mutate(unit = ifelse(grepl("HYD_temp_.*bias", metric), 0.3, ifelse(grepl("HYD_temp", metric), 0.5, ifelse(grepl("bias", metric), 0.5, 1.0)))) |>
+  transmute(Metric = gsub("_", " ", metric), `Baseline (cal)` = round(baseline_cal * unit, 2), `Calibrated (cal)` = round(best_cal * unit, 2),
+            `Baseline (held out)` = round(baseline_val * unit, 2), `Calibrated (held out)` = round(best_val * unit, 2))
+kab(st, caption = "Bias and RMSE of temperature (degC) and oxygen (mg/L) by layer (surface 0-2 m, middle, bottom 17 m and deeper).")
+```
+
+-   **Temperature:** the baseline was 0.6 to 0.9 °C too cold in every layer; the bias is now within about 0.1 °C and the RMSE is about 0.5 °C, in both windows.
+-   **Stratification:** the stratified fraction and the temperature difference between surface and bottom now sit close to the observed values (stratified days 0.8 tolerances over in the calibration years and 0.3 in the held-out years), where the baseline was up to two tolerances too stratified. The bottom temperature in the stratified season is matched (bias near zero).
+-   **Anoxia:** the anoxic fraction, bottom-oxygen mean and 10th percentile, and the oxygen decline rate in stratified spells are all within about half a tolerance. The model now produces short anoxic spells in the observed years (@fig-series, end of 2018 and the start of 2021).
+-   **Not fixed:** summer stratification is still somewhat too strong in the calibration years (1.3 tolerances over, 0.4 in the held-out years), stratified spells are still too frequent and short (about 1.5 tolerances too many spells per year), and the share of years with anoxia is under-predicted (the model has anoxia in fewer years than the lake). **Surface oxygen is about 0.65 mg/L too low** in both windows, which this step did not target: surface oxygen is set by air-water exchange and phytoplankton production, and will be revisited with the phytoplankton step.
+
+## Parameters
+
+```{r}
+nm <- function(d) paste0(sub("^.*/", "", d$name), ifelse(is.na(d$index), "", paste0(" (zone ", d$index, ")")))
+p <- par1 |> transmute(Parameter = nm(par1), Min = signif(min, 3), Max = signif(max, 3), Start = signif(start, 3), `Best member` = signif(best, 3),
+                       `Position in range (0 to 1)` = round(position, 2), `Posterior sd / prior sd` = round(posterior_sd / 0.289, 2))
+kab(p, caption = "Parameter ranges, start values (the earlier calibration with wind set to 1) and the best ensemble member. Position is the place of the best value in its range (log scale for rates); a posterior sd close to 1 means the data did not constrain the parameter.")
+```
+
+-   **Well constrained:** the deepest-zone oxygen demand (`fsed_oxy` zone 1; posterior spread 0.45 of the prior), the long-wave radiation scaling, the hypolimnetic mixing coefficient and the drag coefficient `cd`. These are the parameters the [sensitivity analysis](sensitivity-csps.qmd) picked out as controlling the targets.
+-   **Not constrained:** most of the organic-matter parameters and the shallower-zone oxygen demands keep a posterior spread close to their prior, as the sensitivity analysis predicted.
+-   **Wind is fixed at 1**, and the calibrated model still reproduces the observed temperature structure and anoxia, which is consistent with the wind scaling of 1.64 in the earlier calibration having compensated for other errors.
+-   Several parameters are near the edge of their range in the best member (`coef_mix_hyp` at its upper bound of 2, `coef_mix_KH` at its lower bound of 0.1, `cd` near its upper bound, `ce` near its lower bound).
+
+## Second pass with wider bounds
+
+To check whether those limits were holding the fit back, I ran a second pass of 4 assimilation steps starting from half of the first posterior, with `coef_mix_hyp` up to 5, `cd` and `ch` up to 0.003, `ce` down to 0.0004, `coef_mix_KH` down to 0.02, and wider organic-matter ranges.
+
+```{r}
+kab(data.frame(Pass = c("1: original bounds", "2: widened bounds"),
+               `Calibration phi (best)` = c(phi_f(res1$best_cal), phi_f(res2$best_cal)),
+               `Held-out phi (best)` = c(phi_f(res1$best_val), phi_f(res2$best_val)), check.names = FALSE),
+    caption = "Best member of each pass.")
+```
+
+-   **No improvement in the fit** (0.63 against 0.64 on the calibration years) and a worse score on the held-out years (0.60 against 0.50), so widening the bounds is not worthwhile and **pass 1 is kept as the step 1 result**. The pinned parameters are not what limits the stratification.
+-   **The oxygen and organic-matter parameters are not unique.** The second pass reached the same fit with very different values: for example `rdom_minerl` went from 0.045 to 0.006, `kpom_hydrol` from 6 to 95, `w_pom` from -0.40 to -0.02, the zone-4 oxygen demand from -134 to -38 and `ksed_oxy` from 97 to 35. The data constrain a combination of these (the total oxygen demand reaching the bottom water), not each one. The physics parameters were more stable (`coef_wind_stir` 0.56 in both passes, `cd` about 0.002, `coef_mix_hyp` 1.7 to 2). The next steps should treat these as an ensemble, not a single set.
+
+## Limitations
+
+-   The residual stratification excess (summer fraction, spell frequency) is not removed by any of the bounded parameters, so it is probably structural (for example the missing deep pit). This was not tested here.
+-   Surface oxygen is biased low; this is an air-water exchange and production issue.
+-   Phytoplankton, nitrogen and phosphorus parameters were held at their earlier values, so the oxygen parameters may be compensating for phytoplankton oxygen production and respiration. They should be re-checked after the phytoplankton step.
+-   Three and a half years are held out, which is short for the signatures that depend on rare events (anoxic years).
+
+## Next
+
+1.  The parameter set (`calibration/checkpoints/step1_final_params.csv`) becomes the physics and oxygen baseline for the next step.
+2.  Calibrate the sediment and phytoplankton parameters on the 1990 to 2006 nutrient and chlorophyll record with the alum module off. This needs the hourly forcing back to 1987.
+3.  Calibrate the alum parameters on the dosed years with everything else fixed.

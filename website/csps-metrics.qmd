@@ -1,0 +1,164 @@
+---
+title: "CSPS Evaluation Framework for Lake Rotorua"
+subtitle: "Targets and metrics for polymixis, bottom-water anoxia, internal loading and phytoplankton"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+img <- "images/staged-calibration"
+kab <- function(x, ...) kable(x, ...) |> kable_styling(full_width = FALSE, bootstrap_options = c("striped", "condensed"))
+tg <- read.csv(file.path(img, "csps_targets.csv"))
+by_yr <- read.csv(file.path(img, "csps_obs_by_year.csv"))
+```
+
+## Purpose
+
+The calibration so far scores the model on state variables (temperature, oxygen, nutrients, chlorophyll-a). A model can match those concentrations for the wrong reasons, particularly in a shallow lake where one parameter such as wind scaling can compensate for several errors (see the mixing section of the [staged calibration](rotorua-calibration-staged.qmd)). This page defines a metrics system based on the CSPS framework (Concept, State, Process, System; [Hipsey et al. 2020](https://doi.org/10.1016/j.envsoft.2020.104697)), built from what the observations can actually support, and aimed at four things the model must get right:
+
+1.  **Polymixis**: a lake that stratifies for days to weeks and mixes again, many times a year.
+2.  **Bottom-water anoxia**: short, episodic and variable between years.
+3.  **Internal loading**: nutrient release from the sediment into stratified bottom water.
+4.  **Seasonal phytoplankton dynamics**: the magnitude, variability and timing of chlorophyll-a.
+
+The code is in `calibration/csps_metrics.R`. `calibration/csps_build_targets.R` writes the observed targets to `calibration/csps_targets.csv`.
+
+## What the observations support
+
+```{r}
+inv <- data.frame(
+  Data = c("Temperature profile", "Dissolved oxygen profile", "Chlorophyll-a profile", "TP, TN, FRP, NH4, NO3 (lab, depth profile)", "Secchi depth", "Stratification flag, Schmidt stability, thermocline depth", "TLI3, TLI4"),
+  Period = c("2003 to 2026 (daily from 2007)", "2003 to 2026 (daily from 2007)", "2003 to 2025 (monthly, more often from 2015)", "1990 to 2023 (monthly or bi-monthly; deep samples to 2020)", "1982 to 2023", "2003 to 2026", "1990 to 2023"),
+  Use = c("Polymixis, mixing events, state", "Anoxia frequency and duration, oxygen demand, state", "Seasonality, bloom size, state", "Internal loading (bottom to surface contrast), state", "Trophic state, light climate", "Derived from the same profiles, so not used independently", "System-level trophic check"))
+kab(inv, caption = "Observation inventory used to build targets.")
+```
+
+Lessons from the data that shape the targets:
+
+-   **The lake is polymictic.** Surface minus bottom temperature (17 m and deeper) exceeds 1 °C on about 22% of days (35% from December to April, almost never in winter). Spells last a median of 2 days, with a 90th percentile of 17 days and about 9 spells a year. The model must produce frequent short stratification and mixing, not a seasonal thermocline.
+-   **Anoxia is episodic and uneven between years.** Bottom oxygen is below 2 mg/L on about 11% of December to April days, but from 0% (2014, 2022, 2023) to 33% (2010) of days between years, and 83% of years have at least one event.
+-   **Internal loading shows as a bottom to surface contrast in the stratified season.** Bottom ammonium is a median 7 times the surface value, FRP 2.6 times and TP 1.4 times. It is only measured at depth to 2020.
+-   **Chlorophyll-a has weak seasonality.** The median is about 9 mg m^-3^, the summer to winter ratio is close to 1, and the signal is irregular blooms (the 90th percentile is about 20) rather than a regular spring peak. Matching a seasonal cycle would reward the wrong behaviour, so the targets use the distribution, bloom frequency and the annual peak.
+
+## The framework
+
+```{r}
+lv <- data.frame(
+  Level = c("0 Concept", "1 State", "2 Process", "3 System"),
+  Question = c("Is the model structure appropriate for these questions?", "Do simulated concentrations match observations?", "Is the model producing the observed behaviour through the right processes?", "Does the whole lake respond as observed?"),
+  `How it is assessed` = c("Checklist (table below), reviewed before each scenario use", "Bias, MAE, RMSE, correlation and KGE by variable and layer (log scale for chlorophyll and nutrients), plus seasonal correlation", "Signatures of mixing, oxygen demand and nutrient gradients, with tolerances from the interannual spread", "Trophic state (TLI3), chlorophyll to TP relation, response to alum dosing and to wet and dry years"),
+  check.names = FALSE)
+kab(lv)
+```
+
+### Level 0: concept checklist
+
+| Question | Status |
+|----|----|
+| Does the hydrodynamic model resolve rapid mixing and stratification cycles (hourly forcing, wind-driven mixing)? | Yes with hourly forcing; the daily-forced base is a coarser test |
+| Is sediment oxygen demand and nutrient release linked to bottom-water oxygen? | Sediment release and oxygen demand are parameterised by zone (`fsed_*`, `ksed_*`); the oxygen dependence needs checking in the AED sediment settings |
+| Are the 21.5 m basin and the deeper pit (to 27 m) represented? | **No.** The model uses `hyps_no_hole`. Observed ammonium is highest at 21 to 25 m, so this is a known structural gap |
+| Is phytoplankton resolved by group (cyanobacteria, diatoms, green algae)? | Yes, but only total chlorophyll-a is observed |
+| Are alum dosing and its effect on phosphorus represented? | Yes (`aed_alum`, stage 4), with dose and efficiency uncertain |
+| Is rainfall, river inflow and nutrient loading consistent with the lake budget? | Water balance calibrated; nutrient loads and the organic share are assumptions |
+| Does the forcing carry the climate-scenario signal at the time scale the lake responds to (days)? | Delta-change on hourly corrected ERA5; daily weather variability is preserved |
+
+### Level 1: state metrics
+
+For each variable and layer (surface 0 to 2 m, middle, bottom 17 m and deeper, and bottom from December to April) the scorecard reports bias, MAE, RMSE, correlation, KGE and the correlation of the monthly climatology. Chlorophyll-a and nutrients are compared on the log scale. These replace a single pooled error score: a model that gets the surface right and the bottom wrong is visible.
+
+### Level 2 and 3: signatures
+
+Every signature is computed by one function on the observations and on the model, using only days on which an observation exists. This removes the effect of sampling. The tolerance for each signature is the standard deviation of that signature between observed years (at least 10% of the value; 50% for signatures with fewer than five usable years). A model is **inside tolerance** when it lands within one standard deviation of the observed value, and the score falls from 1 to 0 between one and three standard deviations.
+
+```{r}
+tab <- tg |>
+  mutate(observed = signif(observed, 3), tolerance = signif(tolerance, 2)) |>
+  select(Theme = theme, Level = level, Signature = signature, Observed = observed, `Tolerance (1 sd)` = tolerance, `Years` = n_years)
+what <- c(
+  mix_f_strat = "Fraction of days with surface minus bottom temperature above 1 °C",
+  mix_f_strat_summer = "As above, December to April", mix_f_strat_winter = "As above, June to August",
+  mix_dT_p95 = "95th percentile of surface minus bottom temperature (°C)", mix_dT_mean_summer = "Mean surface minus bottom temperature, December to April (°C)",
+  mix_spells_per_yr = "Stratified spells per year", mix_spell_median_d = "Median spell length (days)", mix_spell_p90_d = "90th percentile spell length (days)",
+  mix_bot_temp_summer = "Bottom temperature, December to April (°C)",
+  anox_f_lt2 = "Fraction of days with bottom oxygen below 2 mg/L", anox_f_lt2_summer = "As above, December to April", anox_f_lt1_summer = "Below 1 mg/L, December to April",
+  anox_do_mean_summer = "Mean bottom oxygen, December to April (mg/L)", anox_do_p10 = "10th percentile of bottom oxygen (mg/L)",
+  anox_f_years_with_event = "Fraction of years with at least one day below 2 mg/L", anox_spell_median_d = "Median anoxic spell length (days)",
+  anox_do_decline_strat = "Daily change in bottom oxygen during stratified spells (mg/L/day; a sediment oxygen demand proxy)")
+tab$Meaning <- unname(what[tab$Signature])
+tab$Meaning[is.na(tab$Meaning)] <- ""
+tab$Meaning[grepl("^load_.*_ratio", tab$Signature)] <- "Median bottom over median surface concentration, December to April"
+tab$Meaning[grepl("^load_.*_bot_p90", tab$Signature)] <- "90th percentile of bottom concentration (mg/L)"
+tab$Meaning[grepl("^load_.*_f_bot_gt2x", tab$Signature)] <- "Fraction of days with bottom more than twice the surface"
+tab$Meaning[tab$Signature == "chl_median"] <- "Median surface chlorophyll-a (mg/m3)"
+tab$Meaning[tab$Signature == "chl_p90"] <- "90th percentile surface chlorophyll-a"
+tab$Meaning[tab$Signature == "chl_cv"] <- "Coefficient of variation of surface chlorophyll-a"
+tab$Meaning[tab$Signature == "chl_f_gt20"] <- "Fraction of samples above 20 mg/m3 (bloom frequency)"
+tab$Meaning[tab$Signature == "chl_summer_winter_ratio"] <- "Median December to February over median June to August"
+tab$Meaning[tab$Signature == "chl_annual_peak_median"] <- "Median of the annual maximum"
+tab$Meaning[tab$Signature == "chl_sd_log"] <- "Standard deviation of log(1 + chlorophyll-a)"
+tab$Meaning[tab$Signature == "sys_tli3_mean"] <- "TLI3 from annual mean chlorophyll, TP and TN"
+tab$Meaning[tab$Signature == "sys_chl_tp_slope"] <- "Slope of log chlorophyll-a against log TP between years"
+kab(tab[, c("Theme", "Level", "Signature", "Meaning", "Observed", "Tolerance (1 sd)", "Years")], caption = "Observed targets with tolerances from the interannual spread.")
+```
+
+Level 3 also includes checks that need model runs rather than signatures, which are not yet computed. They will come from the long (1992 to 2022) daily-forced run:
+
+-   Year-to-year agreement: does the model have anoxia in the same years that the lake does (rank correlation of the annual anoxic fraction, 2008 to 2022)?
+-   Trophic state over time: simulated against observed annual TLI3, in the 1990s before alum and after.
+-   Response to alum: the change in summer bottom FRP and ammonium and in chlorophyll-a before and after dosing began.
+-   Wet and dry years: bloom frequency and anoxic fraction in the top and bottom quartile of annual inflow.
+
+## Observed year-to-year range
+
+The tolerances come from how much the lake itself varies between years:
+
+```{r}
+#| fig-height: 7
+#| fig-width: 8
+op <- par(mfrow = c(3, 2), mar = c(3, 4, 2, 1))
+for (v in c("mix_f_strat_summer", "mix_spell_median_d", "anox_f_lt2_summer", "anox_do_decline_strat", "chl_median", "chl_p90")) {
+  plot(by_yr$year, by_yr[[v]], type = "b", pch = 19, xlab = "", ylab = v, main = v)
+  abline(h = tg$observed[tg$signature == v], lty = 2)
+}
+par(op)
+```
+
+## Calibration, validation and scoring
+
+-   **Calibration window.** The current PEST windows (2 to 3 years inside 2017 to 2020) fit states. They are not long enough to score signatures that depend on rare events (spells, years with anoxia).
+-   **Validation.** Score the calibrated model on all other years that have daily temperature and oxygen (2007 to 2016, 2021 to 2025) and on the 1992 to 2006 nutrient record from the daily-forced run. The signatures are the validation targets; a model that passes state metrics but fails signatures is not accepted for scenarios.
+-   **Ensembles.** Run the signature scorecard on each realisation of the final PEST ensemble, and report the range, not only the best run.
+-   **Using signatures inside PEST.** The signatures can be added as observation groups in the next calibration round. The first candidates are `mix_f_strat_summer` and `mix_spell_median_d` in stage 2 (they separate wind scaling from mixing coefficients), and `anox_f_lt2_summer`, `anox_do_decline_strat` and the `load_*_ratio` set in stage 3. They have to be computed over windows long enough to hold several spells, so the calibration window would need to extend to about one full year.
+
+```{r}
+#| eval: false
+source("calibration/csps_metrics.R")
+tg <- read.csv("calibration/csps_targets.csv")
+P  <- csps_pair(aeme)          # paired obs and model values from a run
+sc <- csps_score(P, tg)        # signature scorecard (pass, z, score)
+csps_summary(sc)               # by level and theme
+csps_state(P)                  # Level 1 table
+```
+
+## Gaps in the data
+
+-   Process rates (sediment fluxes, productivity, denitrification) are measured only as the zone sediment fluxes in `meas_param`, with unconfirmed units, so the process level for internal loading relies on concentration gradients, not fluxes.
+-   Nutrients are not measured at depth after 2020, so internal loading signatures are scored on 11 to 14 years.
+-   TLI4 needs a simulated Secchi depth, which GLM-AED does not output; TLI3 is used instead.
+-   Cyanobacteria and phytoplankton group data would test whether the right groups bloom in the right season; only total chlorophyll-a is available.
+-   The deep pit (to 27 m) is outside the model.
