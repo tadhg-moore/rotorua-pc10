@@ -61,25 +61,32 @@ INIT_FRP_HIGH <- 50.0   # mmol/m³ — well above K_P (0.3), for saturation/high
 # ── Default aed_alum namelist ─────────────────────────────────────────────────
 nml_def_txt <- "
 &aed_alum
-   ala_initial     = 0.0
-   alp_initial     = 0.0
-   ben_ala_initial = 0.0
-   ben_alp_initial = 0.0
+  !-- initial conditions
+   ala_initial     = 0.0        ! suspended alum binding capacity (mmol P/m3)
+   alp_initial     = 0.0        ! suspended alum-bound P          (mmol P/m3)
+   ben_ala_initial = 0.0        ! settled alum binding capacity   (mmol P/m2)
+   ben_alp_initial = 0.0        ! settled alum-bound P            (mmol P/m2)
+  !-- link to the FRP pool we strip phosphorus from
    frp_variable    = 'PHS_frp'
-   k_w             = 0.5
-   k_s             = 0.1
-   K_P             = 0.3
-   w_ala           = 5.0
-   k_age_w         = 0.0998
-   k_age_s         = 0.0998
-   k_bur           = 0.01
+  !-- binding kinetics
+   k_w             = 0.5        ! water-column binding rate  (/d)
+   k_s             = 0.1        ! benthic binding rate       (/d)
+   K_P             = 0.3        ! half-saturation for FRP    (mmol P/m3)
+  !-- settling, ageing and burial
+   w_ala           = 0.5        ! settling velocity of the floc (m/d)
+   k_age_w         = 0.0998     ! loss of binding capacity, water column (/d)
+   k_age_s         = 0.0998     ! loss of binding capacity, sediment     (/d)
+   k_bur           = 0.01       ! burial of the settled pools            (/d)
+  !-- resuspension (off by default)
    simResuspension = .false.
    k_res           = 0.0
+  !-- optional pH efficiency modifier (needs aed_carbon for CAR_pH; off here)
    ads_use_pH      = .false.
    pH_variable     = 'CAR_pH'
    pH_opt          = 6.0
    sigma_pH        = 1.0
-   S_ala           = 0.0
+  !-- dosing
+   S_ala           = 0.0        ! alum dose to the surface (mmol P/m2/d)
    diag_level      = 10
 /
 "
