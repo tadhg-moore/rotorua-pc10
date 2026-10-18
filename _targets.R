@@ -187,6 +187,14 @@ list(
     deployment = "main"
   ),
   tar_target(
+    rotorua_era5_37yr_hr_file,
+    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly_1988-2024.csv",
+                       here::here("data", "processed", "rotorua_era5_hourly_1988-2024.csv")),
+    format = "file",
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
+  tar_target(
     rotorua_era5_hr_file,
     sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly.csv",
                        here::here("data", "processed", "rotorua_era5_hourly.csv")),
@@ -1355,8 +1363,10 @@ list(
   #* 1-2. Bias-correct hourly ERA5 against the buoy; bias-corrected daily baseline ----
   tar_target(
     era5_hourly_met,
-    read_era5_hourly_met(rotorua_era5_hr_file, lat = lake_meta$latitude,
-                         lon = lake_meta$longitude, tz = scenario_tz)
+    # 1988-2024 file, extended to 2025 from the older 2011-2025 file
+    read_era5_hourly_met(rotorua_era5_37yr_hr_file, lat = lake_meta$latitude,
+                         lon = lake_meta$longitude, tz = scenario_tz,
+                         extend_file = rotorua_era5_hr_file)
   ),
   # Rain is corrected in two stages (see met-source-comparison.qmd): ERA5
   # rain is "wet" in ~41% of hours vs ~15% on the buoy, which a monthly scale
