@@ -154,7 +154,7 @@ def_carbon_nml <- AEME::read_nml(tmp_nml_file)
 # wc_mass(), benthic_mass()) and check() live in R/aed_alum_stress_test_helpers.R
 # — see that file for documentation. They rely on `aed`, `aed_models`,
 # `def_alum_nml`, `def_carbon_nml` and `glm_def` (all defined above/below).
-source("R/aed_alum_stress_test_helpers.R")
+source("../R/aed_alum_stress_test_helpers.R")
 
 # ── Tolerances ────────────────────────────────────────────────────────────────
 tol_abs <- 1e-6
