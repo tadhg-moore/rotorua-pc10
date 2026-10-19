@@ -84,6 +84,19 @@ aeme <- aeme |>
   run_aeme(extra_vars = "all")
 
 outfile <- get_model_outfile(aeme)$glm_aed["output"]
+if (is.na(outfile) || !file.exists(outfile)) {
+  # The run failed and produced no output. Re-run verbosely and put the model log in the error,
+  # so a failure on CI shows GLM's own message instead of just "output file not found".
+  msgs <- character()
+  txt <- withCallingHandlers(
+    utils::capture.output(try(run_aeme(aeme, extra_vars = "all", verbose = TRUE), silent = TRUE)),
+    message = function(m) { msgs <<- c(msgs, conditionMessage(m)); invokeRestart("muffleMessage") })
+  log <- c(txt, msgs)
+  stop("GLM-AED run failed. Last lines of the model log:
+",
+       paste(utils::tail(log[nzchar(trimws(log))], 40), collapse = "
+"), call. = FALSE)
+}
 out <- read_glm_output(file = outfile, vars_sim = tgt_vars, load_all = T)
 
 theme_set(theme_bw(base_size = 10))
