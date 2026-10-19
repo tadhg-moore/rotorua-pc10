@@ -24,21 +24,21 @@ set.seed(42)
 
 # ---- Data (true b = 2, true m = 0.8) ----
 n <- 15
-d <- data.frame(x = runif(n, 0, 10))
-d$y <- 2 + 0.8 * d$x + rnorm(n, sd = 1.5)
+bayes_d <- data.frame(x = runif(n, 0, 10))
+bayes_d$y <- 2 + 0.8 * bayes_d$x + rnorm(n, sd = 1.5)
 
 # ---- Frequentist: least squares + 95% CI ----
-fit   <- lm(y ~ x, data = d)
+fit   <- lm(y ~ x, data = bayes_d)
 ci    <- confint(fit)
 sigma <- summary(fit)$sigma
 
 # ---- Bayesian: normal priors, closed-form posterior ----
 # (noise sd fixed at the lm estimate to keep the maths simple)
-X          <- cbind(1, d$x)
+X          <- cbind(1, bayes_d$x)
 prior_mean <- c(0, 0)                    # b, m
 prior_prec <- diag(1 / c(10, 5)^2)       # weak priors: sd 10 for b, sd 5 for m
 post_cov   <- solve(crossprod(X) / sigma^2 + prior_prec)
-post_mean  <- post_cov %*% (crossprod(X, d$y) / sigma^2 + prior_prec %*% prior_mean)
+post_mean  <- post_cov %*% (crossprod(X, bayes_d$y) / sigma^2 + prior_prec %*% prior_mean)
 
 draws <- as.data.frame(MASS::mvrnorm(4000, post_mean, post_cov))
 names(draws) <- c("b", "m")
@@ -51,7 +51,7 @@ th <- theme_minimal(base_size = 16) +
         plot.title = element_text(face = "bold"))
 
 # Panel 1: one best-fit line with a confidence band
-p1 <- ggplot(d, aes(x, y)) +
+p1 <- ggplot(bayes_d, aes(x, y)) +
   geom_smooth(method = "lm", level = 0.95, colour = col_f, fill = col_f,
               alpha = 0.2, linewidth = 1.5) +
   geom_point(size = 3) +
@@ -59,7 +59,7 @@ p1 <- ggplot(d, aes(x, y)) +
   th
 
 # Panel 2: many plausible lines drawn from the posterior
-p2 <- ggplot(d, aes(x, y)) +
+p2 <- ggplot(bayes_d, aes(x, y)) +
   geom_abline(data = draws[1:150, ], aes(intercept = b, slope = m),
               colour = col_b, alpha = 0.12) +
   geom_point(size = 3) +
@@ -613,7 +613,7 @@ plausible values for the parameters.
 post_slope <- function(prior_m_mean, prior_m_sd, prior_b_sd = 10) {
   prior_prec <- diag(1 / c(prior_b_sd, prior_m_sd)^2)
   cov  <- solve(crossprod(X) / sigma^2 + prior_prec)
-  mean <- cov %*% (crossprod(X, d$y) / sigma^2 +
+  mean <- cov %*% (crossprod(X, bayes_d$y) / sigma^2 +
                    prior_prec %*% c(0, prior_m_mean))
   list(mean = mean[2], sd = sqrt(cov[2, 2]))
 }
