@@ -9,6 +9,9 @@ format:
     fig-width: 9
     fig-height: 4.5
 execute:
+  # TODO: code is not run until the page's model outputs / summaries are available on CI
+  # (it reads scripts/alum/runs and website/data/alum, neither of which is in git)
+  eval: false
   warning: false
   message: false
   freeze: auto
