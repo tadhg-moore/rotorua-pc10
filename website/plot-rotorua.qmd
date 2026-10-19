@@ -64,11 +64,26 @@ aed_file <- file.path(aeme_path, "glm_aed", "aed", "aed.nml")
 
 aed_old <- read_nml(aed_old_file)
 aed <- read_nml(aed_file)
-# build_aeme() now writes its default module list (incl. aed_noncohesive, which has no
-# block in this config), so use the module list of the original case instead (it already
-# ends with aed_alum, and its order matches the blocks in aed.nml).
-aed$aed_models$models <- aed_old$aed_models$models
+# A fresh build_aeme() (always the case on CI) writes the default AED module list and its blocks, but not in the
+# order of that list (e.g. &aed_noncohesive comes last), and GLM reads the namelist groups sequentially without
+# rewinding ("Error reading namelist ..."). So: keep the generated module list, add the carbon module (needed for the
+# CAR_* plots; block from the tracked copy in R/ rather than a synced one) and the alum module (from the original case,
+# last in the list), then write the blocks in the order of the module list.
+mods <- setdiff(aed$aed_models$models, c("aed_carbon", "aed_alum"))
+mods <- append(mods, "aed_carbon", after = match("aed_oxygen", mods, nomatch = length(mods)))
+mods <- c(mods, "aed_alum")
+aed$aed_models$models <- mods
+aed$aed_carbon <- read_nml("../R/aed_carbon_block.nml")$aed_carbon
 aed$aed_alum <- aed_old$aed_alum
+blk_order <- "aed_models"
+for (m in mods) {
+  blk_order <- c(blk_order, m)
+  if (m == "aed_sedflux") blk_order <- c(blk_order, "aed_sed_const2d")
+}
+blk_order <- c(blk_order, setdiff(names(aed), blk_order))   # blocks not in the module list go after
+aed_ordered <- aed[blk_order[blk_order %in% names(aed)]]
+class(aed_ordered) <- class(aed)
+aed <- aed_ordered
 write_nml(aed, aed_file)
 
 # build_aeme() writes sed_heat_model = 2 without the soil-column layers that GLM now
