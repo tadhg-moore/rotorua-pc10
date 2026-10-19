@@ -12,10 +12,22 @@
 #' downstream local-time features (day-of-year fits, diurnal disaggregation)
 #' use the right wall-clock hour.
 #'
-#' @param file path to `data/processed/rotorua_era5_hourly.csv`
+#' @param file path to the main hourly file, e.g.
+#'   `data/processed/rotorua_era5_hourly_1988-2024.csv`
+#' @param extend_file optional second file (e.g. `rotorua_era5_hourly.csv`,
+#'   2011-2025) used only for rows later than the last row of `file`; the two
+#'   files are identical where they overlap. Only columns present in both are
+#'   kept (the older file also has `MET_ppsnow`, which nothing uses).
 #' @param lat,lon,tz attached as attributes, as `metscale` functions expect
-read_era5_hourly_met <- function(file, lat, lon, tz = "Etc/GMT-12") {
+read_era5_hourly_met <- function(file, lat, lon, tz = "Etc/GMT-12",
+                                 extend_file = NULL) {
   era5 <- utils::read.csv(file, check.names = FALSE, stringsAsFactors = FALSE)
+  if (!is.null(extend_file)) {
+    ext <- utils::read.csv(extend_file, check.names = FALSE, stringsAsFactors = FALSE)
+    ext <- ext[ext$Date > max(era5$Date), ] # ISO 8601 strings sort chronologically
+    cols <- intersect(names(era5), names(ext))
+    era5 <- rbind(era5[, cols], ext[, cols])
+  }
   era5$Date <- as.POSIXct(era5$Date, tz = "UTC", format = "%Y-%m-%dT%H:%M:%SZ")
   attr(era5$Date, "tzone") <- tz
   era5 <- era5[!is.na(era5$Date), ]

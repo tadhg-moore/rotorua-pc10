@@ -66,7 +66,7 @@ old_buoy_met_data <- function(data, height = 1.5) {
   
   met <- met |> 
     dplyr::mutate(
-      MET_wndspd = w_spd * 0.514444, # convert knots to m/s
+      MET_wndspd = w_spd, # * 0.514444, # convert knots to m/s
       MET_wndspd = metscale::wind_at_height(MET_wndspd, from = height, 10),
       pr_baro = (pr_baro * 100), # - 3509
       pr_baro = dplyr::case_when(
@@ -84,4 +84,27 @@ old_buoy_met_data <- function(data, height = 1.5) {
       MET_wnddir = w_dir
     )
   return(met)
+}
+
+old_buoy_wq_data <- function(data) {
+  wq_vars <- c("c_do", "c_ph","t_wtr")
+  wq <- data |> 
+    dplyr::filter(var_abbr %in% wq_vars, !is.na(qc_value)) |>
+    dplyr::mutate(
+      depth = as.numeric(gsub("\\D", "", var_ref_id)) / 100,
+      var_aeme = dplyr::case_when(
+        var_abbr == "c_do" ~ "CHM_oxy",
+        var_abbr == "c_ph" ~ "CHM_ph",
+        var_abbr == "t_wtr" ~ "HYD_temp"
+      ),
+      value = qc_value,
+      Date = lubridate::ceiling_date(datetime, unit = "day")
+    ) |> 
+    dplyr::group_by(Date, depth, var_aeme) |>
+    dplyr::summarise(
+      value = mean(value, na.rm = TRUE),
+      .groups = "drop"
+    )
+
+  return(wq)
 }
