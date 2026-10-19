@@ -7,6 +7,10 @@ date-format: "DD MMMM YYYY"
 fig-width: 9
 fig-height: 5
 fig-dpi: 150
+execute:
+  # TODO: code is not run until the setup builds from a clean folder on CI. It reads the Windows folder stored in
+  # aeme_download.rds and the 5-zone sediment parameters clash with the downloaded model's 4-zone settings.
+  eval: false
 ---
 
 ```{r setup}
@@ -144,7 +148,7 @@ perf <- assess_aeme(aeme, var_sim = c("HYD_temp", "LKE_lvlwtr")) |>
 
 ## Overview {#overview}
 
-This page documents the **General Lake Model (GLM `r glm_version`)** configuration used for simulating the lake's thermal dynamics, water balance, and nutrient cycling. The model is coupled to the **Aquatic EcoDynamics (AED)** library for biogeochemical processes.
+This page documents the **General Lake Model (GLM v4)** configuration used for simulating the lake's thermal dynamics, water balance, and nutrient cycling. The model is coupled to the **Aquatic EcoDynamics (AED)** library for biogeochemical processes.
 
 The [AEME](https://limnotrack.com/AEME/) package was used to retrieve and format lake characteristics, boundary conditions, and monitoring data for model configuration and validation. The `glm4.nml` and `aed.nml` files define the physical and biogeochemical model parameters, respectively, while CSV files provide time series of inflows, meteorological forcing, and phytoplankton parameters.
 
