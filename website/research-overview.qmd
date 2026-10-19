@@ -18,6 +18,7 @@ library(htmlwidgets)
 library(ggplot2)
 library(patchwork)   # for combining panels
 library(MASS)        # mvrnorm (ships with R); use MASS::select() if you load dplyr
+library(targets)
 
 set.seed(42)
 
@@ -314,6 +315,64 @@ p
 
 9. Synthesis
 
+## Personal Workflow
+
+Key components:
+
+1. R packages
+
+2. `targets` pipeline  
+
+3. Project website
+
+## R packages
+
+Developed multiple packages:
+
+- AEME - Building and running models
+
+- aemetools - Sensitivity analysis and calibration tools
+
+- bathytools - Bathymetry and hypsography tools
+
+- ltapi - Limnotrack API
+
+- metscale - Climate data processing and downscaling
+
+## `targets` pipeline  
+
+[`targets`](https://books.ropensci.org/targets/) is an R package for building reproducible pipelines. It tracks dependencies and only reruns steps that need updating.
+
+```{r}
+#| label: targets-example
+#| echo: false
+
+tar_visnetwork(names = "aeme_baseline", targets_only = TRUE, 
+               script = "../_targets.R", store = "../_targets")
+
+```
+
+
+## `targets` pipeline  
+
+Alternative to:
+
+```  
+01_gather_data.R
+02_synthesise_data.R
+03_model_selection.R
+03b_fix_model.R
+04_configuration.R
+
+```
+
+## Project Website
+
+- Helpful for communicating with collaborators and stakeholders. 
+- Built with Quarto and Reveal.js.
+- Uses data and `targets` to automatically generate figures and tables.
+
+Website: [https://tadhg-moore.github.io/rotorua-pc10](https://tadhg-moore.github.io/rotorua-pc10)
 
 ## Models
 
@@ -750,7 +809,9 @@ CMIP6 will address three broad questions:
 
 ## Scenarios: Shared Socioeconomic Pathways (SSPs)
 
+## Impact Modelling
 
+## Scenario Design
 
 
 
