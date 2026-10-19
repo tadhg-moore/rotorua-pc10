@@ -18,7 +18,7 @@ execute:
 ```{r}
 library(dplyr); library(tidyr); library(ggplot2); library(patchwork)
 library(knitr); library(scales)   # ncdf4 is only needed to rebuild the summaries (helpers use ncdf4::)
-source("R/alum_scenario_helpers.R")
+source("../R/alum_scenario_helpers.R")
 
 theme_set(theme_bw(base_size = 11) +
             theme(legend.position = "bottom", strip.background = element_blank()))
