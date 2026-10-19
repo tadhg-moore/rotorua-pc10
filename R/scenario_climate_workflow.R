@@ -134,7 +134,9 @@ apply_gcm_delta_to_baseline <- function(baseline, deltas, lat, lon, elev, tz) {
   for (v in unique(deltas$variable)) {
     dv <- deltas[deltas$variable == v, ]
     f  <- dv$delta[match(mo, dv$month)]
-    kind <- dv$kind[1]
+    # unname(): `kind` can carry names, which made identical(kind, "ratio") FALSE so every ratio-type delta
+    # (rainfall, wind speed, humidity) was added to the baseline instead of multiplied
+    kind <- unname(as.character(dv$kind[1]))
     out[[v]] <- if (identical(kind, "ratio")) out[[v]] * f else out[[v]] + f
   }
   if ("MET_humrel" %in% names(out))
