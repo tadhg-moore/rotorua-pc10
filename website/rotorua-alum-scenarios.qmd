@@ -1,0 +1,754 @@
+---
+title: "Alum scenarios in the Lake Rotorua GLM-AED model"
+subtitle: "Inflow loading, in-lake concentrations, benthic processes and P removal"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    fig-width: 9
+    fig-height: 4.5
+execute:
+  warning: false
+  message: false
+  freeze: auto
+---
+
+
+```{r}
+library(dplyr); library(tidyr); library(ggplot2); library(patchwork)
+library(knitr); library(scales)   # ncdf4 is only needed to rebuild the summaries (helpers use ncdf4::)
+source("R/alum_scenario_helpers.R")
+
+theme_set(theme_bw(base_size = 11) +
+            theme(legend.position = "bottom", strip.background = element_blank()))
+
+# Analysis window: the first two years of each run are spin-up (alum pools
+# start at zero, so they are *not* in equilibrium before dosing history builds up).
+WIN_START <- as.Date("2013-07-01")
+WIN_STOP  <- as.Date("2021-06-30")
+N_YR      <- as.numeric(WIN_STOP - WIN_START + 1) / 365.25
+K_BUR     <- 0.01      # d-1, aed_alum burial rate in these runs (aed.nml default)
+rm30 <- \(x) as.numeric(stats::filter(x, rep(1/30, 30), sides = 2))   # 30-day running mean
+
+tags_all <- c("S0", "S1", "W_0.3", "W_1.0", "W_1.5", "W_5",
+              "R_1.4", "R_0.5", "R_0.3", "R_0.15",
+              "RES_0.001", "RES_0.01", "RES_0.1", "SURF")
+tags <- tags_all[file.exists(file.path(alum_run_dir(tags_all), "output", "output.nc"))]
+labels <- c(S0 = "S0 no alum", S1 = "S1 historical dose",
+            `W_0.3` = "w_ala 0.3", `W_1.0` = "w_ala 1", `W_1.5` = "w_ala 1.5",
+            W_5 = "w_ala 5",
+            `R_1.4` = "capacity x1.43 (Al:P 0.7:1)", `R_0.5` = "capacity x0.5",
+            `R_0.3` = "capacity x0.3", `R_0.15` = "capacity x0.14 (Al:P 7:1)",
+            `RES_0.001` = "resusp k_res 0.001", `RES_0.01` = "resusp k_res 0.01",
+            `RES_0.1` = "resusp k_res 0.1", SURF = "surface dose 0.1 mmol/m2/d")
+
+runs <- lapply(setNames(tags, tags), read_alum_run)
+lake <- bind_rows(lapply(runs, `[[`, "lake")) |>
+  mutate(scenario = factor(scenario, tags, labels[tags]))
+zone <- bind_rows(lapply(runs, `[[`, "zone")) |>
+  mutate(scenario = factor(scenario, tags, labels[tags]))
+lw <- lake |> filter(Date >= WIN_START, Date <= WIN_STOP)   # analysis window
+
+lab <- function(t) factor(labels[[t]], labels[tags])
+S0 <- "S0 no alum"; S1 <- "S1 historical dose"
+pal <- c("S0 no alum" = "grey35", "S1 historical dose" = "#d95f02")
+```
+
+
+## Purpose and set-up
+
+This page summarises the full GLM-AED output (`output.nc`) of the alum
+scenarios run by `scripts/alum/01_run_scenarios.R` with the calibrated
+stage 1–3 parameters (`calibration/checkpoints/final/`), the real
+inflow/meteorological forcing and the reconstructed alum dosing history
+(Puarenga and Utuhina dosing, converted to an inflow `ALU_ala` concentration
+by `calc_alum_inflow()`). It follows the diagnostics used in the
+[`aed_alum` stress tests](glm-aed-alum-stress-tests.qmd), but applied to the
+lake rather than to idealised boxes.
+
+| Scenario | What changes |
+|---|---|
+| S0 | no alum (`ALU_ala` = 0 in all inflows) |
+| S1 | historical dosing, default alum parameters (`w_ala` = 0.5 m/d, 1 mol P capacity per mol Al) |
+| `w_ala` 0.3, 1, 1.5, 5 | floc settling velocity: thesis central value 0.5 m/d, plausible range 0.3–1.5, 5 as a weakly-mixed upper bound |
+| capacity x1.43 … x0.14 | P-binding capacity per Al scaled onto the dosed inflows: 1.43 = jar test (Al:P 0.7:1), 0.14 = operational field value (~7:1) |
+| resuspension | `simResuspension` on (thesis recommendation) with `k_res` 0.001, 0.01, 0.1 d⁻¹ |
+| surface dose | no inflow dosing; whole-lake `S_ala` = 0.10 mmol P/m²/d (the thesis' mean-rate equivalent) |
+
+The settling velocities of 20–100 m/d in the thesis are for individually tracked large
+flocs (1–3 mm) in still water. The thesis explicitly treats them as upper bounds, because
+wind mixing keeps flocs suspended longer, and recommends 0.5 m/d (0.3–1.5) for the model.
+An earlier version of this page swept `w_ala` up to 100 m/d, which is outside that
+recommendation; it has been replaced by the thesis-based set above.
+
+: Scenarios {.striped}
+
+
+```{r}
+cat("Scenarios found:", paste(tags, collapse = ", "), "\n")
+```
+
+
+::: {.callout-note}
+**Interpret differences, not absolute values.** The staged calibration fits
+lake P poorly (stage 3 FRP KGE < 0, positive FRP/TP bias), and the TP series
+is still rising through the first years of each run. Everything below is
+therefore expressed as *alum minus no-alum* (S1 − S0) wherever possible.
+:::
+
+Units: concentrations are mmol P/m³ (1 mmol P/m³ = 31 µg P/L); masses are kg P;
+benthic pools are summed over the four sediment zones.
+
+## 1. Inflow loading
+
+### 1.1 P and Al loads by stream
+
+
+```{r}
+il <- read_alum_inflow_loads("S1", start = WIN_START, stop = WIN_STOP) |>
+  mutate(wy = as.integer(format(Date + 184, "%Y")))   # water year ending 30 June
+
+load_tab <- il |>
+  group_by(stream) |>
+  summarise(`Flow (Mm3/yr)` = sum(flow_m3d) / 1e6 / N_YR,
+            `FRP (t P/yr)`  = sum(frp_kgd) / 1e3 / N_YR,
+            `TP (t P/yr)`   = sum(tp_kgd) / 1e3 / N_YR,
+            `Alum Al (t/yr)` = sum(al_kgd) / 1e3 / N_YR,
+            .groups = "drop") |>
+  arrange(desc(`TP (t P/yr)`))
+tot <- load_tab |> summarise(across(where(is.numeric), sum)) |> mutate(stream = "Total")
+kable(bind_rows(load_tab, tot), digits = 1,
+      caption = "Mean annual external loads over the analysis window (S1 inflow files).")
+```
+
+
+```{r}
+#| label: fig-loads
+#| fig-cap: "Annual external P load and alum (as Al) dosed, by water year."
+ann <- il |> group_by(wy) |>
+  summarise(TP = sum(tp_kgd) / 1e3, FRP = sum(frp_kgd) / 1e3,
+            Al = sum(al_kgd) / 1e3, .groups = "drop") |>
+  pivot_longer(-wy)
+ggplot(ann, aes(wy, value, fill = name)) +
+  geom_col(position = "dodge") +
+  scale_fill_brewer(palette = "Dark2", name = NULL,
+                    labels = c(Al = "Al dosed (t Al)", FRP = "FRP load (t P)",
+                               TP = "TP load (t P)")) +
+  labs(x = "Water year (ending 30 June)", y = "tonnes / yr")
+```
+
+
+```{r}
+#| label: fig-dosestream
+#| fig-cap: "Daily alum dose (kg Al/d) entering each dosed stream, and the resulting in-stream ALU_ala concentration."
+d <- il |> filter(stream %in% c("Puarenga", "Utuhina"))
+conc <- d |> mutate(conc = ifelse(flow_m3d > 0, ala_kgd / MMOL_TO_KG / flow_m3d, NA))
+p1 <- ggplot(d, aes(Date, al_kgd, colour = stream)) + geom_line(linewidth = .3) +
+  labs(y = "kg Al / d", colour = NULL)
+p2 <- ggplot(filter(conc, conc > 0), aes(Date, conc, colour = stream)) +
+  geom_point(size = .4) + scale_y_log10() +
+  labs(y = "ALU_ala (mmol P-capacity / m3)", colour = NULL)
+p1 / p2
+```
+
+
+### 1.2 How much P-binding capacity is added relative to the P load?
+
+
+```{r}
+cap <- il |> summarise(
+  Al_t = sum(al_kgd) / 1e3, cap_tP = sum(ala_kgd) / 1e3,
+  TP_t = sum(tp_kgd) / 1e3, FRP_t = sum(frp_kgd) / 1e3)
+kable(tibble(
+  Quantity = c("Al dosed (t, window)", "P-binding capacity dosed (t P, 1 Al : 1 P)",
+               "External TP load, all streams (t P)", "External FRP load, all streams (t P)",
+               "Capacity / TP load", "Capacity / FRP load"),
+  Value = c(cap$Al_t, cap$cap_tP, cap$TP_t, cap$FRP_t,
+            cap$cap_tP / cap$TP_t, cap$cap_tP / cap$FRP_t)), digits = 2)
+```
+
+
+The nominal capacity added is a large multiple of the FRP actually delivered.
+Alum is dosed in streams that carry only part of the P load, so most capacity
+is expected to remain unused or be aged away (§5).
+
+## 2. In-lake concentrations
+
+
+```{r}
+#| label: fig-conc
+#| fig-cap: "Volume-weighted mean (top) and bottom-layer (lower) concentrations, S0 vs S1."
+sel <- lake |> filter(scenario %in% c(S0, S1), Date >= WIN_START)
+f <- function(y, ttl, ylab) ggplot(sel, aes(Date, .data[[y]], colour = scenario)) +
+  geom_line(linewidth = .35) + scale_colour_manual(values = pal, name = NULL) +
+  labs(title = ttl, y = ylab, x = NULL)
+(f("frp_mean", "FRP, lake mean", "mmol P/m3") + f("frp_bot", "FRP, bottom layer", "mmol P/m3")) /
+(f("tp_mean", "TP, lake mean", "mmol P/m3") + f("chl_mean", "Chlorophyll-a, lake mean", "ug/L")) +
+  plot_layout(guides = "collect") & theme(legend.position = "bottom")
+```
+
+
+```{r}
+#| label: fig-diff
+#| fig-cap: "Alum effect (S1 − S0) on lake-mean FRP, TP and chl-a, 30-day running mean."
+rm30 <- \(x) as.numeric(stats::filter(x, rep(1/30, 30), sides = 2))
+dd <- lw |> filter(scenario %in% c(S0, S1)) |>
+  select(Date, scenario, frp_mean, tp_mean, chl_mean, frp_bot) |>
+  pivot_longer(-c(Date, scenario)) |>
+  pivot_wider(names_from = scenario, values_from = value) |>
+  mutate(diff = .data[[S1]] - .data[[S0]]) |>
+  group_by(name) |> mutate(diff30 = rm30(diff)) |> ungroup()
+ggplot(dd, aes(Date, diff30)) + geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line(colour = "#d95f02") +
+  facet_wrap(~name, scales = "free_y", ncol = 1,
+             labeller = as_labeller(c(frp_mean = "FRP lake mean (mmol/m3)",
+                                      frp_bot = "FRP bottom (mmol/m3)",
+                                      tp_mean = "TP lake mean (mmol/m3)",
+                                      chl_mean = "Chl-a lake mean (ug/L)"))) +
+  labs(y = "S1 − S0", x = NULL)
+```
+
+
+```{r}
+tab <- lw |> group_by(scenario) |>
+  summarise(FRP = mean(frp_mean) * 31, `FRP bottom` = mean(frp_bot) * 31,
+            TP = mean(tp_mean) * 31, `Chl-a` = mean(chl_mean), .groups = "drop")
+b <- tab |> filter(scenario == S0)
+tab_out <- tab |>
+  mutate(`dFRP %` = 100 * (FRP / b$FRP - 1), `dTP %` = 100 * (TP / b$TP - 1),
+         `dChl %` = 100 * (`Chl-a` / b$`Chl-a` - 1))
+kable(tab_out, digits = 1,
+      caption = "Window-mean concentrations (ug P/L; chl-a ug/L) and change vs S0.")
+```
+
+
+### 2.1 Comparison with observations
+
+Observations are the buoy/CTD/survey data held in the Aeme object (`observations()$lake`),
+averaged by day over the epilimnion (0–5 m) or hypolimnion (15–21 m; the model lake is
+21 m deep). The model is sampled over the same depth bands (volume-weighted).
+The real lake **was** dosed, so S1 is the scenario to compare with the data; S0 shows how
+far the no-alum counterfactual departs from what was measured.
+
+
+```{r}
+#| label: fig-obs
+#| fig-cap: "Model (S0, S1) against observations (points) in the epilimnion (FRP, TP, chl-a) and hypolimnion (FRP, TP, oxygen), analysis window."
+#| fig-height: 8
+obs <- read_alum_obs() |> filter(Date >= WIN_START, Date <= WIN_STOP)
+vmap <- tribble(
+  ~var_aeme,   ~band, ~col,       ~scale, ~panel,
+  "PHS_frp",   "epi", "frp_epi",  31,     "FRP, epilimnion (ug P/L)",
+  "PHS_frp",   "hyp", "frp_hyp",  31,     "FRP, hypolimnion (ug P/L)",
+  "PHS_tp",    "epi", "tp_epi",   31,     "TP, epilimnion (ug P/L)",
+  "PHS_tp",    "hyp", "tp_hyp",   31,     "TP, hypolimnion (ug P/L)",
+  "PHY_tchla", "epi", "chl_epi",  1,      "Chl-a, epilimnion (ug/L)",
+  "CHM_oxy",   "hyp", "oxy_hyp",  1,      "Oxygen, hypolimnion (mg/L)")
+mod_long <- lw |> filter(scenario %in% c(S0, S1)) |>
+  select(Date, scenario, all_of(vmap$col)) |>
+  pivot_longer(-c(Date, scenario), names_to = "col") |>
+  left_join(vmap, by = "col") |> mutate(value = value * scale)
+obs_long <- obs |> inner_join(vmap, by = c("var_aeme", "band"))
+ggplot() +
+  geom_line(data = mod_long, aes(Date, value, colour = scenario), linewidth = .35) +
+  geom_point(data = obs_long, aes(Date, obs), size = .8, alpha = .6, colour = "black") +
+  scale_colour_manual(values = pal, name = NULL) +
+  facet_wrap(~panel, scales = "free_y", ncol = 2) + labs(x = NULL, y = NULL)
+```
+
+
+```{r}
+# Model sampled on the observation date; bias = model - obs
+ev <- bind_rows(lapply(split(vmap, seq_len(nrow(vmap))), \(m) {
+  o <- obs |> filter(var_aeme == m$var_aeme, band == m$band)
+  lake |> filter(Date %in% o$Date) |>
+    transmute(Date, scenario, model = .data[[m$col]] * m$scale) |>
+    inner_join(select(o, Date, obs), by = "Date") |> mutate(panel = m$panel)
+})) |> filter(!is.na(model), !is.na(obs))
+met <- ev |> group_by(panel, scenario) |>
+  summarise(n = n(), `obs mean` = mean(obs), `model mean` = mean(model),
+            bias = mean(model - obs), RMSE = sqrt(mean((model - obs)^2)),
+            r = suppressWarnings(cor(model, obs)), .groups = "drop")
+kable(met |> filter(scenario %in% c(S0, S1)), digits = 2,
+      caption = "Model vs observations (S0 and S1) on observation dates, analysis window.")
+```
+
+
+```{r}
+tab_obs <- ev |>
+  filter(panel %in% c("TP, epilimnion (ug P/L)", "FRP, epilimnion (ug P/L)", "Chl-a, epilimnion (ug/L)")) |>
+  group_by(panel, scenario) |>
+  summarise(bias = mean(model - obs), RMSE = sqrt(mean((model - obs)^2)), .groups = "drop") |>
+  pivot_wider(names_from = panel, values_from = c(bias, RMSE))
+kable(tab_obs, digits = 1, caption = "Epilimnion bias / RMSE against observations for every scenario.")
+```
+
+
+### 2.2 Alum pools in the water column
+
+
+```{r}
+#| label: fig-alumpools
+#| fig-cap: "Volume-weighted mean suspended alum binding capacity (ALU_ala) and alum-bound P (ALU_alp), with bottom-layer values."
+a <- lake |> filter(scenario == S1, Date >= WIN_START) |>
+  select(Date, ala_mean, ala_bot, alp_mean, alp_bot) |> pivot_longer(-Date)
+ggplot(a, aes(Date, value, colour = name)) + geom_line(linewidth = .35) +
+  scale_colour_brewer(palette = "Set1", name = NULL,
+    labels = c(ala_mean = "ALU_ala mean", ala_bot = "ALU_ala bottom",
+               alp_mean = "ALU_alp mean", alp_bot = "ALU_alp bottom")) +
+  labs(y = "mmol P / m3", x = NULL)
+```
+
+
+## 3. Benthic processes
+
+### 3.1 Settled alum pools
+
+
+```{r}
+#| label: fig-benthic-pools
+#| fig-cap: "Settled alum capacity (ALU_ben_ala) and alum-bound P (ALU_ben_alp), summed over zones (left) and per unit area by zone (right), S1."
+b1 <- lake |> filter(scenario == S1, Date >= WIN_START) |>
+  select(Date, ben_ala_kg, ben_alp_kg) |> pivot_longer(-Date)
+pa <- ggplot(b1, aes(Date, value, colour = name)) + geom_line() +
+  scale_colour_brewer(palette = "Set1", name = NULL,
+    labels = c(ben_ala_kg = "settled capacity", ben_alp_kg = "settled alum-bound P")) +
+  labs(y = "kg P", x = NULL)
+z1 <- zone |> filter(scenario == S1, Date >= WIN_START, is.finite(area_m2))
+pb <- ggplot(z1, aes(Date, ben_alp, colour = factor(zone))) + geom_line(linewidth = .35) +
+  scale_colour_viridis_d(name = "Sediment zone\n(1 = deepest)") +
+  labs(y = "ALU_ben_alp (mmol P / m2)", x = NULL)
+pa + pb
+```
+
+
+```{r}
+zt <- zone |> filter(scenario == S1, Date >= WIN_START, is.finite(area_m2)) |>
+  group_by(zone) |>
+  summarise(`Area (km2)` = mean(area_m2) / 1e6,
+            `Bound P, end (mmol/m2)` = last(ben_alp),
+            `Bound P, end (t P)` = last(ben_alp) * last(area_m2) * MMOL_TO_KG / 1e3,
+            `Benthic uptake (kg P/yr)` = sum(uptake_s * area_m2) * MMOL_TO_KG / N_YR,
+            `Sediment FRP flux (mmol/m2/d)` = mean(fsed_frp), .groups = "drop")
+kable(zt, digits = 3, caption = "Per-zone benthic alum summary, S1.")
+```
+
+
+### 3.2 Benthic uptake and sediment P release
+
+
+```{r}
+#| label: fig-benthic-fluxes
+#| fig-cap: "Lake-integrated benthic fluxes (kg P/d): FRP uptake by settled alum, the potential sediment FRP flux (SDF_Fsed_frp, the input rate), the realised FRP exchange across the sediment-water interface (PHS_frp_dsf, after oxygen limitation) and the adsorbed-P exchange at the SWI. S0 vs S1."
+#| fig-height: 6
+bf <- lake |> filter(scenario %in% c(S0, S1), Date >= WIN_START) |>
+  select(Date, scenario, uptake_s_kgd, fsed_frp_kgd, ads_swi_kgd, dsf_frp_kgd) |>
+  pivot_longer(-c(Date, scenario))
+ggplot(bf, aes(Date, value, colour = scenario)) + geom_line(linewidth = .3) +
+  facet_wrap(~name, scales = "free_y", ncol = 1,
+    labeller = as_labeller(c(uptake_s_kgd = "Benthic alum FRP uptake (ALU_uptake_s)",
+      fsed_frp_kgd = "Potential sediment FRP flux (SDF_Fsed_frp, input rate)",
+      ads_swi_kgd = "Adsorbed-P net flux at SWI (PHS_frp_ads_swi)",
+      dsf_frp_kgd = "Realised sediment-water FRP exchange (PHS_frp_dsf)"))) +
+  scale_colour_manual(values = pal, name = NULL) + labs(y = "kg P / d", x = NULL)
+```
+
+
+```{r}
+#| label: fig-benthic-seasonal
+#| fig-cap: "Mean seasonal cycle of benthic alum uptake and bottom-water FRP, S1 vs S0."
+sea <- lw |> filter(scenario %in% c(S0, S1)) |>
+  mutate(month = as.integer(format(Date, "%m"))) |>
+  group_by(scenario, month) |>
+  summarise(uptake_s = mean(uptake_s_kgd), frp_bot = mean(frp_bot) * 31,
+            fsed = mean(fsed_frp_kgd), .groups = "drop")
+(ggplot(sea, aes(month, uptake_s, colour = scenario)) + geom_line() +
+    scale_x_continuous(breaks = 1:12) + scale_colour_manual(values = pal, name = NULL) +
+    labs(y = "Benthic uptake (kg P/d)", x = "Month")) +
+(ggplot(sea, aes(month, frp_bot, colour = scenario)) + geom_line() +
+    scale_x_continuous(breaks = 1:12) + scale_colour_manual(values = pal, name = NULL) +
+    labs(y = "Bottom FRP (ug P/L)", x = "Month")) + plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+```
+
+
+### 3.3 Internal FRP release and bottom-water oxygen
+
+The sediment FRP input flux (`fsed_frp`, 0.003–0.010 mmol P/m²/d by zone) is not applied
+as-is: AED scales it by an oxygen half-saturation term, so the **realised** exchange
+`PHS_frp_dsf` is only a fraction of the **potential** `SDF_Fsed_frp` whenever the bottom water
+is oxygenated. Internal loading therefore depends on whether the bottom water goes anoxic.
+
+
+```{r}
+ox <- lw |> filter(scenario == S1) |>
+  mutate(Year = as.integer(format(Date + 184, "%Y"))) |>     # water year ending 30 June
+  group_by(`Water year` = Year) |>
+  summarise(`Min bottom O2 (mg/L)` = min(oxy_bot),
+            `Min hypolimnion O2 (mg/L)` = min(oxy_hyp),
+            `Days bottom O2 < 2 mg/L` = sum(oxy_bot < 2),
+            `Days bottom O2 < 1 mg/L` = sum(oxy_bot < 1),
+            `Max anoxic volume (%)` = 100 * max(anox_vol),
+            `Max hypoxic volume (%)` = 100 * max(hypox_vol),
+            `Potential FRP flux (t P)` = sum(fsed_frp_kgd) / 1e3,
+            `Realised FRP release (t P)` = sum(dsf_frp_kgd) / 1e3, .groups = "drop") |>
+  mutate(`Realised / potential (%)` = 100 * `Realised FRP release (t P)` / `Potential FRP flux (t P)`)
+kable(ox, digits = 2, caption = "S1: bottom-water oxygen and internal FRP release by water year (first and last years are partial).")
+```
+
+
+```{r}
+raw_o <- read_alum_obs_raw() |>
+  filter(Date >= WIN_START, Date <= WIN_STOP)
+s1o <- lw$oxy_bot[lw$scenario == S1]
+cat(sprintf("Observed O2 at 15-21 m in the window: %d values, min %.2f mg/L; %d < 2 mg/L, %d < 1 mg/L.\n",
+            nrow(raw_o), min(raw_o$value), sum(raw_o$value < 2), sum(raw_o$value < 1)))
+```
+
+
+```{r}
+#| label: fig-oxy
+#| fig-cap: "Bottom-layer oxygen in S1 (line) against all observed oxygen at 15–21 m (points); dashed lines at 2 and 1 mg/L."
+#| fig-height: 4
+ggplot() +
+  geom_point(data = raw_o, aes(as.Date(Date), value), size = .5, alpha = .35, colour = "grey40") +
+  geom_line(data = filter(lw, scenario == S1), aes(Date, oxy_bot), colour = "#d95f02", linewidth = .4) +
+  geom_hline(yintercept = c(1, 2), linetype = 2) +
+  labs(y = "Dissolved oxygen (mg/L)", x = NULL)
+```
+
+
+```{r}
+#| label: fig-internal
+#| fig-cap: "S1: potential sediment FRP flux vs realised release (kg P/d, left) and realised release against bottom-water oxygen (right)."
+#| fig-height: 4.5
+s1 <- filter(lw, scenario == S1)
+pI <- s1 |> select(Date, potential = fsed_frp_kgd, realised = dsf_frp_kgd) |>
+  pivot_longer(-Date) |>
+  ggplot(aes(Date, value, colour = name)) + geom_line(linewidth = .35) + scale_y_log10() +
+  scale_colour_brewer(palette = "Set1", name = NULL) + labs(y = "kg P / d (log scale)", x = NULL)
+pJ <- ggplot(s1, aes(oxy_bot, dsf_frp_kgd, colour = temp_bot)) + geom_point(size = .6) +
+  scale_colour_viridis_c(name = "Bottom T (°C)") +
+  labs(x = "Bottom-layer oxygen (mg/L)", y = "Realised release (kg P/d)")
+pI + pJ
+```
+
+
+```{r}
+ie <- il |> summarise(ext_frp_t = sum(frp_kgd) / 1e3 / N_YR, ext_tp_t = sum(tp_kgd) / 1e3 / N_YR)
+ir <- lw |> filter(scenario == S1) |>
+  summarise(rel_t = sum(dsf_frp_kgd) / 1e3 / N_YR, pot_t = sum(fsed_frp_kgd) / 1e3 / N_YR)
+kable(tibble(
+  Quantity = c("Potential sediment FRP flux (t P/yr)", "Realised internal FRP release (t P/yr)",
+               "External FRP load (t P/yr)", "External TP load (t P/yr)",
+               "Realised internal / external FRP (%)", "Realised internal / external TP (%)"),
+  Value = c(ir$pot_t, ir$rel_t, ie$ext_frp_t, ie$ext_tp_t,
+            100 * ir$rel_t / ie$ext_frp_t, 100 * ir$rel_t / ie$ext_tp_t)), digits = 2,
+  caption = "Internal vs external P loading, S1.")
+```
+
+
+::: {.callout-warning}
+If the model never reaches anoxia while the observations do (compare the counts above), the
+realised internal release is a **lower bound**: the oxygen limitation is under-applied in the
+model, and any alum effect on internal loading cannot be tested. Check the hypolimnetic oxygen
+demand (stage-3 `fsed_oxy`, stratification) before calibrating alum against bottom-water FRP.
+:::
+
+## 4. Settling of floc: water column vs benthos
+
+
+```{r}
+#| label: fig-settle
+#| fig-cap: "Water-column vs benthic FRP uptake by alum (kg P/d, 30-day mean), S1."
+u <- lake |> filter(scenario == S1, Date >= WIN_START) |>
+  transmute(Date, `water column` = rm30(uptake_w_kgd), `settled alum (benthic)` = rm30(uptake_s_kgd)) |>
+  pivot_longer(-Date)
+ggplot(u, aes(Date, value, colour = name)) + geom_line() +
+  scale_colour_brewer(palette = "Set1", name = NULL) + labs(y = "kg P / d", x = NULL)
+```
+
+
+## 5. How much P does alum remove?
+
+For each scenario we integrate, over the analysis window:
+
+* **Capacity dosed** – ALU_ala delivered by the dosed inflows (kg P-equivalent).
+* **P bound** – FRP taken up by suspended alum (`ALU_uptake_w` × layer volume)
+  plus FRP taken up by settled alum (`ALU_uptake_s` × zone area). These are
+  direct model fluxes.
+* **Where the bound P goes** – GLM does not output the floc settling or burial
+  fluxes, so they are inferred by mass closure from the pools:
+    * *exported*: outflow volume × surface-layer ALU_alp;
+    * *settled to bed* = water-column uptake − exported − Δ(suspended ALU_alp);
+    * *buried* = settled to bed + benthic uptake − Δ(ALU_ben_alp).
+* As an independent check the burial implied by `k_bur` × ALU_ben_alp is also
+  integrated; the ratio to the closure-implied burial should be ≈ 1.
+
+
+```{r}
+cap_by <- function(tag) {
+  il <- read_alum_inflow_loads(tag, start = WIN_START, stop = WIN_STOP)
+  cap <- sum(il$ala_kgd)
+  if (tag == "SURF") {                       # S_ala (mmol P/m2/d) x surface area x days
+    d <- lake |> filter(scenario == labels[["SURF"]], Date >= WIN_START, Date <= WIN_STOP)
+    cap <- sum(0.10 * d$surface_area_m2) * MMOL_TO_KG
+  }
+  cap
+}
+bud <- lw |> group_by(scenario) |>
+  arrange(Date) |>
+  summarise(
+    uptake_w = sum(uptake_w_kgd), uptake_s = sum(uptake_s_kgd),
+    d_alp_w = last(alp_kg) - first(alp_kg),
+    d_alp_s = last(ben_alp_kg) - first(ben_alp_kg),
+    burial_kbur = sum(K_BUR * ben_alp_kg),
+    exported = sum(overflow_m3 * alp_top) * MMOL_TO_KG,
+    ala_end = last(ala_kg) + last(ben_ala_kg),
+    .groups = "drop") |>
+  mutate(tag = tags[match(as.character(scenario), labels[tags])]) |>
+  rowwise() |> mutate(capacity = cap_by(tag)) |> ungroup() |>
+  mutate(removed = uptake_w + uptake_s,
+         settled = uptake_w - exported - d_alp_w,
+         buried  = settled + uptake_s - d_alp_s,
+         kbur_ratio = burial_kbur / buried,
+         eff = removed / capacity)
+
+bt <- bud |> filter(scenario != S0) |>
+  transmute(Scenario = as.character(scenario),
+            `Capacity dosed (t P)` = capacity / 1e3,
+            `Uptake: water (t P)` = uptake_w / 1e3,
+            `Uptake: benthic (t P)` = uptake_s / 1e3,
+            `Total bound (t P)` = removed / 1e3,
+            `Efficiency (bound / capacity)` = eff,
+            `Exported (t P)` = exported / 1e3,
+            `Settled to bed (t P)` = settled / 1e3,
+            `Buried (t P)` = buried / 1e3,
+            `Pool change: water (t P)` = d_alp_w / 1e3,
+            `Pool change: bed (t P)` = d_alp_s / 1e3,
+            `k_bur check (ratio)` = kbur_ratio)
+kable(bt, digits = 2, caption = "Alum phosphorus budget over the analysis window.")
+```
+
+
+::: {.callout-tip}
+Bound P ends up almost entirely in the sediment; the closure-implied burial
+and the `k_bur` × stock estimate should agree. A ratio well above 1 would mean
+the benthic pool is being drained faster than the closure allows (i.e. the
+reported benthic mass is inconsistent with the settling that fed it) and
+points at the benthic bookkeeping rather than at the lake result.
+:::
+
+
+```{r}
+#| label: fig-budget
+#| fig-cap: "Fate of the P bound by alum in S1 (t P over the window)."
+fb <- bud |> filter(scenario == S1) |>
+  transmute(`Pool change: water` = d_alp_w, `Pool change: bed` = d_alp_s,
+            Buried = buried, Exported = exported) |>
+  pivot_longer(everything()) |> mutate(value = value / 1e3)
+ggplot(fb, aes(reorder(name, -value), value, fill = name)) + geom_col(show.legend = FALSE) +
+  scale_fill_brewer(palette = "Set2") + labs(x = NULL, y = "t P")
+```
+
+
+### 5.1 Cumulative removal
+
+
+```{r}
+#| label: fig-cum
+#| fig-cap: "Cumulative P bound by alum (S1), with the cumulative P-binding capacity dosed."
+il1 <- read_alum_inflow_loads("S1", start = WIN_START, stop = WIN_STOP) |>
+  group_by(Date) |> summarise(cap = sum(ala_kgd), .groups = "drop")
+cum <- lw |> filter(scenario == S1) |> arrange(Date) |>
+  transmute(Date, `water column` = cumsum(uptake_w_kgd) / 1e3,
+            `benthic` = cumsum(uptake_s_kgd) / 1e3) |>
+  left_join(mutate(il1, `capacity dosed` = cumsum(cap) / 1e3) |> select(Date, `capacity dosed`),
+            by = "Date") |>
+  mutate(`total bound` = `water column` + benthic) |>
+  pivot_longer(-Date)
+ggplot(cum, aes(Date, value, colour = name)) + geom_line() +
+  scale_colour_brewer(palette = "Dark2", name = NULL) + labs(y = "t P (cumulative)", x = NULL)
+```
+
+
+### 5.2 Effect on the lake's P inventory and export
+
+
+```{r}
+inv <- lw |> group_by(scenario) |>
+  summarise(`TP stock, mean (t P)` = mean(tp_kg) / 1e3,
+            `FRP stock, mean (t P)` = mean(frp_kg) / 1e3,
+            `TP export (t P/yr)` = sum(overflow_m3 * tp_top) * MMOL_TO_KG / 1e3 / N_YR,
+            `Potential sediment FRP flux (t P/yr)` = sum(fsed_frp_kgd) / 1e3 / N_YR,
+            `Realised internal FRP release (t P/yr)` = sum(dsf_frp_kgd) / 1e3 / N_YR,
+            .groups = "drop")
+i0 <- inv |> filter(scenario == S0)
+kable(inv |> mutate(`dTP stock vs S0 (t P)` = `TP stock, mean (t P)` - i0$`TP stock, mean (t P)`,
+                    `dExport vs S0 (t P/yr)` = `TP export (t P/yr)` - i0$`TP export (t P/yr)`),
+      digits = 2, caption = "Lake P inventory, outflow export and sediment release by scenario (potential = input flux; realised = after oxygen limitation, see 3.3).")
+```
+
+
+```{r}
+#| label: fig-inv
+#| fig-cap: "Whole-lake TP stock (t P) in S0 and S1, and the difference."
+st <- lake |> filter(scenario %in% c(S0, S1), Date >= WIN_START) |>
+  select(Date, scenario, tp_kg) |> mutate(tp_kg = tp_kg / 1e3)
+pA <- ggplot(st, aes(Date, tp_kg, colour = scenario)) + geom_line() +
+  scale_colour_manual(values = pal, name = NULL) + labs(y = "TP stock (t P)", x = NULL)
+pB <- st |> pivot_wider(names_from = scenario, values_from = tp_kg) |>
+  mutate(d = .data[[S1]] - .data[[S0]]) |>
+  ggplot(aes(Date, d)) + geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line(colour = "#d95f02") + labs(y = "S1 − S0 (t P)", x = NULL)
+pA / pB
+```
+
+
+## 6. Sensitivity to dose and floc settling velocity
+
+
+```{r}
+sens <- lw |> group_by(scenario) |>
+  summarise(FRP = mean(frp_mean) * 31, TP = mean(tp_mean) * 31, Chl = mean(chl_mean),
+            ben_alp_end = last(ben_alp_kg) / 1e3, .groups = "drop") |>
+  left_join(bud |> select(scenario, removed, eff, uptake_w, uptake_s), by = "scenario") |>
+  mutate(`water-col. share` = uptake_w / removed)
+s0 <- sens |> filter(scenario == S0)
+kable(sens |> transmute(Scenario = scenario,
+        `FRP (ug/L)` = FRP, `dFRP %` = 100 * (FRP / s0$FRP - 1),
+        `TP (ug/L)` = TP, `dTP %` = 100 * (TP / s0$TP - 1),
+        `dChl %` = 100 * (Chl / s0$Chl - 1),
+        `Bound P (t)` = removed / 1e3, Efficiency = eff,
+        `Water-col. share` = `water-col. share`, `Settled bound P, end (t)` = ben_alp_end),
+      digits = 2, caption = "Scenario sensitivity (analysis-window means).")
+```
+
+
+```{r}
+#| label: fig-sens
+#| fig-cap: "Response to floc settling velocity: change in mean TP and FRP vs S0, alum P removed and its water-column share."
+#| fig-height: 6
+wl <- sens |> filter(grepl("^w_ala", scenario) | scenario == S1) |>
+  mutate(w = ifelse(scenario == S1, 0.5, as.numeric(sub("w_ala ", "", scenario)))) |>
+  filter(!duplicated(w)) |>
+  mutate(dTP = 100 * (TP / s0$TP - 1), 
+         dFRP = 100 * (FRP / s0$FRP - 1),
+         removed_adj = removed / 1e3
+         ) |> 
+  tidyr::pivot_longer(cols = c(dTP, dFRP, removed_adj, `water-col. share`), 
+                      names_to = "metric", values_to = "value") |> 
+  dplyr::mutate(
+    label = dplyr::case_when(
+      metric == "dTP" ~ "ΔTP vs S0 (%)",
+      metric == "dFRP" ~ "ΔFRP vs S0 (%)",
+      metric == "removed_adj" ~ "P bound by alum (t)",
+      metric == "water-col. share" ~ "Water-column share of uptake"
+    )
+  )
+
+p <- ggplot(wl, aes(w, value)) + geom_line() + geom_point() + scale_x_log10() +
+  facet_wrap(~label, scales = "free_y", ncol = 1) +
+  labs(x = "w_ala (m/d)", y = NULL)
+
+p
+```
+
+
+### 6.1 P-binding capacity per Al (jar test vs field)
+
+The thesis gives Al:P = 0.7:1 in the jar test but ~7:1 in the field. This is the
+largest unknown in how much of the dosed Al is available to bind lake P, and it acts
+like a scale factor on the dosed capacity.
+
+```{r}
+#| label: fig-ratio
+#| fig-cap: "Change in lake-mean TP relative to S0 (30-day mean) for different P-binding capacity per Al."
+#| fig-height: 4.5
+rs <- c(S1, "capacity x1.43 (Al:P 0.7:1)", "capacity x0.5", "capacity x0.3",
+        "capacity x0.14 (Al:P 7:1)")
+rs <- rs[rs %in% levels(lw$scenario)]
+dr <- lw |> filter(scenario %in% c(S0, rs)) |>
+  select(Date, scenario, tp_mean) |> pivot_wider(names_from = scenario, values_from = tp_mean) |>
+  pivot_longer(-c(Date, all_of(S0))) |>
+  mutate(d = rm30(value - .data[[S0]]) * 31)
+ggplot(dr, aes(Date, d, colour = name)) + geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line(linewidth = .4) + scale_colour_viridis_d(name = NULL, option = "C", end = .85) +
+  guides(colour = guide_legend(nrow = 2)) +
+  labs(y = "ΔTP vs S0 (ug P/L)", x = NULL)
+```
+
+```{r}
+#| label: fig-ratio-obs
+#| fig-cap: "Epilimnion model bias against observations as a function of the capacity scale; S1 = 1."
+ratio_tab <- ev |>
+  filter(panel %in% c("TP, epilimnion (ug P/L)", "FRP, epilimnion (ug P/L)", "Chl-a, epilimnion (ug/L)"),
+         scenario %in% c(S0, rs)) |>
+  group_by(panel, scenario) |> summarise(bias = mean(model - obs), .groups = "drop") |>
+  mutate(scale = c(1.43, 0.5, 0.3, 0.143, 1, NA)[match(as.character(scenario),
+           c("capacity x1.43 (Al:P 0.7:1)", "capacity x0.5", "capacity x0.3",
+             "capacity x0.14 (Al:P 7:1)", S1, S0))]) |> filter(!is.na(scale))
+ggplot(ratio_tab, aes(scale, bias)) + geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line() + geom_point() + scale_x_log10() +
+  facet_wrap(~panel, scales = "free_y", ncol = 3) +
+  labs(x = "P-binding capacity per Al (relative to 1:1)", y = "Model − observed")
+```
+
+### 6.2 Resuspension
+
+The thesis recommends resuspension on (alum is concentrated near-shore, fragile flocs),
+but gives no value for `k_res`. The runs below bracket it. Resuspension returns settled
+alum to the bottom water, so it should raise bottom-water alum-bound P and lower net burial.
+
+```{r}
+#| label: fig-res
+#| fig-cap: "Settled alum-bound P (t P, left) and bottom-layer ALU_alp (mmol P/m3, right) for S1 and the resuspension runs."
+#| fig-height: 4
+rl <- c(S1, "resusp k_res 0.001", "resusp k_res 0.01", "resusp k_res 0.1")
+rl <- rl[rl %in% levels(lw$scenario)]
+rr <- lw |> filter(scenario %in% rl)
+pr1 <- ggplot(rr, aes(Date, ben_alp_kg / 1e3, colour = scenario)) + geom_line(linewidth = .4) +
+  scale_colour_viridis_d(name = NULL, option = "C", end = .85) + labs(y = "Settled ALU_alp (t P)", x = NULL)
+pr2 <- ggplot(rr, aes(Date, alp_bot, colour = scenario)) + geom_line(linewidth = .4) +
+  scale_colour_viridis_d(name = NULL, option = "C", end = .85) + labs(y = "Bottom ALU_alp (mmol/m3)", x = NULL)
+pr1 + pr2 + plot_layout(guides = "collect") & theme(legend.position = "bottom")
+```
+
+### 6.3 Surface dose vs inflow dose
+
+Dosing in the stream puts alum into the lake where the stream enters, with the stream
+discharge and P load. The surface-dose scenario applies the equivalent mean rate evenly
+over the lake, with the stream P load not carrying any alum. Compare the budget rows for
+"surface dose" and S1 above.
+
+```{r}
+#| label: fig-surf
+#| fig-cap: "S1 (inflow dosing) vs a uniform surface dose of the same mean rate: lake-mean FRP and TP."
+#| fig-height: 4
+sf <- lw |> filter(scenario %in% c(S0, S1, "surface dose 0.1 mmol/m2/d")) |>
+  select(Date, scenario, frp_mean, tp_mean) |> pivot_longer(c(frp_mean, tp_mean))
+ggplot(sf, aes(Date, value * 31, colour = scenario)) + geom_line(linewidth = .35) +
+  facet_wrap(~name, scales = "free_y", ncol = 1,
+             labeller = as_labeller(c(frp_mean = "FRP (ug P/L)", tp_mean = "TP (ug P/L)"))) +
+  scale_colour_viridis_d(name = NULL, option = "C", end = .8) + labs(x = NULL, y = NULL)
+```
+
+## 7. What to check next
+
+* **Burial check** – the `k_bur` ratio in §5 should be ≈ 1; if not, inspect the
+  benthic bookkeeping (settling flux is not exported by GLM-AED; add a diagnostic).
+* **`w_ala`** – the thesis supports 0.5 m/d (0.3–1.5); the larger floc speeds it
+  measured are quiescent upper bounds. Calibrate within about 0.3–1.5 (log scale),
+  and only against FRP/TP in dosed years once the baseline FRP/TP bias is understood.
+* **Capacity per Al** – the jar-test (0.7:1) and field (~7:1) Al:P ratios span a
+  factor of 10 in effective dose; this is likely a more influential unknown than
+  `w_ala` and should be a calibration parameter (it scales the dosed `ALU_ala`).
+* **Resuspension** – recommended on by the thesis, `k_res` unconstrained.
+* **pH efficiency** – the thesis suggests `pH_opt` = 7, `sigma_pH` = 1, but this
+  needs `aed_carbon` (for `CAR_pH`), which the lake configuration does not include;
+  not tested here.
+* **Identifiability** – only lake FRP/TP/chl-a constrain the alum parameters
+  (no Al or floc observations), so calibrate at most 3–4 parameters.
+* **Natural experiment** – Puarenga was not dosed in WY2020. The S1 − S0 response
+  that year is a useful independent check on the dose–response.

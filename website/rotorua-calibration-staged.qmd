@@ -1,0 +1,375 @@
+---
+title: "Staged PEST++ Calibration of GLM-AED"
+subtitle: "Water balance, temperature, biogeochemistry and alum for Lake Rotorua"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+img <- "images/staged-calibration"
+perf <- read.csv(file.path(img, "performance.csv"))
+fl <- read.csv(file.path(img, "sediment_fluxes.csv"))
+kab <- function(x, ...) kable(x, ...) |> kable_styling(full_width = FALSE, bootstrap_options = c("striped", "condensed"))
+```
+
+## Summary
+
+The Lake Rotorua GLM-AED model was calibrated in stages with `aemetools` and PEST++ (`pestpp-ies`): **(1) water balance, (2) water temperature, (3) AED biogeochemistry, (4) alum with FRP and chlorophyll-a**. This page reports the run that used the updated daily temperature and oxygen observations and the corrected calibration pipeline.
+
+-   **Water level and temperature are well calibrated** (level KGE 0.81, RMSE 8 cm; temperature KGE 0.98, RMSE 0.54 °C on 38,000 daily observations).
+-   **Oxygen is now reasonably simulated** (KGE 0.69, RMSE 1.25 mg/L, r = 0.84). Chlorophyll-a has some skill (KGE 0.20, r = 0.24), FRP is unbiased but weakly correlated (r = 0.19), and **ammonium and nitrate are still poor**.
+-   **Alum has a modest effect on modelled FRP in the calibrated model.** With the stage 3 parameters, removing the dose raises mean FRP from 0.0034 to 0.0044 mg/L (about 30%) and leaves the FRP error unchanged, and the alum parameters barely change the fit within their ranges. FRP is low in the model with or without alum, and only 56 to 73 observations, mostly near the detection limit, constrain it.
+-   **An earlier version of this page was wrong for oxygen, FRP, ammonium and nitrate.** A unit-conversion bug in the calibration (below) made PEST compare observations with values 30 to 70 times too small. The results here were rerun after fixing it.
+
+## What changed since the first cut
+
+| Change | Effect |
+|--------------------------|----------------------------------------------|
+| **Double unit conversion fixed.** `aemetools` multiplied simulated oxygen, FRP, ammonium and nitrate by their conversion factor (0.032, 0.031, 0.014) after `AEME::read_model_outputs()` had already converted them. PEST therefore scored observations against values about 1/32 of the true model value. | Earlier stage 3 and 4 results for these variables were invalid and are discarded. The fix is in a private copy of `aemetools` (`calibration/lib_aemetools_patched`); the same change is needed in the upstream package. |
+| Rainfall units fixed in the forcing (about 42 times too little rain) | Applied in `build_calib_base_aeme()`; the same fix is needed at source in `era5_corrected_hourly` |
+| Daily temperature and oxygen observations (updated by you) | Used for stages 2 to 4; any sub-daily duplicates are averaged to daily by `thin_lake_obs()` |
+| Bottom-water anoxia added as a target (`CHM_oxynal`, number of anoxic layers) | Scored with weight 2 |
+| Surface oxygen down-weighted (weight 0.1) | Surface oxygen follows air–water exchange and temperature, which the calibrated parameters barely move |
+| One FRP group over the whole column and all months | Split into surface and bottom summer groups the two held only 5 and 9 observations at the detection limit, and one of them carried a weight of 431 |
+| log1p scoring for chlorophyll-a | Reduces the pull of bloom peaks; needs the patched `aemetools` |
+| Sediment oxygen demand range opened to 8 times the measured values | The measured values could not draw bottom water down in the model (see Stage 3) |
+| Simulation window set with `set_time()` only | Earlier runs simulated the full 2011 to 2022 record each time because `suggest_sim_period()` overrode the window; runs are now 3 to 4 times faster |
+
+## Approach
+
+The calibration is a set of scripts in `calibration/`, run from the project root, rather than `targets` targets: PEST++ runs are long, stochastic and stateful, and each stage needs a human check of the previous one. `targets` supplies the baseline Aeme object (`aeme_base_file`, `R/build_calib_base_aeme.R`).
+
+| Stage | Script | Targets | Parameters |
+|-----|---------------|------------------------|-----------------------------|
+| 1 | `01_stage1_waterbalance.R` | `LKE_vol` | weir `crest_elev` (±0.3 m), `crest_factor`, wind scaling, `rh_factor`; seepage fixed at 0; no outflow multiplier |
+| 2 | `02_stage2_temperature.R` | `HYD_temp` (surface, bottom, metalimnion), `HYD_schstb`, `LKE_vol`, `LKE_nrgtot` | stage 1 parameters narrowed to their posterior, plus `Kw`, radiation and air-temperature factors, `coef_mix_hyp`, per-zone sediment temperature |
+| 3 | `03_stage3_aed_bgc.R` | `CHM_oxy` (surface, hypolimnion, bottom), `CHM_oxynal`, `NIT_amm`, `NIT_nit`, `PHS_frp`, `PHY_tchla` (log1p), `HYD_temp` anchors | sediment fluxes of O~2~, NH~4~ and FRP by zone (measured prior), organic-matter, nitrification and denitrification rates, phytoplankton `R_growth`, `I_K`, `R_resp` for three groups, `Kw` |
+| 4 | `04_stage4_alum.R` | `PHS_frp`, `PHY_tchla` (log1p), with `aed_alum` on | dose efficiency (scanned), `aed_alum` parameters, and the stage 3 parameters that act on FRP and chlorophyll-a, narrowed |
+| 5 | `05_apply_posterior.R` | all | final parameter sets, forward runs, performance tables and plots |
+
+Settings: stages 1 and 2 used 40 realisations and 4 iterations (10 workers); stage 3 used 30 realisations, 4 iterations and 4 workers, simulating 2017 to 2020 and scoring 2019 to 2020; stage 4 used 24 realisations, 3 iterations and 4 workers, simulating 5 years and scoring 3. Each stage reads the previous stage's checkpoint. The PEST machinery (building, localisation, `carry`/`narrow` hand-offs) is reused from `scripts/pest_funs.R`.
+
+Assumptions:
+
+1.  The measured sediment flux study has five zones; the deepest pit was removed from the hypsograph, so measured zones 2 to 5 map to model zones 1 to 4.
+2.  Measured fluxes replace the generic values in `aed_sa_calib_params.csv` (10 to 100 times too large for Rotorua).
+3.  Outflow is the Ōhau weir rating curve, so the outflow multiplier is not calibrated.
+4.  No suspended-solids observations exist, so `aed_noncohesive` stays at its defaults.
+5.  Stage 3 was calibrated with **no alum**, although the lake was dosed throughout. Stage 4 re-fits FRP and chlorophyll-a with alum on, but nitrogen and oxygen parameters are not re-fitted.
+
+## Stage 1: water balance
+
+```{r}
+#| fig-cap: "Simulated and observed water level at the stage 1 best fit."
+knitr::include_graphics(file.path(img, "s1_wlev.png"))
+```
+
+Error score fell from 0.342 to 0.295 over four iterations.
+
+| Parameter           | Value     | Bounds           |
+|---------------------|-----------|------------------|
+| `MET_wndspd`        | 1.74      | 0.5 to 2.0       |
+| `rh_factor`         | 0.945     | 0.7 to 1.3       |
+| weir `crest_elev`   | 279.431 m | 278.85 to 279.45 |
+| weir `crest_factor` | 0.497     | 0.262 to 0.562   |
+| `seepage_rate`      | 0 (fixed) |                  |
+
+The crest elevation finished 0.016 m from its upper bound and the wind factor is large, so some of the water balance is being closed by compensating parameters.
+
+## Stage 2: water temperature
+
+Stage 2 screened 25 parameters (Morris), kept 8, and ran `pestpp-ies` on the sensitive set. The error score fell from 0.4375 to 0.4266.
+
+```{r}
+#| fig-cap: "Water temperature, whole simulation (stage 2 best fit)."
+knitr::include_graphics(file.path(img, "ts_physics_HYD_temp.png"))
+```
+
+```{r}
+read.csv(file.path(img, "physics_params.csv")) |>
+  mutate(index = ifelse(is.na(index), "", index)) |>
+  select(name, index, value, min, max) |>
+  kab(digits = 3, caption = "Stage 2 best-fit parameters (including values carried from stage 1; min = max for fixed parameters).")
+```
+
+Wind scaling (1.64 against a limit of 2.0) and the zone 2 sediment temperature amplitude (5.99 against 6.0) are at or near their bounds, so some heat budget error is being absorbed by those parameters.
+
+## Stage 3: AED biogeochemistry
+
+Stage 3 is a single joint `pestpp-ies` run over 26 adjustable parameters. The window is 2017 to 2020 (two years of spin-up) with scoring over 2019 to 2020.
+
+### Why sediment oxygen demand needed wider bounds
+
+Bottom-water (17 to 21 m) oxygen responded to the sediment oxygen demand only when it was about four times the measured values (a check using `AEME::get_var()`, not affected by the unit bug):
+
+| Run                  | Bottom-water oxygen, 5th percentile (mg/L) | Anoxic readings |
+|----------------------|--------------------------------------------|-----------------|
+| Observed             | 2.5                                        | 3.9%            |
+| Measured demand (×1) | 7.1                                        | 0%              |
+| ×2                   | 5.6                                        | 0.5%            |
+| ×4                   | 3.3                                        | 2.4%            |
+| ×8                   | 1.0                                        | 11.5%           |
+
+The measured values (−5 to −27 mmol m^-2^ d^-1^) cannot reproduce the observed drawdown in this model, so the range was opened to 8 times measured.
+
+### Error score by target
+
+```{r}
+g <- read.csv(file.path(img, "s3_phi_group.csv"), check.names = FALSE)
+ks <- setdiff(names(g), c("iteration", "total_runs", "obs_realization", "par_realization"))
+tot <- rowSums(g[, ks], na.rm = TRUE)
+base <- g[g$iteration == 0 & g$par_realization == "base", ks]
+best <- g[which.min(tot), ks]
+data.frame(target = ks, start = unlist(base[1, ]), best = unlist(best[1, ])) |>
+  rbind(data.frame(target = "TOTAL", start = sum(base, na.rm = TRUE), best = sum(best, na.rm = TRUE))) |>
+  kab(digits = 2, row.names = FALSE, caption = "Contribution of each target to the PEST error score at the starting parameters and at the best realisation (iteration 2).")
+```
+
+The error score fell by a third (21.0 to 13.9). FRP (4.9 to 1.2), chlorophyll-a (3.9 to 1.5) and the number of anoxic layers (4.7 to 3.9) improved. The oxygen groups were already small after the unit fix, and ammonium, nitrate and temperature changed little.
+
+```{r}
+read.csv(file.path(img, "s3j_best_params_summary.csv")) |>
+  mutate(group = ifelse(is.na(group), "", group), index = ifelse(is.na(index), "", index),
+         flag = ifelse(is.na(flag), "", flag)) |>
+  select(name, group, index, value, min, max, flag) |>
+  kab(digits = 4, caption = "Stage 3 best-fit parameters and ranges (flag = within 3% of a bound).")
+```
+
+Two parameters are at their bound: `rpoc_hydrol` (organic matter hydrolysis, 0.098 of 0.1) and diatom `R_growth` (4.16 of 4.2). The calibrated sediment oxygen demand (−32, −33, −49 and −82 mmol m^-2^ d^-1^ for zones 1 to 4) is about 2 to 5 times the measured values, inside the opened range.
+
+## Stage 4: alum {#stage-4-alum}
+
+### Dose efficiency
+
+The efficiency of the dosed alum in the field is not a model parameter PEST can reach. The script scaled the dosed `ALU_ala` in the Utuhina and Puarenga inflows and ran the stage 3 parameters:
+
+```{r}
+read.csv(file.path(img, "s4_eta_scan.csv")) |>
+  rename(`Efficiency (1 = historical dose)` = eta, `FRP RMSE` = rmse, KGE = kge, Bias = bias) |>
+  kab(digits = 4, caption = "FRP error against dose efficiency, 0.15 (field, about 7:1 Al:P) to 1.4 (jar test, 0.7:1).")
+```
+
+FRP error improves up to an efficiency of 1 and is flat above it, so 1 was used (the smallest value within 2% of the lowest error). The modelled FRP stays below the observations at every efficiency.
+
+### Calibration
+
+Alum is switched on by `fix_alum()`: `aed_alum` is added to the AED module list with resuspension on and the surface dose off, because alum is dosed through the inflows. The calibration fitted FRP and chlorophyll-a together, because stage 3 had been fitted without alum (with FRP alone, chlorophyll-a drifted to a bias of −7.8 mg/m^3^). Parameter ranges follow Sanila (2026), see the [thesis notes](alum-dosing-sanila-msc-thesis.qmd):
+
+| Parameter | Start | Range | Basis |
+|--------------|---------|------------|----------------------------------------|
+| `w_ala` (settling, m d^-1^) | 0.5 | 0.3 to 1.5 | 89 flocs tracked on video; 0.5 allows for wind mixing |
+| `k_w` (binding in the water) | 1 | 0.2 to 10 | removal complete within about 20 minutes |
+| `K_P` (half-saturation) | 0.3 | 0.05 to 1 | not measured |
+| `k_s`, `k_age_w`, `k_age_s`, `k_bur`, `k_res` | defaults | see `alum_calib_table()` | not constrained by the thesis |
+| `S_ala`, `pH_opt`, `sigma_pH` | 0, 7, 1 (fixed) |  | dosing is through the inflows; pH modifier off |
+
+The error score fell from 2.80 to 2.24 over three iterations, mostly from the chlorophyll-a group. The model output was checked for the effect of the dose and of each parameter group:
+
+```{r}
+f <- file.path(img, "s4_sensitivity_check.csv")
+if (file.exists(f)) {
+  x <- read.csv(f); names(x)[1] <- "run"
+  x |> kab(digits = 4, caption = "FRP response to the alum parameters, the sediment FRP flux and the dose (stage 4 window).")
+}
+```
+
+The FRP error is almost the same in every run (RMSE 0.0106 to 0.0112). Extreme alum parameters change mean FRP by about 0.0005 mg/L, doubling the sediment FRP flux changes it by about 0.0003, and removing the dose raises it by about 0.001 (30%). The observations have a much larger spread (sd 0.0106) than the model (sd 0.004), and the correlation is low (0.03 to 0.24), so the available FRP data cannot constrain the alum parameters. This differs from the first version of this page, which showed a large alum effect because it used the invalid stage 3 result.
+
+## Performance
+
+```{r}
+keep <- c("LKE_lvlwtr", "HYD_temp", "HYD_surft", "CHM_oxy", "NIT_amm", "NIT_nit", "PHS_frp", "PHY_tchla")
+lab <- c(LKE_lvlwtr = "Water level (m)", HYD_temp = "Water temperature (°C)",
+         HYD_surft = "Surface temperature (°C)", CHM_oxy = "Oxygen (mg/L)",
+         NIT_amm = "Ammonium", NIT_nit = "Nitrate", PHS_frp = "FRP", PHY_tchla = "Chlorophyll-a")
+setlab <- c(physics = "Stage 2 (physics)", bgc = "Stage 3 (no alum)", alum = "Stage 4 (alum on)")
+perf |>
+  filter(var_aeme %in% keep, !(set == "physics" & !var_aeme %in% c("LKE_lvlwtr", "HYD_temp", "HYD_surft"))) |>
+  mutate(Run = setlab[set], Variable = lab[var_aeme]) |>
+  arrange(match(set, names(setlab)), match(var_aeme, keep)) |>
+  select(Run, Variable, n, Bias = bias, RMSE = rmse, NSE = nse, KGE = kge, r) |>
+  kab(digits = 3, caption = "Performance over each run's scored window.")
+```
+
+Temperature, level and oxygen are good. Chlorophyll-a is much better than in the first cut but still has low skill; FRP has no bias but a correlation of only 0.03 to 0.19. **Ammonium is under-predicted by about 0.05 mg/L (KGE about −0.6) and is the weakest variable**; the ammonium sediment flux and nitrification parameters are not constraining it, and the cause has not been investigated.
+
+## Model and observations
+
+The whole simulation period drawn with `AEME::plot_ts()`: the model is the line and the observations are the open circles. Depth-resolved variables are shown for the surface (0 to 2 m) and the bottom (17 to 21 m). The observations are the current ones in `aeme_base.rds`.
+
+::: {.panel-tabset}
+### Water level
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_physics_LKE_lvlwtr.png"))
+```
+
+### Temperature
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_HYD_temp.png"))
+```
+
+### Oxygen
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_CHM_oxy.png"))
+```
+
+### Ammonium
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_NIT_amm.png"))
+```
+
+### Nitrate
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_NIT_nit.png"))
+```
+
+### FRP
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_PHS_frp.png"))
+```
+
+### FRP (alum on)
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_alum_PHS_frp.png"))
+```
+
+### Chlorophyll-a
+
+```{r}
+knitr::include_graphics(file.path(img, "ts_bgc_PHY_tchla.png"))
+```
+:::
+
+## Sediment fluxes by zone
+
+The model has four sediment zones (zone 1 deepest). The grey bar is the measured range, the open circle the measured value, and the filled points the calibrated values. For oxygen uptake the calibration was allowed 8 times the measured value (thin line). Nitrate flux was not calibrated and is fixed at the measured value of 0.
+
+```{r}
+#| fig-height: 7
+#| fig-width: 9
+#| fig-cap: "Sediment flux by zone: measured prior range, measured value and calibrated values."
+flab <- c(fsed_frp = "FRP flux (mmol/m2/d)", fsed_amm = "Ammonium flux (mmol/m2/d)",
+          fsed_nit = "Nitrate flux (mmol/m2/d), fixed", fsed_oxy = "Oxygen uptake (mmol/m2/d)")
+fl$flux <- factor(fl$flux, levels = names(flab))
+oxy <- fl |> filter(flux == "fsed_oxy") |> distinct(flux, zone, prior) |>
+  mutate(calib_min = prior * 8, calib_max = prior * 0.5)
+ggplot(fl, aes(x = factor(zone))) +
+  geom_linerange(aes(ymin = prior_min, ymax = prior_max), colour = "grey60", linewidth = 3, alpha = 0.6) +
+  geom_linerange(data = oxy, aes(x = factor(zone), ymin = calib_min, ymax = calib_max), colour = "grey30") +
+  geom_point(aes(y = prior), shape = 1, size = 3) +
+  geom_point(data = fl[!is.na(fl$set), ], aes(y = value, colour = set), size = 3,
+             position = position_dodge(width = 0.3)) +
+  facet_wrap(~flux, scales = "free_y", labeller = labeller(flux = flab)) +
+  scale_colour_manual(values = c("stage 3" = "#1b9e77", "stage 4" = "#7570b3"), name = NULL) +
+  labs(x = "Sediment zone (1 = deepest)", y = NULL) + theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Ammonium and nitrate
+
+Ammonium and nitrate are the weakest variables. What the data and a set of forward runs show (stage 3 best fit, 2017 to 2020, bottom water = 17 m and deeper, December to April):
+
+-   **Observed ammonium is high through the lower water column in summer**, not only at the bed: the mean is 0.11 mg/L at 10 to 17 m, 0.12 at 17 to 21 m and 0.16 at 21 to 25 m (maximum 0.73), against about 0.003 mg/L everywhere in the model.
+-   **Total N is also short** in the model (0.26 mg/L at the bottom against 0.44 observed, and about 0.25 against 0.30 at the surface).
+-   **Bottom nitrate is 2 to 3 times too high** in the model (0.041 against 0.017 mg/L), consistent with ammonium being nitrified rather than accumulating.
+
+```{r}
+chk <- bind_rows(
+  read.csv(file.path(img, "s3_ammonium_check.csv")) |> mutate(set = "release and nitrification"),
+  read.csv(file.path(img, "s3_ammonium_check2.csv")) |> mutate(set = "with stronger oxygen demand"),
+  read.csv(file.path(img, "s3_ammonium_check3.csv")) |> mutate(set = "organic N breakdown")) |>
+  filter(var %in% c("NIT_amm", "NIT_nit", "NIT_tn"), run != "best" | set == "release and nitrification") |>
+  mutate(var = c(NIT_amm = "Ammonium", NIT_nit = "Nitrate", NIT_tn = "Total N")[var]) |>
+  select(set, run, var, obs, sim) |>
+  tidyr::pivot_wider(names_from = var, values_from = c(obs, sim)) |>
+  select(set, run, `sim Ammonium` = sim_Ammonium, `sim Nitrate` = sim_Nitrate, `sim Total N` = `sim_Total N`) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+kab(chk, caption = "Bottom-water (17 m and deeper), December to April means (mg/L) when sediment ammonium release, oxygen demand, nitrification and organic N breakdown are scaled from the stage 3 best fit. Observed means: ammonium 0.177, nitrate 0.017, total N 0.435.")
+```
+
+-   **More sediment ammonium release does not produce the observed ammonium.** Scaling the flux 10, 30 and 70 times raises bottom ammonium only from 0.003 to 0.003, 0.004 and 0.007 mg/L (total N rises from 0.26 to 0.31, so the nitrogen enters the model but not as ammonium). Adding two or three times the oxygen demand (bottom oxygen then matches the observed 5.8 mg/L) gives at most 0.009 mg/L, and lowering the oxygen half-saturation for release changes nothing.
+-   **The released ammonium does not accumulate.** In the 30 times run the bottom layer is anoxic (below 1 mg/L) on 11% of days and the flux (0.9 mmol m^-2^ d^-1^) adds about 0.7 mmol m^-3^ d^-1^ to the 1.2 m bottom layer, yet its ammonium on those days averages 0.004 mg/L. Anoxic spells in the model are short, so it is mixed away and lost (denitrification in the bottom layer averages about 0.7 mmol m^-3^ d^-1^); the observations imply weeks of isolation.
+-   **Faster breakdown of organic N does not help.** Raising `rpon_hydrol` 10 to 20 times lowers total N (to 0.16 to 0.19 mg/L) and leaves ammonium at 0.006 mg/L; the extra nitrogen is lost.
+
+**A nitrogen-only calibration with wide ranges confirmed this.** I ran a separate `pestpp-ies` step (80 model runs, everything else held at the joint stage 3 result) that opened the levers above: sediment ammonium flux by zone from 0.5 to 150 times the measured value (up to 2.7 to 5.9 mmol m^-2^ d^-1^ in the ensemble), `ksed_amm`, `rnitrif`, `knitrif`, `rdenit`, `kdenit` and `f_an`, scored on ammonium and nitrate in three depth bands over December to April. The error score did not improve (9.42 at the start, 9.44, 9.90 and 9.69 in later iterations; the best realisation was one of the starting ensemble). Across the starting ensemble, which spans those very wide ranges, the bottom and mid-depth ammonium groups changed by only 10 to 20%. So the ammonium shortfall is **not a parameter problem**: these parameters cannot make the model hold ammonium in the lower water column.
+
+Likely causes, in the order I would check them:
+
+1.  **Units of the measured sediment fluxes.** The measured ammonium flux (0.011 to 0.039) is in the range expected for g N m^-2^ d^-1^ (0.8 to 2.8 mmol m^-2^ d^-1^), but AED takes mmol m^-2^ d^-1^. If the study reported grams, the ammonium flux is entered about 70 times too small (the FRP flux about 30 times). **This is unconfirmed: the study's units need checking against its source.** The nitrogen step above covered fluxes of that size and still could not fit ammonium, so correcting the units may be right but would not fix ammonium on its own.
+2.  **Structure and mixing (the most likely cause now).** See the next section: the calibrated wind scaling is 1.64 and the model cannot combine moderate stratification with the observed anoxia and ammonium. The model also has no deep pit (`hyps_no_hole`, 21.5 m deep) while the observed ammonium is highest at 21 to 25 m, and the model hypolimnion is not isolated for long enough. Also check denitrification (`rdenit` is 15 of a range to 20) and the external N load, given the 0.05 to 0.18 mg/L total N deficit.
+
+## Mixing and stratification
+
+The checks above point to mixing. The question is whether the model's lower water column is mixed too strongly to hold ammonium. The answer is more awkward than "too strong".
+
+**The calibrated wind scaling is very high.** Stage 2 settled on a wind scaling of 1.64 (limit 2.0) applied to an ERA5 series that is already bias-corrected. That series averages about 5.2 m/s (2017 to 2020), against 4.6 m/s measured at the buoy (2022 to 2026), so the model is driven by a mean wind of about 8.6 m/s. Mixing energy goes with the cube of wind speed, so this is about 4 times the stirring of the corrected forcing. The wind scaling was fitted to the heat and water budget, not to mixing, so it is acting as a compensating parameter.
+
+**The model needs that wind to avoid over-stratifying.** The table re-runs the stage 3 best fit (with the sediment ammonium flux 30 times higher, so that release is not the limit) at lower wind scaling and with weaker hypolimnetic mixing (`coef_mix_hyp`). Surface minus bottom temperature (ΔT), bottom (17 m and deeper) oxygen and ammonium are compared with observations on December to April days:
+
+```{r}
+mx <- read.csv(file.path(img, "s3_mixing_check.csv"))
+data.frame(
+  run = c("Observed", mx$run),
+  `Days stratified (ΔT > 1 °C)` = c(mx$strat_frac_obs[1], mx$strat_frac_sim),
+  `Mean ΔT (°C)` = c(mx$dT_mean_obs[1], mx$dT_mean_sim),
+  `Bottom oxygen (mg/L)` = c(mx$bot_DO_obs[1], mx$bot_DO_sim),
+  `Days with bottom oxygen < 2 mg/L` = c(mx$DO_lt2_obs[1], mx$DO_lt2_sim),
+  `Bottom ammonium (mg/L)` = c(mx$bot_NH4_obs[1], mx$bot_NH4_sim),
+  check.names = FALSE) |>
+  mutate(run = c("Observed", "Calibrated (wind 1.64)", "+ ammonium flux x30", "wind 1.3", "wind 1.0", "coef_mix_hyp 0.1", "wind 1.0 + coef_mix_hyp 0.1")) |>
+  kab(digits = 3, caption = "Stratification, bottom-water oxygen and ammonium for different wind scaling and hypolimnetic mixing (December to April).")
+```
+
+-   **At the calibrated wind the model is already more stratified than the lake** (53% of days against 39%, mean ΔT 1.4 against 1.0 °C), yet bottom oxygen drops below 2 mg/L on only 2% of days (10% observed) and bottom ammonium stays at 0.003 mg/L (0.18 observed).
+-   **Lowering the wind makes stratification far too strong long before ammonium gets close.** At a scaling of 1.3, 70% of days are stratified (ΔT 2.4 °C) and 36% of days are anoxic; at 1.0 the model is stratified on 92% of days with a ΔT of 6.6 °C, a bottom temperature 1.6 °C too cold and anoxia on 87% of days, and bottom ammonium only reaches 0.075 mg/L.
+-   **Weaker hypolimnetic mixing alone** (`coef_mix_hyp` 0.1) changes little (anoxia 14% of days, ammonium 0.007 mg/L).
+
+So the model cannot reproduce what the lake does: **moderate stratification, anoxia on about 10% of days, and ammonium of 0.18 mg/L together.** Ammonium only accumulates in the model when most of the days are anoxic, which is far from the observed 10%. Two things follow:
+
+1.  Wind scaling cannot be used to fit the heat budget. It is hiding a heat or evaporation error and, through the cubed dependence of mixing on wind, it sets the stratification. The wind scaling should be fixed near the buoy-based value, and the heat and evaporation terms (`ce`, `ch`, `cd`, radiation and humidity factors) and the mixing coefficients (`coef_mix_conv`, `coef_mix_shear`, `coef_mix_turb`, `coef_mix_KH`) should carry that error instead.
+2.  Stratification should be a calibration target. The current temperature targets (surface, bottom, metalimnion bands) fit the temperatures well but leave the surface-to-bottom difference, Schmidt stability and thermocline depth unconstrained (KGE about −0.2 and −0.1 in the first cut).
+
+## Issues and next steps
+
+1.  **Ammonium and nitrate** are poorly simulated for structural or unit reasons, not because of tuning (see the section above). First confirm the units of the measured sediment fluxes, then re-open the ammonium flux range and use total N as a target to constrain the budget.
+2.  **Alum parameters are weakly identified.** FRP is dominated by the dose and the efficiency; treat alum efficiency and settling as scenario dimensions, not fitted values, in any projection. Only 56 to 73 FRP observations fall in the windows, mostly near the detection limit.
+3.  **TLI4 depends on total P, total N and Secchi**, none of which are calibration targets yet. Add them before using `LKE_tli4` (see the [climate strategy](climate-impact-strategy.qmd)).
+4.  **Stage 3 was calibrated without alum.** Consider running stage 3 with alum on from the start, using the dosing history.
+5.  **Parameters at their bounds** in stages 2 and 3 (wind scaling, crest elevation, sediment temperature amplitude, `rpoc_hydrol`, diatom `R_growth`) suggest compensating errors; test whether the projections are sensitive to them.
+6.  **Fix the upstream bugs:** the double unit conversion in `aemetools` and the rainfall units in the `era5_corrected_hourly` target.
+7.  **Housekeeping.** The large PEST working directories (`pest/`, `pest_smoke/`, `pest_diag/`), the test folders in `calibration/` and `aeme_base_prerainfix.rds` can be deleted. Archived (invalid) results are in `calibration/checkpoints/archive_prevdata/`.
+
+## Reproducing
+
+``` bash
+Rscript -e 'targets::tar_make(aeme_base_file)'
+PEST_NCORE=10 PEST_NOPTMAX=4 PEST_NREALS=40 Rscript calibration/run_stage.R 1
+PEST_NCORE=10 PEST_NOPTMAX=4 PEST_NREALS=40 Rscript calibration/run_stage.R 2
+# stages 3-5 (patched aemetools in calibration/lib_aemetools_patched)
+powershell -NoProfile -File calibration/run_stages_3_to_5_v2.ps1
+Rscript calibration/07_export_report_data.R   # plots and tables for this page
+```
+
+Set `PEST_SMOKE=1` for a quick wiring test, and `PEST_STAGE3_DIAG=1|oxy` or `PEST_STAGE4_DIAG=1` for the sensitivity checks.
