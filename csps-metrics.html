@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-10-19">
+
+<title>CSPS Evaluation Framework for Lake Rotorua – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-761fc14e25ebc0e942fc86aa4dfe65fb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./csps-metrics.html">CSPS Metrics &amp; Targets</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
+  <li><a href="#what-the-observations-support" id="toc-what-the-observations-support" class="nav-link" data-scroll-target="#what-the-observations-support"><span class="header-section-number">2</span> What the observations support</a></li>
+  <li><a href="#the-framework" id="toc-the-framework" class="nav-link" data-scroll-target="#the-framework"><span class="header-section-number">3</span> The framework</a>
+  <ul class="collapse">
+  <li><a href="#level-0-concept-checklist" id="toc-level-0-concept-checklist" class="nav-link" data-scroll-target="#level-0-concept-checklist"><span class="header-section-number">3.1</span> Level 0: concept checklist</a></li>
+  <li><a href="#level-1-state-metrics" id="toc-level-1-state-metrics" class="nav-link" data-scroll-target="#level-1-state-metrics"><span class="header-section-number">3.2</span> Level 1: state metrics</a></li>
+  <li><a href="#level-2-and-3-signatures" id="toc-level-2-and-3-signatures" class="nav-link" data-scroll-target="#level-2-and-3-signatures"><span class="header-section-number">3.3</span> Level 2 and 3: signatures</a></li>
+  </ul></li>
+  <li><a href="#observed-year-to-year-range" id="toc-observed-year-to-year-range" class="nav-link" data-scroll-target="#observed-year-to-year-range"><span class="header-section-number">4</span> Observed year-to-year range</a></li>
+  <li><a href="#calibration-validation-and-scoring" id="toc-calibration-validation-and-scoring" class="nav-link" data-scroll-target="#calibration-validation-and-scoring"><span class="header-section-number">5</span> Calibration, validation and scoring</a></li>
+  <li><a href="#gaps-in-the-data" id="toc-gaps-in-the-data" class="nav-link" data-scroll-target="#gaps-in-the-data"><span class="header-section-number">6</span> Gaps in the data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./csps-metrics.html">CSPS Metrics &amp; Targets</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">CSPS Evaluation Framework for Lake Rotorua</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Targets and metrics for polymixis, bottom-water anoxia, internal loading and phytoplankton</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 19, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="purpose" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
+<p>The calibration so far scores the model on state variables (temperature, oxygen, nutrients, chlorophyll-a). A model can match those concentrations for the wrong reasons, particularly in a shallow lake where one parameter such as wind scaling can compensate for several errors (see the mixing section of the <a href="./rotorua-calibration-staged.html">staged calibration</a>). This page defines a metrics system based on the CSPS framework (Concept, State, Process, System; <a href="https://doi.org/10.1016/j.envsoft.2020.104697">Hipsey et al.&nbsp;2020</a>), built from what the observations can actually support, and aimed at four things the model must get right:</p>
+<ol type="1">
+<li><strong>Polymixis</strong>: a lake that stratifies for days to weeks and mixes again, many times a year.</li>
+<li><strong>Bottom-water anoxia</strong>: short, episodic and variable between years.</li>
+<li><strong>Internal loading</strong>: nutrient release from the sediment into stratified bottom water.</li>
+<li><strong>Seasonal phytoplankton dynamics</strong>: the magnitude, variability and timing of chlorophyll-a.</li>
+</ol>
+<p>The code is in <code>calibration/csps_metrics.R</code>. <code>calibration/csps_build_targets.R</code> writes the observed targets to <code>calibration/csps_targets.csv</code>.</p>
+</section>
+<section id="what-the-observations-support" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-the-observations-support"><span class="header-section-number">2</span> What the observations support</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Observation inventory used to build targets.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Data</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Period</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Temperature profile</td>
+<td style="text-align: left;">2003 to 2026 (daily from 2007)</td>
+<td style="text-align: left;">Polymixis, mixing events, state</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dissolved oxygen profile</td>
+<td style="text-align: left;">2003 to 2026 (daily from 2007)</td>
+<td style="text-align: left;">Anoxia frequency and duration, oxygen demand, state</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chlorophyll-a profile</td>
+<td style="text-align: left;">2003 to 2025 (monthly, more often from 2015)</td>
+<td style="text-align: left;">Seasonality, bloom size, state</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TP, TN, FRP, NH4, NO3 (lab, depth profile)</td>
+<td style="text-align: left;">1990 to 2023 (monthly or bi-monthly; deep samples to 2020)</td>
+<td style="text-align: left;">Internal loading (bottom to surface contrast), state</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Secchi depth</td>
+<td style="text-align: left;">1982 to 2023</td>
+<td style="text-align: left;">Trophic state, light climate</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Stratification flag, Schmidt stability, thermocline depth</td>
+<td style="text-align: left;">2003 to 2026</td>
+<td style="text-align: left;">Derived from the same profiles, so not used independently</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TLI3, TLI4</td>
+<td style="text-align: left;">1990 to 2023</td>
+<td style="text-align: left;">System-level trophic check</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Lessons from the data that shape the targets:</p>
+<ul>
+<li><strong>The lake is polymictic.</strong> Surface minus bottom temperature (17 m and deeper) exceeds 1 °C on about 22% of days (35% from December to April, almost never in winter). Spells last a median of 2 days, with a 90th percentile of 17 days and about 9 spells a year. The model must produce frequent short stratification and mixing, not a seasonal thermocline.</li>
+<li><strong>Anoxia is episodic and uneven between years.</strong> Bottom oxygen is below 2 mg/L on about 11% of December to April days, but from 0% (2014, 2022, 2023) to 33% (2010) of days between years, and 83% of years have at least one event.</li>
+<li><strong>Internal loading shows as a bottom to surface contrast in the stratified season.</strong> Bottom ammonium is a median 7 times the surface value, FRP 2.6 times and TP 1.4 times. It is only measured at depth to 2020.</li>
+<li><strong>Chlorophyll-a has weak seasonality.</strong> The median is about 9 mg m<sup>-3</sup>, the summer to winter ratio is close to 1, and the signal is irregular blooms (the 90th percentile is about 20) rather than a regular spring peak. Matching a seasonal cycle would reward the wrong behaviour, so the targets use the distribution, bloom frequency and the annual peak.</li>
+</ul>
+</section>
+<section id="the-framework" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="the-framework"><span class="header-section-number">3</span> The framework</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Level</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Question</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">How it is assessed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0 Concept</td>
+<td style="text-align: left;">Is the model structure appropriate for these questions?</td>
+<td style="text-align: left;">Checklist (table below), reviewed before each scenario use</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 State</td>
+<td style="text-align: left;">Do simulated concentrations match observations?</td>
+<td style="text-align: left;">Bias, MAE, RMSE, correlation and KGE by variable and layer (log scale for chlorophyll and nutrients), plus seasonal correlation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2 Process</td>
+<td style="text-align: left;">Is the model producing the observed behaviour through the right processes?</td>
+<td style="text-align: left;">Signatures of mixing, oxygen demand and nutrient gradients, with tolerances from the interannual spread</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3 System</td>
+<td style="text-align: left;">Does the whole lake respond as observed?</td>
+<td style="text-align: left;">Trophic state (TLI3), chlorophyll to TP relation, response to alum dosing and to wet and dry years</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="level-0-concept-checklist" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="level-0-concept-checklist"><span class="header-section-number">3.1</span> Level 0: concept checklist</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Does the hydrodynamic model resolve rapid mixing and stratification cycles (hourly forcing, wind-driven mixing)?</td>
+<td>Yes with hourly forcing; the daily-forced base is a coarser test</td>
+</tr>
+<tr class="even">
+<td>Is sediment oxygen demand and nutrient release linked to bottom-water oxygen?</td>
+<td>Sediment release and oxygen demand are parameterised by zone (<code>fsed_*</code>, <code>ksed_*</code>); the oxygen dependence needs checking in the AED sediment settings</td>
+</tr>
+<tr class="odd">
+<td>Are the 21.5 m basin and the deeper pit (to 27 m) represented?</td>
+<td><strong>No.</strong> The model uses <code>hyps_no_hole</code>. Observed ammonium is highest at 21 to 25 m, so this is a known structural gap</td>
+</tr>
+<tr class="even">
+<td>Is phytoplankton resolved by group (cyanobacteria, diatoms, green algae)?</td>
+<td>Yes, but only total chlorophyll-a is observed</td>
+</tr>
+<tr class="odd">
+<td>Are alum dosing and its effect on phosphorus represented?</td>
+<td>Yes (<code>aed_alum</code>, stage 4), with dose and efficiency uncertain</td>
+</tr>
+<tr class="even">
+<td>Is rainfall, river inflow and nutrient loading consistent with the lake budget?</td>
+<td>Water balance calibrated; nutrient loads and the organic share are assumptions</td>
+</tr>
+<tr class="odd">
+<td>Does the forcing carry the climate-scenario signal at the time scale the lake responds to (days)?</td>
+<td>Delta-change on hourly corrected ERA5; daily weather variability is preserved</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="level-1-state-metrics" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="level-1-state-metrics"><span class="header-section-number">3.2</span> Level 1: state metrics</h3>
+<p>For each variable and layer (surface 0 to 2 m, middle, bottom 17 m and deeper, and bottom from December to April) the scorecard reports bias, MAE, RMSE, correlation, KGE and the correlation of the monthly climatology. Chlorophyll-a and nutrients are compared on the log scale. These replace a single pooled error score: a model that gets the surface right and the bottom wrong is visible.</p>
+</section>
+<section id="level-2-and-3-signatures" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="level-2-and-3-signatures"><span class="header-section-number">3.3</span> Level 2 and 3: signatures</h3>
+<p>Every signature is computed by one function on the observations and on the model, using only days on which an observation exists. This removes the effect of sampling. The tolerance for each signature is the standard deviation of that signature between observed years (at least 10% of the value; 50% for signatures with fewer than five usable years). A model is <strong>inside tolerance</strong> when it lands within one standard deviation of the observed value, and the score falls from 1 to 0 between one and three standard deviations.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Observed targets with tolerances from the interannual spread.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Theme</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Level</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Signature</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Meaning</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Tolerance (1 sd)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_f_strat</td>
+<td style="text-align: left;">Fraction of days with surface minus bottom temperature above 1 °C</td>
+<td style="text-align: right;">0.21700</td>
+<td style="text-align: right;">0.0580</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_f_strat_summer</td>
+<td style="text-align: left;">As above, December to April</td>
+<td style="text-align: right;">0.34900</td>
+<td style="text-align: right;">0.0870</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_f_strat_winter</td>
+<td style="text-align: left;">As above, June to August</td>
+<td style="text-align: right;">0.00209</td>
+<td style="text-align: right;">0.0052</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_dT_p95</td>
+<td style="text-align: left;">95th percentile of surface minus bottom temperature (°C)</td>
+<td style="text-align: right;">2.72000</td>
+<td style="text-align: right;">0.9900</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_dT_mean_summer</td>
+<td style="text-align: left;">Mean surface minus bottom temperature, December to April (°C)</td>
+<td style="text-align: right;">0.99000</td>
+<td style="text-align: right;">0.2600</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_spells_per_yr</td>
+<td style="text-align: left;">Stratified spells per year</td>
+<td style="text-align: right;">8.58000</td>
+<td style="text-align: right;">3.3000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_spell_median_d</td>
+<td style="text-align: left;">Median spell length (days)</td>
+<td style="text-align: right;">2.00000</td>
+<td style="text-align: right;">2.3000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_spell_p90_d</td>
+<td style="text-align: left;">90th percentile spell length (days)</td>
+<td style="text-align: right;">17.00000</td>
+<td style="text-align: right;">5.9000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">polymixis</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">mix_bot_temp_summer</td>
+<td style="text-align: left;">Bottom temperature, December to April (°C)</td>
+<td style="text-align: right;">19.30000</td>
+<td style="text-align: right;">1.9000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_f_lt2</td>
+<td style="text-align: left;">Fraction of days with bottom oxygen below 2 mg/L</td>
+<td style="text-align: right;">0.04630</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_f_lt2_summer</td>
+<td style="text-align: left;">As above, December to April</td>
+<td style="text-align: right;">0.10900</td>
+<td style="text-align: right;">0.0920</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_f_lt1_summer</td>
+<td style="text-align: left;">Below 1 mg/L, December to April</td>
+<td style="text-align: right;">0.06620</td>
+<td style="text-align: right;">0.0630</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_do_mean_summer</td>
+<td style="text-align: left;">Mean bottom oxygen, December to April (mg/L)</td>
+<td style="text-align: right;">6.14000</td>
+<td style="text-align: right;">0.9200</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_do_p10</td>
+<td style="text-align: left;">10th percentile of bottom oxygen (mg/L)</td>
+<td style="text-align: right;">4.27000</td>
+<td style="text-align: right;">1.7000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_f_years_with_event</td>
+<td style="text-align: left;">Fraction of years with at least one day below 2 mg/L</td>
+<td style="text-align: right;">0.83300</td>
+<td style="text-align: right;">0.3800</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_spell_median_d</td>
+<td style="text-align: left;">Median anoxic spell length (days)</td>
+<td style="text-align: right;">2.00000</td>
+<td style="text-align: right;">5.2000</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anoxia</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">anox_do_decline_strat</td>
+<td style="text-align: left;">Daily change in bottom oxygen during stratified spells (mg/L/day; a sediment oxygen demand proxy)</td>
+<td style="text-align: right;">-0.25900</td>
+<td style="text-align: right;">0.0740</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_frp_ratio</td>
+<td style="text-align: left;">Median bottom over median surface concentration, December to April</td>
+<td style="text-align: right;">2.62000</td>
+<td style="text-align: right;">2.3000</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_frp_bot_p90</td>
+<td style="text-align: left;">90th percentile of bottom concentration (mg/L)</td>
+<td style="text-align: right;">0.07100</td>
+<td style="text-align: right;">0.0200</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_frp_f_bot_gt2x</td>
+<td style="text-align: left;">Fraction of days with bottom more than twice the surface</td>
+<td style="text-align: right;">0.52500</td>
+<td style="text-align: right;">0.4300</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_amm_ratio</td>
+<td style="text-align: left;">Median bottom over median surface concentration, December to April</td>
+<td style="text-align: right;">6.89000</td>
+<td style="text-align: right;">7.4000</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_amm_bot_p90</td>
+<td style="text-align: left;">90th percentile of bottom concentration (mg/L)</td>
+<td style="text-align: right;">0.28100</td>
+<td style="text-align: right;">0.1300</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_amm_f_bot_gt2x</td>
+<td style="text-align: left;">Fraction of days with bottom more than twice the surface</td>
+<td style="text-align: right;">0.65700</td>
+<td style="text-align: right;">0.2000</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_tp_ratio</td>
+<td style="text-align: left;">Median bottom over median surface concentration, December to April</td>
+<td style="text-align: right;">1.42000</td>
+<td style="text-align: right;">0.3000</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_tp_bot_p90</td>
+<td style="text-align: left;">90th percentile of bottom concentration (mg/L)</td>
+<td style="text-align: right;">0.10600</td>
+<td style="text-align: right;">0.0240</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">internal loading</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">load_tp_f_bot_gt2x</td>
+<td style="text-align: left;">Fraction of days with bottom more than twice the surface</td>
+<td style="text-align: right;">0.15100</td>
+<td style="text-align: right;">0.1700</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_median</td>
+<td style="text-align: left;">Median surface chlorophyll-a (mg/m3)</td>
+<td style="text-align: right;">9.30000</td>
+<td style="text-align: right;">2.2000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_p90</td>
+<td style="text-align: left;">90th percentile surface chlorophyll-a</td>
+<td style="text-align: right;">19.70000</td>
+<td style="text-align: right;">4.0000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_cv</td>
+<td style="text-align: left;">Coefficient of variation of surface chlorophyll-a</td>
+<td style="text-align: right;">0.60900</td>
+<td style="text-align: right;">0.1100</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_f_gt20</td>
+<td style="text-align: left;">Fraction of samples above 20 mg/m3 (bloom frequency)</td>
+<td style="text-align: right;">0.09930</td>
+<td style="text-align: right;">0.0900</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_summer_winter_ratio</td>
+<td style="text-align: left;">Median December to February over median June to August</td>
+<td style="text-align: right;">0.93600</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_annual_peak_median</td>
+<td style="text-align: left;">Median of the annual maximum</td>
+<td style="text-align: right;">19.40000</td>
+<td style="text-align: right;">6.2000</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: left;">Process</td>
+<td style="text-align: left;">chl_sd_log</td>
+<td style="text-align: left;">Standard deviation of log(1 + chlorophyll-a)</td>
+<td style="text-align: right;">0.53000</td>
+<td style="text-align: right;">0.0900</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">system</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_tli3_mean</td>
+<td style="text-align: left;">TLI3 from annual mean chlorophyll, TP and TN</td>
+<td style="text-align: right;">4.45000</td>
+<td style="text-align: right;">0.4400</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">system</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_chl_tp_slope</td>
+<td style="text-align: left;">Slope of log chlorophyll-a against log TP between years</td>
+<td style="text-align: right;">0.19100</td>
+<td style="text-align: right;">0.0950</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Level 3 also includes checks that need model runs rather than signatures, which are not yet computed. They will come from the long (1992 to 2022) daily-forced run:</p>
+<ul>
+<li>Year-to-year agreement: does the model have anoxia in the same years that the lake does (rank correlation of the annual anoxic fraction, 2008 to 2022)?</li>
+<li>Trophic state over time: simulated against observed annual TLI3, in the 1990s before alum and after.</li>
+<li>Response to alum: the change in summer bottom FRP and ammonium and in chlorophyll-a before and after dosing began.</li>
+<li>Wet and dry years: bloom frequency and anoxic fraction in the top and bottom quartile of annual inflow.</li>
+</ul>
+</section>
+</section>
+<section id="observed-year-to-year-range" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="observed-year-to-year-range"><span class="header-section-number">4</span> Observed year-to-year range</h2>
+<p>The tolerances come from how much the lake itself varies between years:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="csps-metrics_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="csps-metrics_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="768"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calibration-validation-and-scoring" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="calibration-validation-and-scoring"><span class="header-section-number">5</span> Calibration, validation and scoring</h2>
+<ul>
+<li><strong>Calibration window.</strong> The current PEST windows (2 to 3 years inside 2017 to 2020) fit states. They are not long enough to score signatures that depend on rare events (spells, years with anoxia).</li>
+<li><strong>Validation.</strong> Score the calibrated model on all other years that have daily temperature and oxygen (2007 to 2016, 2021 to 2025) and on the 1992 to 2006 nutrient record from the daily-forced run. The signatures are the validation targets; a model that passes state metrics but fails signatures is not accepted for scenarios.</li>
+<li><strong>Ensembles.</strong> Run the signature scorecard on each realisation of the final PEST ensemble, and report the range, not only the best run.</li>
+<li><strong>Using signatures inside PEST.</strong> The signatures can be added as observation groups in the next calibration round. The first candidates are <code>mix_f_strat_summer</code> and <code>mix_spell_median_d</code> in stage 2 (they separate wind scaling from mixing coefficients), and <code>anox_f_lt2_summer</code>, <code>anox_do_decline_strat</code> and the <code>load_*_ratio</code> set in stage 3. They have to be computed over windows long enough to hold several spells, so the calibration window would need to extend to about one full year.</li>
+</ul>
+</section>
+<section id="gaps-in-the-data" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="gaps-in-the-data"><span class="header-section-number">6</span> Gaps in the data</h2>
+<ul>
+<li>Process rates (sediment fluxes, productivity, denitrification) are measured only as the zone sediment fluxes in <code>meas_param</code>, with unconfirmed units, so the process level for internal loading relies on concentration gradients, not fluxes.</li>
+<li>Nutrients are not measured at depth after 2020, so internal loading signatures are scored on 11 to 14 years.</li>
+<li>TLI4 needs a simulated Secchi depth, which GLM-AED does not output; TLI3 is used instead.</li>
+<li>Cyanobacteria and phytoplankton group data would test whether the right groups bloom in the right season; only total chlorophyll-a is available.</li>
+<li>The deep pit (to 27 m) is outside the model.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "CSPS Evaluation Framework for Lake Rotorua"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Targets and metrics for polymixis, bottom-water anoxia, internal loading and phytoplankton"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="st">"images/staged-calibration"</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>kab <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) <span class="fu">kable</span>(x, ...) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>tg <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"csps_targets.csv"</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>by_yr <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"csps_obs_by_year.csv"</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Purpose</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>The calibration so far scores the model on state variables (temperature, oxygen, nutrients, chlorophyll-a). A model can match those concentrations for the wrong reasons, particularly in a shallow lake where one parameter such as wind scaling can compensate for several errors (see the mixing section of the <span class="co">[</span><span class="ot">staged calibration</span><span class="co">](rotorua-calibration-staged.qmd)</span>). This page defines a metrics system based on the CSPS framework (Concept, State, Process, System; <span class="co">[</span><span class="ot">Hipsey et al. 2020</span><span class="co">](https://doi.org/10.1016/j.envsoft.2020.104697)</span>), built from what the observations can actually support, and aimed at four things the model must get right:</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Polymixis**: a lake that stratifies for days to weeks and mixes again, many times a year.</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Bottom-water anoxia**: short, episodic and variable between years.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Internal loading**: nutrient release from the sediment into stratified bottom water.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Seasonal phytoplankton dynamics**: the magnitude, variability and timing of chlorophyll-a.</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>The code is in <span class="in">`calibration/csps_metrics.R`</span>. <span class="in">`calibration/csps_build_targets.R`</span> writes the observed targets to <span class="in">`calibration/csps_targets.csv`</span>.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the observations support</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>inv <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">Data =</span> <span class="fu">c</span>(<span class="st">"Temperature profile"</span>, <span class="st">"Dissolved oxygen profile"</span>, <span class="st">"Chlorophyll-a profile"</span>, <span class="st">"TP, TN, FRP, NH4, NO3 (lab, depth profile)"</span>, <span class="st">"Secchi depth"</span>, <span class="st">"Stratification flag, Schmidt stability, thermocline depth"</span>, <span class="st">"TLI3, TLI4"</span>),</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">Period =</span> <span class="fu">c</span>(<span class="st">"2003 to 2026 (daily from 2007)"</span>, <span class="st">"2003 to 2026 (daily from 2007)"</span>, <span class="st">"2003 to 2025 (monthly, more often from 2015)"</span>, <span class="st">"1990 to 2023 (monthly or bi-monthly; deep samples to 2020)"</span>, <span class="st">"1982 to 2023"</span>, <span class="st">"2003 to 2026"</span>, <span class="st">"1990 to 2023"</span>),</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">Use =</span> <span class="fu">c</span>(<span class="st">"Polymixis, mixing events, state"</span>, <span class="st">"Anoxia frequency and duration, oxygen demand, state"</span>, <span class="st">"Seasonality, bloom size, state"</span>, <span class="st">"Internal loading (bottom to surface contrast), state"</span>, <span class="st">"Trophic state, light climate"</span>, <span class="st">"Derived from the same profiles, so not used independently"</span>, <span class="st">"System-level trophic check"</span>))</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(inv, <span class="at">caption =</span> <span class="st">"Observation inventory used to build targets."</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>Lessons from the data that shape the targets:</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The lake is polymictic.** Surface minus bottom temperature (17 m and deeper) exceeds 1 °C on about 22% of days (35% from December to April, almost never in winter). Spells last a median of 2 days, with a 90th percentile of 17 days and about 9 spells a year. The model must produce frequent short stratification and mixing, not a seasonal thermocline.</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Anoxia is episodic and uneven between years.** Bottom oxygen is below 2 mg/L on about 11% of December to April days, but from 0% (2014, 2022, 2023) to 33% (2010) of days between years, and 83% of years have at least one event.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Internal loading shows as a bottom to surface contrast in the stratified season.** Bottom ammonium is a median 7 times the surface value, FRP 2.6 times and TP 1.4 times. It is only measured at depth to 2020.</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a has weak seasonality.** The median is about 9 mg m^-3^, the summer to winter ratio is close to 1, and the signal is irregular blooms (the 90th percentile is about 20) rather than a regular spring peak. Matching a seasonal cycle would reward the wrong behaviour, so the targets use the distribution, bloom frequency and the annual peak.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## The framework</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>lv <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>  <span class="at">Level =</span> <span class="fu">c</span>(<span class="st">"0 Concept"</span>, <span class="st">"1 State"</span>, <span class="st">"2 Process"</span>, <span class="st">"3 System"</span>),</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>  <span class="at">Question =</span> <span class="fu">c</span>(<span class="st">"Is the model structure appropriate for these questions?"</span>, <span class="st">"Do simulated concentrations match observations?"</span>, <span class="st">"Is the model producing the observed behaviour through the right processes?"</span>, <span class="st">"Does the whole lake respond as observed?"</span>),</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">How it is assessed</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Checklist (table below), reviewed before each scenario use"</span>, <span class="st">"Bias, MAE, RMSE, correlation and KGE by variable and layer (log scale for chlorophyll and nutrients), plus seasonal correlation"</span>, <span class="st">"Signatures of mixing, oxygen demand and nutrient gradients, with tolerances from the interannual spread"</span>, <span class="st">"Trophic state (TLI3), chlorophyll to TP relation, response to alum dosing and to wet and dry years"</span>),</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(lv)</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Level 0: concept checklist</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Question <span class="pp">|</span> Status <span class="pp">|</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|----|----|</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Does the hydrodynamic model resolve rapid mixing and stratification cycles (hourly forcing, wind-driven mixing)? <span class="pp">|</span> Yes with hourly forcing; the daily-forced base is a coarser test <span class="pp">|</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Is sediment oxygen demand and nutrient release linked to bottom-water oxygen? <span class="pp">|</span> Sediment release and oxygen demand are parameterised by zone (<span class="in">`fsed_*`</span>, <span class="in">`ksed_*`</span>); the oxygen dependence needs checking in the AED sediment settings <span class="pp">|</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Are the 21.5 m basin and the deeper pit (to 27 m) represented? <span class="pp">|</span> **No.** The model uses <span class="in">`hyps_no_hole`</span>. Observed ammonium is highest at 21 to 25 m, so this is a known structural gap <span class="pp">|</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Is phytoplankton resolved by group (cyanobacteria, diatoms, green algae)? <span class="pp">|</span> Yes, but only total chlorophyll-a is observed <span class="pp">|</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Are alum dosing and its effect on phosphorus represented? <span class="pp">|</span> Yes (<span class="in">`aed_alum`</span>, stage 4), with dose and efficiency uncertain <span class="pp">|</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Is rainfall, river inflow and nutrient loading consistent with the lake budget? <span class="pp">|</span> Water balance calibrated; nutrient loads and the organic share are assumptions <span class="pp">|</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Does the forcing carry the climate-scenario signal at the time scale the lake responds to (days)? <span class="pp">|</span> Delta-change on hourly corrected ERA5; daily weather variability is preserved <span class="pp">|</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">### Level 1: state metrics</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>For each variable and layer (surface 0 to 2 m, middle, bottom 17 m and deeper, and bottom from December to April) the scorecard reports bias, MAE, RMSE, correlation, KGE and the correlation of the monthly climatology. Chlorophyll-a and nutrients are compared on the log scale. These replace a single pooled error score: a model that gets the surface right and the bottom wrong is visible.</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### Level 2 and 3: signatures</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>Every signature is computed by one function on the observations and on the model, using only days on which an observation exists. This removes the effect of sampling. The tolerance for each signature is the standard deviation of that signature between observed years (at least 10% of the value; 50% for signatures with fewer than five usable years). A model is **inside tolerance** when it lands within one standard deviation of the observed value, and the score falls from 1 to 0 between one and three standard deviations.</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tg <span class="sc">|&gt;</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">observed =</span> <span class="fu">signif</span>(observed, <span class="dv">3</span>), <span class="at">tolerance =</span> <span class="fu">signif</span>(tolerance, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Theme =</span> theme, <span class="at">Level =</span> level, <span class="at">Signature =</span> signature, <span class="at">Observed =</span> observed, <span class="st">`</span><span class="at">Tolerance (1 sd)</span><span class="st">`</span> <span class="ot">=</span> tolerance, <span class="st">`</span><span class="at">Years</span><span class="st">`</span> <span class="ot">=</span> n_years)</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>what <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>  <span class="at">mix_f_strat =</span> <span class="st">"Fraction of days with surface minus bottom temperature above 1 °C"</span>,</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>  <span class="at">mix_f_strat_summer =</span> <span class="st">"As above, December to April"</span>, <span class="at">mix_f_strat_winter =</span> <span class="st">"As above, June to August"</span>,</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>  <span class="at">mix_dT_p95 =</span> <span class="st">"95th percentile of surface minus bottom temperature (°C)"</span>, <span class="at">mix_dT_mean_summer =</span> <span class="st">"Mean surface minus bottom temperature, December to April (°C)"</span>,</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>  <span class="at">mix_spells_per_yr =</span> <span class="st">"Stratified spells per year"</span>, <span class="at">mix_spell_median_d =</span> <span class="st">"Median spell length (days)"</span>, <span class="at">mix_spell_p90_d =</span> <span class="st">"90th percentile spell length (days)"</span>,</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>  <span class="at">mix_bot_temp_summer =</span> <span class="st">"Bottom temperature, December to April (°C)"</span>,</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>  <span class="at">anox_f_lt2 =</span> <span class="st">"Fraction of days with bottom oxygen below 2 mg/L"</span>, <span class="at">anox_f_lt2_summer =</span> <span class="st">"As above, December to April"</span>, <span class="at">anox_f_lt1_summer =</span> <span class="st">"Below 1 mg/L, December to April"</span>,</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">anox_do_mean_summer =</span> <span class="st">"Mean bottom oxygen, December to April (mg/L)"</span>, <span class="at">anox_do_p10 =</span> <span class="st">"10th percentile of bottom oxygen (mg/L)"</span>,</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">anox_f_years_with_event =</span> <span class="st">"Fraction of years with at least one day below 2 mg/L"</span>, <span class="at">anox_spell_median_d =</span> <span class="st">"Median anoxic spell length (days)"</span>,</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">anox_do_decline_strat =</span> <span class="st">"Daily change in bottom oxygen during stratified spells (mg/L/day; a sediment oxygen demand proxy)"</span>)</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning <span class="ot">&lt;-</span> <span class="fu">unname</span>(what[tab<span class="sc">$</span>Signature])</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[<span class="fu">is.na</span>(tab<span class="sc">$</span>Meaning)] <span class="ot">&lt;-</span> <span class="st">""</span></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[<span class="fu">grepl</span>(<span class="st">"^load_.*_ratio"</span>, tab<span class="sc">$</span>Signature)] <span class="ot">&lt;-</span> <span class="st">"Median bottom over median surface concentration, December to April"</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[<span class="fu">grepl</span>(<span class="st">"^load_.*_bot_p90"</span>, tab<span class="sc">$</span>Signature)] <span class="ot">&lt;-</span> <span class="st">"90th percentile of bottom concentration (mg/L)"</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[<span class="fu">grepl</span>(<span class="st">"^load_.*_f_bot_gt2x"</span>, tab<span class="sc">$</span>Signature)] <span class="ot">&lt;-</span> <span class="st">"Fraction of days with bottom more than twice the surface"</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_median"</span>] <span class="ot">&lt;-</span> <span class="st">"Median surface chlorophyll-a (mg/m3)"</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_p90"</span>] <span class="ot">&lt;-</span> <span class="st">"90th percentile surface chlorophyll-a"</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_cv"</span>] <span class="ot">&lt;-</span> <span class="st">"Coefficient of variation of surface chlorophyll-a"</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_f_gt20"</span>] <span class="ot">&lt;-</span> <span class="st">"Fraction of samples above 20 mg/m3 (bloom frequency)"</span></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_summer_winter_ratio"</span>] <span class="ot">&lt;-</span> <span class="st">"Median December to February over median June to August"</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_annual_peak_median"</span>] <span class="ot">&lt;-</span> <span class="st">"Median of the annual maximum"</span></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"chl_sd_log"</span>] <span class="ot">&lt;-</span> <span class="st">"Standard deviation of log(1 + chlorophyll-a)"</span></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"sys_tli3_mean"</span>] <span class="ot">&lt;-</span> <span class="st">"TLI3 from annual mean chlorophyll, TP and TN"</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>Meaning[tab<span class="sc">$</span>Signature <span class="sc">==</span> <span class="st">"sys_chl_tp_slope"</span>] <span class="ot">&lt;-</span> <span class="st">"Slope of log chlorophyll-a against log TP between years"</span></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(tab[, <span class="fu">c</span>(<span class="st">"Theme"</span>, <span class="st">"Level"</span>, <span class="st">"Signature"</span>, <span class="st">"Meaning"</span>, <span class="st">"Observed"</span>, <span class="st">"Tolerance (1 sd)"</span>, <span class="st">"Years"</span>)], <span class="at">caption =</span> <span class="st">"Observed targets with tolerances from the interannual spread."</span>)</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>Level 3 also includes checks that need model runs rather than signatures, which are not yet computed. They will come from the long (1992 to 2022) daily-forced run:</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Year-to-year agreement: does the model have anoxia in the same years that the lake does (rank correlation of the annual anoxic fraction, 2008 to 2022)?</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Trophic state over time: simulated against observed annual TLI3, in the 1990s before alum and after.</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Response to alum: the change in summer bottom FRP and ammonium and in chlorophyll-a before and after dosing began.</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Wet and dry years: bloom frequency and anoxic fraction in the top and bottom quartile of annual inflow.</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observed year-to-year range</span></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>The tolerances come from how much the lake itself varies between years:</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"mix_f_strat_summer"</span>, <span class="st">"mix_spell_median_d"</span>, <span class="st">"anox_f_lt2_summer"</span>, <span class="st">"anox_do_decline_strat"</span>, <span class="st">"chl_median"</span>, <span class="st">"chl_p90"</span>)) {</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(by_yr<span class="sc">$</span>year, by_yr[[v]], <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> v, <span class="at">main =</span> v)</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> tg<span class="sc">$</span>observed[tg<span class="sc">$</span>signature <span class="sc">==</span> v], <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## Calibration, validation and scoring</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Calibration window.** The current PEST windows (2 to 3 years inside 2017 to 2020) fit states. They are not long enough to score signatures that depend on rare events (spells, years with anoxia).</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Validation.** Score the calibrated model on all other years that have daily temperature and oxygen (2007 to 2016, 2021 to 2025) and on the 1992 to 2006 nutrient record from the daily-forced run. The signatures are the validation targets; a model that passes state metrics but fails signatures is not accepted for scenarios.</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Ensembles.** Run the signature scorecard on each realisation of the final PEST ensemble, and report the range, not only the best run.</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Using signatures inside PEST.** The signatures can be added as observation groups in the next calibration round. The first candidates are <span class="in">`mix_f_strat_summer`</span> and <span class="in">`mix_spell_median_d`</span> in stage 2 (they separate wind scaling from mixing coefficients), and <span class="in">`anox_f_lt2_summer`</span>, <span class="in">`anox_do_decline_strat`</span> and the <span class="in">`load_*_ratio`</span> set in stage 3. They have to be computed over windows long enough to hold several spells, so the calibration window would need to extend to about one full year.</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"calibration/csps_metrics.R"</span>)</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>tg <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"calibration/csps_targets.csv"</span>)</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>P  <span class="ot">&lt;-</span> <span class="fu">csps_pair</span>(aeme)          <span class="co"># paired obs and model values from a run</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">csps_score</span>(P, tg)        <span class="co"># signature scorecard (pass, z, score)</span></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a><span class="fu">csps_summary</span>(sc)               <span class="co"># by level and theme</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="fu">csps_state</span>(P)                  <span class="co"># Level 1 table</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gaps in the data</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Process rates (sediment fluxes, productivity, denitrification) are measured only as the zone sediment fluxes in <span class="in">`meas_param`</span>, with unconfirmed units, so the process level for internal loading relies on concentration gradients, not fluxes.</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Nutrients are not measured at depth after 2020, so internal loading signatures are scored on 11 to 14 years.</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>TLI4 needs a simulated Secchi depth, which GLM-AED does not output; TLI3 is used instead.</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Cyanobacteria and phytoplankton group data would test whether the right groups bloom in the right season; only total chlorophyll-a is available.</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The deep pit (to 27 m) is outside the model.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

@@ -68,3 +68,8 @@ body {
   color: #FFA400 !important;  /* red hover */
 }
 
+.credit {
+  font-size: 0.4em;
+  opacity: 0.6;
+  text-align: right;
+}

@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-10-19">
+
+<title>Climate-Change Impact Strategy for Lake Rotorua – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-761fc14e25ebc0e942fc86aa4dfe65fb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./climate-impact-strategy.html">Climate Impact Strategy (draft)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#purpose-and-questions" id="toc-purpose-and-questions" class="nav-link active" data-scroll-target="#purpose-and-questions"><span class="header-section-number">1</span> Purpose and questions</a></li>
+  <li><a href="#what-is-already-in-the-project" id="toc-what-is-already-in-the-project" class="nav-link" data-scroll-target="#what-is-already-in-the-project"><span class="header-section-number">2</span> What is already in the project</a></li>
+  <li><a href="#gaps-to-close-before-running-projections" id="toc-gaps-to-close-before-running-projections" class="nav-link" data-scroll-target="#gaps-to-close-before-running-projections"><span class="header-section-number">3</span> Gaps to close before running projections</a></li>
+  <li><a href="#design" id="toc-design" class="nav-link" data-scroll-target="#design"><span class="header-section-number">4</span> Design</a>
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">4.1</span> Overview</a></li>
+  <li><a href="#climate-forcing" id="toc-climate-forcing" class="nav-link" data-scroll-target="#climate-forcing"><span class="header-section-number">4.2</span> Climate forcing</a></li>
+  <li><a href="#simulation-length" id="toc-simulation-length" class="nav-link" data-scroll-target="#simulation-length"><span class="header-section-number">4.3</span> Simulation length</a></li>
+  <li><a href="#spin-up-and-equilibrium" id="toc-spin-up-and-equilibrium" class="nav-link" data-scroll-target="#spin-up-and-equilibrium"><span class="header-section-number">4.4</span> Spin-up and equilibrium</a></li>
+  <li><a href="#inflows-three-tiers" id="toc-inflows-three-tiers" class="nav-link" data-scroll-target="#inflows-three-tiers"><span class="header-section-number">4.5</span> Inflows (three tiers)</a></li>
+  <li><a href="#alum-scenarios" id="toc-alum-scenarios" class="nav-link" data-scroll-target="#alum-scenarios"><span class="header-section-number">4.6</span> Alum scenarios</a></li>
+  <li><a href="#parameter-and-structural-uncertainty" id="toc-parameter-and-structural-uncertainty" class="nav-link" data-scroll-target="#parameter-and-structural-uncertainty"><span class="header-section-number">4.7</span> Parameter and structural uncertainty</a></li>
+  <li><a href="#metrics" id="toc-metrics" class="nav-link" data-scroll-target="#metrics"><span class="header-section-number">4.8</span> Metrics</a></li>
+  </ul></li>
+  <li><a href="#experimental-design-and-compute-budget" id="toc-experimental-design-and-compute-budget" class="nav-link" data-scroll-target="#experimental-design-and-compute-budget"><span class="header-section-number">5</span> Experimental design and compute budget</a></li>
+  <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan"><span class="header-section-number">6</span> Analysis plan</a></li>
+  <li><a href="#deliverables-and-layout" id="toc-deliverables-and-layout" class="nav-link" data-scroll-target="#deliverables-and-layout"><span class="header-section-number">7</span> Deliverables and layout</a></li>
+  <li><a href="#risks-and-how-they-are-handled" id="toc-risks-and-how-they-are-handled" class="nav-link" data-scroll-target="#risks-and-how-they-are-handled"><span class="header-section-number">8</span> Risks and how they are handled</a></li>
+  <li><a href="#sequence" id="toc-sequence" class="nav-link" data-scroll-target="#sequence"><span class="header-section-number">9</span> Sequence</a></li>
+  <li><a href="#open-questions" id="toc-open-questions" class="nav-link" data-scroll-target="#open-questions"><span class="header-section-number">10</span> Open questions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./climate-impact-strategy.html">Climate Impact Strategy (draft)</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Climate-Change Impact Strategy for Lake Rotorua</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Nutrient dynamics, trophic state (TLI4) and alum dosing under CMIP6 scenarios</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 19, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Status: draft strategy.</strong> It builds on components that already exist in this project and lists what still has to be done before the projections can be trusted. Numbers marked <em>estimate</em> are my planning figures, not measurements.</p>
+<section id="purpose-and-questions" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="purpose-and-questions"><span class="header-section-number">1</span> Purpose and questions</h2>
+<p>The aim is to estimate how climate change alters nutrient dynamics and the trophic state of Lake Rotorua, and how much alum dosing could offset it. Three questions drive the design:</p>
+<ol type="1">
+<li><strong>Climate effect.</strong> With catchment loads and alum dosing held as they are now, how do water temperature, stratification, bottom-water oxygen, internal P release, chlorophyll-a and <code>LKE_tli4</code> change by mid and late century, and how large is that change compared with year-to-year variability?</li>
+<li><strong>Management response.</strong> How does the effect of alum dosing (present operations, more, less, none) change under each climate? Put another way, how much more or less alum is needed to hold <code>LKE_tli4</code> at a chosen target?</li>
+<li><strong>Uncertainty.</strong> How much of the spread comes from the GCM, the emissions pathway, the catchment response, the alum behaviour, and the model parameters?</li>
+</ol>
+</section>
+<section id="what-is-already-in-the-project" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-already-in-the-project"><span class="header-section-number">2</span> What is already in the project</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Where</th>
+<th>What it gives us</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bias-corrected hourly baseline</td>
+<td><code>era5_corrected_hourly</code>, <code>era5_corrected_daily_baseline</code> (ERA5-Land 2011 to 2026, corrected against the buoy)</td>
+<td>Realistic weather to perturb</td>
+</tr>
+<tr class="even">
+<td>CMIP6 delta factors</td>
+<td><code>gcm_monthly_deltas_df</code> (7 GCMs × SSP126/245/370/585 × windows 2015–2040, 2041–2070, 2071–2100, against 1995 to 2014; <code>NZESM</code> has no SSP585)</td>
+<td>Monthly change factors (additive for temperature and shortwave, ratio for rain, wind, humidity)</td>
+</tr>
+<tr class="odd">
+<td>Scenario forcing</td>
+<td><code>scenario_daily_met</code> → <code>scenario_hourly_met</code> (83 combinations, gated off by default)</td>
+<td>Hourly AEME forcing per GCM × SSP × window</td>
+</tr>
+<tr class="even">
+<td>Extreme-event indices</td>
+<td><code>scenario_extreme_indices</code>, <code>climate-extreme-events.qmd</code></td>
+<td>Storm and heatwave frequency, for interpretation</td>
+</tr>
+<tr class="odd">
+<td>Alum dosing history and scenario tools</td>
+<td><code>alum_dosing</code>, <code>calc_alum_inflow()</code>, <code>scale_alum_inflows()</code>, <code>scripts/alum/01_run_scenarios.R</code>, <a href="./rotorua-alum-scenarios.html">alum scenarios page</a></td>
+<td>Dose in the Utuhina and Puarenga inflows, and scenarios on dose, binding capacity, settling and resuspension</td>
+</tr>
+<tr class="even">
+<td>Calibrated model</td>
+<td><code>aeme_base.rds</code> plus the staged PEST++ calibration (<code>calibration/</code>, <a href="./rotorua-calibration-staged.html">calibration page</a>)</td>
+<td>The GLM-AED model and parameter sets</td>
+</tr>
+<tr class="odd">
+<td>Trophic metrics</td>
+<td><code>LKE_tlic</code>, <code>LKE_tlin</code>, <code>LKE_tlip</code>, <code>LKE_tlise</code>, <code>LKE_tli3</code>, <code>LKE_tli4</code> (AEME derived variables)</td>
+<td>TLI computed daily by the model</td>
+</tr>
+<tr class="even">
+<td>Historical catchment inflows</td>
+<td><code>rotorua_inflow_list</code> (13 inflows, daily, 1959 to 2022, including geothermal and WWTP)</td>
+<td>Flow and nutrient inputs</td>
+</tr>
+</tbody>
+</table>
+<p><code>LKE_tli4</code> is computed by AEME each day from the epilimnion mean of chlorophyll-a, total nitrogen and total phosphorus, and the euphotic depth (<code>LKE_photic</code>) used as the Secchi term. It therefore depends on total P, total N and light, not on FRP.</p>
+</section>
+<section id="gaps-to-close-before-running-projections" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="gaps-to-close-before-running-projections"><span class="header-section-number">3</span> Gaps to close before running projections</h2>
+<p>The calibration has to describe the quantities that drive the metrics. Status after the corrected calibration run (<a href="./rotorua-calibration-staged.html">calibration page</a>):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Gap</th>
+<th>Why it matters</th>
+<th>Status and action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>TP, TN and Secchi/light are not calibration targets</td>
+<td><code>LKE_tli4</code> is built from them</td>
+<td><strong>Open.</strong> Add <code>PHS_tp</code>, <code>NIT_tn</code> and light extinction/Secchi to the targets (about 1,455 TP, 1,441 TN and 783 Secchi observations exist)</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Bottom-water anoxia</td>
+<td>Internal P release and stratification effects depend on it</td>
+<td><strong>Improved.</strong> Oxygen KGE 0.69; sediment oxygen demand needed about 4 times the measured values; <code>CHM_oxynal</code> is now a target. Check the anoxic days against observations before use</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Chlorophyll-a timing</td>
+<td>One of the four TLI4 terms and the main response variable</td>
+<td><strong>Partly.</strong> KGE 0.20, r = 0.24 (was negative); log1p scoring used. Still weak; phytoplankton temperature parameters (<code>T_opt</code>) not yet calibrated</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>FRP and ammonium</td>
+<td>Alum is the main management lever; ammonium feeds TN</td>
+<td>FRP is unbiased but r is only 0.03 to 0.19. <strong>Ammonium is poor (KGE about −0.6) and uninvestigated</strong></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><strong>Rainfall units in <code>era5_corrected_hourly</code></strong></td>
+<td>Rain was about 42 times too small in the model forcing until the calibration base was corrected (<code>build_calib_base_aeme()</code>); the delta-change ratio for rain is unit-free but the baseline is not</td>
+<td><strong>Open.</strong> Fix once at source (the <code>era5_corrected_hourly</code> target), then re-check <code>scenario_hourly_met</code></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><strong>Unit bug in <code>aemetools</code></strong></td>
+<td><code>aemetools</code> converted oxygen, FRP, ammonium and nitrate a second time when comparing with observations, so any calibration or sensitivity run through <code>calib_aeme()</code>/<code>sa_aeme()</code> in this environment scored the wrong values</td>
+<td><strong>Worked around</strong> with a private patched copy for the calibration. The scenario runs read output through <code>AEME</code> directly, so they are not affected, but the upstream package needs fixing</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Stage 3 was calibrated without alum</td>
+<td>The lake was dosed throughout the calibration window</td>
+<td><strong>Open.</strong> Re-run stage 3 with alum on from the start (dosing history)</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Barely identified parameters sit at their bounds</td>
+<td>Wind, crest elevation, sediment temperature amplitude, <code>rpoc_hydrol</code> and diatom <code>R_growth</code></td>
+<td>Treat as structural uncertainty; test the sensitivity of projections to them</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>No validation of TLI4 itself</td>
+<td>We should know the model reproduces the observed annual TLI</td>
+<td>Hindcast 2011 to 2022 and compare annual TLI4 and its components with the observed record</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Inflows are historical only</td>
+<td>Climate also changes flow, load and stream temperature</td>
+<td>Inflow adaptation (below)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="design" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="design"><span class="header-section-number">4</span> Design</h2>
+<section id="overview" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">4.1</span> Overview</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[ERA5 baseline&lt;br/&gt;bias-corrected] --&gt; C[Scenario forcing&lt;br/&gt;GCM x SSP x window]
+  B[CMIP6 monthly deltas] --&gt; C
+  D[Historical inflows&lt;br/&gt;1959-2022] --&gt; E[Inflow adaptation&lt;br/&gt;flow, load, temperature]
+  C --&gt; E
+  C --&gt; F[GLM-AED runs]
+  E --&gt; F
+  G[Alum scenarios] --&gt; F
+  H[Parameter ensemble&lt;br/&gt;from calibration] --&gt; F
+  F --&gt; I[Daily output&lt;br/&gt;nutrients, DO, TLI4]
+  I --&gt; J[Annual and seasonal metrics&lt;br/&gt;variance partitioning]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="climate-forcing" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="climate-forcing"><span class="header-section-number">4.2</span> Climate forcing</h3>
+<ul>
+<li>Use the existing delta-change forcing (<code>scenario_hourly_met</code>). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.</li>
+<li>Use <strong>30-year time slices</strong>, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the <strong>1991 to 2020 ERA5 climate normal</strong> (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.</li>
+<li><strong>How the ERA5 record maps to the climate windows.</strong> The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (<code>scenario_ref_years</code>), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).</li>
+<li>The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.</li>
+<li><strong>NZESM (360-day calendar).</strong> No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. The one thing to verify is that <code>metscale::climate_point_monthly_climatology()</code> assigns NZESM days to calendar months correctly (the repository already handles 360-day time in <code>R/summarise_gcm_ts.R</code> and <code>R/standardise_to_gregorian.R</code>). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.</li>
+<li>Keep <strong>hindcast</strong> (no delta) as the reference, and compare future windows with it, not with observations.</li>
+<li>Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on <code>NorESM2-MM</code> alone, which is at the low end.</li>
+<li>Assumption to state clearly: delta-change keeps present variability and sequences, so it will not capture changes in the frequency of persistent calm spells beyond what the monthly means imply. The extreme-event indices are used to check this.</li>
+</ul>
+</section>
+<section id="simulation-length" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="simulation-length"><span class="header-section-number">4.3</span> Simulation length</h3>
+<p>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:</p>
+<ul>
+<li><strong>Variability.</strong> Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).</li>
+<li><strong>Rare events.</strong> Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.</li>
+<li><strong>Slow state variables.</strong> Sediment P pools, benthic alum pools and the legacy effect of stopping or changing dosing evolve over 10 to 30 years, so they need a spin-up of 5 to 10 years and, for the alum questions, runs long enough to see the response.</li>
+</ul>
+<p>What is needed to get 30 years:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weather baseline 1991 to 2020</td>
+<td>The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected</td>
+<td>Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5)</td>
+</tr>
+<tr class="even">
+<td>Inflows</td>
+<td>The historical inflow series covers 1959 to 2022, so 1991 to 2020 is available</td>
+<td>None, but check the inflow record is consistent through the period</td>
+</tr>
+<tr class="odd">
+<td>Alum dosing in the baseline</td>
+<td>Dosing history starts in 2006 and 2010</td>
+<td>Use a constant present-day dose for the slices (scenario A1) rather than the history</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Time slices or transient runs.</strong> Use 30-year time slices (a stationary climate per window, 5 to 10 years of spin-up) as the main design. Add a small number of <em>transient</em> runs for the alum questions that depend on timing and legacy: for example 2 to 3 GCMs under SSP245 and SSP585, run continuously from 2015 to 2100 with the monthly deltas interpolated between windows. A slice cannot show how long P from a stopped dose lingers or how fast the benthic alum pool builds.</p>
+<p><strong>Cost.</strong> Thirty years roughly doubles the 15-year cost per run, so the full design below needs about 20 hours rather than about 11. A tiered plan keeps it manageable: 30-year slices for the core scenarios and the hindcast, and 15-year slices (the 2011 to 2025 weather) for the large sweeps over alum parameters and inflow tiers. Check the two give the same signal on the pilot set before relying on the shorter runs.</p>
+<p><strong>Do we need 1970 to 2100 runs?</strong> No, not for the main questions. With delta-change, a continuous run to 2100 would need a trend in the forcing that the monthly-window deltas do not provide, and the slices already answer “what is the lake like under climate X”. Transient runs are only justified for timing and legacy questions (A4 below), and are optional for now.</p>
+</section>
+<section id="spin-up-and-equilibrium" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="spin-up-and-equilibrium"><span class="header-section-number">4.4</span> Spin-up and equilibrium</h3>
+<p>How long a run must be depends on which state variable carries memory:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Memory</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Water column nutrients, chlorophyll-a, temperature</td>
+<td>Months to about 1 to 2 years (residence time; <em>check against modelled outflow</em>)</td>
+<td>A 2 to 3 year spin-up is enough</td>
+</tr>
+<tr class="even">
+<td>Sediment P pools, benthic alum pools</td>
+<td>Many years</td>
+<td>5 to 10 years of spin-up, and this is what matters for alum</td>
+</tr>
+</tbody>
+</table>
+<p>For the <strong>alum on/off</strong> comparison the question decides the design:</p>
+<ul>
+<li><em>Equilibrium contrast</em> (A0 versus A1, each in its own steady state): spin each case up under its own dosing, then run the 30 years. This is the default for the slices, and it needs the full 5 to 10 year spin-up because the sediment and alum pools differ between the cases. Spin up by looping the first 5 to 10 years of the baseline weather (or using 1988 to 1990 plus a loop).</li>
+<li><em>Transient response</em> (what happens after dosing stops from today’s state): needs a continuous run from the present state and a long enough record to see the legacy P decline. Keep this as the small optional set (A4).</li>
+</ul>
+<p>Check that the spin-up is adequate empirically, once, on the pilot: run a slice twice back to back and compare the first and last 10 years of annual <code>LKE_tli4</code>, sediment P and benthic alum pools. If the drift is small relative to the climate signal and to the A0–A1 difference, the spin-up is sufficient.</p>
+</section>
+<section id="inflows-three-tiers" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="inflows-three-tiers"><span class="header-section-number">4.5</span> Inflows (three tiers)</h3>
+<p><strong>Initial phase.</strong> Climate-adjusted inflows do not exist yet, so the first runs use <strong>T1 only</strong> (historical 1991 to 2020 inflows, which are coherent with the ERA5 weather years) with <strong>two alum cases</strong>: A0 (none) and A1 (present flow-paced dose). Optionally shift stream temperature with the air-temperature delta (T1+, a cheap and defensible adjustment). State plainly that flow and load are unchanged while rainfall changes, so results are a lower bound on the catchment-driven change. T2 and T3 and alum cases A2 to A5 are later phases.</p>
+<p>Climate also changes what enters the lake, and this is likely to matter as much as in-lake warming for nutrients.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tier</th>
+<th>Inflow treatment</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T1</td>
+<td>Historical inflows unchanged</td>
+<td>Isolates the direct lake response to weather and temperature</td>
+</tr>
+<tr class="even">
+<td>T2</td>
+<td>Scale flow with the rainfall delta (with a runoff elasticity) and the evapotranspiration implied by the temperature delta; scale loads with flow through a load–discharge exponent; shift stream temperature with air temperature</td>
+<td>Plausible catchment response without a catchment model</td>
+</tr>
+<tr class="odd">
+<td>T3</td>
+<td>Drive a catchment model with the scenario forcing (if the catchment model used to make the 1959 to 2022 inflow series can be run)</td>
+<td>Best available, and the way to test T2</td>
+</tr>
+</tbody>
+</table>
+<p>Run T1 and T2 for the full ensemble and T3 for a subset if available. The alum dose is proportional to flow in the dosed streams, so T2 also changes the alum delivered, which is a real climate–management interaction and is kept.</p>
+</section>
+<section id="alum-scenarios" class="level3" data-number="4.6">
+<h3 data-number="4.6" class="anchored" data-anchor-id="alum-scenarios"><span class="header-section-number">4.6</span> Alum scenarios</h3>
+<p>Built on <code>scale_alum_inflows()</code>; efficiency uses the factor already defined as <code>ratio_al_p</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Dosing</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A0</td>
+<td>None</td>
+<td>Counterfactual</td>
+</tr>
+<tr class="even">
+<td>A1</td>
+<td>Present operations (Utuhina and Puarenga, flow-paced at about 1 mg Al/L)</td>
+<td>Business as usual</td>
+</tr>
+<tr class="odd">
+<td>A2</td>
+<td>A1 with doubled dose</td>
+<td>Management response</td>
+</tr>
+<tr class="even">
+<td>A3</td>
+<td>A1 with half dose</td>
+<td>Reduced effort</td>
+</tr>
+<tr class="odd">
+<td>A4</td>
+<td>Dosing stops at a set date</td>
+<td>Legacy P release from sediment</td>
+</tr>
+<tr class="even">
+<td>A5</td>
+<td>Adaptive dose: increases when modelled lake TLI4 or FRP is above a target</td>
+<td>Inverse question: dose needed to hold the target</td>
+</tr>
+</tbody>
+</table>
+<p>Alum behaviour is treated as an uncertainty dimension, using the thesis-based ranges in <a href="./alum-dosing-sanila-msc-thesis.html">the thesis notes</a> and the calibration page: floc settling 0.3 to 1.5 m/d, binding efficiency (Al:P) from 0.15 (field, about 7:1) to 1.4 (jar test, 0.7:1), resuspension on or off. The stage 4 sensitivity check showed that, in the calibrated model, the FRP fit is nearly insensitive to the alum parameters within their ranges and that removing the dose raises mean FRP by only about 30%. The alum response in the projections is therefore uncertain and should be explored through these ranges, not taken from a single fitted value.</p>
+</section>
+<section id="parameter-and-structural-uncertainty" class="level3" data-number="4.7">
+<h3 data-number="4.7" class="anchored" data-anchor-id="parameter-and-structural-uncertainty"><span class="header-section-number">4.7</span> Parameter and structural uncertainty</h3>
+<ul>
+<li>Use a small parameter ensemble from the calibration posterior (about 5 members from the final <code>pestpp-ies</code> ensemble), plus the alum efficiency and settling range above.</li>
+<li>Add structural checks: switch temperature dependence of sediment P release and mineralisation (<code>theta_*</code>) between default and a stronger response; test phytoplankton <code>T_opt</code> shifts, since adaptation is unknown.</li>
+<li>Do not tune the model to future conditions. Parameters stay fixed at their calibrated values.</li>
+</ul>
+</section>
+<section id="metrics" class="level3" data-number="4.8">
+<h3 data-number="4.8" class="anchored" data-anchor-id="metrics"><span class="header-section-number">4.8</span> Metrics</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>Variables</th>
+<th>Reported as</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Trophic state</td>
+<td><code>LKE_tli4</code>, <code>LKE_tlic</code>, <code>LKE_tlin</code>, <code>LKE_tlip</code>, <code>LKE_tlise</code></td>
+<td>Annual mean, change from hindcast, probability of exceeding the management target (BOPRC’s target for Lake Rotorua is 4.2; verify)</td>
+</tr>
+<tr class="even">
+<td>Nutrients</td>
+<td>TP, TN, FRP, ammonium, nitrate (epilimnion and bottom)</td>
+<td>Annual and seasonal means; TN:TP</td>
+</tr>
+<tr class="odd">
+<td>Phytoplankton</td>
+<td>Chlorophyll-a, cyanobacteria</td>
+<td>Annual mean, days above bloom threshold, bloom timing</td>
+</tr>
+<tr class="even">
+<td>Oxygen and stratification</td>
+<td>Bottom-water oxygen, <code>CHM_oxynal</code> (anoxic layers), days anoxic, stratified days, Schmidt stability</td>
+<td>Days per year, onset and duration</td>
+</tr>
+<tr class="odd">
+<td>Internal loading</td>
+<td>Benthic FRP and P fluxes, alum pools (<code>ALU_ben_*</code>), P mass balance</td>
+<td>Tonnes P per year, internal vs external share</td>
+</tr>
+<tr class="even">
+<td>Hydrology</td>
+<td>Water level, outflow, evaporation, residence time</td>
+<td>Annual means, extremes</td>
+</tr>
+</tbody>
+</table>
+<p>TLI uses annual means in regulatory practice. Keep the daily series, but report the annual metric as the headline and show the seasonal cycle separately.</p>
+</section>
+</section>
+<section id="experimental-design-and-compute-budget" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="experimental-design-and-compute-budget"><span class="header-section-number">5</span> Experimental design and compute budget</h2>
+<p><strong>Initial phase (current scope):</strong> 83 GCM × SSP × window combinations × 2 alum cases (A0, A1) × T1 inflows = 166 runs, plus the hindcast. At 5 to 6 minutes per 30 + 5 year run and about 2 runs per minute on six workers this is roughly 3 to 4 hours of wall time; pilot with 3 GCMs first (about 36 runs). The phases below are the fuller design for when inflow scenarios exist.</p>
+<p><em>Estimate:</em> a 15 + 3 year run takes about 1 minute of GLM time plus 1 to 2 minutes to read the output when only the needed variables are requested, so about 3 minutes per run, and a 30 + 5 year run about 5 to 6 minutes. Six workers give about 2 runs per minute for 15-year runs. The table below uses 15-year runs for the sweeps; the core scenarios and the hindcast use 30-year slices (see <em>Simulation length</em>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Phase</th>
+<th>Runs</th>
+<th>Estimated time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P1 Hindcast and validation</td>
+<td>5 parameter members × 2 alum cases</td>
+<td>under 1 hour</td>
+</tr>
+<tr class="even">
+<td>P2 Pilot (T1 inflows)</td>
+<td>3 GCMs × 2 SSPs × 2 windows × 3 alum (A0, A1, A2) = 36</td>
+<td>about 20 minutes</td>
+</tr>
+<tr class="odd">
+<td>P3 Main climate ensemble (T1 and T2)</td>
+<td>27 GCM–SSP combinations × 2 windows (2041–2070, 2071–2100) × 2 inflow tiers × 3 alum (A0, A1, A2) = 324</td>
+<td>about 3 hours</td>
+</tr>
+<tr class="even">
+<td>P4 Alum scenarios (full set A0 to A5)</td>
+<td>27 × 2 × 6 × 2 tiers = 648</td>
+<td>about 5.5 hours</td>
+</tr>
+<tr class="odd">
+<td>P5 Parameter ensemble (reduced)</td>
+<td>5 members × SSP245 and SSP585 × 7 GCMs × late window × A1 = 70</td>
+<td>about 40 minutes</td>
+</tr>
+<tr class="even">
+<td>P6 Structural checks and T3 subset</td>
+<td>about 100</td>
+<td>about 1 hour</td>
+</tr>
+</tbody>
+</table>
+<p>About 1,200 runs. With 15-year runs that is about 11 hours; with all of them at 30 years it would be about 20 hours, which is why the design is tiered. Run it as a <code>targets</code> pipeline, not a PEST script: these are deterministic, independent and benefit from caching, unlike the calibration. Use a <code>crew</code> controller with a worker count below the physical core count.</p>
+</section>
+<section id="analysis-plan" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="analysis-plan"><span class="header-section-number">6</span> Analysis plan</h2>
+<ol type="1">
+<li><strong>Hindcast check.</strong> Compare the 2011 to 2022 hindcast (the period with water-quality observations) annual TLI4 and components with observed, per year. State the skill and bias explicitly and carry them into the interpretation.</li>
+<li><strong>Climate signal.</strong> For each metric, compute future minus hindcast per run. Report the ensemble median, the GCM range, and the fraction of runs agreeing in sign.</li>
+<li><strong>Signal against variability.</strong> Compare the climate change with the spread of annual values within the hindcast (internal variability). A change smaller than that is reported as such.</li>
+<li><strong>Variance partitioning.</strong> Decompose the spread into GCM, SSP, window, inflow tier, alum scenario and parameter member (ANOVA or mixed model). This answers question 3.</li>
+<li><strong>Alum response curves.</strong> For each climate, plot TLI4 and FRP against alum dose multiplier and efficiency, and read off the dose that holds the target. Report the extra dose required by climate.</li>
+<li><strong>Process attribution.</strong> Compare T1 and T2 inflows and A0 and A1 alum to separate in-lake warming, catchment input and alum effects. Use simple factorial contrasts.</li>
+<li><strong>Event view.</strong> Link the extreme-event indices (storms, heatwaves) to bloom and anoxia days in the runs where those change most.</li>
+</ol>
+</section>
+<section id="deliverables-and-layout" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="deliverables-and-layout"><span class="header-section-number">7</span> Deliverables and layout</h2>
+<ul>
+<li><code>scenarios/</code> with scripts <code>10_build_scenario_aeme.R</code> (forcing, inflows, alum, parameter set → Aeme object), <code>11_run_scenarios.R</code> (targets-based, one branch per run, daily lake-mean and epilimnion/hypolimnion series only), <code>12_metrics.R</code> (annual and seasonal metrics, TLI), and <code>13_analysis.R</code>.</li>
+<li>Summary tables as CSV in <code>data/processed/scenarios/</code> so the website pages do not re-run models.</li>
+<li>Quarto pages: results by metric, alum response curves, uncertainty partitioning, and a short non-technical summary.</li>
+</ul>
+</section>
+<section id="risks-and-how-they-are-handled" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="risks-and-how-they-are-handled"><span class="header-section-number">8</span> Risks and how they are handled</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Risk</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calibration still weak for chl-a, TP, TN</td>
+<td>Gap list above; present results as <em>change from the model’s own hindcast</em>, and state hindcast skill</td>
+</tr>
+<tr class="even">
+<td>Catchment response unknown</td>
+<td>Tiers T1 to T3; report T1 as a lower bound on change</td>
+</tr>
+<tr class="odd">
+<td>Alum behaviour poorly constrained by data</td>
+<td>Scenario dimension with thesis ranges; do not report a single efficiency</td>
+</tr>
+<tr class="even">
+<td>Delta-change misses changes in variability and extremes</td>
+<td>Check against extreme-event indices; state the limitation</td>
+</tr>
+<tr class="odd">
+<td>Compute</td>
+<td>Tiered design; run the pilot first and re-estimate time per run before committing</td>
+</tr>
+<tr class="even">
+<td>Pipeline fragility (long runs, large netCDF)</td>
+<td>Request only the variables needed; store small summaries, not netCDF; cache by branch</td>
+</tr>
+<tr class="odd">
+<td>Rainfall unit issue in the forcing</td>
+<td>Fix at source and add a unit and annual-total check to the pipeline</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sequence" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sequence"><span class="header-section-number">9</span> Sequence</h2>
+<ol type="1">
+<li>Close the open calibration gaps (TP, TN and Secchi targets, ammonium, stage 3 with alum on) and fix the rainfall units and the <code>aemetools</code> unit bug at source.</li>
+<li>Hindcast and TLI4 validation (P1). <strong>Go or no-go on skill before continuing.</strong></li>
+<li>Pilot (P2); re-time the run and refine the design.</li>
+<li>Main ensemble and alum scenarios (P3, P4), then parameter and structural checks (P5, P6).</li>
+<li>Analysis and reporting.</li>
+</ol>
+</section>
+<section id="open-questions" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="open-questions"><span class="header-section-number">10</span> Open questions</h2>
+<ul>
+<li>Which TLI4 target or threshold should be used for management (for example BOPRC’s 4.2), and is annual mean TLI4 the right headline metric?</li>
+<li>Is a catchment model available that can be driven with the scenario forcing (T3), and who owns the 1959 to 2022 inflow series?</li>
+<li>Are there planned changes in dosing locations, dose rates or the Ōhau weir operation that should be scenarios in their own right?</li>
+<li>For alum on/off, is the equilibrium contrast (each case spun up under its own dosing) the question of interest, or the transient response after stopping from today’s state?</li>
+<li>Should land-use or point-source changes (WWTP, geothermal) be included, or is the question climate only?</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Climate-Change Impact Strategy for Lake Rotorua"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Nutrient dynamics, trophic state (TLI4) and alum dosing under CMIP6 scenarios"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>**Status: draft strategy.** It builds on components that already exist in this project and lists what still has to be done before the projections can be trusted. Numbers marked *estimate* are my planning figures, not measurements.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Purpose and questions</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>The aim is to estimate how climate change alters nutrient dynamics and the trophic state of Lake Rotorua, and how much alum dosing could offset it. Three questions drive the design:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Climate effect.** With catchment loads and alum dosing held as they are now, how do water temperature, stratification, bottom-water oxygen, internal P release, chlorophyll-a and <span class="in">`LKE_tli4`</span> change by mid and late century, and how large is that change compared with year-to-year variability?</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Management response.** How does the effect of alum dosing (present operations, more, less, none) change under each climate? Put another way, how much more or less alum is needed to hold <span class="in">`LKE_tli4`</span> at a chosen target?</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Uncertainty.** How much of the spread comes from the GCM, the emissions pathway, the catchment response, the alum behaviour, and the model parameters?</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is already in the project</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Component <span class="pp">|</span> Where <span class="pp">|</span> What it gives us <span class="pp">|</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bias-corrected hourly baseline <span class="pp">|</span> <span class="in">`era5_corrected_hourly`</span>, <span class="in">`era5_corrected_daily_baseline`</span> (ERA5-Land 2011 to 2026, corrected against the buoy) <span class="pp">|</span> Realistic weather to perturb <span class="pp">|</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> CMIP6 delta factors <span class="pp">|</span> <span class="in">`gcm_monthly_deltas_df`</span> (7 GCMs × SSP126/245/370/585 × windows 2015–2040, 2041–2070, 2071–2100, against 1995 to 2014; <span class="in">`NZESM`</span> has no SSP585) <span class="pp">|</span> Monthly change factors (additive for temperature and shortwave, ratio for rain, wind, humidity) <span class="pp">|</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Scenario forcing <span class="pp">|</span> <span class="in">`scenario_daily_met`</span> → <span class="in">`scenario_hourly_met`</span> (83 combinations, gated off by default) <span class="pp">|</span> Hourly AEME forcing per GCM × SSP × window <span class="pp">|</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Extreme-event indices <span class="pp">|</span> <span class="in">`scenario_extreme_indices`</span>, <span class="in">`climate-extreme-events.qmd`</span> <span class="pp">|</span> Storm and heatwave frequency, for interpretation <span class="pp">|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Alum dosing history and scenario tools <span class="pp">|</span> <span class="in">`alum_dosing`</span>, <span class="in">`calc_alum_inflow()`</span>, <span class="in">`scale_alum_inflows()`</span>, <span class="in">`scripts/alum/01_run_scenarios.R`</span>, <span class="co">[</span><span class="ot">alum scenarios page</span><span class="co">](rotorua-alum-scenarios.qmd)</span> <span class="pp">|</span> Dose in the Utuhina and Puarenga inflows, and scenarios on dose, binding capacity, settling and resuspension <span class="pp">|</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Calibrated model <span class="pp">|</span> <span class="in">`aeme_base.rds`</span> plus the staged PEST++ calibration (<span class="in">`calibration/`</span>, <span class="co">[</span><span class="ot">calibration page</span><span class="co">](rotorua-calibration-staged.qmd)</span>) <span class="pp">|</span> The GLM-AED model and parameter sets <span class="pp">|</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Trophic metrics <span class="pp">|</span> <span class="in">`LKE_tlic`</span>, <span class="in">`LKE_tlin`</span>, <span class="in">`LKE_tlip`</span>, <span class="in">`LKE_tlise`</span>, <span class="in">`LKE_tli3`</span>, <span class="in">`LKE_tli4`</span> (AEME derived variables) <span class="pp">|</span> TLI computed daily by the model <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Historical catchment inflows <span class="pp">|</span> <span class="in">`rotorua_inflow_list`</span> (13 inflows, daily, 1959 to 2022, including geothermal and WWTP) <span class="pp">|</span> Flow and nutrient inputs <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="in">`LKE_tli4`</span> is computed by AEME each day from the epilimnion mean of chlorophyll-a, total nitrogen and total phosphorus, and the euphotic depth (<span class="in">`LKE_photic`</span>) used as the Secchi term. It therefore depends on total P, total N and light, not on FRP.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gaps to close before running projections</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>The calibration has to describe the quantities that drive the metrics. Status after the corrected calibration run (<span class="co">[</span><span class="ot">calibration page</span><span class="co">](rotorua-calibration-staged.qmd)</span>):</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> # <span class="pp">|</span> Gap <span class="pp">|</span> Why it matters <span class="pp">|</span> Status and action <span class="pp">|</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> TP, TN and Secchi/light are not calibration targets <span class="pp">|</span> <span class="in">`LKE_tli4`</span> is built from them <span class="pp">|</span> **Open.** Add <span class="in">`PHS_tp`</span>, <span class="in">`NIT_tn`</span> and light extinction/Secchi to the targets (about 1,455 TP, 1,441 TN and 783 Secchi observations exist) <span class="pp">|</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2 <span class="pp">|</span> Bottom-water anoxia <span class="pp">|</span> Internal P release and stratification effects depend on it <span class="pp">|</span> **Improved.** Oxygen KGE 0.69; sediment oxygen demand needed about 4 times the measured values; <span class="in">`CHM_oxynal`</span> is now a target. Check the anoxic days against observations before use <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 3 <span class="pp">|</span> Chlorophyll-a timing <span class="pp">|</span> One of the four TLI4 terms and the main response variable <span class="pp">|</span> **Partly.** KGE 0.20, r = 0.24 (was negative); log1p scoring used. Still weak; phytoplankton temperature parameters (<span class="in">`T_opt`</span>) not yet calibrated <span class="pp">|</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4 <span class="pp">|</span> FRP and ammonium <span class="pp">|</span> Alum is the main management lever; ammonium feeds TN <span class="pp">|</span> FRP is unbiased but r is only 0.03 to 0.19. **Ammonium is poor (KGE about −0.6) and uninvestigated** <span class="pp">|</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 5 <span class="pp">|</span> **Rainfall units in `era5_corrected_hourly`** | Rain was about 42 times too small in the model forcing until the calibration base was corrected (`build_calib_base_aeme()`); the delta-change ratio for rain is unit-free but the baseline is not | **Open.** Fix once at source (the <span class="in">`era5_corrected_hourly`</span> target), then re-check <span class="in">`scenario_hourly_met`</span> <span class="pp">|</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 6 <span class="pp">|</span> **Unit bug in `aemetools`** | `aemetools` converted oxygen, FRP, ammonium and nitrate a second time when comparing with observations, so any calibration or sensitivity run through `calib_aeme()`/`sa_aeme()` in this environment scored the wrong values | **Worked around** with a private patched copy for the calibration. The scenario runs read output through <span class="in">`AEME`</span> directly, so they are not affected, but the upstream package needs fixing <span class="pp">|</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 7 <span class="pp">|</span> Stage 3 was calibrated without alum <span class="pp">|</span> The lake was dosed throughout the calibration window <span class="pp">|</span> **Open.** Re-run stage 3 with alum on from the start (dosing history) <span class="pp">|</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 8 <span class="pp">|</span> Barely identified parameters sit at their bounds <span class="pp">|</span> Wind, crest elevation, sediment temperature amplitude, <span class="in">`rpoc_hydrol`</span> and diatom <span class="in">`R_growth`</span> <span class="pp">|</span> Treat as structural uncertainty; test the sensitivity of projections to them <span class="pp">|</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 9 <span class="pp">|</span> No validation of TLI4 itself <span class="pp">|</span> We should know the model reproduces the observed annual TLI <span class="pp">|</span> Hindcast 2011 to 2022 and compare annual TLI4 and its components with the observed record <span class="pp">|</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 10 <span class="pp">|</span> Inflows are historical only <span class="pp">|</span> Climate also changes flow, load and stream temperature <span class="pp">|</span> Inflow adaptation (below) <span class="pp">|</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## Design</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overview</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>  A[ERA5 baseline&lt;br/&gt;bias-corrected] --&gt; C[Scenario forcing&lt;br/&gt;GCM x SSP x window]</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>  B[CMIP6 monthly deltas] --&gt; C</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>  D[Historical inflows&lt;br/&gt;<span class="dv">1959-2022</span>] --&gt; E[Inflow adaptation&lt;br/&gt;flow, load, temperature]</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>  C --&gt; E</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>  C --&gt; F[GLM-AED runs]</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  E --&gt; F</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  G[Alum scenarios] --&gt; F</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  H[Parameter ensemble&lt;br/&gt;from calibration] --&gt; F</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  F --&gt; I[Daily output&lt;br/&gt;nutrients, DO, TLI4]</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>  I --&gt; J[Annual <span class="ot">and</span> seasonal metrics&lt;br/&gt;variance partitioning]</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="fu">### Climate forcing</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use the existing delta-change forcing (<span class="in">`scenario_hourly_met`</span>). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**How the ERA5 record maps to the climate windows.** The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (<span class="in">`scenario_ref_years`</span>), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. The one thing to verify is that <span class="in">`metscale::climate_point_monthly_climatology()`</span> assigns NZESM days to calendar months correctly (the repository already handles 360-day time in <span class="in">`R/summarise_gcm_ts.R`</span> and <span class="in">`R/standardise_to_gregorian.R`</span>). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Keep **hindcast** (no delta) as the reference, and compare future windows with it, not with observations.</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on <span class="in">`NorESM2-MM`</span> alone, which is at the low end.</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Assumption to state clearly: delta-change keeps present variability and sequences, so it will not capture changes in the frequency of persistent calm spells beyond what the monthly means imply. The extreme-event indices are used to check this.</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulation length</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Variability.** Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rare events.** Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Slow state variables.** Sediment P pools, benthic alum pools and the legacy effect of stopping or changing dosing evolve over 10 to 30 years, so they need a spin-up of 5 to 10 years and, for the alum questions, runs long enough to see the response.</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>What is needed to get 30 years:</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Item <span class="pp">|</span> Status <span class="pp">|</span> Action <span class="pp">|</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Weather baseline 1991 to 2020 <span class="pp">|</span> The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected <span class="pp">|</span> Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) <span class="pp">|</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inflows <span class="pp">|</span> The historical inflow series covers 1959 to 2022, so 1991 to 2020 is available <span class="pp">|</span> None, but check the inflow record is consistent through the period <span class="pp">|</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Alum dosing in the baseline <span class="pp">|</span> Dosing history starts in 2006 and 2010 <span class="pp">|</span> Use a constant present-day dose for the slices (scenario A1) rather than the history <span class="pp">|</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>**Time slices or transient runs.** Use 30-year time slices (a stationary climate per window, 5 to 10 years of spin-up) as the main design. Add a small number of *transient* runs for the alum questions that depend on timing and legacy: for example 2 to 3 GCMs under SSP245 and SSP585, run continuously from 2015 to 2100 with the monthly deltas interpolated between windows. A slice cannot show how long P from a stopped dose lingers or how fast the benthic alum pool builds.</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>**Cost.** Thirty years roughly doubles the 15-year cost per run, so the full design below needs about 20 hours rather than about 11. A tiered plan keeps it manageable: 30-year slices for the core scenarios and the hindcast, and 15-year slices (the 2011 to 2025 weather) for the large sweeps over alum parameters and inflow tiers. Check the two give the same signal on the pilot set before relying on the shorter runs.</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>**Do we need 1970 to 2100 runs?** No, not for the main questions. With delta-change, a continuous run to 2100 would need a trend in the forcing that the monthly-window deltas do not provide, and the slices already answer "what is the lake like under climate X". Transient runs are only justified for timing and legacy questions (A4 below), and are optional for now.</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="fu">### Spin-up and equilibrium</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>How long a run must be depends on which state variable carries memory:</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Component <span class="pp">|</span> Memory <span class="pp">|</span> Consequence <span class="pp">|</span></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Water column nutrients, chlorophyll-a, temperature <span class="pp">|</span> Months to about 1 to 2 years (residence time; *check against modelled outflow*) <span class="pp">|</span> A 2 to 3 year spin-up is enough <span class="pp">|</span></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sediment P pools, benthic alum pools <span class="pp">|</span> Many years <span class="pp">|</span> 5 to 10 years of spin-up, and this is what matters for alum <span class="pp">|</span></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>For the **alum on/off** comparison the question decides the design:</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*Equilibrium contrast* (A0 versus A1, each in its own steady state): spin each case up under its own dosing, then run the 30 years. This is the default for the slices, and it needs the full 5 to 10 year spin-up because the sediment and alum pools differ between the cases. Spin up by looping the first 5 to 10 years of the baseline weather (or using 1988 to 1990 plus a loop).</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*Transient response* (what happens after dosing stops from today's state): needs a continuous run from the present state and a long enough record to see the legacy P decline. Keep this as the small optional set (A4).</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>Check that the spin-up is adequate empirically, once, on the pilot: run a slice twice back to back and compare the first and last 10 years of annual <span class="in">`LKE_tli4`</span>, sediment P and benthic alum pools. If the drift is small relative to the climate signal and to the A0–A1 difference, the spin-up is sufficient.</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inflows (three tiers)</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>**Initial phase.** Climate-adjusted inflows do not exist yet, so the first runs use **T1 only** (historical 1991 to 2020 inflows, which are coherent with the ERA5 weather years) with **two alum cases**: A0 (none) and A1 (present flow-paced dose). Optionally shift stream temperature with the air-temperature delta (T1+, a cheap and defensible adjustment). State plainly that flow and load are unchanged while rainfall changes, so results are a lower bound on the catchment-driven change. T2 and T3 and alum cases A2 to A5 are later phases.</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>Climate also changes what enters the lake, and this is likely to matter as much as in-lake warming for nutrients.</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tier <span class="pp">|</span> Inflow treatment <span class="pp">|</span> Purpose <span class="pp">|</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> T1 <span class="pp">|</span> Historical inflows unchanged <span class="pp">|</span> Isolates the direct lake response to weather and temperature <span class="pp">|</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> T2 <span class="pp">|</span> Scale flow with the rainfall delta (with a runoff elasticity) and the evapotranspiration implied by the temperature delta; scale loads with flow through a load–discharge exponent; shift stream temperature with air temperature <span class="pp">|</span> Plausible catchment response without a catchment model <span class="pp">|</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> T3 <span class="pp">|</span> Drive a catchment model with the scenario forcing (if the catchment model used to make the 1959 to 2022 inflow series can be run) <span class="pp">|</span> Best available, and the way to test T2 <span class="pp">|</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>Run T1 and T2 for the full ensemble and T3 for a subset if available. The alum dose is proportional to flow in the dosed streams, so T2 also changes the alum delivered, which is a real climate–management interaction and is kept.</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="fu">### Alum scenarios</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>Built on <span class="in">`scale_alum_inflows()`</span>; efficiency uses the factor already defined as <span class="in">`ratio_al_p`</span>.</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Code <span class="pp">|</span> Dosing <span class="pp">|</span> Rationale <span class="pp">|</span></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A0 <span class="pp">|</span> None <span class="pp">|</span> Counterfactual <span class="pp">|</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A1 <span class="pp">|</span> Present operations (Utuhina and Puarenga, flow-paced at about 1 mg Al/L) <span class="pp">|</span> Business as usual <span class="pp">|</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A2 <span class="pp">|</span> A1 with doubled dose <span class="pp">|</span> Management response <span class="pp">|</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A3 <span class="pp">|</span> A1 with half dose <span class="pp">|</span> Reduced effort <span class="pp">|</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A4 <span class="pp">|</span> Dosing stops at a set date <span class="pp">|</span> Legacy P release from sediment <span class="pp">|</span></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A5 <span class="pp">|</span> Adaptive dose: increases when modelled lake TLI4 or FRP is above a target <span class="pp">|</span> Inverse question: dose needed to hold the target <span class="pp">|</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>Alum behaviour is treated as an uncertainty dimension, using the thesis-based ranges in <span class="co">[</span><span class="ot">the thesis notes</span><span class="co">](alum-dosing-sanila-msc-thesis.qmd)</span> and the calibration page: floc settling 0.3 to 1.5 m/d, binding efficiency (Al:P) from 0.15 (field, about 7:1) to 1.4 (jar test, 0.7:1), resuspension on or off. The stage 4 sensitivity check showed that, in the calibrated model, the FRP fit is nearly insensitive to the alum parameters within their ranges and that removing the dose raises mean FRP by only about 30%. The alum response in the projections is therefore uncertain and should be explored through these ranges, not taken from a single fitted value.</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="fu">### Parameter and structural uncertainty</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use a small parameter ensemble from the calibration posterior (about 5 members from the final <span class="in">`pestpp-ies`</span> ensemble), plus the alum efficiency and settling range above.</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add structural checks: switch temperature dependence of sediment P release and mineralisation (<span class="in">`theta_*`</span>) between default and a stronger response; test phytoplankton <span class="in">`T_opt`</span> shifts, since adaptation is unknown.</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Do not tune the model to future conditions. Parameters stay fixed at their calibrated values.</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metrics</span></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Group <span class="pp">|</span> Variables <span class="pp">|</span> Reported as <span class="pp">|</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Trophic state <span class="pp">|</span> <span class="in">`LKE_tli4`</span>, <span class="in">`LKE_tlic`</span>, <span class="in">`LKE_tlin`</span>, <span class="in">`LKE_tlip`</span>, <span class="in">`LKE_tlise`</span> <span class="pp">|</span> Annual mean, change from hindcast, probability of exceeding the management target (BOPRC's target for Lake Rotorua is 4.2; verify) <span class="pp">|</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nutrients <span class="pp">|</span> TP, TN, FRP, ammonium, nitrate (epilimnion and bottom) <span class="pp">|</span> Annual and seasonal means; TN:TP <span class="pp">|</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Phytoplankton <span class="pp">|</span> Chlorophyll-a, cyanobacteria <span class="pp">|</span> Annual mean, days above bloom threshold, bloom timing <span class="pp">|</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Oxygen and stratification <span class="pp">|</span> Bottom-water oxygen, <span class="in">`CHM_oxynal`</span> (anoxic layers), days anoxic, stratified days, Schmidt stability <span class="pp">|</span> Days per year, onset and duration <span class="pp">|</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Internal loading <span class="pp">|</span> Benthic FRP and P fluxes, alum pools (<span class="in">`ALU_ben_*`</span>), P mass balance <span class="pp">|</span> Tonnes P per year, internal vs external share <span class="pp">|</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Hydrology <span class="pp">|</span> Water level, outflow, evaporation, residence time <span class="pp">|</span> Annual means, extremes <span class="pp">|</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>TLI uses annual means in regulatory practice. Keep the daily series, but report the annual metric as the headline and show the seasonal cycle separately.</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Experimental design and compute budget</span></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>**Initial phase (current scope):** 83 GCM × SSP × window combinations × 2 alum cases (A0, A1) × T1 inflows = 166 runs, plus the hindcast. At 5 to 6 minutes per 30 + 5 year run and about 2 runs per minute on six workers this is roughly 3 to 4 hours of wall time; pilot with 3 GCMs first (about 36 runs). The phases below are the fuller design for when inflow scenarios exist.</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>*Estimate:* a 15 + 3 year run takes about 1 minute of GLM time plus 1 to 2 minutes to read the output when only the needed variables are requested, so about 3 minutes per run, and a 30 + 5 year run about 5 to 6 minutes. Six workers give about 2 runs per minute for 15-year runs. The table below uses 15-year runs for the sweeps; the core scenarios and the hindcast use 30-year slices (see *Simulation length*).</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Phase <span class="pp">|</span> Runs <span class="pp">|</span> Estimated time <span class="pp">|</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P1 Hindcast and validation <span class="pp">|</span> 5 parameter members × 2 alum cases <span class="pp">|</span> under 1 hour <span class="pp">|</span></span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P2 Pilot (T1 inflows) <span class="pp">|</span> 3 GCMs × 2 SSPs × 2 windows × 3 alum (A0, A1, A2) = 36 <span class="pp">|</span> about 20 minutes <span class="pp">|</span></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P3 Main climate ensemble (T1 and T2) <span class="pp">|</span> 27 GCM–SSP combinations × 2 windows (2041–2070, 2071–2100) × 2 inflow tiers × 3 alum (A0, A1, A2) = 324 <span class="pp">|</span> about 3 hours <span class="pp">|</span></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P4 Alum scenarios (full set A0 to A5) <span class="pp">|</span> 27 × 2 × 6 × 2 tiers = 648 <span class="pp">|</span> about 5.5 hours <span class="pp">|</span></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P5 Parameter ensemble (reduced) <span class="pp">|</span> 5 members × SSP245 and SSP585 × 7 GCMs × late window × A1 = 70 <span class="pp">|</span> about 40 minutes <span class="pp">|</span></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> P6 Structural checks and T3 subset <span class="pp">|</span> about 100 <span class="pp">|</span> about 1 hour <span class="pp">|</span></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>About 1,200 runs. With 15-year runs that is about 11 hours; with all of them at 30 years it would be about 20 hours, which is why the design is tiered. Run it as a <span class="in">`targets`</span> pipeline, not a PEST script: these are deterministic, independent and benefit from caching, unlike the calibration. Use a <span class="in">`crew`</span> controller with a worker count below the physical core count.</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Hindcast check.** Compare the 2011 to 2022 hindcast (the period with water-quality observations) annual TLI4 and components with observed, per year. State the skill and bias explicitly and carry them into the interpretation.</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Climate signal.** For each metric, compute future minus hindcast per run. Report the ensemble median, the GCM range, and the fraction of runs agreeing in sign.</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Signal against variability.** Compare the climate change with the spread of annual values within the hindcast (internal variability). A change smaller than that is reported as such.</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Variance partitioning.** Decompose the spread into GCM, SSP, window, inflow tier, alum scenario and parameter member (ANOVA or mixed model). This answers question 3.</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Alum response curves.** For each climate, plot TLI4 and FRP against alum dose multiplier and efficiency, and read off the dose that holds the target. Report the extra dose required by climate.</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Process attribution.** Compare T1 and T2 inflows and A0 and A1 alum to separate in-lake warming, catchment input and alum effects. Use simple factorial contrasts.</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Event view.** Link the extreme-event indices (storms, heatwaves) to bloom and anoxia days in the runs where those change most.</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="fu">## Deliverables and layout</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`scenarios/`</span> with scripts <span class="in">`10_build_scenario_aeme.R`</span> (forcing, inflows, alum, parameter set → Aeme object), <span class="in">`11_run_scenarios.R`</span> (targets-based, one branch per run, daily lake-mean and epilimnion/hypolimnion series only), <span class="in">`12_metrics.R`</span> (annual and seasonal metrics, TLI), and <span class="in">`13_analysis.R`</span>.</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Summary tables as CSV in <span class="in">`data/processed/scenarios/`</span> so the website pages do not re-run models.</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Quarto pages: results by metric, alum response curves, uncertainty partitioning, and a short non-technical summary.</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="fu">## Risks and how they are handled</span></span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Risk <span class="pp">|</span> Handling <span class="pp">|</span></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Calibration still weak for chl-a, TP, TN <span class="pp">|</span> Gap list above; present results as *change from the model's own hindcast*, and state hindcast skill <span class="pp">|</span></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Catchment response unknown <span class="pp">|</span> Tiers T1 to T3; report T1 as a lower bound on change <span class="pp">|</span></span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Alum behaviour poorly constrained by data <span class="pp">|</span> Scenario dimension with thesis ranges; do not report a single efficiency <span class="pp">|</span></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Delta-change misses changes in variability and extremes <span class="pp">|</span> Check against extreme-event indices; state the limitation <span class="pp">|</span></span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Compute <span class="pp">|</span> Tiered design; run the pilot first and re-estimate time per run before committing <span class="pp">|</span></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Pipeline fragility (long runs, large netCDF) <span class="pp">|</span> Request only the variables needed; store small summaries, not netCDF; cache by branch <span class="pp">|</span></span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Rainfall unit issue in the forcing <span class="pp">|</span> Fix at source and add a unit and annual-total check to the pipeline <span class="pp">|</span></span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sequence</span></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Close the open calibration gaps (TP, TN and Secchi targets, ammonium, stage 3 with alum on) and fix the rainfall units and the <span class="in">`aemetools`</span> unit bug at source.</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Hindcast and TLI4 validation (P1). **Go or no-go on skill before continuing.**</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Pilot (P2); re-time the run and refine the design.</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Main ensemble and alum scenarios (P3, P4), then parameter and structural checks (P5, P6).</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Analysis and reporting.</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Open questions</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Which TLI4 target or threshold should be used for management (for example BOPRC's 4.2), and is annual mean TLI4 the right headline metric?</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Is a catchment model available that can be driven with the scenario forcing (T3), and who owns the 1959 to 2022 inflow series?</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Are there planned changes in dosing locations, dose rates or the Ōhau weir operation that should be scenarios in their own right?</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For alum on/off, is the equilibrium contrast (each case spun up under its own dosing) the question of interest, or the transient response after stopping from today's state?</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Should land-use or point-source changes (WWTP, geothermal) be included, or is the question climate only?</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

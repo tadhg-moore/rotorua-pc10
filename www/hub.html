@@ -1,0 +1,59 @@
+<script>
+document.querySelectorAll('a.hublink').forEach(a =>
+  a.addEventListener('click', () => a.classList.add('visited')));
+</script>
+<style>.visited { opacity: 0.4; text-decoration: line-through; }</style>
+
+
+<a id="hub-button" href="#hub">⌂ Hub</a>
+
+<style>
+#hub-button {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 4px 12px;
+  font-size: 18px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.08);
+  color: inherit;
+  text-decoration: none;
+  display: none;            /* shown by the script below */
+}
+#hub-button:hover { background: rgba(0, 0, 0, 0.18); }
+
+.visited { opacity: 0.4; text-decoration: line-through; }
+</style>
+
+<script>
+function setupHub() {
+  const btn   = document.getElementById('hub-button');
+  const hub   = document.getElementById('hub');
+  const synth = document.getElementById('synthesis');
+
+  // Show the button only on slides between the hub and the synthesis section
+  const update = () => {
+    const h = Reveal.getIndices().h;
+    const hubH = Reveal.getIndices(hub).h;
+    const synH = Reveal.getIndices(synth).h;
+    btn.style.display = (h > hubH && h < synH) ? 'block' : 'none';
+  };
+
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    const i = Reveal.getIndices(hub);
+    Reveal.slide(i.h, i.v);
+  });
+
+  Reveal.on('slidechanged', update);
+  update();
+
+  // Mark visited topics on the hub
+  document.querySelectorAll('a.hublink').forEach(a =>
+    a.addEventListener('click', () => a.classList.add('visited')));
+}
+
+if (Reveal.isReady()) setupHub(); else Reveal.on('ready', setupHub);
+</script>

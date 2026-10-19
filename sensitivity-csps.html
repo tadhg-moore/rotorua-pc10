@@ -1,0 +1,2629 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-10-19">
+
+<title>Sensitivity of the CSPS Metrics to Model Parameters – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-761fc14e25ebc0e942fc86aa4dfe65fb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./sensitivity-csps.html">CSPS Sensitivity Analysis</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose"><span class="header-section-number">1</span> Purpose</a></li>
+  <li><a href="#design" id="toc-design" class="nav-link" data-scroll-target="#design"><span class="header-section-number">2</span> Design</a></li>
+  <li><a href="#parameter-to-response-map" id="toc-parameter-to-response-map" class="nav-link" data-scroll-target="#parameter-to-response-map"><span class="header-section-number">3</span> Parameter to response map</a></li>
+  <li><a href="#findings-by-target" id="toc-findings-by-target" class="nav-link" data-scroll-target="#findings-by-target"><span class="header-section-number">4</span> Findings by target</a>
+  <ul class="collapse">
+  <li><a href="#polymixis" id="toc-polymixis" class="nav-link" data-scroll-target="#polymixis"><span class="header-section-number">4.1</span> Polymixis</a></li>
+  <li><a href="#anoxia" id="toc-anoxia" class="nav-link" data-scroll-target="#anoxia"><span class="header-section-number">4.2</span> Anoxia</a></li>
+  <li><a href="#internal-loading" id="toc-internal-loading" class="nav-link" data-scroll-target="#internal-loading"><span class="header-section-number">4.3</span> Internal loading</a></li>
+  <li><a href="#phytoplankton" id="toc-phytoplankton" class="nav-link" data-scroll-target="#phytoplankton"><span class="header-section-number">4.4</span> Phytoplankton</a></li>
+  </ul></li>
+  <li><a href="#influence-by-parameter-group" id="toc-influence-by-parameter-group" class="nav-link" data-scroll-target="#influence-by-parameter-group"><span class="header-section-number">5</span> Influence by parameter group</a></li>
+  <li><a href="#are-the-targets-reachable" id="toc-are-the-targets-reachable" class="nav-link" data-scroll-target="#are-the-targets-reachable"><span class="header-section-number">6</span> Are the targets reachable?</a></li>
+  <li><a href="#effect-of-alum" id="toc-effect-of-alum" class="nav-link" data-scroll-target="#effect-of-alum"><span class="header-section-number">7</span> Effect of alum</a></li>
+  <li><a href="#hourly-against-daily-forcing" id="toc-hourly-against-daily-forcing" class="nav-link" data-scroll-target="#hourly-against-daily-forcing"><span class="header-section-number">8</span> Hourly against daily forcing</a></li>
+  <li><a href="#implications-for-the-calibration" id="toc-implications-for-the-calibration" class="nav-link" data-scroll-target="#implications-for-the-calibration"><span class="header-section-number">9</span> Implications for the calibration</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">10</span> Limitations</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./sensitivity-csps.html">CSPS Sensitivity Analysis</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Sensitivity of the CSPS Metrics to Model Parameters</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Morris screening of 121 GLM-AED parameters for Lake Rotorua</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 19, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="purpose" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">1</span> Purpose</h2>
+<p>Before calibrating against the CSPS metrics (<a href="./csps-metrics.html">evaluation framework</a>), I asked which parameters each metric responds to, so that the calibration only adjusts parameters that can change the targets and does not trade them against each other. This page reports a Morris screening of the GLM-AED model with the CSPS signatures as outputs.</p>
+</section>
+<section id="design" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="design"><span class="header-section-number">2</span> Design</h2>
+<ul>
+<li><strong>Model:</strong> GLM-AED for Lake Rotorua (weir outflow, calibrated water balance, <code>hyps_no_hole</code>), full AED suite with alum, 13 inflows.</li>
+<li><strong>Parameters:</strong> 121 varied, read from the AED source (<code>libaed-water</code>) and the GLM namelist, with ranges deliberately wider than the calibration bounds so the analysis shows what the model can do.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Parameter groups varied in the screening.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Parameters</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">physics</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: left;">MET_wndspd, MET_radswd, MET_radlwd, MET_tmpair, rh_factor, ce</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sediment</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">fsed_oxy, fsed_amm, fsed_frp, ksed_oxy, theta_sed_oxy, ksed_amm</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">organic matter</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">rdom_minerl, rpoc_hydrol, rpon_hydrol, rpop_hydrol, rdomr_minerl, theta_hydrol</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nitrogen</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">rnitrif, knitrif, theta_nitrif, rdenit, kdenit, theta_denit</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phosphorus</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">kpo4p, w_po4ads</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: left;">R_growth, I_K, KePHY, R_resp, theta_growth, k_fres</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">alum</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">w_ala, k_w, K_P, k_s, k_age_w, k_age_s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>Method:</strong> Morris elementary effects, 6 levels, 12 trajectories, so 1,464 model runs per setup. Rate parameters are sampled on a log scale. Because the same sampling design is used for every setup, runs can be compared pairwise.</li>
+<li><strong>Outputs:</strong> the 33 process and system signatures of the CSPS framework, plus bias and RMSE by variable and layer.</li>
+<li><strong>Effect size:</strong> the mean absolute elementary effect, expressed in the lake’s own tolerance: one unit is a change in the metric equal to its standard deviation between observed years. An effect of 1 means the parameter, moved across its whole range, shifts the metric by as much as the lake varies between years.</li>
+<li><strong>Setups:</strong></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setup</th>
+<th>Forcing</th>
+<th>Window</th>
+<th>Alum</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Daily, alum</td>
+<td>daily ERA5 (hourly record aggregated to days from 2011; extended before 2011)</td>
+<td>2010-07 to 2013-06</td>
+<td>on</td>
+</tr>
+<tr class="even">
+<td>Daily, no alum</td>
+<td>as above</td>
+<td>as above</td>
+<td>dose set to zero</td>
+</tr>
+<tr class="odd">
+<td>Hourly, alum</td>
+<td>hourly bias-corrected ERA5</td>
+<td>2012-07 to 2015-06</td>
+<td>on</td>
+</tr>
+<tr class="even">
+<td>Daily, same window</td>
+<td>hourly series aggregated to days</td>
+<td>2012-07 to 2015-06</td>
+<td>on</td>
+</tr>
+</tbody>
+</table>
+<p>The last two are identical except for the time resolution of the meteorology.</p>
+</section>
+<section id="parameter-to-response-map" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="parameter-to-response-map"><span class="header-section-number">3</span> Parameter to response map</h2>
+<p>Each row is a parameter and each column a response. Colour is the effect size on a log scale (white to pale means under 0.3 tolerances, which is within the noise of the experiment), and the sign shows the direction of change when the parameter increases (shown for effects of 1 or more).</p>
+<div id="fig-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/sensitivity/heatmap_alum.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Parameter to response map for the daily-forced model with alum."><img src="images/sensitivity/heatmap_alum.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Parameter to response map for the daily-forced model with alum.
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Strongest parameters for each target, daily forcing with alum.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">cat</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Most influential parameters (mean effect in tolerances)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">MET_wndspd (3.7), coef_wind_stir (3.5), cd (3.5), fsed_oxy z1 (2.9), MET_tmpair (2.5), coef_mix_hyp (2.4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">R_resp (cyano) (3), K_P (cyano) (2.8), KePHY (cyano) (2), rnitrif (1.1), MET_tmpair (1.1), MET_wndspd (1)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">k_w (12.9), R_resp (cyano) (12.7), MET_wndspd (11.9), I_K (cyano) (11), w_p (cyano) (9.7), K_P (9.5)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">MET_wndspd (7.1), coef_wind_stir (6.2), cd (5.9), MET_radlwd (4.1), coef_mix_turb (3.6), coef_mix_conv (3.2)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">R_resp (cyano) (13.1), I_K (cyano) (12.3), k_w (11.7), MET_wndspd (11.3), w_pom (10.9), w_po4ads (10.7)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/sensitivity/influence_alum.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Strongest parameters overall."><img src="images/sensitivity/influence_alum.png" class="img-fluid figure-img" style="width:70.0%" alt="Strongest parameters overall."></a></p>
+<figcaption>Strongest parameters overall.</figcaption>
+</figure>
+</div>
+</section>
+<section id="findings-by-target" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="findings-by-target"><span class="header-section-number">4</span> Findings by target</h2>
+<section id="polymixis" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="polymixis"><span class="header-section-number">4.1</span> Polymixis</h3>
+<p>Stratification is controlled by the <strong>wind and mixing parameters</strong>: wind scaling, <code>coef_wind_stir</code>, the drag coefficient <code>cd</code>, the hypolimnetic mixing coefficient and the radiation scalings (heat input). More wind, stirring and drag reduce stratification; more long-wave radiation and warmer air increase it. Biogeochemical parameters have no meaningful effect on any mixing metric. <code>coef_mix_shear</code> is inert.</p>
+<p>The wind scaling has the largest single effect, which is the reason it must not be used as a free parameter (the wind is measured on the lake): the mixing coefficients (<code>coef_wind_stir</code>, <code>cd</code>) have comparable leverage over the same metrics and are the right place for the adjustment.</p>
+</section>
+<section id="anoxia" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="anoxia"><span class="header-section-number">4.2</span> Anoxia</h3>
+<p>Bottom-water oxygen and anoxic days are driven by <strong>the same mixing parameters</strong> as stratification, because the length of a stratified spell sets how long the bottom water can be drawn down. The only biogeochemical lever of comparable size is the <strong>sediment oxygen demand in the deepest zone</strong> (<code>fsed_oxy</code> zone 1), which also controls whether the model has anoxic years at all. The rate of oxygen decline during stratified spells (a process-level measure of oxygen demand) responds to cyanobacteria respiration and to the zone-1 oxygen demand.</p>
+</section>
+<section id="internal-loading" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="internal-loading"><span class="header-section-number">4.3</span> Internal loading</h3>
+<p>This is the <strong>least well-controlled target</strong>. No parameter moves any loading metric by more than about 3 tolerances. Bottom-water ammonium responds to nitrification (<code>rnitrif</code>) and, less, to wind and the cyanobacteria nitrogen uptake. Sediment ammonium flux has a smaller effect than expected. The bottom FRP and TP gradients respond to almost nothing, including the sediment FRP flux and the P adsorption parameters.</p>
+</section>
+<section id="phytoplankton" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="phytoplankton"><span class="header-section-number">4.4</span> Phytoplankton</h3>
+<p>Chlorophyll-a is controlled by the <strong>cyanobacteria group</strong> (respiration <code>R_resp</code>, light <code>I_K</code>, phosphorus half-saturation <code>K_P</code>, <code>KePHY</code>, buoyancy <code>w_p</code>), and by the alum rates when alum is on. A large part of the sampled space produces runaway cyanobacteria blooms (the median chlorophyll-a spans 0 to over 1,000 mg/m<sup>3</sup>), so the effect sizes for chlorophyll are dominated by those regions and overstate the sensitivity in the realistic range.</p>
+</section>
+</section>
+<section id="influence-by-parameter-group" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="influence-by-parameter-group"><span class="header-section-number">5</span> Influence by parameter group</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Mean effect on the CSPS signatures, by parameter group.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Parameters</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean effect</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Strongest single effect</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Not influential (&lt;0.3 everywhere)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">alum</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1.61</td>
+<td style="text-align: right;">4.10</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nitrogen</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">organic matter</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phosphorus</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.24</td>
+<td style="text-align: right;">1.74</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">physics</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">5.96</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phytoplankton</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">1.23</td>
+<td style="text-align: right;">4.83</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sediment</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The screening is highly interacting: the spread of the elementary effects is larger than their mean for every target (median sigma/mu* 1.4 to 2.1), so effects are nonlinear and depend on the other parameters. The ranking tells us which parameters to adjust, not by how much.</p>
+</section>
+<section id="are-the-targets-reachable" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="are-the-targets-reachable"><span class="header-section-number">6</span> Are the targets reachable?</h2>
+<p>For each signature the table shows the range produced by the 1,464 sampled parameter sets, and the share of them that land within the observed tolerance.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Range of each signature across the sampled parameter sets (daily forcing, alum).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Target</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Signature</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Tolerance</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">5th to 95th percentile of runs</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Runs within tolerance (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mix</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat</td>
+<td style="text-align: right;">0.21700</td>
+<td style="text-align: right;">0.0580</td>
+<td style="text-align: left;">0.258 to 0.727</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix1</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_summer</td>
+<td style="text-align: right;">0.34900</td>
+<td style="text-align: right;">0.0870</td>
+<td style="text-align: left;">0.423 to 0.957</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix2</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_winter</td>
+<td style="text-align: right;">0.00209</td>
+<td style="text-align: right;">0.0052</td>
+<td style="text-align: left;">0.00493 to 0.339</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix3</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_p95</td>
+<td style="text-align: right;">2.72000</td>
+<td style="text-align: right;">0.9900</td>
+<td style="text-align: left;">2.18 to 8.85</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix4</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_mean_summer</td>
+<td style="text-align: right;">0.99000</td>
+<td style="text-align: right;">0.2600</td>
+<td style="text-align: left;">1.03 to 6.11</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix5</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spells_per_yr</td>
+<td style="text-align: right;">8.58000</td>
+<td style="text-align: right;">3.3000</td>
+<td style="text-align: left;">4.5 to 17</td>
+<td style="text-align: right;">51</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix6</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_median_d</td>
+<td style="text-align: right;">2.00000</td>
+<td style="text-align: right;">2.3000</td>
+<td style="text-align: left;">2 to 7</td>
+<td style="text-align: right;">86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix7</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_p90_d</td>
+<td style="text-align: right;">17.00000</td>
+<td style="text-align: right;">5.9000</td>
+<td style="text-align: left;">9 to 164</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix8</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_bot_temp_summer</td>
+<td style="text-align: right;">19.30000</td>
+<td style="text-align: right;">1.9000</td>
+<td style="text-align: left;">11.8 to 18.2</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2</td>
+<td style="text-align: right;">0.04630</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: left;">0 to 0.553</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox1</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2_summer</td>
+<td style="text-align: right;">0.10900</td>
+<td style="text-align: right;">0.0920</td>
+<td style="text-align: left;">0 to 0.894</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox2</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt1_summer</td>
+<td style="text-align: right;">0.06620</td>
+<td style="text-align: right;">0.0630</td>
+<td style="text-align: left;">0 to 0.876</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox3</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_mean_summer</td>
+<td style="text-align: right;">6.14000</td>
+<td style="text-align: right;">0.9200</td>
+<td style="text-align: left;">0.635 to 8.61</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox4</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_p10</td>
+<td style="text-align: right;">4.27000</td>
+<td style="text-align: right;">1.7000</td>
+<td style="text-align: left;">0 to 7.88</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox5</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_years_with_event</td>
+<td style="text-align: right;">0.83300</td>
+<td style="text-align: right;">0.3800</td>
+<td style="text-align: left;">0 to 1</td>
+<td style="text-align: right;">63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox6</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_spell_median_d</td>
+<td style="text-align: right;">2.00000</td>
+<td style="text-align: right;">5.2000</td>
+<td style="text-align: left;">2 to 125</td>
+<td style="text-align: right;">42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox7</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_decline_strat</td>
+<td style="text-align: right;">-0.25900</td>
+<td style="text-align: right;">0.0740</td>
+<td style="text-align: left;">-0.354 to -0.0343</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_ratio</td>
+<td style="text-align: right;">2.62000</td>
+<td style="text-align: right;">2.3000</td>
+<td style="text-align: left;">0.05 to 3.28</td>
+<td style="text-align: right;">86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load1</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_bot_p90</td>
+<td style="text-align: right;">0.07100</td>
+<td style="text-align: right;">0.0200</td>
+<td style="text-align: left;">2e-04 to 0.036</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load2</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_f_bot_gt2x</td>
+<td style="text-align: right;">0.52500</td>
+<td style="text-align: right;">0.4300</td>
+<td style="text-align: left;">0 to 1</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load3</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_ratio</td>
+<td style="text-align: right;">6.89000</td>
+<td style="text-align: right;">7.4000</td>
+<td style="text-align: left;">0.209 to 12.4</td>
+<td style="text-align: right;">95</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load4</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_bot_p90</td>
+<td style="text-align: right;">0.28100</td>
+<td style="text-align: right;">0.1300</td>
+<td style="text-align: left;">0.0023 to 0.893</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load5</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_f_bot_gt2x</td>
+<td style="text-align: right;">0.65700</td>
+<td style="text-align: right;">0.2000</td>
+<td style="text-align: left;">0 to 0.917</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load6</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_ratio</td>
+<td style="text-align: right;">1.42000</td>
+<td style="text-align: right;">0.3000</td>
+<td style="text-align: left;">0.724 to 2.38</td>
+<td style="text-align: right;">56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load7</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_bot_p90</td>
+<td style="text-align: right;">0.10600</td>
+<td style="text-align: right;">0.0240</td>
+<td style="text-align: left;">0.0138 to 0.0626</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load8</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_f_bot_gt2x</td>
+<td style="text-align: right;">0.15100</td>
+<td style="text-align: right;">0.1700</td>
+<td style="text-align: left;">0 to 0.643</td>
+<td style="text-align: right;">75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_median</td>
+<td style="text-align: right;">9.30000</td>
+<td style="text-align: right;">2.2000</td>
+<td style="text-align: left;">0.0161 to 92.7</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl1</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_p90</td>
+<td style="text-align: right;">19.70000</td>
+<td style="text-align: right;">4.0000</td>
+<td style="text-align: left;">0.019 to 168</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl2</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_cv</td>
+<td style="text-align: right;">0.60900</td>
+<td style="text-align: right;">0.1100</td>
+<td style="text-align: left;">0.00378 to 1.77</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl3</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_f_gt20</td>
+<td style="text-align: right;">0.09930</td>
+<td style="text-align: right;">0.0900</td>
+<td style="text-align: left;">0 to 1</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl4</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_summer_winter_ratio</td>
+<td style="text-align: right;">0.93600</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: left;">0.43 to 6.34</td>
+<td style="text-align: right;">54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl5</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_annual_peak_median</td>
+<td style="text-align: right;">19.40000</td>
+<td style="text-align: right;">6.2000</td>
+<td style="text-align: left;">0.0192 to 177</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl6</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_sd_log</td>
+<td style="text-align: right;">0.53000</td>
+<td style="text-align: right;">0.0900</td>
+<td style="text-align: left;">8.09e-05 to 0.855</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sys</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_tli3_mean</td>
+<td style="text-align: right;">4.45000</td>
+<td style="text-align: right;">0.4400</td>
+<td style="text-align: left;">0.725 to 5.87</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sys1</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_chl_tp_slope</td>
+<td style="text-align: right;">0.19100</td>
+<td style="text-align: right;">0.0950</td>
+<td style="text-align: left;">-2.81 to 4.37</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>Stratification can be brought to the observed value</strong> by the mixing parameters, but only a small share of the random parameter sets do so; the calibrated baseline (hourly physics under daily forcing) was far too stratified.</li>
+<li><strong>Bottom FRP and TP concentrations are not reachable</strong>: the observed 90th percentiles lie above essentially every simulated run (under 1% within tolerance). This is a structural gap (see the ammonium and sediment-flux sections of the <a href="./rotorua-calibration-staged.html">staged calibration</a>), not a tuning problem.</li>
+<li><strong>Bottom ammonium and anoxia are reachable.</strong></li>
+<li><strong>Chlorophyll-a is only reachable within a narrow part of the cyanobacteria parameter space</strong> (1 to 3% of runs).</li>
+</ul>
+</section>
+<section id="effect-of-alum" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="effect-of-alum"><span class="header-section-number">7</span> Effect of alum</h2>
+<p>The same parameter sets were run with the alum dose set to zero. The paired difference (alum minus no alum) at identical parameters shows what alum does to each metric.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Paired effect of alum on each signature.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Target</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Signature</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean with alum</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean without alum</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Median change (tolerances)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Runs changed by more than half a tolerance (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mix</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat</td>
+<td style="text-align: right;">0.5260</td>
+<td style="text-align: right;">0.5260</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix1</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_summer</td>
+<td style="text-align: right;">0.7360</td>
+<td style="text-align: right;">0.7370</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix2</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_winter</td>
+<td style="text-align: right;">0.1360</td>
+<td style="text-align: right;">0.1360</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix3</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_p95</td>
+<td style="text-align: right;">5.4300</td>
+<td style="text-align: right;">5.4100</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix4</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_mean_summer</td>
+<td style="text-align: right;">2.9200</td>
+<td style="text-align: right;">2.9200</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">42</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix5</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spells_per_yr</td>
+<td style="text-align: right;">10.3000</td>
+<td style="text-align: right;">10.3000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix6</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_median_d</td>
+<td style="text-align: right;">3.2600</td>
+<td style="text-align: right;">3.2800</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix7</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_p90_d</td>
+<td style="text-align: right;">52.9000</td>
+<td style="text-align: right;">53.9000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix8</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_bot_temp_summer</td>
+<td style="text-align: right;">15.5000</td>
+<td style="text-align: right;">15.5000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2</td>
+<td style="text-align: right;">0.1720</td>
+<td style="text-align: right;">0.1760</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox1</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2_summer</td>
+<td style="text-align: right;">0.3010</td>
+<td style="text-align: right;">0.3060</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox2</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt1_summer</td>
+<td style="text-align: right;">0.2570</td>
+<td style="text-align: right;">0.2620</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox3</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_mean_summer</td>
+<td style="text-align: right;">4.9700</td>
+<td style="text-align: right;">4.9500</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox4</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_p10</td>
+<td style="text-align: right;">2.8700</td>
+<td style="text-align: right;">2.8200</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox5</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_years_with_event</td>
+<td style="text-align: right;">0.6380</td>
+<td style="text-align: right;">0.6440</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox6</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_spell_median_d</td>
+<td style="text-align: right;">27.1000</td>
+<td style="text-align: right;">25.6000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox7</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_decline_strat</td>
+<td style="text-align: right;">-0.1500</td>
+<td style="text-align: right;">-0.1520</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_ratio</td>
+<td style="text-align: right;">1.6200</td>
+<td style="text-align: right;">1.2300</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load1</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_bot_p90</td>
+<td style="text-align: right;">0.0148</td>
+<td style="text-align: right;">0.0378</td>
+<td style="text-align: right;">-1.13</td>
+<td style="text-align: right;">59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load2</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_f_bot_gt2x</td>
+<td style="text-align: right;">0.6790</td>
+<td style="text-align: right;">0.3320</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load3</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_ratio</td>
+<td style="text-align: right;">4.6000</td>
+<td style="text-align: right;">4.7000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load4</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_bot_p90</td>
+<td style="text-align: right;">0.1330</td>
+<td style="text-align: right;">0.1400</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load5</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_f_bot_gt2x</td>
+<td style="text-align: right;">0.3280</td>
+<td style="text-align: right;">0.3290</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load6</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_ratio</td>
+<td style="text-align: right;">1.4600</td>
+<td style="text-align: right;">1.0600</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load7</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_bot_p90</td>
+<td style="text-align: right;">0.1050</td>
+<td style="text-align: right;">0.1390</td>
+<td style="text-align: right;">-1.36</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load8</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_f_bot_gt2x</td>
+<td style="text-align: right;">0.1960</td>
+<td style="text-align: right;">0.0401</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_median</td>
+<td style="text-align: right;">51.4000</td>
+<td style="text-align: right;">61.1000</td>
+<td style="text-align: right;">-0.24</td>
+<td style="text-align: right;">47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl1</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_p90</td>
+<td style="text-align: right;">71.0000</td>
+<td style="text-align: right;">86.2000</td>
+<td style="text-align: right;">-0.52</td>
+<td style="text-align: right;">51</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl2</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_cv</td>
+<td style="text-align: right;">0.6150</td>
+<td style="text-align: right;">0.5950</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl3</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_f_gt20</td>
+<td style="text-align: right;">0.2370</td>
+<td style="text-align: right;">0.3210</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl4</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_summer_winter_ratio</td>
+<td style="text-align: right;">2.6400</td>
+<td style="text-align: right;">5.0200</td>
+<td style="text-align: right;">-0.03</td>
+<td style="text-align: right;">42</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl5</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_annual_peak_median</td>
+<td style="text-align: right;">71.6000</td>
+<td style="text-align: right;">87.7000</td>
+<td style="text-align: right;">-0.21</td>
+<td style="text-align: right;">44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl6</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_sd_log</td>
+<td style="text-align: right;">0.2740</td>
+<td style="text-align: right;">0.3200</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sys</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_tli3_mean</td>
+<td style="text-align: right;">2.8300</td>
+<td style="text-align: right;">3.6700</td>
+<td style="text-align: right;">-1.49</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sys1</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_chl_tp_slope</td>
+<td style="text-align: right;">0.3730</td>
+<td style="text-align: right;">0.2410</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">80</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>Physics and oxygen are unchanged on average</strong> (means agree to 3 figures). Individual paired runs do scatter by up to about a tolerance for some mixing metrics; this is a noise floor of the experiment (small differences amplified near stratification thresholds), so effects under one tolerance on those metrics should not be interpreted.</li>
+<li><strong>Phosphorus responds as expected:</strong> the 90th percentile of bottom FRP falls by about 60% and bottom TP by about 25%, and the mean simulated TLI3 is lower by about 0.8 units.</li>
+<li><strong>Chlorophyll-a</strong> is lower with alum in the bloom-prone parameter sets and unchanged in typical runs.</li>
+<li><strong>Bottom to surface contrast is larger with alum</strong> (alum removes surface phosphorus more than bottom), so the internal-loading signatures read stronger in a dosed lake.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/sensitivity/compare_alum.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Parameter influence with and without alum."><img src="images/sensitivity/compare_alum.png" class="img-fluid figure-img" style="width:70.0%" alt="Parameter influence with and without alum."></a></p>
+<figcaption>Parameter influence with and without alum.</figcaption>
+</figure>
+</div>
+<p>Parameter rankings are broadly the same (Spearman 0.69), but with alum the alum rate <code>k_w</code>, <code>K_P</code>, <code>k_age_w</code>, <code>k_s</code> and <code>w_ala</code> become influential for chlorophyll and phosphorus and compete with the phytoplankton and sediment parameters. This is the case for calibrating phosphorus and phytoplankton parameters with the alum module off, on years without dosing, and the alum parameters afterwards.</p>
+</section>
+<section id="hourly-against-daily-forcing" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="hourly-against-daily-forcing"><span class="header-section-number">8</span> Hourly against daily forcing</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Spearman rank correlation of overall parameter influence, hourly vs daily forcing on the same window: 0.86 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>The same 1,464 parameter sets run with hourly forcing and with the hourly record aggregated to daily (2012-07 to 2015-06, alum on).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Target</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Signature</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean, hourly</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean, daily</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Median change hourly minus daily (tolerances)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Correlation across the 1,464 parameter sets</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Runs within tolerance, hourly (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Runs within tolerance, daily (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mix</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat</td>
+<td style="text-align: right;">0.3720</td>
+<td style="text-align: right;">0.47700</td>
+<td style="text-align: right;">-1.77</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix1</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_summer</td>
+<td style="text-align: right;">0.6150</td>
+<td style="text-align: right;">0.72800</td>
+<td style="text-align: right;">-1.34</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix2</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_f_strat_winter</td>
+<td style="text-align: right;">0.0241</td>
+<td style="text-align: right;">0.11600</td>
+<td style="text-align: right;">-17.22</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix3</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_p95</td>
+<td style="text-align: right;">4.4800</td>
+<td style="text-align: right;">4.93000</td>
+<td style="text-align: right;">-0.46</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix4</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_dT_mean_summer</td>
+<td style="text-align: right;">2.2000</td>
+<td style="text-align: right;">2.70000</td>
+<td style="text-align: right;">-1.68</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix5</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spells_per_yr</td>
+<td style="text-align: right;">11.7000</td>
+<td style="text-align: right;">11.60000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">39</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix6</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_median_d</td>
+<td style="text-align: right;">2.9700</td>
+<td style="text-align: right;">3.15000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">85</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mix7</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_spell_p90_d</td>
+<td style="text-align: right;">31.0000</td>
+<td style="text-align: right;">48.10000</td>
+<td style="text-align: right;">-0.74</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mix8</td>
+<td style="text-align: left;">Polymixis</td>
+<td style="text-align: left;">mix_bot_temp_summer</td>
+<td style="text-align: right;">17.6000</td>
+<td style="text-align: right;">15.90000</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2</td>
+<td style="text-align: right;">0.0928</td>
+<td style="text-align: right;">0.14500</td>
+<td style="text-align: right;">-0.63</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox1</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt2_summer</td>
+<td style="text-align: right;">0.1990</td>
+<td style="text-align: right;">0.29500</td>
+<td style="text-align: right;">-0.67</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox2</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_lt1_summer</td>
+<td style="text-align: right;">0.1570</td>
+<td style="text-align: right;">0.24900</td>
+<td style="text-align: right;">-0.80</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox3</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_mean_summer</td>
+<td style="text-align: right;">5.6100</td>
+<td style="text-align: right;">4.87000</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox4</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_p10</td>
+<td style="text-align: right;">4.0700</td>
+<td style="text-align: right;">3.09000</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox5</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_f_years_with_event</td>
+<td style="text-align: right;">0.5270</td>
+<td style="text-align: right;">0.64200</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">66</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox6</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_spell_median_d</td>
+<td style="text-align: right;">17.0000</td>
+<td style="text-align: right;">21.80000</td>
+<td style="text-align: right;">-0.10</td>
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">anox7</td>
+<td style="text-align: left;">Anoxia</td>
+<td style="text-align: left;">anox_do_decline_strat</td>
+<td style="text-align: right;">-0.1820</td>
+<td style="text-align: right;">-0.16600</td>
+<td style="text-align: right;">-0.25</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_ratio</td>
+<td style="text-align: right;">0.8830</td>
+<td style="text-align: right;">0.94700</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load1</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_bot_p90</td>
+<td style="text-align: right;">0.0081</td>
+<td style="text-align: right;">0.00834</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load2</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_frp_f_bot_gt2x</td>
+<td style="text-align: right;">0.5620</td>
+<td style="text-align: right;">0.46600</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">82</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load3</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_ratio</td>
+<td style="text-align: right;">1.9700</td>
+<td style="text-align: right;">5.49000</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load4</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_bot_p90</td>
+<td style="text-align: right;">0.0808</td>
+<td style="text-align: right;">0.14700</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load5</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_amm_f_bot_gt2x</td>
+<td style="text-align: right;">0.3460</td>
+<td style="text-align: right;">0.31300</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load6</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_ratio</td>
+<td style="text-align: right;">1.2400</td>
+<td style="text-align: right;">1.36000</td>
+<td style="text-align: right;">-0.15</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">51</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load7</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_bot_p90</td>
+<td style="text-align: right;">0.1500</td>
+<td style="text-align: right;">0.13200</td>
+<td style="text-align: right;">-0.06</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">load8</td>
+<td style="text-align: left;">Internal loading</td>
+<td style="text-align: left;">load_tp_f_bot_gt2x</td>
+<td style="text-align: right;">0.1350</td>
+<td style="text-align: right;">0.17500</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_median</td>
+<td style="text-align: right;">44.7000</td>
+<td style="text-align: right;">49.70000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl1</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_p90</td>
+<td style="text-align: right;">60.3000</td>
+<td style="text-align: right;">65.30000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl2</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_cv</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">0.44000</td>
+<td style="text-align: right;">-0.04</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl3</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_f_gt20</td>
+<td style="text-align: right;">0.2080</td>
+<td style="text-align: right;">0.21800</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl4</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_summer_winter_ratio</td>
+<td style="text-align: right;">2.2600</td>
+<td style="text-align: right;">2.39000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl5</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_annual_peak_median</td>
+<td style="text-align: right;">60.9000</td>
+<td style="text-align: right;">66.30000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl6</td>
+<td style="text-align: left;">Phytoplankton</td>
+<td style="text-align: left;">chl_sd_log</td>
+<td style="text-align: right;">0.1950</td>
+<td style="text-align: right;">0.20700</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sys</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_tli3_mean</td>
+<td style="text-align: right;">2.5100</td>
+<td style="text-align: right;">2.56000</td>
+<td style="text-align: right;">-0.04</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sys1</td>
+<td style="text-align: left;">System</td>
+<td style="text-align: left;">sys_chl_tp_slope</td>
+<td style="text-align: right;">-0.0499</td>
+<td style="text-align: right;">0.13900</td>
+<td style="text-align: right;">-0.12</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/sensitivity/compare_forcing.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Parameter influence under hourly and daily forcing on the same window."><img src="images/sensitivity/compare_forcing.png" class="img-fluid figure-img" style="width:70.0%" alt="Parameter influence under hourly and daily forcing on the same window."></a></p>
+<figcaption>Parameter influence under hourly and daily forcing on the same window.</figcaption>
+</figure>
+</div>
+<p>The two forcings give the <strong>same picture of which parameters matter</strong>, but <strong>different absolute behaviour</strong>:</p>
+<ul>
+<li><strong>Rankings agree.</strong> The overall rank correlation of parameter influence is 0.86, no lower than the 0.85 between the two daily windows (2010 to 2013 and 2012 to 2015), so changing from hourly to daily forcing alters the rankings no more than changing the years. The same parameters lead each target in both: wind scaling, <code>coef_wind_stir</code>, <code>cd</code> and <code>fsed_oxy</code> zone 1 for anoxia and mixing, and the cyanobacteria respiration, light and phosphorus parameters (and the alum rates) for chlorophyll.</li>
+<li><strong>Response to the parameters agrees.</strong> For identical parameter sets the outputs correlate at 0.93 to 0.98 for the main stratification and anoxia metrics (the spell-length metrics are noisier, 0.25 to 0.84) and 0.99 for chlorophyll-a, so a parameter set that is better under one forcing is better under the other.</li>
+<li><strong>But daily forcing is systematically more stratified.</strong> For the same parameters the daily-forced model is stratified on 48% of days against 37% with hourly forcing (a difference of about 1.8 tolerances, almost all of it in winter), has a bottom temperature 1.7 °C lower in the stratified season, and has more anoxic days (14% against 9%). Averaging the wind over a day removes the short windy periods that break stratification, so the daily-forced model has less mixing energy for the same parameters.</li>
+<li><strong>The mixing parameters matter somewhat more under daily forcing</strong> (physics group mean effect 2.1 against 1.6; wind scaling 5.6 against 4.1): with less mixing energy built in, the model leans harder on them, which is also why daily forcing is more likely to produce a compensating wind scaling.</li>
+<li><strong>The observed stratification is easier to reach with hourly forcing</strong>: 19% of sampled parameter sets land within tolerance for the stratified fraction, against 8% with daily.</li>
+<li><strong>Internal loading and phosphorus targets are unreachable under both</strong> (bottom FRP and TP 90th percentiles within tolerance in 0% of runs).</li>
+</ul>
+<p>What this means: the <strong>sensitivity conclusions are transferable between forcings, but fitted parameter values are not</strong>. Mixing coefficients calibrated to daily forcing would absorb the missing sub-daily wind and would be too strong when used with hourly forcing, such as the climate scenarios disaggregated to hourly. The physics should be calibrated with hourly forcing, and daily forcing is acceptable for ranking parameters and for screening.</p>
+</section>
+<section id="implications-for-the-calibration" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="implications-for-the-calibration"><span class="header-section-number">9</span> Implications for the calibration</h2>
+<ol type="1">
+<li><strong>Fix wind at 1</strong> (it is measured). Calibrate stratification, mixing and anoxia with <code>coef_wind_stir</code>, <code>cd</code>, <code>ce</code>/<code>ch</code>, the hypolimnetic and other mixing coefficients, the radiation scalings (kept narrow), and the deep-zone oxygen demand.</li>
+<li><strong>Hold <code>coef_mix_shear</code>, <code>ksed_nit</code> and <code>rcpom_bdown</code> fixed</strong>: they do not affect any target.</li>
+<li><strong>Calibrate phosphorus and chlorophyll parameters with alum off</strong>, on years without dosing, because <code>k_w</code>, <code>K_P</code> and the other alum rates otherwise compete with the cyanobacteria and sediment parameters for the same data. Use narrow cyanobacteria ranges to avoid the runaway-bloom region.</li>
+<li><strong>Do not use bottom FRP and TP concentration as targets</strong> in the current structure; they cannot be reached.</li>
+<li><strong>Use the ensemble smoother with the CSPS residuals</strong>, not a single best parameter set, because the response is strongly interacting.</li>
+</ol>
+</section>
+<section id="limitations" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="limitations"><span class="header-section-number">10</span> Limitations</h2>
+<ul>
+<li>Morris screening with 12 trajectories ranks parameters but does not give variance shares; interactions are large, so a variance-based analysis (Sobol) on the 15 to 20 parameters chosen for calibration would be the next step.</li>
+<li>Some phytoplankton temperature parameters (<code>theta_growth</code>, <code>T_std</code>, <code>T_opt</code>, <code>T_max</code>) were restricted to the region where AED’s temperature-function solver converges; outside it the model stops with “Cannot solve for fT”.</li>
+<li>Three years are scored per run, so the signatures that depend on rare events (anoxic years, long spells) are noisy.</li>
+<li>The daily-forced window before 2011 uses an extension of the raw daily ERA5 that correlates poorly with the hourly record (wind r = 0.45, rain r = 0.42), which affects the spin-up of the first setup only.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sensitivity of the CSPS Metrics to Model Parameters"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Morris screening of 121 GLM-AED parameters for Lake Rotorua"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="st">"images/sensitivity"</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>kab <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) <span class="fu">kable</span>(x, ...) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>tg <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"images/staged-calibration/csps_targets.csv"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>have <span class="ot">&lt;-</span> <span class="cf">function</span>(v) <span class="fu">file.exists</span>(<span class="fu">file.path</span>(img, <span class="fu">paste0</span>(<span class="st">"sa_effects_"</span>, v, <span class="st">".csv"</span>)))</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>eff <span class="ot">&lt;-</span> <span class="cf">function</span>(v) <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="fu">paste0</span>(<span class="st">"sa_effects_"</span>, v, <span class="st">".csv"</span>)))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>runs <span class="ot">&lt;-</span> <span class="cf">function</span>(v) <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="fu">paste0</span>(<span class="st">"sa_runs_"</span>, v, <span class="st">".csv"</span>)))</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>sig <span class="ot">&lt;-</span> tg<span class="sc">$</span>signature</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>cat_of <span class="ot">&lt;-</span> <span class="cf">function</span>(o) <span class="fu">sub</span>(<span class="st">"_.*"</span>, <span class="st">""</span>, o)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>cat_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">mix =</span> <span class="st">"Polymixis"</span>, <span class="at">anox =</span> <span class="st">"Anoxia"</span>, <span class="at">load =</span> <span class="st">"Internal loading"</span>, <span class="at">chl =</span> <span class="st">"Phytoplankton"</span>, <span class="at">sys =</span> <span class="st">"System"</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Purpose</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>Before calibrating against the CSPS metrics (<span class="co">[</span><span class="ot">evaluation framework</span><span class="co">](csps-metrics.qmd)</span>), I asked which parameters each metric responds to, so that the calibration only adjusts parameters that can change the targets and does not trade them against each other. This page reports a Morris screening of the GLM-AED model with the CSPS signatures as outputs.</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Design</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Model:** GLM-AED for Lake Rotorua (weir outflow, calibrated water balance, <span class="in">`hyps_no_hole`</span>), full AED suite with alum, 13 inflows.</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Parameters:** 121 varied, read from the AED source (<span class="in">`libaed-water`</span>) and the GLM namelist, with ranges deliberately wider than the calibration bounds so the analysis shows what the model can do.</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"images/sensitivity/sa_table.rds"</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> tab[tab<span class="sc">$</span>min <span class="sc">&lt;</span> tab<span class="sc">$</span>max, ]</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>tab<span class="sc">$</span>theme <span class="ot">&lt;-</span> <span class="fu">factor</span>(tab<span class="sc">$</span>theme, <span class="fu">c</span>(<span class="st">"physics"</span>, <span class="st">"sediment"</span>, <span class="st">"organic matter"</span>, <span class="st">"nitrogen"</span>, <span class="st">"phosphorus"</span>, <span class="st">"phytoplankton"</span>, <span class="st">"alum"</span>))</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> tab <span class="sc">|&gt;</span> <span class="fu">group_by</span>(<span class="at">Group =</span> theme) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">Parameters =</span> <span class="fu">n</span>(), <span class="at">Examples =</span> <span class="fu">paste</span>(<span class="fu">head</span>(<span class="fu">unique</span>(<span class="fu">sub</span>(<span class="st">"^.*/"</span>, <span class="st">""</span>, name)), <span class="dv">6</span>), <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(tt, <span class="at">caption =</span> <span class="st">"Parameter groups varied in the screening."</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Method:** Morris elementary effects, 6 levels, 12 trajectories, so 1,464 model runs per setup. Rate parameters are sampled on a log scale. Because the same sampling design is used for every setup, runs can be compared pairwise.</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Outputs:** the 33 process and system signatures of the CSPS framework, plus bias and RMSE by variable and layer.</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Effect size:** the mean absolute elementary effect, expressed in the lake's own tolerance: one unit is a change in the metric equal to its standard deviation between observed years. An effect of 1 means the parameter, moved across its whole range, shifts the metric by as much as the lake varies between years.</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Setups:**</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Setup <span class="pp">|</span> Forcing <span class="pp">|</span> Window <span class="pp">|</span> Alum <span class="pp">|</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|----|----|----|----|</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Daily, alum <span class="pp">|</span> daily ERA5 (hourly record aggregated to days from 2011; extended before 2011) <span class="pp">|</span> 2010-07 to 2013-06 <span class="pp">|</span> on <span class="pp">|</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Daily, no alum <span class="pp">|</span> as above <span class="pp">|</span> as above <span class="pp">|</span> dose set to zero <span class="pp">|</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Hourly, alum <span class="pp">|</span> hourly bias-corrected ERA5 <span class="pp">|</span> 2012-07 to 2015-06 <span class="pp">|</span> on <span class="pp">|</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Daily, same window <span class="pp">|</span> hourly series aggregated to days <span class="pp">|</span> 2012-07 to 2015-06 <span class="pp">|</span> on <span class="pp">|</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>The last two are identical except for the time resolution of the meteorology.</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameter to response map</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>Each row is a parameter and each column a response. Colour is the effect size on a log scale (white to pale means under 0.3 tolerances, which is within the noise of the experiment), and the sign shows the direction of change when the parameter increases (shown for effects of 1 or more).</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="al">![Parameter to response map for the daily-forced model with alum.](images/sensitivity/heatmap_alum.png)</span>{#fig-heatmap}</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("alum")</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">eff</span>(<span class="st">"alum"</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(output <span class="sc">%in%</span> sig) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">cat =</span> cat_name[<span class="fu">cat_of</span>(output)])</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>top <span class="ot">&lt;-</span> e <span class="sc">|&gt;</span> <span class="fu">group_by</span>(cat, parameter) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">m =</span> <span class="fu">mean</span>(<span class="fu">pmin</span>(mu_star_scaled, <span class="dv">20</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cat) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(m), <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">Most influential parameters (mean effect in tolerances)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste0</span>(parameter, <span class="st">" ("</span>, <span class="fu">round</span>(m, <span class="dv">1</span>), <span class="st">")"</span>, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(top, <span class="at">caption =</span> <span class="st">"Strongest parameters for each target, daily forcing with alum."</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="al">![Strongest parameters overall.](images/sensitivity/influence_alum.png)</span>{width="70%"}</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Findings by target</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Polymixis</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>Stratification is controlled by the **wind and mixing parameters**: wind scaling, <span class="in">`coef_wind_stir`</span>, the drag coefficient <span class="in">`cd`</span>, the hypolimnetic mixing coefficient and the radiation scalings (heat input). More wind, stirring and drag reduce stratification; more long-wave radiation and warmer air increase it. Biogeochemical parameters have no meaningful effect on any mixing metric. <span class="in">`coef_mix_shear`</span> is inert.</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>The wind scaling has the largest single effect, which is the reason it must not be used as a free parameter (the wind is measured on the lake): the mixing coefficients (<span class="in">`coef_wind_stir`</span>, <span class="in">`cd`</span>) have comparable leverage over the same metrics and are the right place for the adjustment.</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="fu">### Anoxia</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>Bottom-water oxygen and anoxic days are driven by **the same mixing parameters** as stratification, because the length of a stratified spell sets how long the bottom water can be drawn down. The only biogeochemical lever of comparable size is the **sediment oxygen demand in the deepest zone** (<span class="in">`fsed_oxy`</span> zone 1), which also controls whether the model has anoxic years at all. The rate of oxygen decline during stratified spells (a process-level measure of oxygen demand) responds to cyanobacteria respiration and to the zone-1 oxygen demand.</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Internal loading</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>This is the **least well-controlled target**. No parameter moves any loading metric by more than about 3 tolerances. Bottom-water ammonium responds to nitrification (<span class="in">`rnitrif`</span>) and, less, to wind and the cyanobacteria nitrogen uptake. Sediment ammonium flux has a smaller effect than expected. The bottom FRP and TP gradients respond to almost nothing, including the sediment FRP flux and the P adsorption parameters.</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### Phytoplankton</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>Chlorophyll-a is controlled by the **cyanobacteria group** (respiration <span class="in">`R_resp`</span>, light <span class="in">`I_K`</span>, phosphorus half-saturation <span class="in">`K_P`</span>, <span class="in">`KePHY`</span>, buoyancy <span class="in">`w_p`</span>), and by the alum rates when alum is on. A large part of the sampled space produces runaway cyanobacteria blooms (the median chlorophyll-a spans 0 to over 1,000 mg/m^3^), so the effect sizes for chlorophyll are dominated by those regions and overstate the sensitivity in the realistic range.</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## Influence by parameter group</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("alum")</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">eff</span>(<span class="st">"alum"</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(output <span class="sc">%in%</span> sig) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(parameter, theme) <span class="sc">|&gt;</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">m =</span> <span class="fu">mean</span>(<span class="fu">pmin</span>(mu_star_scaled, <span class="dv">20</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">mx =</span> <span class="fu">max</span>(<span class="fu">pmin</span>(mu_star_scaled, <span class="dv">20</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>gt <span class="ot">&lt;-</span> g <span class="sc">|&gt;</span> <span class="fu">group_by</span>(<span class="at">Group =</span> theme) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">Parameters =</span> <span class="fu">n</span>(), <span class="st">`</span><span class="at">Mean effect</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">mean</span>(m), <span class="dv">2</span>), <span class="st">`</span><span class="at">Strongest single effect</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">max</span>(m), <span class="dv">2</span>), <span class="st">`</span><span class="at">Not influential (&lt;0.3 everywhere)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(mx <span class="sc">&lt;</span> <span class="fl">0.3</span>))</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(gt, <span class="at">caption =</span> <span class="st">"Mean effect on the CSPS signatures, by parameter group."</span>)</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>The screening is highly interacting: the spread of the elementary effects is larger than their mean for every target (median sigma/mu<span class="sc">\*</span> 1.4 to 2.1), so effects are nonlinear and depend on the other parameters. The ranking tells us which parameters to adjust, not by how much.</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="fu">## Are the targets reachable?</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>For each signature the table shows the range produced by the 1,464 sampled parameter sets, and the share of them that land within the observed tolerance.</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("alum")</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">runs</span>(<span class="st">"alum"</span>)</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>rg <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(tg<span class="sc">$</span>signature, <span class="cf">function</span>(s) {</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> r[[s]]; o <span class="ot">&lt;-</span> tg<span class="sc">$</span>observed[tg<span class="sc">$</span>signature <span class="sc">==</span> s]; tl <span class="ot">&lt;-</span> tg<span class="sc">$</span>tolerance[tg<span class="sc">$</span>signature <span class="sc">==</span> s]</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Target =</span> cat_name[<span class="fu">cat_of</span>(s)], <span class="at">Signature =</span> s, <span class="at">Observed =</span> <span class="fu">signif</span>(o, <span class="dv">3</span>), <span class="at">Tolerance =</span> <span class="fu">signif</span>(tl, <span class="dv">2</span>),</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">5th to 95th percentile of runs</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="fu">signif</span>(<span class="fu">quantile</span>(x, .<span class="dv">05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>), <span class="st">"to"</span>, <span class="fu">signif</span>(<span class="fu">quantile</span>(x, .<span class="dv">95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>)),</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Runs within tolerance (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">abs</span>(x <span class="sc">-</span> o) <span class="sc">&lt;=</span> tl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(rg, <span class="at">caption =</span> <span class="st">"Range of each signature across the sampled parameter sets (daily forcing, alum)."</span>)</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Stratification can be brought to the observed value** by the mixing parameters, but only a small share of the random parameter sets do so; the calibrated baseline (hourly physics under daily forcing) was far too stratified.</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Bottom FRP and TP concentrations are not reachable**: the observed 90th percentiles lie above essentially every simulated run (under 1% within tolerance). This is a structural gap (see the ammonium and sediment-flux sections of the <span class="co">[</span><span class="ot">staged calibration</span><span class="co">](rotorua-calibration-staged.qmd)</span>), not a tuning problem.</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Bottom ammonium and anoxia are reachable.**</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a is only reachable within a narrow part of the cyanobacteria parameter space** (1 to 3% of runs).</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## Effect of alum</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>The same parameter sets were run with the alum dose set to zero. The paired difference (alum minus no alum) at identical parameters shows what alum does to each metric.</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("alum") &amp;&amp; have("noalum")</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">runs</span>(<span class="st">"alum"</span>); n <span class="ot">&lt;-</span> <span class="fu">runs</span>(<span class="st">"noalum"</span>)</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(sig, <span class="cf">function</span>(s) {</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>  dd <span class="ot">&lt;-</span> (a[[s]] <span class="sc">-</span> n[[s]]) <span class="sc">/</span> tg<span class="sc">$</span>tolerance[tg<span class="sc">$</span>signature <span class="sc">==</span> s]</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Target =</span> cat_name[<span class="fu">cat_of</span>(s)], <span class="at">Signature =</span> s,</span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mean with alum</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(<span class="fu">mean</span>(a[[s]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>), <span class="st">`</span><span class="at">Mean without alum</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(<span class="fu">mean</span>(n[[s]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>),</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Median change (tolerances)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">median</span>(dd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>),</span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Runs changed by more than half a tolerance (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">abs</span>(dd) <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(d, <span class="at">caption =</span> <span class="st">"Paired effect of alum on each signature."</span>)</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Physics and oxygen are unchanged on average** (means agree to 3 figures). Individual paired runs do scatter by up to about a tolerance for some mixing metrics; this is a noise floor of the experiment (small differences amplified near stratification thresholds), so effects under one tolerance on those metrics should not be interpreted.</span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Phosphorus responds as expected:** the 90th percentile of bottom FRP falls by about 60% and bottom TP by about 25%, and the mean simulated TLI3 is lower by about 0.8 units.</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a** is lower with alum in the bloom-prone parameter sets and unchanged in typical runs.</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Bottom to surface contrast is larger with alum** (alum removes surface phosphorus more than bottom), so the internal-loading signatures read stronger in a dosed lake.</span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="al">![Parameter influence with and without alum.](images/sensitivity/compare_alum.png)</span>{width="70%"}</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>Parameter rankings are broadly the same (Spearman 0.69), but with alum the alum rate <span class="in">`k_w`</span>, <span class="in">`K_P`</span>, <span class="in">`k_age_w`</span>, <span class="in">`k_s`</span> and <span class="in">`w_ala`</span> become influential for chlorophyll and phosphorus and compete with the phytoplankton and sediment parameters. This is the case for calibrating phosphorus and phytoplankton parameters with the alum module off, on years without dosing, and the alum parameters afterwards.</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hourly against daily forcing</span></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("hourly") &amp;&amp; have("dailyw2")</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"images/sensitivity/rank_correlations.rds"</span>)</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Spearman rank correlation of overall parameter influence, hourly vs daily forcing on the same window:"</span>, <span class="fu">round</span>(rho<span class="sc">$</span>forcing, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have("hourly") &amp;&amp; have("dailyw2")</span></span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">runs</span>(<span class="st">"hourly"</span>); dd <span class="ot">&lt;-</span> <span class="fu">runs</span>(<span class="st">"dailyw2"</span>)</span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(sig, <span class="cf">function</span>(s) {</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>  tl <span class="ot">&lt;-</span> tg<span class="sc">$</span>tolerance[tg<span class="sc">$</span>signature <span class="sc">==</span> s]; o <span class="ot">&lt;-</span> tg<span class="sc">$</span>observed[tg<span class="sc">$</span>signature <span class="sc">==</span> s]</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Target =</span> cat_name[<span class="fu">cat_of</span>(s)], <span class="at">Signature =</span> s,</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mean, hourly</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(<span class="fu">mean</span>(h[[s]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>), <span class="st">`</span><span class="at">Mean, daily</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(<span class="fu">mean</span>(dd[[s]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">3</span>),</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Median change hourly minus daily (tolerances)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">median</span>((h[[s]] <span class="sc">-</span> dd[[s]]) <span class="sc">/</span> tl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">2</span>),</span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Correlation across the 1,464 parameter sets</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">cor</span>(h[[s]], dd[[s]], <span class="at">use =</span> <span class="st">"complete.obs"</span>), <span class="dv">2</span>),</span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Runs within tolerance, hourly (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">abs</span>(h[[s]] <span class="sc">-</span> o) <span class="sc">&lt;=</span> tl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Runs within tolerance, daily (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">abs</span>(dd[[s]] <span class="sc">-</span> o) <span class="sc">&lt;=</span> tl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(fc, <span class="at">caption =</span> <span class="st">"The same 1,464 parameter sets run with hourly forcing and with the hourly record aggregated to daily (2012-07 to 2015-06, alum on)."</span>)</span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="al">![Parameter influence under hourly and daily forcing on the same window.](images/sensitivity/compare_forcing.png)</span>{width="70%"}</span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>The two forcings give the **same picture of which parameters matter**, but **different absolute behaviour**:</span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Rankings agree.** The overall rank correlation of parameter influence is 0.86, no lower than the 0.85 between the two daily windows (2010 to 2013 and 2012 to 2015), so changing from hourly to daily forcing alters the rankings no more than changing the years. The same parameters lead each target in both: wind scaling, <span class="in">`coef_wind_stir`</span>, <span class="in">`cd`</span> and <span class="in">`fsed_oxy`</span> zone 1 for anoxia and mixing, and the cyanobacteria respiration, light and phosphorus parameters (and the alum rates) for chlorophyll.</span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Response to the parameters agrees.** For identical parameter sets the outputs correlate at 0.93 to 0.98 for the main stratification and anoxia metrics (the spell-length metrics are noisier, 0.25 to 0.84) and 0.99 for chlorophyll-a, so a parameter set that is better under one forcing is better under the other.</span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**But daily forcing is systematically more stratified.** For the same parameters the daily-forced model is stratified on 48% of days against 37% with hourly forcing (a difference of about 1.8 tolerances, almost all of it in winter), has a bottom temperature 1.7 °C lower in the stratified season, and has more anoxic days (14% against 9%). Averaging the wind over a day removes the short windy periods that break stratification, so the daily-forced model has less mixing energy for the same parameters.</span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The mixing parameters matter somewhat more under daily forcing** (physics group mean effect 2.1 against 1.6; wind scaling 5.6 against 4.1): with less mixing energy built in, the model leans harder on them, which is also why daily forcing is more likely to produce a compensating wind scaling.</span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The observed stratification is easier to reach with hourly forcing**: 19% of sampled parameter sets land within tolerance for the stratified fraction, against 8% with daily.</span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Internal loading and phosphorus targets are unreachable under both** (bottom FRP and TP 90th percentiles within tolerance in 0% of runs).</span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>What this means: the **sensitivity conclusions are transferable between forcings, but fitted parameter values are not**. Mixing coefficients calibrated to daily forcing would absorb the missing sub-daily wind and would be too strong when used with hourly forcing, such as the climate scenarios disaggregated to hourly. The physics should be calibrated with hourly forcing, and daily forcing is acceptable for ranking parameters and for screening.</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implications for the calibration</span></span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Fix wind at 1** (it is measured). Calibrate stratification, mixing and anoxia with <span class="in">`coef_wind_stir`</span>, <span class="in">`cd`</span>, <span class="in">`ce`</span>/<span class="in">`ch`</span>, the hypolimnetic and other mixing coefficients, the radiation scalings (kept narrow), and the deep-zone oxygen demand.</span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Hold `coef_mix_shear`, `ksed_nit` and `rcpom_bdown` fixed**: they do not affect any target.</span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Calibrate phosphorus and chlorophyll parameters with alum off**, on years without dosing, because <span class="in">`k_w`</span>, <span class="in">`K_P`</span> and the other alum rates otherwise compete with the cyanobacteria and sediment parameters for the same data. Use narrow cyanobacteria ranges to avoid the runaway-bloom region.</span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Do not use bottom FRP and TP concentration as targets** in the current structure; they cannot be reached.</span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Use the ensemble smoother with the CSPS residuals**, not a single best parameter set, because the response is strongly interacting.</span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitations</span></span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Morris screening with 12 trajectories ranks parameters but does not give variance shares; interactions are large, so a variance-based analysis (Sobol) on the 15 to 20 parameters chosen for calibration would be the next step.</span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Some phytoplankton temperature parameters (<span class="in">`theta_growth`</span>, <span class="in">`T_std`</span>, <span class="in">`T_opt`</span>, <span class="in">`T_max`</span>) were restricted to the region where AED's temperature-function solver converges; outside it the model stops with "Cannot solve for fT".</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Three years are scored per run, so the signatures that depend on rare events (anoxic years, long spells) are noisy.</span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The daily-forced window before 2011 uses an extension of the raw daily ERA5 that correlates poorly with the hourly record (wind r = 0.45, rain r = 0.42), which affects the spin-up of the first setup only.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
