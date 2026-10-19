@@ -64,12 +64,24 @@ aed_file <- file.path(aeme_path, "glm_aed", "aed", "aed.nml")
 
 aed_old <- read_nml(aed_old_file)
 aed <- read_nml(aed_file)
-aed$aed_models$models <- c(aed$aed_models$models, "aed_alum")
+# build_aeme() now writes its default module list (incl. aed_noncohesive, which has no
+# block in this config), so use the module list of the original case instead (it already
+# ends with aed_alum, and its order matches the blocks in aed.nml).
+aed$aed_models$models <- aed_old$aed_models$models
 aed$aed_alum <- aed_old$aed_alum
 write_nml(aed, aed_file)
 
-aeme <- aeme |> 
-  run_aeme()
+# build_aeme() writes sed_heat_model = 2 without the soil-column layers that GLM now
+# requires (n_sed_layers >= 3), so add them here (same values as glm4_original.nml).
+glm_file <- file.path(aeme_path, "glm_aed", "glm4.nml")
+glm_nml <- read_nml(glm_file)
+glm_nml$sediment$n_sed_layers <- 8
+glm_nml$sediment$sed_layer_depth <- c(0, 0.02, 0.05, 0.1, 0.2, 0.4, 0.8, 1.5)
+glm_nml$sediment$sed_vwc <- 0.4
+write_nml(glm_nml, glm_file)
+
+aeme <- aeme |>
+  run_aeme(extra_vars = "all")
 
 outfile <- get_model_outfile(aeme)$glm_aed["output"]
 out <- read_glm_output(file = outfile, vars_sim = tgt_vars, load_all = T)
@@ -234,6 +246,7 @@ node should be flat.
 #| fig-width: 11
 #| fig-height: 10
 
+nc <- nc_open(outfile)  # reopen: the handle from the setup chunk is no longer valid after AEME reads the file
 sed_temp  <- ncvar_get(nc, "sed_temp")        # (sed_layers, nzones, time)
 sed_depth <- ncvar_get(nc, "sed_layer_depth") # (sed_layers)
 zone_ztemp <- ncvar_get(nc, "zone_ztemp")     # (nzones, time)

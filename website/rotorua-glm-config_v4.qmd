@@ -127,7 +127,7 @@ aeme <- tar_read(aeme_baseline)
 
 aeme <- aeme |>
   # AEME::set_sim_period(sim_period) |> 
-  build_aeme(path = path) |>
+  build_aeme(path = path, use_bgc = TRUE) |>
   run_aeme(extra_vars = "all")
 
 
@@ -462,7 +462,7 @@ plot_output(aeme, var_sim = "LKE_lvlwtr")
 
 ### Albedo {#albedo}
 
-```{r plot-level}
+```{r plot-albedo}
 #| fig-cap: "Simulated lake albedo as a fraction of shortwave radiation."
 #| fig-height: 3.5
 
