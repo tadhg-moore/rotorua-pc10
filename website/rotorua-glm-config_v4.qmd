@@ -54,7 +54,7 @@ hyps_adj <- min(hyps_no_hole$elev) - min(corr_hyps$elev)
 # aed_sed_const2d/* rows are applied automatically by build_aeme() via
 # set_aed_sed_const2d(); every other aed.nml/aed_phyto_pars.csv row is
 # written by hand below once the config files exist on disk.
-calib_params <- readr::read_csv("../data/processed/aed/aed_sa_calib_params.csv",
+calib_params <- readr::read_csv("../data/aed/aed_sa_calib_params.csv",
                                  show_col_types = FALSE)
 
 # Measured 5-zone sediment configuration from the _targets.R calibration

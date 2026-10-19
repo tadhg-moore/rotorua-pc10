@@ -1,0 +1,29 @@
+file,name,required_value,enables,module,note
+aed.nml,models,"aed_sedflux, aed_oxygen, aed_carbon, aed_organic_matter, aed_nitrogen, aed_phosphorus, aed_silica, aed_phytoplankton",all rows in the parameter table,core,all listed modules must be active; aed_silica only needed for diatom Si; aed_carbon only needed if P adsorption uses pH
+aed.nml,aed_sedflux/sedflux_model,Constant2d,aed_sed_const2d/fsed_oxy | fsed_amm | fsed_nit | fsed_frp,sedflux,activates the zoned constant sediment-flux block
+aed.nml,aed_sed_const2d/n_zones,3,aed_sed_const2d/* (per zone),sedflux,must be >= number of active_zones; index in the param table = zone number
+aed.nml,aed_sed_const2d/active_zones,"1, 2, 3",aed_sed_const2d/*,sedflux,maps model benthic zones to the flux vectors
+aed.nml,aed_oxygen/Fsed_oxy_variable,SDF_Fsed_oxy,aed_sed_const2d/fsed_oxy,oxygen,without this link the module uses its own scalar aed_oxygen/Fsed_oxy and the zoned value is ignored
+aed.nml,aed_nitrogen/Fsed_amm_variable,SDF_Fsed_amm,aed_sed_const2d/fsed_amm,nitrogen,without this link the module uses its own scalar aed_nitrogen/Fsed_amm
+aed.nml,aed_nitrogen/Fsed_nit_variable,SDF_Fsed_nit,aed_sed_const2d/fsed_nit,nitrogen,without this link the module uses its own scalar aed_nitrogen/Fsed_nit
+aed.nml,aed_phosphorus/Fsed_frp_variable,SDF_Fsed_frp,aed_sed_const2d/fsed_frp,phosphorus,without this link the module uses its own scalar aed_phosphorus/Fsed_frp
+aed.nml,aed_nitrogen/nitrif_reactant_variable,OXY_oxy,aed_nitrogen/knitrif | ksed_amm,nitrogen,enables O2 limitation of nitrification and O2 dependence of the NH4 sediment flux; rnitrif/theta_nitrif still act without it
+aed.nml,aed_nitrogen/oxy_lim,1,aed_nitrogen/knitrif,nitrogen,selects the O2-limitation formulation used with knitrif
+aed.nml,aed_phosphorus/phosphorus_reactant_variable,OXY_oxy,aed_phosphorus/ksed_frp | theta_sed_frp,phosphorus,enables the redox/O2 control of FRP sediment release (the anoxic P-release switch); fsed_frp still applied without it
+aed.nml,aed_organic_matter/dom_miner_oxy_reactant_var,OXY_oxy,aed_organic_matter/kdom_minerl | kpom_hydrol,organic_matter,sets use_oxy=T so mineralisation/hydrolysis carry an O2 half-saturation term; rates and theta still act without it
+aed.nml,aed_phosphorus/simPO4Adsorption,.true.,aed_phosphorus/kpo4p | kadsratio | qmax | w_po4ads,phosphorus,master switch for P sorption dynamics
+aed.nml,aed_phosphorus/PO4AdsorptionModel,1 or 2,1 -> kpo4p ; 2 -> kadsratio + qmax,phosphorus,picks which sorption parameters are live
+aed.nml,aed_phosphorus/ads_use_external_tss,.true.,aed_phosphorus/kpo4p | kadsratio | qmax,phosphorus,or set po4sorption_target_variable to a particle pool; with no sorbent the sorption params do nothing
+aed.nml,aed_phytoplankton/num_phytos,3,all phyto/* rows,phytoplankton,must be >= number of groups
+aed.nml,aed_phytoplankton/the_phytos,"1, 2, 3",all phyto/* rows,phytoplankton,column numbers in aed_phyto_pars.csv; their order sets the index (1=cyano, 2=diatom, 3=green)
+aed.nml,aed_phytoplankton/dbase,aed_phyto_pars.csv,all phyto/* rows,phytoplankton,group parameter database file
+aed.nml,aed_phytoplankton/settling,0 or 1 per group,phyto/w_p,phytoplankton,_MOB_OFF_=0 / _MOB_CONST_=1 use w_p directly; _MOB_STOKES_=3 / _MOB_MOTILE_=4 compute sinking from cell density and ignore w_p
+aed.nml,aed_phytoplankton/si_uptake_target_variable,SIL_rsi,phyto/K_Si | X_sicon,phytoplankton,requires aed_silica active; without a Si source diatom Si uptake is inert
+aed.nml,aed_phytoplankton/n1_uptake_target_variable | n2_uptake_target_variable | p1_uptake_target_variable | do_uptake_target_variable,NIT_nit | NIT_amm | PHS_frp | OXY_oxy,couples phyto growth/uptake to NIT_amm, PHS_frp, OXY_oxy,phytoplankton,non-empty by default; keep set so K_N / K_P / R_growth actually draw down DIN, FRP and O2
+aed_phyto_pars.csv,phyto/fT_Method,1,phyto/T_opt | T_std | T_max | theta_growth,phytoplankton,=0 disables temperature limitation; example CSV has diatom=0 so its T params are inert until set to 1
+aed_phyto_pars.csv,phyto/lightModel,0,phyto/I_K,phytoplankton,=0 uses I_K (no photoinhibition); =1 uses I_S instead
+aed_phyto_pars.csv,phyto/simDINUptake,1,phyto/K_N,phytoplankton,enables DIN uptake limitation
+aed_phyto_pars.csv,phyto/simINDynamics,2,phyto/X_nmin | X_nmax | R_nuptake,phytoplankton,=0 or 1 uses fixed X_ncon instead of the dynamic internal-N quota params
+aed_phyto_pars.csv,phyto/simDIPUptake,1,phyto/K_P,phytoplankton,enables DIP uptake limitation
+aed_phyto_pars.csv,phyto/simIPDynamics,2,phyto/X_pmin | X_pmax | R_puptake,phytoplankton,=0 or 1 uses fixed X_pcon instead
+aed_phyto_pars.csv,phyto/simSiUptake,1,phyto/K_Si | X_sicon,phytoplankton,diatom only; example CSV has this =0 for every group

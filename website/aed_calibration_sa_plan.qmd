@@ -262,7 +262,7 @@ set, the parameter is read but silently unused.
 #| label: load-params
 #| eval: false
 # Adjust paths as needed
-params   <- readr::read_csv("../data/processed/aed/aed_sa_calib_params.csv")
+params   <- readr::read_csv("../data/aed/aed_sa_calib_params.csv")
 switches <- readr::read_csv("../data/processed/aed/aed_sa_calib_switches.csv")
 
 params   |> dplyr::count(module, name = "n_parameters")
