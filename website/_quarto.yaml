@@ -81,6 +81,9 @@ website:
             text: "Alum Scenarios (Rotorua GLM-AED)"
           - href: alum-dosing-sanila-msc-thesis.qmd
             text: "Sanila Thesis Notes"
+      - section: "Presentations"
+        contents:
+          - research-overview.qmd
       - section: "Tasks"
         contents:
           - data.qmd

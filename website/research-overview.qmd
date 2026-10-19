@@ -1,0 +1,405 @@
+---
+title: "Overview of my Research"
+format:
+  revealjs:
+    hash: true
+    slide-number: true
+    controls: false
+    include-after-body: www/hub.html
+    css: wwwstyles.css
+cache: true
+---
+
+## AI Acknowledgement
+
+I used Claude to
+
+## About
+
+Completed my PhD in 2020 at Dundalk Institute of Technology, Ireland. 
+My research focused on water quality forecasting in lakes, and also climate
+change impacts on lake water temperature globally.
+
+Post-doc at Virginia Tech, USA, developing teaching modules for Ecological Forecasting.
+
+Currently a Lake Scientist at Limnotrack working on water quality modelling and management.
+
+## Where I have worked {#fly-map}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6
+library(leaflet)
+library(htmlwidgets)
+
+stops <- list(
+  name = c("Ireland", "USA", "New Zealand"),
+  lat  = c(53.946, 37.224, -37.785),
+  lng  = c(-9.575, -80.427, -184.709),
+  zoom = c(10, 8, 10)
+)
+
+leaflet(options = leafletOptions(zoomControl = FALSE)) |>
+  addProviderTiles("Esri.WorldImagery") |>
+  addMarkers(stops$lng, stops$lat, label = stops$name) |>
+  setView(stops$lng[1], stops$lat[1], stops$zoom[1]) |>
+  onRender("
+    function(el, x, s) {
+      var map = this, i = 0, timers = [];
+
+      function fly() {
+        i = (i + 1) % s.lat.length;
+        map.flyTo([s.lat[i], s.lng[i]], s.zoom[i], {duration: 4});
+      }
+      function start() {
+        timers.forEach(clearTimeout); timers = [];
+        i = 0;
+        map.invalidateSize();
+        map.setView([s.lat[0], s.lng[0]], s.zoom[0], {animate: false});
+        timers.push(setTimeout(fly, 2000));
+        timers.push(setTimeout(fly, 9000));
+      }
+      function onThisSlide() {
+        return Reveal.getCurrentSlide().contains(el);
+      }
+
+      Reveal.on('slidechanged', function() { if (onThisSlide()) start(); });
+      if (Reveal.isReady()) { if (onThisSlide()) start(); }
+      else Reveal.on('ready', function() { if (onThisSlide()) start(); });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'n' && onThisSlide()) fly();
+      });
+    }
+  ", data = stops)
+```
+
+## Short version
+
+Climate change may increase the length and number of stratification
+events in Lake Rotorua, driving nutrient loading and algal blooms.
+
+Alum dosing has been shown to reduce phosphorus and could help
+mitigate those climate effects.
+
+## Lake Rotorua monitoring sites {#map-sites}
+
+[Insert tmap map]
+
+# What is Plan Change 10?
+
+## Plan Change 10 {#pc10}
+
+Bay of Plenty Regional Council rules for managing nitrogen loss in the
+Lake Rotorua groundwater catchment. Gives effect to the RPS target of a
+435 tN/yr sustainable lake nitrogen load by 2032 (needed for a TLI of 4.2).
+
+## PC 10 Lake Modelling
+
+To help answer questions:
+
+- Does 435 tN (and the nominal 37 tP/yr external load) still hold under climate scenarios?
+
+- Alum dosing efficacy and risk under future climate.
+
+- Sensitivity of the N-P balance.
+
+- Model validation.
+
+## How it all fits together {#map}
+
+```{mermaid}
+graph LR
+  D[Data] --> M[Lake Modelling]
+  A[Alum dosing] --> M
+  C[Climate change] --> M
+  N --> M
+  M --> N[Nitrogen loading]
+  M --> A
+  M --> P[N:P balance]
+  P --> N
+  M --> V[Model validation]
+  D --> V
+  M --> S[Scenarios]
+  D --> N
+  C --> S
+  A --> S
+```
+
+## Where to next? {#hub}
+
+- [Lake Modelling](#model-core){.hublink} (~6 min)
+- [Data](#data-core){.hublink} (~6 min)
+- [Alum dosing](#alum-core){.hublink} (~6 min)
+- [Climate change](#climate-core){.hublink} (~6 min)
+- [Wrap up: synthesis](#synthesis){.hublink}
+
+# Alum dosing
+
+## Where to start {#alum-core}
+
+<!-- what is it, how it works, modelling and calibration impact -->
+
+
+# Lake Modelling
+
+## Where to start {#model-core}
+
+1. What is the question we are trying to answer?
+
+How will Lake Rotorua water quality change under future climate?
+
+To what extent does the stream alum dosing affect water quality?
+
+## Hypothesis Figure
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5.5
+
+library(ggplot2)
+
+periods <- list(
+  "2015-2040" = c(2015, 2040),
+  "2041-2070" = c(2041, 2070),
+  "2071-2100" = c(2071, 2100)
+)
+ssps  <- c("ssp126", "ssp245", "ssp370", "ssp585")
+alum  <- c("same", "0.5", "none")
+
+d <- expand.grid(
+  period = names(periods),
+  ssp    = ssps,
+  alum   = alum,
+  stringsAsFactors = FALSE
+)
+
+# Made-up hypothesis: warming effect grows with forcing and time,
+# alum dampens it (and slightly improves on the baseline)
+forcing   <- c(ssp126 = 0.2, ssp245 = 0.4, ssp370 = 0.75, ssp585 = 1.2)
+time_mult <- c("2015-2040" = 0.3, "2041-2070" = 0.55, "2071-2100" = 1.0)
+alum_mult <- c(same = 0.5, "0.5" = 0.7, none = 1.0)
+alum_base <- c(same = -0.20, "0.5" = -0.1, none = 0)
+
+d$delta_tli <- with(d,
+  1.4 * forcing[ssp] * time_mult[period] * alum_mult[alum] + alum_base[alum]
+)
+
+# Factor levels control the order on the plot
+d$period <- factor(d$period, levels = names(periods))
+d$ssp    <- factor(d$ssp,    levels = ssps)   # ssp126 at the bottom
+d$alum   <- factor(d$alum,   levels = alum,
+                   labels = c("Alum: current dose",
+                              "Alum: half dose",
+                              "Alum: none"))
+
+lim <- max(abs(d$delta_tli))
+
+p <- ggplot(d, aes(period, ssp, fill = delta_tli)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(aes(label = sprintf("%+.2f", delta_tli)), size = 4.5) +  # delete for a pure hypothesis
+  facet_wrap(~ alum) +
+  scale_fill_gradient2(
+    low = "#0072B2", mid = "white", high = "#D55E00",
+    midpoint = 0, limits = c(-lim, lim),
+    name = expression(Delta * "TLI")
+  ) +
+  scale_y_discrete(labels = c(ssp126 = "SSP1-2.6", ssp245 = "SSP2-4.5",
+                              ssp370 = "SSP3-7.0", ssp585 = "SSP5-8.5")) +
+  labs(x = NULL, y = NULL,
+       title = "Hypothesis (schematic): change in TLI",
+       subtitle = "Relative to baseline; orange = worse, blue = better") +
+  coord_fixed() +
+  theme_minimal(base_size = 16) +
+  theme(panel.grid = element_blank(),
+        strip.text = element_text(face = "bold"),
+        axis.text.x = element_text(angle = 30, hjust = 1),
+        plot.title = element_text(face = "bold"),
+        legend.position = "right")
+
+p
+# ggsave("hypothesis_tile.png", p, width = 12, height = 5, dpi = 300)
+```
+
+
+
+## Knowledge
+
+"I know that I know nothing" - Socrates
+
+
+## Workflows
+
+1. Gather data
+
+2. Synthesise data
+
+3. Model selection
+
+4. Configuration
+
+5. Sensitivity Analysis
+
+6. Calibration
+
+7. Assessment
+
+8. Scenario simulations
+
+9. Synthesis
+
+
+## Models
+
+1-dimensional Models
+
+Key assumptions:
+
+1. Horizontal variation is negligible
+
+General Lake Model coupled with Aquatic Ecodynamics modelling library (GLM-AED) 
+
+## GLM
+
+![](https://aed.see.uwa.edu.au/research/models/GLM/images/glm_slide1_.jpg)
+
+::: {.credit}
+
+Source: [AED](https://aed.see.uwa.edu.au/research/models/GLM/screenshots.html)
+
+:::
+
+## GLM
+
+
+
+## Water Balance
+
+
+## Heat Balance
+
+![](https://aed.see.uwa.edu.au/research/models/GLM/images/GLM_Surface.png)
+
+::: {.credit}
+
+Source: [AED](https://aed.see.uwa.edu.au/research/models/GLM/screenshots.html)
+
+:::
+
+## Thermal structure
+
+- Stratification
+
+## Sensitivity Analysis & Calibration
+
+## Model Assessment
+
+## Go deeper? {#model-deeper}
+
+- [Frequentist vs Bayes](#bayes)
+- [PEST++](#pestpp)
+- [← Back to hub](#hub)
+
+## Frequentist vs Bayes {#bayes}
+
+![](https://imgs.xkcd.com/comics/frequentists_vs_bayesians.png){fig-align="centre"}
+
+::: {.credit}
+
+Source: [xkcd #1132](https://xkcd.com/1132/) by Randall Munroe, CC BY-NC 2.5
+
+:::
+
+[← Back to "Go deeper?"](#model-deeper)
+
+## PEST++ {#pestpp}
+
+[← Back to "Go deeper?"](#model-deeper)
+
+## Connections {#model-links}
+
+Feeds into [Alum](#alum-core) via ... and depends on [Data](#data-core) via ...
+
+[← Back to hub](#hub)
+
+# Data
+
+## What, where, when, how and why {#data-core}
+
+## FAIR Data Principles
+
+Data should be:
+
+- Findable
+- Accessible
+- Interoperable
+- Reusable
+
+Read more (here)[https://www.nature.com/articles/sdata201618]
+
+## What data is needed for the Lake Rotorua model?
+
+```{mermaid}
+graph TD
+  classDef cat fill:#f5f5f5,stroke:#333333,stroke-width:1px;
+  classDef model fill:#D55E00,color:#ffffff,stroke:#333333,stroke-width:2px;
+  classDef climate fill:#0072B2,color:#ffffff,stroke:#333333,stroke-width:1px;
+
+  OBS["Observations<br/>lake_level, rotorua_inflow,<br/>alum_dosing, buoy and CTD data,<br/>chem_data, light_data"]:::cat
+  MET["Meteorology<br/>niwa_met_daily,<br/>niwa_met_hourly_aeme"]:::cat
+  SPAT["Spatial<br/>lake shape, lake_meta,<br/>depth_contours"]:::cat
+  CFG["Model config<br/>corr_hyps, glm_sed_param,<br/>meas_param, aed_alum_params"]:::cat
+  GCM["GCM / CMIP6<br/>cmip6_metadata, gcm_point_data_df"]:::climate
+
+  M["GLM-AED Model"]:::model
+
+  OBS -. calibration and validation .-> M
+  MET --> M
+  SPAT --> M
+  CFG --> M
+  GCM -. forcing - see Climate module .-> M
+
+  click GCM "#climate-core" "Go to Climate change module"
+```
+
+::: {.credit}
+
+Categories match the `targets` pipeline's data inventory (`data_inventory_html`)
+
+:::
+
+
+<!-- same pattern: core, Go deeper (observation uncertainty), connections -->
+
+# Climate change
+<!-- CMIP6, methodology and bias correction, impacts -->
+
+# What can we actually say? {#synthesis}
+
+## Uncertainty is everywhere {#unc-intro}
+
+Every result so far carries uncertainty from at least one source.
+
+## Observation uncertainty {#unc-obs}
+
+- Limits of detection
+
+- Sensor measurement accuracy
+
+- Sensor drift/fouling etc.
+
+## Climate uncertainty {#unc-climate}
+
+- Multiple GCM's
+
+-
+
+## Model uncertainty {#unc-model}
+
+## Which dominates? {#unc-combined}
+
+## So what do we conclude?
+
+# Lessons and tips
