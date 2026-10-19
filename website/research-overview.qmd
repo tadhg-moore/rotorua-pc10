@@ -6,9 +6,82 @@ format:
     slide-number: true
     controls: false
     include-after-body: www/hub.html
-    css: wwwstyles.css
+    css: www/styles.css
 cache: true
 ---
+
+```{r}
+#| echo: false
+#| label: setup
+library(leaflet)
+library(htmlwidgets)
+library(ggplot2)
+library(patchwork)   # for combining panels
+library(MASS)        # mvrnorm (ships with R); use MASS::select() if you load dplyr
+
+set.seed(42)
+
+# ---- Data (true b = 2, true m = 0.8) ----
+n <- 15
+d <- data.frame(x = runif(n, 0, 10))
+d$y <- 2 + 0.8 * d$x + rnorm(n, sd = 1.5)
+
+# ---- Frequentist: least squares + 95% CI ----
+fit   <- lm(y ~ x, data = d)
+ci    <- confint(fit)
+sigma <- summary(fit)$sigma
+
+# ---- Bayesian: normal priors, closed-form posterior ----
+# (noise sd fixed at the lm estimate to keep the maths simple)
+X          <- cbind(1, d$x)
+prior_mean <- c(0, 0)                    # b, m
+prior_prec <- diag(1 / c(10, 5)^2)       # weak priors: sd 10 for b, sd 5 for m
+post_cov   <- solve(crossprod(X) / sigma^2 + prior_prec)
+post_mean  <- post_cov %*% (crossprod(X, d$y) / sigma^2 + prior_prec %*% prior_mean)
+
+draws <- as.data.frame(MASS::mvrnorm(4000, post_mean, post_cov))
+names(draws) <- c("b", "m")
+
+# ---- Plot settings ----
+col_f <- "#D55E00"   # frequentist
+col_b <- "#0072B2"   # Bayesian
+th <- theme_minimal(base_size = 16) +
+  theme(panel.grid.minor = element_blank(),
+        plot.title = element_text(face = "bold"))
+
+# Panel 1: one best-fit line with a confidence band
+p1 <- ggplot(d, aes(x, y)) +
+  geom_smooth(method = "lm", level = 0.95, colour = col_f, fill = col_f,
+              alpha = 0.2, linewidth = 1.5) +
+  geom_point(size = 3) +
+  labs(title = "Frequentist", subtitle = "One best-fit line + 95% CI") +
+  th
+
+# Panel 2: many plausible lines drawn from the posterior
+p2 <- ggplot(d, aes(x, y)) +
+  geom_abline(data = draws[1:150, ], aes(intercept = b, slope = m),
+              colour = col_b, alpha = 0.12) +
+  geom_point(size = 3) +
+  labs(title = "Bayesian", subtitle = "150 draws from the posterior") +
+  coord_cartesian(ylim = ggplot_build(p1)$layout$panel_params[[1]]$y.range) +
+  th
+
+# Panel 3: what each approach reports for the slope
+est <- coef(fit)[["x"]]
+p3 <- ggplot(draws, aes(m)) +
+  geom_density(fill = col_b, colour = col_b, alpha = 0.35) +
+  annotate("pointrange", x = est, y = 0, xmin = ci["x", 1], xmax = ci["x", 2],
+           colour = col_f, linewidth = 1.2, size = 1) +
+  geom_vline(xintercept = 0.8, linetype = "dashed", colour = "grey40") +
+  annotate("text", x = 0.8, y = Inf, label = "true value", vjust = 1.5,
+           hjust = -0.1, colour = "grey40", size = 4) +
+  labs(x = "Slope (m)", y = NULL,
+       title = "The slope",
+       subtitle = "Orange: estimate + CI.  Blue: full posterior") +
+  th + theme(axis.text.y = element_blank())
+
+```
+
 
 ## AI Acknowledgement
 
@@ -30,8 +103,6 @@ Currently a Lake Scientist at Limnotrack working on water quality modelling and 
 #| echo: false
 #| fig-width: 11
 #| fig-height: 6
-library(leaflet)
-library(htmlwidgets)
 
 stops <- list(
   name = c("Ireland", "USA", "New Zealand"),
@@ -159,8 +230,6 @@ To what extent does the stream alum dosing affect water quality?
 #| fig-width: 10
 #| fig-height: 5.5
 
-library(ggplot2)
-
 periods <- list(
   "2015-2040" = c(2015, 2040),
   "2041-2070" = c(2041, 2070),
@@ -225,11 +294,6 @@ p
 
 
 
-## Knowledge
-
-"I know that I know nothing" - Socrates
-
-
 ## Workflows
 
 1. Gather data
@@ -292,17 +356,265 @@ Source: [AED](https://aed.see.uwa.edu.au/research/models/GLM/screenshots.html)
 
 - Stratification
 
-## Sensitivity Analysis & Calibration
+# Sensitivity Analysis & Calibration
 
-## Model Assessment
+## Model Assessment {#model-assess}
 
-## Go deeper? {#model-deeper}
+"I know that I know nothing" - Socrates
 
-- [Frequentist vs Bayes](#bayes)
-- [PEST++](#pestpp)
-- [← Back to hub](#hub)
 
-## Frequentist vs Bayes {#bayes}
+## Model Assessment 2
+
+Important to relate this to your modelling question
+
+
+## Frequentist vs Bayes {#bayes .smaller}
+
+**Frequentist**
+
+- There is one true value of the parameter, and we are trying to estimate it.
+
+**Bayesian**
+
+- There is a distribution of possible values for the parameter, and we are trying to estimate that distribution.
+
+## Bayes' theorem {#bayes-theorem}
+
+$$
+\underbrace{\color{#0072B2}{p(\theta \mid \text{data})}}_{\color{#0072B2}{\text{posterior}}}
+\;\propto\;
+\underbrace{\color{#D55E00}{p(\text{data} \mid \theta)}}_{\color{#D55E00}{\text{likelihood}}}
+\;\times\;
+\underbrace{\color{#7f7f7f}{p(\theta)}}_{\color{#7f7f7f}{\text{prior}}}
+$$
+
+::: {.fragment}
+For our regression, $\theta = (m, b)$
+:::
+
+::: {.notes}
+Full form: posterior = likelihood × prior / evidence, where the evidence p(data)
+is just a normalising constant, so the shape of the posterior comes from
+likelihood × prior.
+:::
+
+## Reading the formula {#bayes-terms}
+
+::: {.incremental}
+- [**Prior**]{style="color:#7f7f7f"}: what we believed before the data
+- [**Likelihood**]{style="color:#D55E00"}: how well each value explains the data
+- [**Posterior**]{style="color:#0072B2"}: our updated belief
+:::
+
+::: {.fragment}
+The posterior is a compromise between the prior and the data.
+:::
+
+::: {.notes}
+The evidence term only rescales the result so the posterior integrates to 1.
+Spoken version: start with what you believed, weight it by how well each
+possibility explains the data, and renormalise.
+:::
+
+## Bayes in lake calibration {#bayes-lake .smaller}
+
+*Example parameter: sediment phosphorus release rate*
+
+| | |
+|---|---|
+| [**Prior**]{style="color:#7f7f7f"} | Measured sediment P flux from [student]'s core incubations |
+| [**Likelihood**]{style="color:#D55E00"} | How well simulated TP, chlorophyll-a and bottom oxygen match the lake monitoring data for each value |
+| [**Posterior**]{style="color:#0072B2"} | The values consistent with both the experiment and the lake record |
+
+::: {.notes}
+Prior: the student's incubation experiment gives a measured release rate, with
+replicate-to-replicate spread. We widen it because cores are small, taken at a
+few sites, and incubated under controlled temperature and oxygen.
+Likelihood: run GLM-AED across candidate values and score the fit to monitoring data.
+Posterior: the combination. Do the two sources agree?
+:::
+
+## Prior, likelihood and posterior {#bayes-lake-fig}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 5
+# Insert figure code showing the prior, likelihood and posterior for the sediment phosphorus release rates
+library(ggplot2)
+
+col_pr <- "grey50"; col_lik <- "#D55E00"; col_po <- "#0072B2"
+
+# --- Placeholder: replace with the student's replicate fluxes ---
+# units: mmol P m-2 d-1 (or whatever AED Fsed_frp uses in your setup)
+flux <- c(0.021, 0.034, 0.028, 0.047, 0.030, 0.039)
+
+# Prior from the measurements (lognormal because the flux must be positive).
+# Inflate the spread to allow for lab-to-lake differences.
+mu_log <- mean(log(flux))
+sd_log <- sd(log(flux)) * 2          # inflation factor: judgement call, state it
+
+# --- Placeholder: lake-data-only information, e.g. from your calibration ---
+lik_mu_log <- log(0.06)
+lik_sd_log <- 0.5
+
+f <- exp(seq(log(0.005), log(0.3), length.out = 600))   # grid of flux values
+
+dens <- data.frame(
+  flux       = f,
+  Prior      = dlnorm(f, mu_log, sd_log),
+  Likelihood = dlnorm(f, lik_mu_log, lik_sd_log)
+)
+post <- dens$Prior * dens$Likelihood
+dens$Posterior <- post / sum(post * c(diff(f), tail(diff(f), 1))) # normalise
+
+long <- tidyr::pivot_longer(dens, -flux, names_to = "curve", values_to = "density")
+long$curve <- factor(long$curve, levels = c("Prior", "Likelihood", "Posterior"))
+
+# rescale each curve to the same peak height so the shapes are comparable
+long <- do.call(rbind, lapply(split(long, long$curve), function(x) {
+  x$density <- x$density / max(x$density); x }))
+
+ggplot(long, aes(flux, density, colour = curve, linetype = curve)) +
+  geom_area(data = subset(long, curve == "Posterior"),
+            aes(fill = curve), alpha = 0.3, colour = NA) +
+  geom_line(linewidth = 1.4) +
+  geom_rug(data = data.frame(flux = flux), aes(x = flux), inherit.aes = FALSE,
+           sides = "b", colour = col_pr, linewidth = 1) +
+  scale_x_log10() +
+  scale_colour_manual(values = c(Prior = col_pr, Likelihood = col_lik,
+                                 Posterior = col_po)) +
+  scale_fill_manual(values = c(Posterior = col_po), guide = "none") +
+  scale_linetype_manual(values = c(Prior = "dashed", Likelihood = "solid",
+                                   Posterior = "solid")) +
+  labs(x = "Sediment P release rate (log scale)", y = NULL,
+       colour = NULL, linetype = NULL,
+       title = "Experiment + lake data = posterior",
+       subtitle = "Ticks: individual incubation measurements (schematic values)") +
+  theme_minimal(base_size = 16) +
+  theme(axis.text.y = element_blank(), legend.position = "top",
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(face = "bold"))
+```
+
+::: {.notes}
+If the lake-only estimate and the experiment agree, we have independent support
+for the parameter. If they disagree, either the lab and lake conditions differ
+or the model is compensating for something else.
+:::
+
+## Example: Linear regression
+
+We have a set of data points (x, y) and we want to fit a linear model y = mx + b.
+
+For the Frequentist approach, we would find the best-fit line that minimizes the
+sum of squared errors. We would then report the estimated slope (m) and 
+intercept (b) along with confidence intervals.
+
+For the Bayesian approach, we would specify prior distributions for m and b, and
+then use the data to update those priors to posterior distributions. We would 
+then report the posterior distributions for m and b, which give us a range of 
+plausible values for the parameters.
+
+
+## Frequentist: one best-fit line {#freq-line}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 7
+(p1 | plot_spacer()) / plot_spacer()
+```
+
+## Bayesian: many plausible lines {#bayes-lines}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 7
+(p1 | p2) / plot_spacer()
+```
+
+## What each approach reports {#bayes-slope}
+
+```{r}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 7
+(p1 | p2) / p3 + plot_layout(heights = c(2, 1.2))
+```
+
+## Example: Linear regression figure 2
+
+```{r}
+#| label: prior-posterior
+#| fig-width: 11
+#| fig-height: 5
+# ---- Posterior for the slope under a given prior ----
+post_slope <- function(prior_m_mean, prior_m_sd, prior_b_sd = 10) {
+  prior_prec <- diag(1 / c(prior_b_sd, prior_m_sd)^2)
+  cov  <- solve(crossprod(X) / sigma^2 + prior_prec)
+  mean <- cov %*% (crossprod(X, d$y) / sigma^2 +
+                   prior_prec %*% c(0, prior_m_mean))
+  list(mean = mean[2], sd = sqrt(cov[2, 2]))
+}
+
+# Data-only information about the slope (the likelihood)
+lik_mean <- coef(fit)[["x"]]
+lik_sd   <- sigma * sqrt(solve(crossprod(X))[2, 2])
+
+scenarios <- list(
+  "Weak prior: N(0, 5)"            = c(0,   5),
+  "Informative prior: N(0.2, 0.15)" = c(0.2, 0.15)
+)
+
+m_grid <- seq(-0.5, 1.5, length.out = 600)
+
+dens <- do.call(rbind, lapply(names(scenarios), function(nm) {
+  pr <- scenarios[[nm]]
+  po <- post_slope(pr[1], pr[2])
+  data.frame(
+    scenario  = factor(nm, levels = names(scenarios)),
+    m         = m_grid,
+    Prior     = dnorm(m_grid, pr[1], pr[2]),
+    Likelihood = dnorm(m_grid, lik_mean, lik_sd),
+    Posterior = dnorm(m_grid, po$mean, po$sd)
+  )
+}))
+
+long <- tidyr::pivot_longer(dens, c(Prior, Likelihood, Posterior),
+                            names_to = "curve", values_to = "density")
+long$curve <- factor(long$curve, levels = c("Prior", "Likelihood", "Posterior"))
+
+p_pp <- ggplot(long, aes(m, density, colour = curve, linetype = curve)) +
+  geom_area(data = subset(long, curve == "Posterior"),
+            aes(fill = curve), alpha = 0.3, colour = NA) +
+  geom_line(linewidth = 1.3) +
+  geom_vline(xintercept = 0.8, linetype = "dotted", colour = "grey40") +
+  facet_wrap(~ scenario) +
+  scale_colour_manual(values = c(Prior = "grey50", Likelihood = col_f,
+                                 Posterior = col_b)) +
+  scale_fill_manual(values = c(Posterior = col_b), guide = "none") +
+  scale_linetype_manual(values = c(Prior = "dashed", Likelihood = "solid",
+                                   Posterior = "solid")) +
+  labs(x = "Slope (m)", y = NULL, colour = NULL, linetype = NULL,
+       title = "Prior + data = posterior",
+       subtitle = "Dotted line: true slope (0.8)") +
+  th +
+  theme(axis.text.y = element_blank(), legend.position = "top",
+        strip.text = element_text(face = "bold"))
+
+p_pp
+# ggsave("prior_posterior.png", p_pp, width = 11, height = 5, dpi = 300)
+```
+
+::: {.notes}
+The likelihood is only as good as the data. It describes what the data say, not what is true.
+If I redid the experiment, the peak would move. The truth wouldn’t.
+The width tells you how much to trust the peak. A narrow curve means the data pin the slope down, and a wide one means they don’t.
+:::
+
+## Frequentist vs Bayes (easy version)
 
 ![](https://imgs.xkcd.com/comics/frequentists_vs_bayesians.png){fig-align="centre"}
 
@@ -312,7 +624,9 @@ Source: [xkcd #1132](https://xkcd.com/1132/) by Randall Munroe, CC BY-NC 2.5
 
 :::
 
-[← Back to "Go deeper?"](#model-deeper)
+## Calibrating Lake Models
+
+Use a similar logics
 
 ## PEST++ {#pestpp}
 
@@ -370,10 +684,76 @@ Categories match the `targets` pipeline's data inventory (`data_inventory_html`)
 
 :::
 
+## Lake observations {#data-obs}
 
-<!-- same pattern: core, Go deeper (observation uncertainty), connections -->
+- **Lake level** — sub-daily, QC-coded · BoPRC hydrometric network
+- **Buoy profiler** — temperature, DO, chlorophyll · LERNZMP API
+- **Buoy met station** — wind, air temp, humidity, radiation, rain · LERNZMP API
+- **CTD depth profiles** — full record · BoPRC
+- **Lake chemistry** — nutrients, chl-a, turbidity, Secchi, 1989–2025 · BoPRC
 
-# Climate change
+::: {.credit}
+
+Source/access detail: `data.qmd`
+
+:::
+
+## Catchment & climate forcing {#data-catchment}
+
+- **Meteorology** — NIWA station #1770, daily + hourly · [CliFlo](https://cliflo.niwa.co.nz/)
+- **Inflows** — tributary flow & water quality, from Chris McBride's prior DYRESM catchment-load modelling
+- **Alum dosing records** — daily dose to the Utuhina & Puarenga streams · BoPRC operational records
+
+CMIP6 climate projections feed in here too — covered in the [Climate change](#climate-core) module.
+
+## Spatial & model setup {#data-spatial}
+
+- **Lake polygon, depth contours, hypsography** — LERNZMP API (lake_id 11133)
+- **Base AEME model object** — physical configuration, existing parameterisation
+- **Sediment zone heights** — derived from bathymetry + observed buoy/CTD temperature
+
+## Student research behind the parameters {#data-student}
+
+**Kaylee Campbell** — internal loading study (repeat of Bergen 2004)
+
+- Measured sediment O₂/N/P flux rates by depth zone
+- Feeds the AED sediment diagenesis module (`meas_param`)
+
+**Sreya Sanila** (2026) MSc thesis, University of Waikato
+
+- Jar tests & video floc-settling measurements across Lake Rotorua and three other dosed waters
+- Directly parameterises the AED alum module: settling velocity, binding stoichiometry, pH response
+
+::: {.credit}
+
+Campbell attribution per code comments, unconfirmed — verify before citing externally
+
+:::
+
+<!-- Go deeper (observation uncertainty), connections -->
+
+# Climate change {#climate-core}
+
+## Couple Model Intercomparison Project Phase 6 (CMIP6)
+
+CMIP6 will address three broad questions:
+
+1. How does the Earth system respond to forcing?
+
+2. What are the origins and consequences of systematic model biases?
+
+3. How can we assess future climate changes given internal climate variability, predictability, and uncertainties in scenarios?
+
+::: {.notes}
+[CMIP6](https://www.wcrp-cmip.org/cmip-phases/cmip6/) is the latest international climate model intercomparison project, providing a suite of global climate model outputs under various future scenarios (SSPs).
+:::
+
+## Scenarios: Shared Socioeconomic Pathways (SSPs)
+
+
+
+
+
 <!-- CMIP6, methodology and bias correction, impacts -->
 
 # What can we actually say? {#synthesis}
