@@ -1142,10 +1142,16 @@ list(
     aeme_glm4, {
       params <- dplyr::bind_rows(glm_sed_param_meas, meas_param, 
                                  aed_alum_params)
+      # The downloaded Aeme carries a 3-zone sediment set under glm3.nml (n_zones, zone_heights,
+      # sed_temp_*, ...). Left in place next to the 5-zone glm4.nml set it gives an inconsistent
+      # glm4.nml (n_zones = 3 but 5 sed_temp_deep values), which AEME's nml check rejects.
+      old_param <- AEME::parameters(aeme_base)
+      stale_sed <- unique(old_param$name[old_param$file == "glm3.nml" & grepl("^sediment/", old_param$name)])
       aeme <- aeme_base |> 
         AEME::remove_inflow(all = TRUE) |> 
         AEME::add_inflows(data = rotorua_inflow_list_matrix) |>
         AEME::add_obs(lake = aeme_buoy_data, level = sub_lake_level) |> 
+        AEME::remove_param(name = stale_sed, file = "glm3.nml") |> 
         AEME::add_param(params) |>
         AEME::set_time(start = calib_period$start, stop = calib_period$stop,
                        spin_up = calib_period$spin_up) |> 
@@ -1165,7 +1171,9 @@ list(
   tar_target(
     aeme_base_file,
     build_calib_base_aeme(
-      aeme_download_file = "LID11133_rotorua/aeme_download.rds",
+      # depend on the OneDrive sync targets and use absolute paths: on CI the working directory is
+      # website/, and these files only exist after the sync targets have run
+      aeme_download_file = aeme_onedrive_rds,
       hyps_no_hole = hyps_no_hole,
       era5_corrected_hourly = era5_corrected_hourly,
       inflows = rotorua_inflow_list_matrix[[1]],
@@ -1174,9 +1182,9 @@ list(
       aed_models_alum = aed_models_alum,
       model = model,
       ext_elev = ext_elev,
-      alum_nml_file = "website/LakeRotorua/aed/aed_original.nml",
-      out_file = "aeme_base.rds",
-      build_path = "calibration/base_build",
+      alum_nml_file = file.path(aeme_onedrive_lake_rotorua_dir, "aed", "aed_original.nml"),
+      out_file = here::here("aeme_base.rds"),
+      build_path = here::here("calibration", "base_build"),
       old_buoy_wq = old_buoy_wq
     ),
     format = "file"
