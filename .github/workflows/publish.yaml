@@ -20,6 +20,9 @@ jobs:
       LERNZMP_KEY: ${{ secrets.LERNZMP_KEY }}
       GITHUB_PAT: ${{ secrets.GH_PAT }}
       GH_PAT: ${{ secrets.GH_PAT }}
+      # Pinned GLM build: "latest" re-resolves on every run, so a new GLM release can change
+      # (or break) results without any commit. Bump this deliberately.
+      GLM_VERSION: "4.0.0+"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,30 +60,58 @@ jobs:
         with:
           cache-version: 1
 
-      - name: Cache targets store
+      # GLM binary (AEME::install_glm_aed): cached by version so it is not downloaded every run.
+      # tools::R_user_dir("AEME", "data") is ~/.local/share/R/AEME on Linux.
+      - name: Cache GLM binary
         uses: actions/cache@v4
         with:
+          path: ~/.local/share/R/AEME
+          key: glm-${{ runner.os }}-${{ env.GLM_VERSION }}
+
+      # Targets store: always restore the newest one (the key never matches exactly, so the
+      # restore-keys prefix picks the latest), and save a new copy only when the pipeline
+      # produced new data (see the `changed` output of the next step). The store is ~1.2 GB,
+      # so saving on every run would evict the other caches from the 10 GB limit.
+      - name: Restore targets store
+        uses: actions/cache/restore@v4
+        with:
           path: _targets
-          key: ${{ runner.os }}-targets-${{ hashFiles('_targets.R', 'R/**') }}
+          key: ${{ runner.os }}-targets-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-targets-
-          save-always: true
 
       - name: Run targets pipeline
+        id: targets
         working-directory: website
         run: Rscript scripts/build_data.R
 
-      - name: Cache Quarto freeze
-        uses: actions/cache@v4
+      - name: Save targets store
+        if: ${{ !cancelled() && steps.targets.outputs.changed == 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: _targets
+          key: ${{ runner.os }}-targets-${{ github.run_id }}
+
+      # Quarto freeze (rendered output of unchanged pages). Small, so saved every run; the
+      # newest copy is restored and quarto's `freeze: auto` re-renders only pages whose
+      # source changed.
+      - name: Restore Quarto freeze
+        uses: actions/cache/restore@v4
         with:
           path: website/_freeze
-          key: ${{ runner.os }}-freeze-${{ hashFiles('website/**/*.qmd', 'R/**', 'LakeRotorua/**/*.nml') }}
+          key: ${{ runner.os }}-freeze-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-freeze-
-          save-always: true
 
       - name: Render site
         run: quarto render website   # use 'website' dir
+
+      - name: Save Quarto freeze
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v4
+        with:
+          path: website/_freeze
+          key: ${{ runner.os }}-freeze-${{ github.run_id }}
 
       - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
