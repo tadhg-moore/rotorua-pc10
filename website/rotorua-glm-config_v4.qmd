@@ -128,7 +128,7 @@ aeme <- tar_read(aeme_baseline)
 aeme <- aeme |>
   # AEME::set_sim_period(sim_period) |> 
   build_aeme(path = path) |>
-  run_aeme()
+  run_aeme(extra_vars = "all")
 
 
 # Model performance
@@ -457,6 +457,27 @@ plot_output(aeme, var_sim = "HYD_schstb")
 #| fig-height: 3.5
 
 plot_output(aeme, var_sim = "LKE_lvlwtr")
+
+```
+
+### Albedo {#albedo}
+
+```{r plot-level}
+#| fig-cap: "Simulated lake albedo as a fraction of shortwave radiation."
+#| fig-height: 3.5
+
+albedo <- get_var(aeme, var_sim = "albedo") |> 
+  dplyr::mutate(doy = lubridate::yday(Date)) |> 
+  dplyr::group_by(doy) |>
+  dplyr::summarise(albedo = mean(value, na.rm = TRUE), .groups = "drop")
+
+ggplot() +
+  geom_line(data = albedo, aes(x = doy, y = albedo), color = "blue") +
+  scale_x_continuous(breaks = seq(0, 365, by = 30)) +
+  # scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "Day of Year", y = "Albedo (fraction of shortwave radiation)") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank())
 
 ```
 
