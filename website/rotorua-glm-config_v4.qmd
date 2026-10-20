@@ -7,10 +7,6 @@ date-format: "DD MMMM YYYY"
 fig-width: 9
 fig-height: 5
 fig-dpi: 150
-execute:
-  # TODO: code is not run until the setup builds from a clean folder on CI. It reads the Windows folder stored in
-  # aeme_download.rds and the 5-zone sediment parameters clash with the downloaded model's 4-zone settings.
-  eval: false
 ---
 
 ```{r setup}
@@ -32,71 +28,16 @@ source("../R/scenario_climate_workflow.R")
 glm_ver <- get_model_version("glm_aed")
 glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
 
-# Baseline (run_id: aeme_base) is a historical run, so scenario = "historical".
-# GCM choice still matters for it, since the met forcing is downscaled CMIP6
-# historical output, not observations — ACCESS-CM2 (cmip_gcm[1]) is used as
-# the reference GCM for this documentation page; change if a different GCM
-# should represent the baseline.
+
 path <- "glm_v4"
-model <- targets::tar_read(model)
-# aeme <- setup_base_aeme(path = path)
-aeme <- readRDS("../LID11133_rotorua/aeme_download.rds")
-
-# Meteorology: switch from the daily forcing to the processed hourly ERA5
-# series (data/processed/rotorua_era5_hourly.csv) — build_aeme()/build_glm()
-# detect the sub-daily timestep and set &meteorology/subdaily accordingly.
-lake_meta <- AEME::lake(aeme)
-era5_met <- read_era5_hourly_met("../data/processed/rotorua_era5_hourly.csv",
-                                  lat = lake_meta$latitude,
-                                  lon = lake_meta$longitude)
-
-corr_hyps <- targets::tar_read(corr_hyps)
-hyps_no_hole <- targets::tar_read(hyps_no_hole)
-hyps_adj <- min(hyps_no_hole$elev) - min(corr_hyps$elev)
-
-# AED calibration parameter set from the sensitivity-analysis screening csv.
-# aed_sed_const2d/* rows are applied automatically by build_aeme() via
-# set_aed_sed_const2d(); every other aed.nml/aed_phyto_pars.csv row is
-# written by hand below once the config files exist on disk.
-calib_params <- readr::read_csv("../data/aed/aed_sa_calib_params.csv",
-                                 show_col_types = FALSE)
-
-# Measured 5-zone sediment configuration from the _targets.R calibration
-# pipeline (targets: zone_heights, glm_sed_param_meas, meas_param) — read via
-# targets::tar_read() so this page always reflects whatever is currently
-# committed to the pipeline instead of a copy that can drift out of sync.
-# `glm_sed_param_meas` (built from `zone_heights`) sets up the GLM &sediment
-# zone structure itself (n_zones, zone_heights, sed_heat_Ksoil, ...);
-# `meas_param` overrides it with the measured sed_temp/sed_vwc/aed_sed_const2d
-# values (Kaylee Campbell internal loading study) for each of the 5 zones.
-# Both "sediment/*" and "aed_sed_const2d/*" rows are applied automatically by
-# build_aeme() below; the handful of scalar aed.nml rows (Ksed_oxy, etc.) are
-# written by hand alongside calib_params further down.
-zone_heights <- targets::tar_read(zone_heights)
-zone_heights <- zone_heights[-1] - hyps_adj
-glm_sed_param_meas <- targets::tar_read(glm_sed_param_meas)
-AEME::glm_sed_params(n_zones = length(zone_heights), zone_heights = zone_heights)
-meas_param <- targets::tar_read(meas_param)
-
-meas_param |> 
-  dplyr::filter(file == "aed.nml" & grepl("^aed_sed_const2d/fsed_", name)) |>
-  dplyr::select(file, name, index, value) |>
-  dplyr::arrange(name, index)
-
-all_param <- dplyr::bind_rows(meas_param, glm_sed_param_meas) |> 
-  dplyr::anti_join(calib_params, by = c("file", "name", "index"))
-
-dups <- all_param |> 
-  dplyr::group_by(file, name, index) |>
-  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
-  dplyr::filter(n > 1)
-
+aeme <- targets::tar_read(aeme_baseline)
 
 aeme <- aeme |>
-  AEME::remove_param() |> 
-  AEME::add_met(era5_met) |> 
-  AEME::add_hypsograph(hyps_no_hole) |> 
-  AEME::add_param(all_param) 
+  # AEME::remove_param() |> 
+  # AEME::add_met(era5_met) |> 
+  # AEME::add_hypsograph(hyps_no_hole) |> 
+  # AEME::add_param(all_param) |> 
+  AEME::build_aeme(path = path, use_bgc = TRUE)
 
 lake_dir <- AEME::get_lake_dir(aeme)
 
@@ -111,6 +52,13 @@ AEME::write_nml(aed_nml_obj, file = aed_file)
 
 cfg <- configuration(aeme)
 glm4_nml <- cfg[["glm_aed"]][["hydrodynamic"]]
+
+config_files <- AEME::get_model_config_files(aeme)
+glm4_file <- config_files[["glm_aed"]]["glm4"]
+glm4_nml <- AEME::read_nml(glm4_file)
+glm4_nml[["sediment"]][["sed_vwc"]] <- 0.4
+AEME::write_nml(glm4_nml, glm4_file)
+# nml <- AEME::read_nml(glm4_nml)
 # Re-read aed.nml rather than using cfg$glm_aed$bgc$aed, since that slot was
 # populated by build_aeme() before the calibration-parameter/simn2o edits
 # above were written to the file.
@@ -127,11 +75,7 @@ phyto_pars <- phyto_pars[, c(1, phyto_cols)]
 
 sim_period <- AEME::suggest_sim_period(aeme)
 
-aeme <- tar_read(aeme_baseline)
-
 aeme <- aeme |>
-  # AEME::set_sim_period(sim_period) |> 
-  build_aeme(path = path, use_bgc = TRUE) |>
   run_aeme(extra_vars = "all")
 
 
@@ -139,7 +83,8 @@ aeme <- aeme |>
 aeme_time <- time(aeme)
 period <- paste0(format(aeme_time$start, "%Y"), "–", format(aeme_time$stop, "%Y"))
 
-perf <- assess_aeme(aeme, var_sim = c("HYD_temp", "LKE_lvlwtr")) |> 
+perf <- assess_aeme(aeme, var_sim = c("HYD_temp", "HYD_schstb",
+                                      "HYD_thmcln", "LKE_lvlwtr")) |> 
   dplyr::mutate(Period = period) |>
   dplyr::rename(Variable = name_text, RMSE = rmse, Bias = bias, R2 = rs) |> 
   dplyr::select(Variable, Period, RMSE, Bias, R2, n)
