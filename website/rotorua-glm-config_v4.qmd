@@ -31,6 +31,7 @@ glm_version <- regmatches(glm_ver[1], regexpr("\\d+\\.\\d+\\.\\d+", glm_ver[1]))
 
 path <- "glm_v4"
 aeme <- targets::tar_read(aeme_baseline)
+meas_param <- targets::tar_read(meas_param)
 
 aeme <- aeme |>
   # AEME::remove_param() |> 
