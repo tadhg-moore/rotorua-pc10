@@ -53,6 +53,7 @@ tar_source(
     here::here("R", "qc_funs.R"),
     here::here("R", "load_old_buoy_data.R"),
     here::here("R", "read_met_service_xl.R"),
+    here::here("R", "make_met_data_zip.R"),
     here::here("R", "read_bop_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
@@ -1565,6 +1566,16 @@ list(
                         pc10 = pc10_climate_met,
                         vars = c("MET_tmpair", "MET_humrel", "MET_pprain",
                                 "MET_wndspd", "MET_radswd", "MET_prsttn"))
+  ),
+  # Downloadable met data (buoy, ERA5 original, ERA5 bias-corrected + column
+  # metadata CSV) served from the website. The airport data are not included.
+  tar_target(
+    met_data_zip,
+    make_met_data_zip(
+      old_buoy_met_hr_aeme, rotorua_buoy_met_aeme_hr,
+      era5_hourly_met, era5_corrected_hourly,
+      out_zip = here::here("website", "downloads", "rotorua_met_data.zip")),
+    format = "file"
   ),
   tar_target(
     met_source_comparison_plot,
