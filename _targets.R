@@ -55,7 +55,8 @@ tar_source(
     here::here("R", "read_met_service_xl.R"),
     here::here("R", "read_bop_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
-    here::here("R", "build_calib_base_aeme.R")
+    here::here("R", "build_calib_base_aeme.R"),
+    here::here("R", "read_chem_data.R")
   )
 )
 # Set target options
@@ -429,6 +430,9 @@ list(
         dplyr::filter(AquariusID %in% chem_sites$Site)
     }
   ),
+  tar_target(
+    chem_aeme, format_chem_for_aeme(chem_data)
+  ),
   
   # NIWA met data
   tar_target(
@@ -600,6 +604,9 @@ list(
   ),
   tar_target(
     ctd_par, format_par_ts(ctd_data)
+  ),
+  tar_target(
+    ctd_aeme, format_ctd_for_aeme(ctd_data)
   ),
   tar_target(
     rotorua_inflow_list, {
