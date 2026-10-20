@@ -53,6 +53,17 @@ function setupHub() {
   // Mark visited topics on the hub
   document.querySelectorAll('a.hublink').forEach(a =>
     a.addEventListener('click', () => a.classList.add('visited')));
+
+  // A topic counts as covered once its wrap-up slide has been reached
+  const arms = { 'model-end': 'model-core', 'calib-end': 'calib-core', 'data-end': 'data-core',
+                 'alum-end': 'alum-core', 'climate-end': 'climate-core' };
+  const markDone = () => {
+    const cur = Reveal.getCurrentSlide();
+    const key = cur && Object.keys(arms).find(k => cur.id === k);
+    if (key) document.querySelectorAll('a.hublink[href="#' + arms[key] + '"]')
+      .forEach(a => a.classList.add('visited'));
+  };
+  Reveal.on('slidechanged', markDone);
 }
 
 if (Reveal.isReady()) setupHub(); else Reveal.on('ready', setupHub);

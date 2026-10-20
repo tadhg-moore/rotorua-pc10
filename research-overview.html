@@ -10,6 +10,8 @@
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.10.19">
 
+  <meta name="author" content="Tadhg Moore">
+  <meta name="dcterms.date" content="2026-10-20">
   <title>Rotorua Lake Modelling – Overview of my Research</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -34,6 +36,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
   <link rel="stylesheet" href="www/styles.css">
@@ -131,21 +199,6 @@
   <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
   <script src="site_libs/quarto-diagram/mermaid-init.js"></script>
   <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
-  <link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
-  <script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
-  <script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
-  <link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
-  <script src="site_libs/proj4-2.6.2/proj4.min.js"></script>
-  <script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
-  <link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-  <script src="site_libs/leaflet-binding-2.2.3/leaflet.js"></script>
-  <script src="site_libs/leaflet-providers-3.0.0/leaflet-providers.js"></script>
-  <script src="site_libs/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script>
-  <link href="site_libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
-  <script src="site_libs/vis-9.1.0/vis-network.min.js"></script>
-  <script src="site_libs/visNetwork-binding-2.1.4/visNetwork.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -155,27 +208,32 @@
   <h1 class="title">Overview of my Research</h1>
 
 <div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+<a href="https://tadhg-moore.github.io">Tadhg Moore</a>
+</div>
+</div>
 </div>
 
+  <p class="date">2026-10-20</p>
 </section>
 <section id="ai-acknowledgement" class="slide level2">
 <h2>AI Acknowledgement</h2>
-<p>I used Claude to</p>
+<p>I used Claude to assist with this presentation, text, figures, tables and code. I have reviewed and edited the content as needed and take full responsibility for the final version.</p>
 </section>
 <section id="about" class="slide level2">
 <h2>About</h2>
-<p>Completed my PhD in 2020 at Dundalk Institute of Technology, Ireland. My research focused on water quality forecasting in lakes, and also climate change impacts on lake water temperature globally.</p>
-<p>Post-doc at Virginia Tech, USA, developing teaching modules for Ecological Forecasting.</p>
-<p>Currently a Lake Scientist at Limnotrack working on water quality modelling and management.</p>
+<ul>
+<li><p>PhD Dundalk Institute of Technology, Ireland.</p>
+<ul>
+<li>Thesis on water quality forecasting in lakes, and also climate change impacts on lake water temperature globally.</li>
+</ul></li>
+<li><p>Post-doc at Virginia Tech, USA, developing teaching modules for Ecological Forecasting.</p></li>
+<li><p>Currently a Lake Scientist at Limnotrack working on water quality modelling and management &amp; Post-doc UoW (2-days).</p></li>
+</ul>
 </section>
 <section id="fly-map" class="slide level2">
 <h2>Where I have worked</h2>
-<div class="cell">
-<div class="cell-output-display">
-<div class="leaflet html-widget html-fill-item" id="htmlwidget-492794f5a78059ae06d7" style="width:1056px;height:576px;"></div>
-<script type="application/json" data-for="htmlwidget-492794f5a78059ae06d7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"zoomControl":false},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addMarkers","args":[[53.946,37.224,-37.785],[-9.574999999999999,-80.42700000000001,-184.709],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["Ireland","USA","New Zealand"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-37.785,53.946],"lng":[-184.709,-9.574999999999999]},"setView":[[53.946,-9.574999999999999],10,[]]},"evals":[],"jsHooks":{"render":[{"code":"function(el, x, data) {\n  return (\n    function(el, x, s) {\n      var map = this, i = 0, timers = [];\n\n      function fly() {\n        i = (i + 1) % s.lat.length;\n        map.flyTo([s.lat[i], s.lng[i]], s.zoom[i], {duration: 4});\n      }\n      function start() {\n        timers.forEach(clearTimeout); timers = [];\n        i = 0;\n        map.invalidateSize();\n        map.setView([s.lat[0], s.lng[0]], s.zoom[0], {animate: false});\n        timers.push(setTimeout(fly, 2000));\n        timers.push(setTimeout(fly, 9000));\n      }\n      function onThisSlide() {\n        return Reveal.getCurrentSlide().contains(el);\n      }\n\n      Reveal.on('slidechanged', function() { if (onThisSlide()) start(); });\n      if (Reveal.isReady()) { if (onThisSlide()) start(); }\n      else Reveal.on('ready', function() { if (onThisSlide()) start(); });\n\n      document.addEventListener('keydown', function(e) {\n        if (e.key === 'n' && onThisSlide()) fly();\n      });\n    }\n  ).call(this.getMap(), el, x, data);\n}","data":{"name":["Ireland","USA","New Zealand"],"lat":[53.946,37.224,-37.785],"lng":[-9.574999999999999,-80.42700000000001,-184.709],"zoom":[10,8,10]}}]}}</script>
-</div>
-</div>
 </section>
 <section id="short-version" class="slide level2">
 <h2>Short version</h2>
@@ -184,7 +242,9 @@
 </section>
 <section id="map-sites" class="slide level2">
 <h2>Lake Rotorua monitoring sites</h2>
-<p>[Insert tmap map]</p>
+<div class="credit">
+<p>Lake Rotorua (LERNZmp lake 11133), depth contours and BoPRC chemistry sites; dashed = catchment bounding box</p>
+</div>
 </section>
 <section>
 <section id="what-is-plan-change-10" class="title-slide slide level1 center">
@@ -212,64 +272,13 @@
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">graph LR
-  D[Data] --&gt; M[Lake Modelling]
-  A[Alum dosing] --&gt; M
-  C[Climate change] --&gt; M
-  N --&gt; M
-  M --&gt; N[Nitrogen loading]
-  M --&gt; A
-  M --&gt; P[N:P balance]
-  P --&gt; N
-  M --&gt; V[Model validation]
-  D --&gt; V
-  M --&gt; S[Scenarios]
-  D --&gt; N
-  C --&gt; S
-  A --&gt; S
-</pre>
+
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
 </section>
-<section id="hub" class="slide level2">
-<h2>Where to next?</h2>
-<ul>
-<li><a href="#/model-core" class="hublink">Lake Modelling</a> (~6 min)</li>
-<li><a href="#/data-core" class="hublink">Data</a> (~6 min)</li>
-<li><a href="#/alum-core" class="hublink">Alum dosing</a> (~6 min)</li>
-<li><a href="#/climate-core" class="hublink">Climate change</a> (~6 min)</li>
-<li><a href="#/synthesis" class="hublink">Wrap up: synthesis</a></li>
-</ul>
-</section></section>
-<section>
-<section id="alum-dosing" class="title-slide slide level1 center">
-<h1>Alum dosing</h1>
-
-</section>
-<section id="alum-core" class="slide level2">
-<h2>Where to start</h2>
-<!-- what is it, how it works, modelling and calibration impact -->
-</section></section>
-<section>
-<section id="lake-modelling" class="title-slide slide level1 center">
-<h1>Lake Modelling</h1>
-
-</section>
-<section id="model-core" class="slide level2">
-<h2>Where to start</h2>
-<ol type="1">
-<li>What is the question we are trying to answer?</li>
-</ol>
-<p>How will Lake Rotorua water quality change under future climate?</p>
-<p>To what extent does the stream alum dosing affect water quality?</p>
-</section>
-<section id="hypothesis-figure" class="slide level2">
-<h2>Hypothesis Figure</h2>
-
-<img data-src="research-overview_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="workflows" class="slide level2">
 <h2>Workflows</h2>
 <ol type="1">
@@ -288,7 +297,7 @@
 <h2>Personal Workflow</h2>
 <p>Key components:</p>
 <ol type="1">
-<li><p>R packages</p></li>
+<li><p>R packages &amp; GitHub</p></li>
 <li><p><code>targets</code> pipeline</p></li>
 <li><p>Project website</p></li>
 </ol>
@@ -297,25 +306,58 @@
 <h2>R packages</h2>
 <p>Developed multiple packages:</p>
 <ul>
-<li><p>AEME - Building and running models</p></li>
-<li><p>aemetools - Sensitivity analysis and calibration tools</p></li>
-<li><p>bathytools - Bathymetry and hypsography tools</p></li>
-<li><p>ltapi - Limnotrack API</p></li>
-<li><p>metscale - Climate data processing and downscaling</p></li>
+<li><p><a href="https://limnotrack.com/AEME/">AEME</a> - Building and running models</p></li>
+<li><p><a href="https://limnotrack.com/aemetools/">aemetools</a> - Sensitivity analysis and calibration tools</p></li>
+<li><p><a href="https://limnotrack.com/bathytools">bathytools</a> - Bathymetry and hypsography tools</p></li>
+<li><p><a href="https://limnotrack.com/ltapi/">ltapi</a> - Limnotrack API</p></li>
+<li><p><a href="https://limnotrack.com/metscale/">metscale</a> - Climate data processing and downscaling</p></li>
 </ul>
 </section>
 <section id="targets-pipeline" class="slide level2">
 <h2><code>targets</code> pipeline</h2>
 <p><a href="https://books.ropensci.org/targets/"><code>targets</code></a> is an R package for building reproducible pipelines. It tracks dependencies and only reruns steps that need updating.</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>+ rotorua_inflow_list_matrix declared [1 branches]</code></pre>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div style="font-size:0.75em">
+<p>Each box is a <strong>target</strong>; arrows are labelled with the function that builds the next one.</p>
+<ul>
+<li><span style="background:#f0f0f0;border:1px solid #555;padding:0 .4em">Grey</span> input data</li>
+<li><span style="background:#0072B2;color:#fff;padding:0 .4em">Blue</span> intermediate</li>
+<li><span style="background:#D55E00;color:#fff;padding:0 .4em">Orange</span> output</li>
+</ul>
+<p>Change one step and only what is <strong>downstream</strong> reruns.</p>
 </div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item" id="htmlwidget-4b054ab1f9793ee85ed3" style="width:960px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-4b054ab1f9793ee85ed3">{"x":{"nodes":{"name":["aed_models_alum","aeme_base","aeme_base_file","aeme_baseline","aeme_onedrive_lake_rotorua_dir","aeme_onedrive_rds","airport_met","airport_met_aeme","airport_met_service_file","all_buoy_met_data","alum_dosing","alum_dosing_file","bop_lake_level_zip_folder","buoy_met_fit_ref","buoy_met_height","corr_hyps","data_raw_dir","era5_bias_correction","era5_corrected_hourly","era5_hourly_met","era5_hourly_met_rainqm","era5_hourly_met_stage1","era5_humrel_correction","era5_rain_eqm_correction","ext_elev","glm_weir_params","hyps_no_hole","inflows_alum_dosed","lake_id","lake_level","lake_meta","lernzmp_aeme","median_lake_level_masl","model","ohau_flow_level","ohau_weir_width","old_buoy_met_hr_aeme","old_buoy_wq","ratio_al_p","rotorua_buoy_met_aeme_hr","rotorua_buoy_met_data","rotorua_era5_37yr_hr_file","rotorua_era5_hr_file","rotorua_flow_data","rotorua_flow_data_url","rotorua_inflow_file","rotorua_inflow_id_file","rotorua_inflow_key","rotorua_inflow_list","rotorua_inflow_list_matrix","rotorua_level_data","rotorua_level_data_url","rotorua_old_buoy_data","rotorua_old_buoy_data_url","rotorua_old_buoy_data_zip","scenario_tz","weir_params","zone_heights"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","pattern","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","outdated","outdated","outdated","outdated","outdated","outdated","outdated","uptodate","outdated","outdated","outdated","uptodate","uptodate","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","uptodate","uptodate","outdated","uptodate","uptodate","outdated","uptodate","uptodate","outdated","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","outdated","outdated","uptodate","uptodate","outdated","outdated","outdated","outdated","outdated","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0,0,34.283,0.582,42.394,9.452999999999999,42.871,0.004,0,0.015,0.106,0.001,0,0.212,0,0.47,257.852,3.538,1.269,5.836,0.199,0.167,2.157,1.977,0,1.132,0.001,0,0,15.444,0,8.106,0.018,0,0.766,0,1.792,6.032,0,4.691,17.998,5.243,3.536,40.267,0,0,0,0,2.553,0.419,60.313,0,17.051,0,1.172,0,0.008999999999999999,0.001],"bytes":[170,21624420,46717149,46717149,62292798,34546338,4904100,2864964,19887235,5643428,48639,920184,10470079,5240869,50,1204,1116016936,15629,22813171,9298766,9334646,10657764,3960,3472,51,120,982,71,53,9436805,231,21624420,55,60,8631159,51,4317813,308723,51,1305622,5892959,26055512,10834848,6914093,356,51614186,225,1224,19008831,19097786,10088630,355,62031404,132,24769571,63,347,69],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null],"label":["aed_models_alum","aeme_base","aeme_base_file","aeme_baseline","aeme_onedrive_lake_rotorua_dir","aeme_onedrive_rds","airport_met","airport_met_aeme","airport_met_service_file","all_buoy_met_data","alum_dosing","alum_dosing_file","bop_lake_level_zip_folder","buoy_met_fit_ref","buoy_met_height","corr_hyps","data_raw_dir","era5_bias_correction","era5_corrected_hourly","era5_hourly_met","era5_hourly_met_rainqm","era5_hourly_met_stage1","era5_humrel_correction","era5_rain_eqm_correction","ext_elev","glm_weir_params","hyps_no_hole","inflows_alum_dosed","lake_id","lake_level","lake_meta","lernzmp_aeme","median_lake_level_masl","model","ohau_flow_level","ohau_weir_width","old_buoy_met_hr_aeme","old_buoy_wq","ratio_al_p","rotorua_buoy_met_aeme_hr","rotorua_buoy_met_data","rotorua_era5_37yr_hr_file","rotorua_era5_hr_file","rotorua_flow_data","rotorua_flow_data_url","rotorua_inflow_file","rotorua_inflow_id_file","rotorua_inflow_key","rotorua_inflow_list","rotorua_inflow_list_matrix","rotorua_level_data","rotorua_level_data_url","rotorua_old_buoy_data","rotorua_old_buoy_data_url","rotorua_old_buoy_data_zip","scenario_tz","weir_params","zone_heights"],"color":["#354823","#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#354823","#354823","#78B7C5","#354823","#354823","#78B7C5","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["aed_models_alum","aeme_base","aeme_base_file","aeme_baseline","aeme_onedrive_lake_rotorua_dir","aeme_onedrive_rds","airport_met","airport_met_aeme","airport_met_service_file","all_buoy_met_data","alum_dosing","alum_dosing_file","bop_lake_level_zip_folder","buoy_met_fit_ref","buoy_met_height","corr_hyps","data_raw_dir","era5_bias_correction","era5_corrected_hourly","era5_hourly_met","era5_hourly_met_rainqm","era5_hourly_met_stage1","era5_humrel_correction","era5_rain_eqm_correction","ext_elev","glm_weir_params","hyps_no_hole","inflows_alum_dosed","lake_id","lake_level","lake_meta","lernzmp_aeme","median_lake_level_masl","model","ohau_flow_level","ohau_weir_width","old_buoy_met_hr_aeme","old_buoy_wq","ratio_al_p","rotorua_buoy_met_aeme_hr","rotorua_buoy_met_data","rotorua_era5_37yr_hr_file","rotorua_era5_hr_file","rotorua_flow_data","rotorua_flow_data_url","rotorua_inflow_file","rotorua_inflow_id_file","rotorua_inflow_key","rotorua_inflow_list","rotorua_inflow_list_matrix","rotorua_level_data","rotorua_level_data_url","rotorua_old_buoy_data","rotorua_old_buoy_data_url","rotorua_old_buoy_data_zip","scenario_tz","weir_params","zone_heights"],"level":[1,3,11,12,1,1,3,4,2,5,3,2,2,6,1,5,1,9,10,4,7,8,5,6,1,4,6,1,1,3,3,2,4,1,3,1,4,4,1,3,2,1,1,2,1,2,2,2,3,4,2,1,3,1,2,1,5,1],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","square","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["lernzmp_aeme","aed_models_alum","old_buoy_wq","ext_elev","aeme_onedrive_lake_rotorua_dir","aeme_onedrive_rds","model","era5_corrected_hourly","zone_heights","hyps_no_hole","rotorua_inflow_list_matrix","weir_params","aeme_base_file","scenario_tz","airport_met_service_file","airport_met","data_raw_dir","rotorua_buoy_met_aeme_hr","old_buoy_met_hr_aeme","alum_dosing_file","data_raw_dir","data_raw_dir","all_buoy_met_data","median_lake_level_masl","aeme_base","buoy_met_fit_ref","era5_hourly_met_stage1","era5_bias_correction","lake_meta","scenario_tz","era5_hourly_met_stage1","rotorua_era5_hr_file","rotorua_era5_37yr_hr_file","lake_meta","scenario_tz","era5_hourly_met","era5_rain_eqm_correction","era5_hourly_met_rainqm","era5_humrel_correction","airport_met_aeme","era5_hourly_met","all_buoy_met_data","era5_hourly_met","ohau_weir_width","ohau_flow_level","corr_hyps","bop_lake_level_zip_folder","lernzmp_aeme","lake_id","lake_level","rotorua_flow_data","rotorua_level_data","rotorua_old_buoy_data","rotorua_old_buoy_data","buoy_met_height","rotorua_buoy_met_data","scenario_tz","rotorua_flow_data_url","data_raw_dir","data_raw_dir","data_raw_dir","rotorua_inflow_id_file","rotorua_inflow_key","rotorua_inflow_file","alum_dosing","inflows_alum_dosed","rotorua_inflow_list","ratio_al_p","rotorua_level_data_url","rotorua_old_buoy_data_zip","rotorua_old_buoy_data_url","ohau_weir_width","glm_weir_params"],"to":["aeme_base","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_base_file","aeme_baseline","airport_met","airport_met","airport_met_aeme","airport_met_service_file","all_buoy_met_data","all_buoy_met_data","alum_dosing","alum_dosing_file","bop_lake_level_zip_folder","buoy_met_fit_ref","corr_hyps","corr_hyps","era5_bias_correction","era5_bias_correction","era5_corrected_hourly","era5_corrected_hourly","era5_corrected_hourly","era5_corrected_hourly","era5_hourly_met","era5_hourly_met","era5_hourly_met","era5_hourly_met","era5_hourly_met_rainqm","era5_hourly_met_rainqm","era5_hourly_met_stage1","era5_hourly_met_stage1","era5_humrel_correction","era5_humrel_correction","era5_rain_eqm_correction","era5_rain_eqm_correction","glm_weir_params","glm_weir_params","hyps_no_hole","lake_level","lake_meta","lernzmp_aeme","median_lake_level_masl","ohau_flow_level","ohau_flow_level","old_buoy_met_hr_aeme","old_buoy_wq","rotorua_buoy_met_aeme_hr","rotorua_buoy_met_aeme_hr","rotorua_buoy_met_data","rotorua_flow_data","rotorua_inflow_file","rotorua_inflow_id_file","rotorua_inflow_key","rotorua_inflow_list","rotorua_inflow_list","rotorua_inflow_list","rotorua_inflow_list_matrix","rotorua_inflow_list_matrix","rotorua_inflow_list_matrix","rotorua_inflow_list_matrix","rotorua_level_data","rotorua_old_buoy_data","rotorua_old_buoy_data_zip","weir_params","weir_params"],"color":["#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#78B7C5","#78B7C5","#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#78B7C5","#354823","#354823","#78B7C5","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"levelSeparation":225,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Outdated","Regular\ntarget","Dynamic\nbranches"],"color":["#354823","#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","dot","square"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div>
+<p></p><figure class=""><p></p>
+<div>
+
+</div>
+<p></p></figure><p></p>
 </div>
 </div>
+</div>
+</div></div>
+</section>
+<section id="target-code" class="slide level2">
+<h2>What a target looks like</h2>
+<p>Each step is a <strong>target</strong>: a name, and the code that makes it.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="co"># _targets.R (trimmed)</span></span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">tar_target</span>(</span>
+<span id="cb1-3"><a aria-label="3"></a>  era5_bias_correction,</span>
+<span id="cb1-4"><a aria-label="4"></a>  <span class="fu">fit_met_bias_correction</span>(</span>
+<span id="cb1-5"><a aria-label="5"></a>    era5_hourly_met,</span>
+<span id="cb1-6"><a aria-label="6"></a>    buoy_met_fit_ref)</span>
+<span id="cb1-7"><a aria-label="7"></a>),</span>
+<span id="cb1-8"><a aria-label="8"></a><span class="fu">tar_target</span>(</span>
+<span id="cb1-9"><a aria-label="9"></a>  era5_corrected_hourly,</span>
+<span id="cb1-10"><a aria-label="10"></a>  <span class="fu">apply_met_bias_correction</span>(</span>
+<span id="cb1-11"><a aria-label="11"></a>    era5_hourly_met,</span>
+<span id="cb1-12"><a aria-label="12"></a>    era5_bias_correction)</span>
+<span id="cb1-13"><a aria-label="13"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>targets</code> reads the names in the code to work out the dependency graph.</p>
 </section>
 <section id="targets-pipeline-1" class="slide level2">
 <h2><code>targets</code> pipeline</h2>
@@ -336,14 +378,47 @@
 </ul>
 <p>Website: <a href="https://tadhg-moore.github.io/rotorua-pc10">https://tadhg-moore.github.io/rotorua-pc10</a></p>
 </section>
-<section id="models" class="slide level2">
-<h2>Models</h2>
-<p>1-dimensional Models</p>
-<p>Key assumptions:</p>
+<section id="hub" class="slide level2">
+<h2>Where to next?</h2>
+<div class="hub-grid">
+<div class="hub-panel hub-model">
+<p><a href="#/model-core" class="hublink">Lake Modelling</a></p>
+<p>GLM-AED, the Ōhau weir and water balance, heat balance, thermal structure and oxygen</p>
+</div>
+<div class="hub-panel hub-data">
+<p><a href="#/data-core" class="hublink">Data</a></p>
+<p>Lake level, buoy and CTD, chemistry, meteorology, inflows and sediment flux studies</p>
+</div>
+<div class="hub-panel hub-calib">
+<p><a href="#/calib-core" class="hublink">Calibration and uncertainty</a></p>
+<p>Model assessment, Bayes vs frequentist, PEST++ prior to posterior, posterior variation</p>
+</div>
+<div class="hub-panel hub-alum">
+<p><a href="#/alum-core" class="hublink">Alum dosing</a></p>
+<p>How alum is modelled, sediment fluxes, FRP response, and dosing under climate change</p>
+</div>
+<div class="hub-panel hub-climate">
+<p><a href="#/climate-core" class="hublink">Climate change</a></p>
+<p>CMIP6 and SSPs, ERA5 bias correction, delta change, scenario design and lake impacts</p>
+</div>
+</div>
+<p><a href="#/synthesis" class="hublink hub-wrap">Wrap up: synthesis</a></p>
+</section></section>
+<section>
+<section id="lake-modelling" class="title-slide slide level1 center">
+<h1>Lake Modelling</h1>
+
+</section>
+<section id="model-core" class="slide level2">
+<h2>Where to start</h2>
 <ol type="1">
-<li>Horizontal variation is negligible</li>
+<li>What is the question we are trying to answer?</li>
 </ol>
-<p>General Lake Model coupled with Aquatic Ecodynamics modelling library (GLM-AED)</p>
+<p>How will Lake Rotorua water quality change under future climate?</p>
+<p>To what extent does the stream alum dosing affect water quality?</p>
+</section>
+<section id="hypothesis-figure" class="slide level2">
+<h2>Hypothesis Figure</h2>
 </section>
 <section id="glm" class="slide level2">
 <h2>GLM</h2>
@@ -352,11 +427,25 @@
 <p>Source: <a href="https://aed.see.uwa.edu.au/research/models/GLM/screenshots.html">AED</a></p>
 </div>
 </section>
-<section id="glm-1" class="slide level2">
-<h2>GLM</h2>
-</section>
 <section id="water-balance" class="slide level2">
 <h2>Water Balance</h2>
+<p>Lake level is controlled by the <strong>Ōhau Channel weir</strong>: inflows and rain in, evaporation and weir outflow out.</p>
+</section>
+<section id="weir" class="slide level2">
+<h2>Weir concept</h2>
+<aside class="notes">
+<p>Two-level crest (4.6 m low section at 278.17 m, 21.4 m high section at 279.32 m) with 0-3 removable stoplogs. GLM can only represent a single crest, so an equivalent crest elevation, width and factor are fitted.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="heat-balance" class="slide level2">
 <h2>Heat Balance</h2>
@@ -370,11 +459,142 @@
 <ul>
 <li>Stratification</li>
 </ul>
+<aside class="notes">
+<p>Observed (buoy + CTD) vs the calibrated model, 2016-2020 (observations start around 2019 for the buoy; earlier CTD profiles are sparse). Lake Rotorua is polymictic: warm periods stratify for days to weeks and then mix.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="heat-oxy" class="slide level2">
+<h2>Bottom-water oxygen</h2>
+<aside class="notes">
+<p>Short-lived bottom-water anoxia in summer stratified spells drives internal P release. KGE for oxygen is 0.69.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="model-end" class="slide level2">
+<h2>Wrap up: Lake Modelling</h2>
+<div class="arm-end hub-model">
+<ul>
+<li>GLM-AED is a 1-D model: horizontal variation is assumed negligible</li>
+<li>The water balance is controlled by the Ōhau weir; the heat balance sets stratification</li>
+<li>Lake Rotorua is polymictic: stratified spells last days to weeks and then mix</li>
+</ul>
+<p><a href="#/hub" class="hub-return">↩︎ Back to hub</a></p>
+</div>
 </section></section>
 <section>
-<section id="sensitivity-analysis-calibration" class="title-slide slide level1 center">
+<section id="calib-core" class="title-slide slide level1 center">
 <h1>Sensitivity Analysis &amp; Calibration</h1>
 
+</section>
+<section id="sa-intro" class="slide level2">
+<h2>Sensitivity analysis: which parameters matter?</h2>
+<p>Before calibrating, ask which parameters each target actually responds to.</p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Morris elementary effects:</strong> change one parameter at a time across its range, repeated along random trajectories</li>
+<li><strong>Effect size:</strong> in the lake’s own tolerance. 1 means the parameter, moved across its range, shifts the metric as much as the lake varies between years</li>
+<li><strong>Outputs:</strong> 33 process signatures (stratification, anoxia, internal loading, chlorophyll)</li>
+</ul>
+<aside class="notes">
+<p>Source: sensitivity-csps.qmd. Morris screening of 121 GLM-AED parameters with ranges deliberately wider than the calibration bounds, 12 trajectories, 6 levels, 1,464 runs per setup. Daily-forced model with alum.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sa-results" class="slide level2">
+<h2>Sensitivity results</h2>
+<aside class="notes">
+<p>Top six parameters for each target (mean effect across that target’s signatures, capped at 20). Dashed = effect of 1 tolerance. Wind and mixing parameters dominate stratification and anoxia; sediment oxygen demand in the deepest zone is the only biogeochemical lever of comparable size for oxygen. Internal loading responds weakly to everything (nothing above about 3). Chlorophyll is driven by the cyanobacteria group and the alum rates. Many chlorophyll effects come from runaway bloom regions of the sampled space.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sa-to-calib" class="slide level2 smaller">
+<h2>How the screening shaped the calibration</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>What the screening showed</th>
+<th>Decision in the calibration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Wind scaling</strong> has the largest single effect on mixing, but wind is measured on the lake</td>
+<td>Fix <code>MET_wndspd</code> at 1; put the adjustment in mixing and heat-flux coefficients (<code>coef_wind_stir</code>, <code>cd</code>, <code>coef_mix_hyp</code>)</td>
+</tr>
+<tr class="even">
+<td>Stratification and anoxia respond to the <strong>same mixing parameters</strong></td>
+<td>Calibrate <strong>physics and oxygen first</strong> (stage 1), so later stages inherit a sound mixing regime</td>
+</tr>
+<tr class="odd">
+<td>Deep-zone <strong>sediment oxygen demand</strong> is the one biogeochemical lever for oxygen</td>
+<td>Calibrate per-zone oxygen demand in stage 1, with the measured values as the prior and wider bounds</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Sources: sensitivity-csps.qmd (findings by target, are the targets reachable), the staged calibration page and the wind and calibration plan memory. The screening used ranges wider than the calibration bounds, so it shows what the model can do, not what is plausible. The calibration then narrows bounds using measured values.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="model-assess" class="slide level2">
 <h2>Model Assessment</h2>
@@ -383,6 +603,103 @@
 <section id="model-assessment-2" class="slide level2">
 <h2>Model Assessment 2</h2>
 <p>Important to relate this to your modelling question</p>
+</section>
+<section id="ma-ts" class="slide level2">
+<h2>Time series: model vs observations</h2>
+<aside class="notes">
+<p>Source: calibrated final model (alum stage), matched to observations by day and depth, averaged over the surface (0-2 m) and bottom (17 m+) layers, Dec 2018-2020 when the buoy profiler gives dense data. Temperature is tight; bottom oxygen captures the summer drawdown; chl-a gets the level but not every bloom.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ma-scatter" class="slide level2">
+<h2>Model vs observed</h2>
+<aside class="notes">
+<p>Every observation paired with the simulated layer closest in depth on the same day. Dashed = 1:1. Temperature and oxygen sit on the line; chl-a and the nutrients are scattered and, for FRP and ammonium, biased low because many observations are at the detection limit.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ma-kge" class="slide level2">
+<h2>Summary of model fit</h2>
+<aside class="notes">
+<p>Source: <code>images/staged-calibration/performance.csv</code>, bgc set. Skill is strong for what drives stratification and oxygen but weak for N and P, which is why the alum and nutrient results are expressed as differences between scenarios.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ma-metrics" class="slide level2 smaller">
+<h2>Fit metrics</h2>
+<aside class="notes">
+<p>Computed from the model-observation pairs, all depths, 2016-2020. KGE combines correlation, variability ratio and bias; above about 0.5 is useful, below 0 means the mean of the observations would be a better predictor. Compare the nutrient rows with the physics rows: this is why scenario results are expressed as differences.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ma-post" class="slide level2">
+<h2>Posterior variation: time series</h2>
+<p>Same model, parameter sets drawn from the calibration posterior (black = best fit).</p>
+<aside class="notes">
+<p>Source: 30-year historical-weather runs of the best (member 0) and three posterior parameter sets (calibration/uncertainty), cut to the calibration window. Compare how much the draws differ for bottom oxygen versus chl-a and total P. Only 4 members have been run so far, so this is a first look at the spread, not a full ensemble.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ma-post-skill" class="slide level2">
+<h2>Posterior variation: skill by member</h2>
+<aside class="notes">
+<p>RMSE of each member against the observations on days with data. Bottom oxygen is similar across members (two draws are slightly better than the best fit), chl-a is equally poor for all, and total P is clearly best for member 0. Different variables prefer different parameter sets, which is why we carry several members through to scenario runs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="bayes" class="slide level2 smaller">
 <h2>Frequentist vs Bayes</h2>
@@ -484,8 +801,7 @@
 </section>
 <section id="bayes-lake-fig" class="slide level2">
 <h2>Prior, likelihood and posterior</h2>
-
-<img data-src="research-overview_files/figure-revealjs/unnamed-chunk-4-1.png" width="1056" class="r-stretch"><aside class="notes">
+<aside class="notes">
 <p>If the lake-only estimate and the experiment agree, we have independent support for the parameter. If they disagree, either the lab and lake conditions differ or the model is compensating for something else.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -507,20 +823,16 @@
 </section>
 <section id="freq-line" class="slide level2">
 <h2>Frequentist: one best-fit line</h2>
-
-<img data-src="research-overview_files/figure-revealjs/unnamed-chunk-5-1.png" width="1056" class="r-stretch"></section>
+</section>
 <section id="bayes-lines" class="slide level2">
 <h2>Bayesian: many plausible lines</h2>
-
-<img data-src="research-overview_files/figure-revealjs/unnamed-chunk-6-1.png" width="1056" class="r-stretch"></section>
+</section>
 <section id="bayes-slope" class="slide level2">
 <h2>What each approach reports</h2>
-
-<img data-src="research-overview_files/figure-revealjs/unnamed-chunk-7-1.png" width="1056" class="r-stretch"></section>
+</section>
 <section id="example-linear-regression-figure-2" class="slide level2">
 <h2>Example: Linear regression figure 2</h2>
-
-<img data-src="research-overview_files/figure-revealjs/prior-posterior-1.png" width="1056" class="r-stretch"><aside class="notes">
+<aside class="notes">
 <p>The likelihood is only as good as the data. It describes what the data say, not what is true. If I redid the experiment, the peak would move. The truth wouldn’t. The width tells you how much to trust the peak. A narrow curve means the data pin the slope down, and a wide one means they don’t.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -545,6 +857,71 @@
 <h2>Calibrating Lake Models</h2>
 <p>Use a similar logics</p>
 </section>
+<section id="pest-oxy" class="slide level2">
+<h2>Prior to posterior: bottom-water oxygen</h2>
+<p>Sediment oxygen demand by zone, calibrated against bottom-water oxygen and stratification signatures with <code>pestpp-ies</code> (80-member ensemble).</p>
+<aside class="notes">
+<p>Real ensembles from calibration step 1 (second pass). Grey = prior (the initial 80-member ensemble across the allowed range); blue = posterior after the final iteration. Dashed orange = the measured value from the core incubations. The data pull the deep zones to higher demand than measured (about 2-5x), and the posterior is much narrower: the data are informative about oxygen demand.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pest-frp" class="slide level2">
+<h2>Prior to posterior: phosphorus release</h2>
+<aside class="notes">
+<p>Same approach for the P release rate (calibration step 3). Here the posterior is almost identical to the prior: the lake FRP and TP data (few observations, many near the detection limit) say little about this parameter, so the measured incubation values carry the result. This is the Bayesian point: where the data are weak, the prior dominates, which is why the measured fluxes matter.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pest-phi" class="slide level2">
+<h2>Ensemble and misfit</h2>
+<aside class="notes">
+<p>The misfit falls for both, but a falling misfit is not the same as an informed parameter: the P-release parameter converged without its posterior moving, because the improvement came from other parameters in the same calibration.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pest-sd" class="slide level2">
+<h2>Calibrated parameters: how much did the data tell us?</h2>
+<aside class="notes">
+<p>Source: <code>images/step3/params.csv</code>. Size shows how much narrower the posterior is than the prior. Several parameters sit near their bounds, which is a sign of structural error being absorbed.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="pestpp" class="slide level2">
 <h2>PEST++</h2>
 <p><a href="#/model-deeper">← Back to “Go deeper?”</a></p>
@@ -553,6 +930,17 @@
 <h2>Connections</h2>
 <p>Feeds into <a href="#/alum-core">Alum</a> via … and depends on <a href="#/data-core">Data</a> via …</p>
 <p><a href="#/hub">← Back to hub</a></p>
+</section>
+<section id="calib-end" class="slide level2">
+<h2>Wrap up: Calibration and uncertainty</h2>
+<div class="arm-end hub-calib">
+<ul>
+<li>Temperature and level are well calibrated and oxygen reasonably; nutrients (FRP, ammonium, TP, chl-a) are weak, so we report <strong>differences</strong> between scenarios</li>
+<li>PEST++ gives a posterior, not a single answer: informative for oxygen demand, not for P release</li>
+<li>Where the data are weak the prior (the measured fluxes) carries the result</li>
+</ul>
+<p><a href="#/hub" class="hub-return">↩︎ Back to hub</a></p>
+</div>
 </section></section>
 <section>
 <section id="data" class="title-slide slide level1 center">
@@ -580,27 +968,7 @@
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">graph TD
-  classDef cat fill:#f5f5f5,stroke:#333333,stroke-width:1px;
-  classDef model fill:#D55E00,color:#ffffff,stroke:#333333,stroke-width:2px;
-  classDef climate fill:#0072B2,color:#ffffff,stroke:#333333,stroke-width:1px;
 
-  OBS["Observations&lt;br/&gt;lake_level, rotorua_inflow,&lt;br/&gt;alum_dosing, buoy and CTD data,&lt;br/&gt;chem_data, light_data"]:::cat
-  MET["Meteorology&lt;br/&gt;niwa_met_daily,&lt;br/&gt;niwa_met_hourly_aeme"]:::cat
-  SPAT["Spatial&lt;br/&gt;lake shape, lake_meta,&lt;br/&gt;depth_contours"]:::cat
-  CFG["Model config&lt;br/&gt;corr_hyps, glm_sed_param,&lt;br/&gt;meas_param, aed_alum_params"]:::cat
-  GCM["GCM / CMIP6&lt;br/&gt;cmip6_metadata, gcm_point_data_df"]:::climate
-
-  M["GLM-AED Model"]:::model
-
-  OBS -. calibration and validation .-&gt; M
-  MET --&gt; M
-  SPAT --&gt; M
-  CFG --&gt; M
-  GCM -. forcing - see Climate module .-&gt; M
-
-  click GCM "#climate-core" "Go to Climate change module"
-</pre>
 </div>
 <p></p></figure><p></p>
 </div>
@@ -609,6 +977,25 @@
 <div class="credit">
 <p>Categories match the <code>targets</code> pipeline’s data inventory (<code>data_inventory_html</code>)</p>
 </div>
+</section>
+<section id="data-obs-temp" class="slide level2">
+<h2>Observed temperature record</h2>
+</section>
+<section id="data-obs-wq" class="slide level2">
+<h2>Observed water quality</h2>
+<aside class="notes">
+<p>Source: observations held in the Aeme object (BoPRC chemistry + buoy). The long record is what lets us calibrate and validate; note the gaps and detection-limit issues.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="data-obs" class="slide level2">
 <h2>Lake observations</h2>
@@ -640,12 +1027,12 @@
 <li><strong>Sediment zone heights</strong> — derived from bathymetry + observed buoy/CTD temperature</li>
 </ul>
 </section>
-<section id="data-student" class="slide level2">
+<section id="data-student" class="slide level2 smaller">
 <h2>Student research behind the parameters</h2>
 <p><strong>Kaylee Campbell</strong> — internal loading study (repeat of Bergen 2004)</p>
 <ul>
 <li>Measured sediment O₂/N/P flux rates by depth zone</li>
-<li>Feeds the AED sediment diagenesis module (<code>meas_param</code>)</li>
+<li>Feeds the AED sediment diagenesis module</li>
 </ul>
 <p><strong>Sreya Sanila</strong> (2026) MSc thesis, University of Waikato</p>
 <ul>
@@ -656,6 +1043,144 @@
 <p>Campbell attribution per code comments, unconfirmed — verify before citing externally</p>
 </div>
 <!-- Go deeper (observation uncertainty), connections -->
+</section>
+<section id="data-end" class="slide level2">
+<h2>Wrap up: Data</h2>
+<div class="arm-end hub-data">
+<ul>
+<li>A long monitoring record (chemistry from 1989, buoy and CTD profiles) is what makes calibration possible</li>
+<li>Student studies (sediment fluxes, alum jar tests) supply the <strong>priors</strong> for key parameters</li>
+<li>Limits: values near detection limits, a short buoy overlap with the meteorology, gaps in deep-water chemistry</li>
+</ul>
+<p><a href="#/hub" class="hub-return">↩︎ Back to hub</a></p>
+</div>
+</section></section>
+<section>
+<section id="alum-dosing" class="title-slide slide level1 center">
+<h1>Alum dosing</h1>
+
+</section>
+<section id="alum-core" class="slide level2">
+<h2>Where to start</h2>
+<!-- what is it, how it works, modelling and calibration impact -->
+<p>Alum (aluminium sulphate) is dosed into the Utuhina and Puarenga streams to bind phosphorus before it reaches the lake.</p>
+</section>
+<section id="alum-why" class="slide level2">
+<h2>Why is alum added to Lake Rotorua?</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<ul>
+<li>Too much phosphorus drives algal blooms and poor water quality</li>
+<li>Rotorua’s two main inflows carry a large share of the P that reaches the lake</li>
+<li>Alum (aluminium sulphate) added to the <strong>Utuhina</strong> and <strong>Puarenga</strong> streams binds P into particles that settle out, before it reaches the lake</li>
+<li>It is one lever, alongside nitrogen reduction under Plan Change 10, for meeting the lake’s trophic target</li>
+</ul>
+<div class="fragment">
+<p><strong>The management question:</strong> how much does it help, and does that hold up under a warmer climate?</p>
+</div>
+</div><div class="column" style="width:45%;">
+<div style="font-size:0.85em">
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td><strong>Utuhina Stream</strong></td>
+<td>dosed since 2006</td>
+</tr>
+<tr class="even">
+<td><strong>Puarenga Stream</strong></td>
+<td>dosed since 2010</td>
+</tr>
+<tr class="odd">
+<td><strong>Dose</strong></td>
+<td>about 1 mg Al/L, paced to stream flow</td>
+</tr>
+<tr class="even">
+<td><strong>Cumulative Al</strong></td>
+<td>1,071 t by end 2024</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></div>
+<aside class="notes">
+<p>Dosing history and totals are from the Sanila (2026) MSc thesis notes (alum-dosing-sanila-msc-thesis.qmd). The “why” is general background: alum removes phosphorus in the streams so less reaches the lake; the wording on the share of P load and on alum as one lever alongside nitrogen management is not taken from the repo, so check it against BOPRC material before presenting.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="alum-model" class="slide level2">
+<h2>How alum is represented in the model</h2>
+
+<img data-src="www/alum-model-concep.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="sed-flux-ts" class="slide level2">
+<h2>Sediment fluxes through time</h2>
+<p>Daily diffusive flux by sediment zone in the calibrated model (positive = release to the water; negative = uptake).</p>
+<aside class="notes">
+<p>Source: final calibrated (alum) run, 2016-2020 (dsf variables). Fluxes are the realised rates, so they respond to temperature and bottom-water oxygen, so they peak in summer stratified spells.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sed-fluxes" class="slide level2">
+<h2>Sediment fluxes by zone</h2>
+<p>Measured sediment flux (grey = range, circle = measured) and calibrated values.</p>
+<aside class="notes">
+<p>Source: <code>images/staged-calibration/sediment_fluxes.csv</code> (measured prior from the internal loading study, calibrated values from PEST++). Oxygen demand needed to go ~2-5x above the measured values to draw bottom water down in the model; FRP and ammonium stay close to the measured range. This is the prior in the Bayes example.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="alum-frp" class="slide level2">
+<h2>Alum had a modest effect on modelled FRP</h2>
+
+<img data-src="images/staged-calibration/ts_alum_PHS_frp.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><aside class="notes">
+<p>Calibrated model, 2016-2020. Observed FRP is mostly near the detection limit (56-73 observations), so it cannot constrain the alum parameters.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="alum-end" class="slide level2">
+<h2>Wrap up: Alum dosing</h2>
+<div class="arm-end hub-alum">
+<ul>
+<li>Alum is a reactive pool in the water column and at the sediment surface that binds FRP</li>
+<li>In the calibrated model the effect on FRP is modest (about 30%) and the data cannot constrain the alum parameters</li>
+<li>Scenario runs show a much larger effect on P and chl-a, so treat the <strong>size</strong> of the alum effect as uncertain</li>
+</ul>
+<p><a href="#/hub" class="hub-return">↩︎ Back to hub</a></p>
+</div>
 </section></section>
 <section>
 <section id="climate-core" class="title-slide slide level1 center">
@@ -686,13 +1211,155 @@
 </section>
 <section id="scenarios-shared-socioeconomic-pathways-ssps" class="slide level2">
 <h2>Scenarios: Shared Socioeconomic Pathways (SSPs)</h2>
+<p>7 downscaled GCMs × 4 SSPs, compared with a 1995–2014 reference.</p>
+<aside class="notes">
+<p>Source: <code>gcm_monthly_deltas_df</code> target. Annual-mean air temperature delta per GCM. The spread between GCMs (e.g.&nbsp;+2.8 to +4.6 °C under SSP5-8.5 by 2071-2100) is comparable to the spread between the lower pathways.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="impact-modelling" class="slide level2">
-<h2>Impact Modelling</h2>
+<section id="bc-why" class="slide level2">
+<h2>Raw GCM output is not model-ready</h2>
+<ul>
+<li>Own absolute biases (mean offset, distorted seasonal cycle, wrong wind climatology)</li>
+<li>Daily, coarse grid, no sub-daily information</li>
+<li>Would land straight in simulated stratification and evaporation</li>
+</ul>
+<div class="fragment">
+<p><strong>Workflow:</strong> bias-correct ERA5 against the buoy → apply each GCM’s monthly <em>change</em> → disaggregate to hourly</p>
+</div>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="bc-skill" class="slide level2">
+<h2>Bias correction: ERA5 vs the buoy</h2>
+<aside class="notes">
+<p>Source: <code>era5_bias_correction$skill</code>, cross-validated stages. Wind is the big win (KGE 0.18 → 0.71; mean bias -2.9 m/s removed). Pressure is excluded here because of an unresolved unit issue. Rainfall remains the weakest (r ~0.47) because the buoy gauge is noisy.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bc-wind" class="slide level2">
+<h2>Bias correction: wind</h2>
+
+<img data-src="www/plots/era5_bc_timeseries_wind.png" style="width:95.0%" class="r-stretch"><aside class="notes">
+<p>Raw ERA5 (grey) under-predicts wind by ~3 m/s. The corrected series (blue) sits on the buoy record. Wind is fixed at scale 1 in the model (MET_wndspd) so the measured wind is not rescaled in calibration.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="delta-spread" class="slide level2">
+<h2>Delta change: how far do GCMs disagree?</h2>
+
+<img data-src="www/plots/gcm_delta_variability_2071-2100.png" style="width:75.0%" class="r-stretch"><div class="credit">
+<p>Thin lines: individual GCMs; band: GCM range; thick: GCM mean. 2071–2100.</p>
+</div>
 </section>
 <section id="scenario-design" class="slide level2">
 <h2>Scenario Design</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li><strong>Weather:</strong> 1991–2020 ERA5 baseline, bias-corrected</li>
+<li><strong>Climate signal:</strong> monthly deltas by GCM × SSP × window</li>
+<li><strong>30-year time slices</strong> with spin-up</li>
+<li><strong>Alum:</strong> none (A0) vs present dose (A1)</li>
+<li><strong>Inflows:</strong> historical, unchanged (lower bound)</li>
+</ul>
+</div><div class="column" style="width:55%;">
+
+</div></div>
+<aside class="notes">
+<p>Source: <code>scenario_delta_grid</code>. Windows only select which delta is applied. Every window reuses the same 30 weather years, so differences between windows are purely the climate signal. x2 alum cases = 162 runs plus hindcast. Pilot with a subset first.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="impacts" class="slide level2">
+<h2>Impact Modelling</h2>
+<p><em>Preliminary: 25-year runs, a subset of GCM/SSP combinations, constant recent alum dose</em></p>
+<aside class="notes">
+<p>Source: <code>images/scenarios30/change_vs_baseline.csv</code>. Warmer scenarios lengthen stratified spells and increase anoxic days and summer chl-a (ACCESS SSP5-8.5: +16 anoxic days/yr, +3.5 µg/L chl-a). Mid-range pathways are mixed and sit within interannual variability. Only a handful of GCM/SSP pairs have been run so far.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="alum-offset" class="slide level2">
+<h2>Does alum offset the climate effect?</h2>
+<aside class="notes">
+<p>Source: <code>images/scenarios30/alum_effect.csv</code>. Alum lowers TP, bottom FRP and chl-a by 50-75% in every scenario, with a small effect on temperature and stratification. Caveat: this is larger than the modest FRP effect seen in the calibration (~30%), and the calibration fits TP/FRP weakly, so treat the size of the alum effect as uncertain. Direction and consistency across climates is the robust message.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <!-- CMIP6, methodology and bias correction, impacts -->
+</section>
+<section id="climate-end" class="slide level2">
+<h2>Wrap up: Climate change</h2>
+<div class="arm-end hub-climate">
+<ul>
+<li>Bias-corrected ERA5 plus GCM monthly deltas keeps realistic weather and adds each scenario signal</li>
+<li>GCM choice matters as much as pathway: late-century warming under SSP5-8.5 spans roughly 2.8 to 4.6 °C</li>
+<li>Early runs show longer stratified spells, more anoxia and higher chl-a under the warmest scenarios; alum lowers P and chl-a in all of them (preliminary)</li>
+</ul>
+<p><a href="#/hub" class="hub-return">↩︎ Back to hub</a></p>
+</div>
 </section></section>
 <section>
 <section id="synthesis" class="title-slide slide level1 center">
@@ -702,36 +1369,118 @@
 <section id="unc-intro" class="slide level2">
 <h2>Uncertainty is everywhere</h2>
 <p>Every result so far carries uncertainty from at least one source.</p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 </section>
 <section id="unc-obs" class="slide level2">
 <h2>Observation uncertainty</h2>
 <ul>
-<li><p>Limits of detection</p></li>
-<li><p>Sensor measurement accuracy</p></li>
-<li><p>Sensor drift/fouling etc.</p></li>
+<li>Limits of detection: FRP and ammonium are often near or below detection, so they barely constrain the model</li>
+<li>Sensor measurement accuracy</li>
+<li>Sensor drift and fouling</li>
+<li>Short overlap between the buoy and the meteorological record (2022 to 2026) limits the bias correction</li>
 </ul>
 </section>
 <section id="unc-climate" class="slide level2">
 <h2>Climate uncertainty</h2>
 <ul>
-<li><p>Multiple GCM’s</p></li>
-<li></li>
+<li>Multiple GCMs: late-century warming under SSP5-8.5 spans roughly 2.8 to 4.6 °C</li>
+<li>Pathway: about 3.5 °C between SSP1-2.6 and SSP5-8.5</li>
+<li>Method: delta change assumes the bias correction and present variability hold in a future climate</li>
+<li>Only a handful of GCM/SSP combinations have been run through the lake model so far</li>
 </ul>
 </section>
 <section id="unc-model" class="slide level2">
 <h2>Model uncertainty</h2>
+<ul>
+<li><strong>Parameters:</strong> the posterior is tight for sediment oxygen demand but barely moves for P release</li>
+<li><strong>Structure:</strong> several parameters sit at their bounds, and nutrients are simulated poorly</li>
+<li><strong>Alum:</strong> the data cannot constrain the alum parameters, so the size of its effect is uncertain</li>
+</ul>
 </section>
 <section id="unc-combined" class="slide level2">
 <h2>Which dominates?</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>What we know now</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Observations</td>
+<td>Limits what the model can be tested against, especially P and N</td>
+</tr>
+<tr class="even">
+<td>Climate (GCM, pathway)</td>
+<td>Large and quantified at the forcing level; not yet carried through the lake model</td>
+</tr>
+<tr class="odd">
+<td>Model parameters</td>
+<td>Four posterior members run so far: oxygen consistent, chl-a and total P vary</td>
+</tr>
+<tr class="even">
+<td>Alum behaviour</td>
+<td>Largest unknown for management questions</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>We cannot yet say which dominates the lake response. A <strong>variance partition</strong> across GCM, pathway, parameters and alum needs a larger ensemble.</p>
+</div>
 </section>
-<section id="so-what-do-we-conclude" class="slide level2">
+<section id="conclude" class="slide level2">
 <h2>So what do we conclude?</h2>
-</section></section>
-<section id="lessons-and-tips" class="title-slide slide level1 center">
-<h1>Lessons and tips</h1>
-
-
+<ol type="1">
+<li class="fragment"><strong>Physics and oxygen are well represented</strong>; nutrients are not, so we report <em>differences</em> between scenarios</li>
+<li class="fragment"><strong>Climate:</strong> warmer scenarios lengthen stratified spells and increase anoxia and chl-a in the early runs</li>
+<li class="fragment"><strong>Alum:</strong> lowers P and chl-a in every scenario, but the size of the effect is uncertain</li>
+<li class="fragment"><strong>Where the data are weak, the prior carries the result</strong>, so the measured fluxes and jar tests matter</li>
+<li class="fragment">These are <strong>preliminary</strong>: the ensemble is small and the nutrient calibration needs work</li>
+</ol>
+<p><a href="#/hub" class="hub-return-light">↩︎ Back to hub</a></p>
 </section>
+<section id="ideas" class="slide level2">
+<h2>Potential ideas</h2>
+<div class="columns">
+<div class="column" style="width:33%;">
+<h3 id="data-paper">1. Data paper</h3>
+<p>A data paper summarising the volume and depth of research output on Lake Rotorua and/or the Te Arawa lakes</p>
+<ul>
+<li>Centralise, document and build a data store of the relevant data</li>
+</ul>
+</div><div class="column" style="width:33%;">
+<h3 id="modelling-deep-dive">2. Modelling deep dive</h3>
+<p>A methods paper examining approaches to calibration and sensitivity analysis</p>
+<ul>
+<li>Staged calibration, PEST++, Morris screening</li>
+<li>Prior to posterior as a diagnostic</li>
+</ul>
+</div><div class="column" style="width:33%;">
+<h3 id="scenarios-and-uncertainty">3. Scenarios and uncertainty</h3>
+<p>Scenario approaches and uncertainty quantification</p>
+<ul>
+<li>Delta change vs other downscaling</li>
+<li>Variance partition across GCM, pathway, parameters and alum</li>
+</ul>
+</div></div>
+
+
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -1002,6 +1751,17 @@
       // Mark visited topics on the hub
       document.querySelectorAll('a.hublink').forEach(a =>
         a.addEventListener('click', () => a.classList.add('visited')));
+
+      // A topic counts as covered once its wrap-up slide has been reached
+      const arms = { 'model-end': 'model-core', 'calib-end': 'calib-core', 'data-end': 'data-core',
+                     'alum-end': 'alum-core', 'climate-end': 'climate-core' };
+      const markDone = () => {
+        const cur = Reveal.getCurrentSlide();
+        const key = cur && Object.keys(arms).find(k => cur.id === k);
+        if (key) document.querySelectorAll('a.hublink[href="#' + arms[key] + '"]')
+          .forEach(a => a.classList.add('visited'));
+      };
+      Reveal.on('slidechanged', markDone);
     }
 
     if (Reveal.isReady()) setupHub(); else Reveal.on('ready', setupHub);
