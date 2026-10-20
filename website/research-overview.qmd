@@ -12,6 +12,7 @@ format:
     include-after-body: www/hub.html
     css: www/styles.css
 cache: true
+eval: false
 ---
 
 ```{r}
