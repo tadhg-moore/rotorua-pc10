@@ -57,6 +57,7 @@ config_files <- AEME::get_model_config_files(aeme)
 glm4_file <- config_files[["glm_aed"]]["glm4"]
 glm4_nml <- AEME::read_nml(glm4_file)
 glm4_nml[["sediment"]][["sed_vwc"]] <- 0.4
+zone_heights <- glm4_nml[["sediment"]][["zone_heights"]]
 AEME::write_nml(glm4_nml, glm4_file)
 # nml <- AEME::read_nml(glm4_nml)
 # Re-read aed.nml rather than using cfg$glm_aed$bgc$aed, since that slot was
