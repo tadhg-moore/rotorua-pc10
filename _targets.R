@@ -49,6 +49,7 @@ tar_source(
     here::here("R", "plot_gcm_delta_variability.R"),
     here::here("R", "summarise_climate_extremes.R"),
     here::here("R", "plot_climate_extremes.R"),
+    here::here("R", "plot_gcm_transient_deltas.R"),
     here::here("R", "plot_bias_correction.R"),
     here::here("R", "qc_funs.R"),
     here::here("R", "load_old_buoy_data.R"),
@@ -366,6 +367,16 @@ list(
     inflows_alum_dosed, c("Puarenga", "Utuhina")
   ),
   
+  tar_target(
+    alum_dosing_sites,
+    data.frame(
+      site = c("Utuhina", "Puarenga"),
+      lat  = c(-38.134566, -38.143958),
+      long = c(176.237772, 176.267716)
+    ) |> 
+      sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |> 
+      sf::st_transform(crs = 2193)
+  ),
   tar_target(
     ratio_al_p, c(
       # eta	Al:P molar	Interpretation
@@ -1729,6 +1740,87 @@ list(
         seed = 42, expand = TRUE, verbose = FALSE)
     },
     pattern = map(scenario_daily_met),
+    iteration = "list",
+    cue = tar_cue(mode = "never")
+  ),
+
+  #* 4b. TRANSIENT scenarios: one continuous series per GCM x SSP (plus a
+  #      no-delta control), with the delta-change factors evolving year by
+  #      year along each GCM's historical -> SSP trajectory. For long-term
+  #      nutrient-loading questions (e.g. N reduction from 2032) the lake
+  #      response is path-dependent, so climate has to evolve alongside the
+  #      loads rather than sit at three fixed time slices (section 4 above,
+  #      kept as the fixed-climate sensitivity set). See
+  #      website/climate-scenario-workflow.qmd. ----
+  # 2005-2099 = the 10-year spin-up before sim_periods$ssp$start (2015-07-01)
+  # plus the run to 2099-06-30.
+  tar_target(
+    transient_years, 2005:2099
+  ),
+  tar_target(
+    transient_window_length, 30
+  ),
+  tar_target(
+    transient_weather_seed, 42
+  ),
+  tar_target(
+    transient_year_map,
+    build_transient_year_map(transient_years, complete_years(era5_corrected_daily_baseline),
+                             seed = transient_weather_seed)
+  ),
+  tar_target(
+    gcm_transient_deltas,
+    compute_gcm_transient_deltas(
+      gcm = cmip_gcm, cmip6_files = cmip6_files, lon = lake_meta$longitude,
+      lat = lake_meta$latitude, scenarios = cmip_scenarios,
+      ref_years = scenario_ref_years, target_years = transient_years,
+      window_length = transient_window_length),
+    pattern = map(cmip_gcm),
+    iteration = "list"
+  ),
+  tar_target(
+    gcm_transient_deltas_df, dplyr::bind_rows(gcm_transient_deltas)
+  ),
+  tar_target(
+    gcm_transient_delta_plot, {
+      out_file <- here::here("website", "www", "plots", "gcm_transient_deltas.png")
+      p <- plot_gcm_transient_deltas(gcm_transient_deltas_df)
+      ggsave(filename = out_file, plot = p, width = 11, height = 7, dpi = 150,
+            create.dir = TRUE)
+      out_file
+    },
+    format = "file",
+    deployment = "main"
+  ),
+  tar_target(
+    transient_delta_grid, {
+      tidyr::crossing(gcm = cmip_gcm, scenario = cmip_scenarios) |>
+        dplyr::filter(!(scenario == "ssp585" & gcm == "NZESM")) |>
+        dplyr::bind_rows(data.frame(gcm = "none", scenario = "control"))
+    }
+  ),
+  # Daily is cheap, so it keeps the default cue (always current with the
+  # code); the hourly disaggregation below is the expensive step and is gated.
+  tar_target(
+    scenario_transient_daily_met,
+    build_transient_daily_met(
+      era5_corrected_daily_baseline, transient_year_map, gcm_transient_deltas_df,
+      gcm = transient_delta_grid$gcm, scenario = transient_delta_grid$scenario,
+      lat = lake_meta$latitude, lon = lake_meta$longitude,
+      elev = lake_meta$elevation, tz = scenario_tz),
+    pattern = map(transient_delta_grid),
+    iteration = "list"
+  ),
+  # ~95 years x 28 branches disaggregated to hourly. Build explicitly with
+  # tar_make(names = "scenario_transient_hourly_met"); after any change to the
+  # daily met, tar_invalidate("scenario_transient_hourly_met") first.
+  tar_target(
+    scenario_transient_hourly_met,
+    disaggregate_scenario_met(
+      scenario_transient_daily_met, donor = era5_corrected_hourly,
+      lat = lake_meta$latitude, lon = lake_meta$longitude,
+      elev = lake_meta$elevation, tz = scenario_tz),
+    pattern = map(scenario_transient_daily_met),
     iteration = "list",
     cue = tar_cue(mode = "never")
   ),
