@@ -167,15 +167,93 @@ targets::tar_make(names = c("scenario_daily_met", "scenario_hourly_met"))
 
 or invalidate just the combinations that changed with `tar_invalidate()` / `tar_cue(mode = "always")` per branch.
 
+These time-slice runs are the **fixed-climate** set: each window is a snapshot of one climate state on the same ERA5 weather, with no trend inside it. They are the right tool for asking "what does the lake look like in a 2071-2100 climate?", but not for the long-term nutrient-loading question, which is covered next.
+
+## 5. Transient scenarios for long-term nutrient-loading runs
+
+The lake's response to a nutrient reduction (e.g. an N cut from 2032) is **path-dependent**: sediment legacy stores, alum dosing and flushing mean the state in any year depends on the whole history of loads *and* climate before it. Three disconnected time slices cannot represent that -- stitching them together would also put steps in the forcing at the window boundaries. The transient workflow instead builds **one continuous 2005-2099 series per GCM/SSP** (2005-2014 is the 10-year spin-up before `sim_periods$ssp$start`), so the climate warms gradually while the loads change. It runs alongside the time-slice set, which stays as the fixed-climate sensitivity.
+
+It follows the same bias-correct → delta-change → disaggregate chain, with three changes, all in `R/scenario_climate_workflow.R`:
+
+1.  **Weather:** `build_transient_year_map()` assigns every simulated year a real, complete ERA5 baseline year (`complete_years()`; shuffled cycles, so every source year is used about equally often and a weather year is not repeated at a fixed lag the way a simple loop would). Leap-year targets only draw leap-year sources, so no 29 February is invented or dropped. The mapping depends only on `transient_weather_seed`, so **every GCM/SSP sees identical weather** and differences between runs are the climate signal alone. `build_transient_weather()` stitches the years together on the target dates.
+2.  **Deltas that evolve:** `compute_gcm_transient_deltas()` replaces the three fixed windows with a 30-year window sliding along each GCM's own `historical` → SSP run, giving a monthly delta for every year, against the same 1995-2014 reference as the slices. It reads each GCM's point series once and averages locally, rather than re-reading the netCDFs per year.
+3.  **A no-delta control:** `scenario = "control"` applies no deltas to the same weather sequence (stationary baseline climate), the reference for separating a nutrient effect from a climate effect.
+
+`apply_transient_deltas_to_baseline()` then applies the year-and-month delta to each day (the same add/ratio rules, clipping and `expand_met()` as the slices), and `disaggregate_scenario_met()` disaggregates to hourly with wind handled as a plain scalar, exactly as in step 4.
+
+```{r}
+#| label: transient-delta-plot
+#| echo: false
+#| out-width: 100%
+#| eval: !expr file.exists("www/plots/gcm_transient_deltas.png")
+
+knitr::include_graphics("www/plots/gcm_transient_deltas.png")
+```
+
+```{r}
+#| label: transient-delta-table
+#| echo: false
+#| eval: !expr targets::tar_exist_objects("gcm_transient_deltas_df")
+
+tar_read(gcm_transient_deltas_df) |>
+  filter(variable %in% c("MET_tmpair", "MET_pprain"), year >= 2020) |>
+  group_by(gcm, scenario, variable, year) |>
+  summarise(delta = mean(delta, na.rm = TRUE), .groups = "drop") |>
+  mutate(decade = paste0(10 * (year %/% 10), "s"),
+         value = ifelse(variable == "MET_pprain", (delta - 1) * 100, delta)) |>
+  group_by(scenario, variable, decade) |>
+  summarise(txt = sprintf("%.1f (%.1f–%.1f)", mean(value), min(value), max(value)),
+            .groups = "drop") |>
+  mutate(variable = ifelse(variable == "MET_tmpair", "Air temperature (°C)", "Rainfall (%)")) |>
+  tidyr::pivot_wider(names_from = decade, values_from = txt) |>
+  arrange(variable, scenario) |>
+  knitr::kable(caption = "Transient annual-mean change vs. the 1995-2014 reference by decade: GCM-ensemble mean (min–max across GCMs).")
+```
+
+The figure and table above appear once the transient targets have been built.
+
+The targets, all in `_targets.R` section 4b:
+
+| Target | What it is | Cue |
+|------------------------|------------------------|------------------------|
+| `transient_year_map` | simulated year → ERA5 source year | default |
+| `gcm_transient_deltas(_df)` | year × month delta table, every GCM/SSP | default |
+| `gcm_transient_delta_plot` | the trajectory figure above | default |
+| `transient_delta_grid` | 7 GCMs × SSPs (minus `NZESM`/`ssp585`) + `control` = 28 branches | default |
+| `scenario_transient_daily_met` | stitched weather + trajectory deltas, daily | default (cheap) |
+| `scenario_transient_hourly_met` | hourly disaggregation, \~95 years per branch | `never` (expensive) |
+
+Build the hourly set explicitly, and invalidate it first after any change to the daily met:
+
+``` r
+targets::tar_invalidate("scenario_transient_hourly_met")
+targets::tar_make(names = "scenario_transient_hourly_met")
+```
+
+**Things to keep in mind when reading transient runs:**
+
+-   **Weather sampling noise is real.** Decadal means from a single shuffled 95-year sequence wander by roughly ±0.3 °C and ±15% in rainfall relative to the long-term mean, purely from which ERA5 years land in which decade. Compare each scenario against the `control` (same weather), never against the observed record.
+-   **The weather is synthetic, including the spin-up decade.** 2005-2014 uses shuffled ERA5 years with small deltas (about +0.1 to +0.5 °C by 2014, from the GCMs' own historical-to-SSP run), not the actual weather of those years. The transient runs therefore cannot be validated against observations; the calibration/validation period stays on the real ERA5/buoy forcing.
+-   **The trajectory lags at the end.** The sliding window is truncated at 2100 rather than shifted, so the final years are averaged over fewer years (down to \~16 at 2099, see `n_years`) and lag the underlying trend by up to \~6 years of change. Shifting the window back instead held the last \~15 years flat and under-warmed the end of the run by \~0.6 °C under `ssp585`, which is why it was changed. Rainfall, wind and shortwave deltas also get noisier over those final years.
+-   **`tas`/`pr` stop at 2099-12-31** while other variables run to 2100-11, so the 2071-2100 end windows average 29 years for temperature and rainfall (`extract_climate_point()` warns "NA after merge" for those dates; this is expected).
+-   **Deltas are piecewise-constant by month**, as in the slices, so there is a small step at each month boundary.
+-   **One GCM member per GCM:** the 30-year window averages out most, but not all, of each model's internal variability.
+
 ## How this feeds into the lake model
 
-`scenario_hourly_met` is the AEME `MET_*`-formatted hourly forcing GLM-AED needs for a climate-scenario simulation, one branch per GCM/scenario/window combination. The intended path from here into a model run is:
+For long-term nutrient-loading questions, use `scenario_transient_hourly_met`, one branch per row of `transient_delta_grid`. `scenario_hourly_met` (one branch per GCM/scenario/window) remains the input for fixed-climate sensitivity runs. The intended path from here into a model run is:
 
-1.  `AEME::add_met(aeme, met = scenario_hourly_met[[i]])` for the branch of interest, in place of the placeholder `gcm_point_data_std_df`-based forcing in the commented-out `aeme_sims` target.
-2.  `AEME::set_time()` with the corresponding `sim_periods$ssp` window (10-year spin-up, matching the existing convention for historical runs).
+1.  `AEME::add_met(aeme, met = scenario_transient_hourly_met[[i]])`, where `i` is the row of `transient_delta_grid` for the GCM/SSP of interest (e.g. `which(grid$gcm == "ACCESS-CM2" & grid$scenario == "ssp245")`), in place of the placeholder `gcm_point_data_std_df`-based forcing in `setup_aeme()`.
+2.  `AEME::set_time()` with `sim_periods$ssp` (2015-07-01 to 2099-06-30, 10-year spin-up -- the met starts in 2005 so the spin-up is covered).
 3.  `AEME::build_aeme()` / `AEME::run_aeme()` as for the calibration runs in `aeme_glm4`.
 
-Because `scenario_delta_grid` already carries `gcm`, `scenario` and `window` as columns, the same `pattern = map(scenario_delta_grid)` branching used to build `scenario_hourly_met` extends directly to a per-combination `AEME::run_aeme()` target once the model-build step above is wired in -- each of the 83 branches becomes one lake simulation, and the GCM-variability figure above is then the basis for interpreting how much of the *simulated* spread across those 83 runs is driven by meteorological forcing choice (GCM), scenario, or window, versus lake-model internal dynamics.
+**What is still missing before a transient simulation is meaningful for nutrients:** the met is only half the forcing.
+
+-   **Inflows and loads for 2005-2099.** `setup_aeme()` currently removes the inflows, so a run built that way has no catchment loading at all. A transient run needs a flow and nutrient-load series for the whole period, including the N-reduction pathway (e.g. a step from 2032), and a decision on how stream flows respond to the rainfall deltas (for example scaling the historical flow series by the same monthly rainfall ratio, or modelling it explicitly).
+-   **Alum dosing** after the calibration period needs a defined assumption.
+-   **Lake level / outflow** handling over 95 years should be checked in a short run first.
+
+A sensible first set of **test simulations** is the `control` plus one GCM under a low and a high SSP (e.g. `ssp126` and `ssp585`), first over a short horizon (say 2015-2040) with loads held at the present baseline, to check the runs are stable and the climate signal comes through in the temperature and stratification output. The 2032 N-reduction step and the long-horizon runs can follow once the inflow/loads series exist. With 28 branches the same `pattern = map(transient_delta_grid)` branching extends to a per-branch `AEME::run_aeme()` target, and the GCM-variability figure above is then the basis for interpreting how much of the simulated spread is driven by GCM choice, scenario, or the nutrient pathway versus lake-model internal dynamics.
 
 ## Caveats
 
