@@ -56,6 +56,7 @@ tar_source(
     here::here("R", "read_met_service_xl.R"),
     here::here("R", "make_met_data_zip.R"),
     here::here("R", "read_bop_csv_url.R"),
+    here::here("R", "read_bop_lab_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
     here::here("R", "read_chem_data.R")
@@ -154,6 +155,14 @@ list(
   ),
   tar_target(
     rotorua_flow_data, read_bop_csv_url(rotorua_flow_data_url)
+  ),
+
+  # Ohau Channel at SH33 (FL230406) lab results: NH4-N, TN, DRP, NNN, TP, TSS and water temperature
+  tar_target(
+    ohau_wq_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=NH4-N.LabResult%40FL230406&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=71&Datasets[1].DatasetName=TN.LabResult%40FL230406&Datasets[1].Calculation=Instantaneous&Datasets[1].UnitId=71&Datasets[2].DatasetName=DRP.LabResult%40FL230406&Datasets[2].Calculation=Instantaneous&Datasets[2].UnitId=71&Datasets[3].DatasetName=NNN.LabResult%40FL230406&Datasets[3].Calculation=Instantaneous&Datasets[3].UnitId=71&Datasets[4].DatasetName=TP.LabResult%40FL230406&Datasets[4].Calculation=Instantaneous&Datasets[4].UnitId=71&Datasets[5].DatasetName=TSS.LabResult%40FL230406&Datasets[5].Calculation=Instantaneous&Datasets[5].UnitId=71&Datasets[6].DatasetName=Water%20Temp.LabResult%40FL230406&Datasets[6].Calculation=Instantaneous&Datasets[6].UnitId=242&_=1793315629865"
+  ),
+  tar_target(
+    ohau_wq_data, read_bop_lab_csv_url(ohau_wq_url)
   ),
   
   tar_target(
