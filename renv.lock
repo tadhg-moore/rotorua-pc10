@@ -88,8 +88,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "limnotrack",
       "RemoteRepo": "AEME",
-      "RemoteRef": "dev",
-      "RemoteSha": "f6757d1c388dabcdc0304462b66d1717ae69fedb"
+      "RemoteRef": "main",
+      "RemoteSha": "565a64df47131c99f8c7e934c78ab1839bc502d7"
     },
     "AzureAuth": {
       "Package": "AzureAuth",

@@ -1,0 +1,210 @@
+---
+title: "PEST calibration-to-dashboard workflow: summary of work, 2–4 October 2026"
+subtitle: "What was built, what was found, and what is still running"
+date: 2026-10-04
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# Purpose
+
+Calibration, ensemble runs, scenario runs and dashboard extraction used to be separate hand-run scripts with no link between them. That produced stale outputs from old calibrations and ensembles that did not use the calibrated parameters. The aim was a workflow that, for each of the 14 lakes (4 of which receive an upstream lake's outflow: Slipper ← Spectacle, Pehiakura Big ← Pehiakura Small, Kereta ← Te Kanae, Kuwakatai ← Rototoa), does the following:
+
+1. calibrates with `scripts/pest_calib_v6.R`;
+2. extracts the PEST posterior and sensitivity results;
+3. runs a baseline ensemble over the targets `simulation_time` (2014-07-01 to 2023-06-30), one Aeme list per lake holding every member (default 50, adjustable, 24 parallel workers);
+4. runs each of the six inflow scenarios the same way;
+5. processes the results into `dashboard/data`.
+
+It is being built as plain R scripts first and will move into a targets project once it is stable. The pilot chain was Rototoa → Kuwakatai.
+
+# What was built
+
+All new code is in `R/pest_workflow/`.
+
+| Piece | File | Role |
+|---|---|---|
+| Staleness guards | `manifest.R` | sha256 + input-description manifests per step; downstream steps refuse to run on a stale or missing upstream manifest |
+| Posterior extraction | `pest_extract.R`, `extract_posterior.R` | final-iteration posterior members, best parameters, Morris sensitivity |
+| Ensemble runner | `run_ensemble.R` | nested seeded member selection (seed 42), parallel callr workers, per-member atomic cache, disk guard, relaunch of crashed workers, member validation (failed GLM runs are flagged, not counted) |
+| Downstream lakes | `downstream.R` | parent lake's own outflow becomes the child's inflow |
+| Inflow solids fix | `inflow_fix.R` | corrects the 1e6 unit error in LSPC inflow solids (see below) |
+| Checks and comparisons | `sanity_checks.R`, `member_daily.R`, `scenario_comparison.R` | bands vs observations, obs-vs-model, paired scenario-vs-baseline changes and box plots |
+| Diagnostics | `diagnostics_fit.R`, `compare_ab_calibrations.R`, `choose_recipe.R`, `sa_bloom.R`, several `test_*.R` | targeted experiments described below |
+| Dashboard stage | `R/dashboard_extract/stage_pest_workflow.R` | upserts per-lake rows into the dashboard parquet files |
+| Chains | `scripts/run_*.sh` | resumable shell drivers with retries and disk waits |
+
+# Findings that changed the calibration
+
+## Inflow solids were 1e6 too small
+
+`lspc_to_aeme.R` labelled LSPC `ssedout` as mg/L, but the processed value is already in t/m³. Inflow solids were therefore about 5.5e-6 instead of about 5.5 mg/L. `fix_inflow_ss_units()` multiplies by 1e6 only when the flow-weighted value is positive but below 1e-3 mg/L, so applying it twice is harmless. With the fix, resuspension and settling (`tau_0`, `epsilon`, `w_ss`) control the modelled solids. The `tau_0` upper bounds were raised (class 1: 2 → 20; class 2: 1 → 10). Stage 3 now scores solids at surface, mid and bottom depths, not at the surface only.
+
+## Screened-out parameters silently reverted to config defaults
+
+`run_stage()` kept only screen-selected parameters in the PEST control file and in `best`. Everything else ran on the model's configuration default, both during calibration and in all later forward and ensemble runs. At Rototoa this dropped `epsilon` (so the stage-3 value never reached stage 4) and, in one run, left stage 4 with only 13 parameters. The surface was 1.6 °C too cold and oxygen was too high as a result.
+
+Fix: `run_stage(freeze_dropped = TRUE)` holds screened-out parameters FIXED (min = max) at their starting values and records them in `best`. It is on in stage 4, and as of 4 October also in stage 3.
+
+## Parameters pinned with tight bounds break the Morris screen
+
+Pinning measured values with ±0.1% bounds made the Morris μ* (response change per unit parameter change) enormous for those parameters. One aberrant run gave μ* ≈ 3.7e5 for `tau_0[2]`. That became every region's maximum, so every real parameter fell below the threshold and the screen kept 3 of 67. Pins must be fixed parameters, and now are (stage-3 solids values and the measured sediment fluxes). After the fix the stage-4 screen kept 46 of 64 with sensible sensitivities. The earlier near-empty stage 4 was an artefact.
+
+## Measured sediment fluxes
+
+Chamber measurements exist for Spectacle, Slipper and Tomarata. They are in the `flux_params` target in mmol m⁻² d⁻¹. The calibrated values were 3–40× the measured ones. For Spectacle and Slipper, `Fsed_oxy`, `Ksed_oxy`, `theta_sed_oxy`, `Fsed_frp` and `Fsed_amm` are now fixed at the measured values (`sedflux_pin.R`). A proposal to adjust the bounds for other lakes is written but not applied (`pest_workflow/proposals/`).
+
+## Particle settling had the wrong sign in every calibration up to 5 October
+
+In AED a **negative** `w_ss` is settling and a positive value is buoyancy (the same convention as the phytoplankton `w_p`). The AEME template that `build_aeme()` copies into every model (not the files under `aeme/`) carries `w_ss = 0.5, 0.03`, and the parameter table's bounds were positive, so all suspended particles in every calibration floated to the surface and left through the near-surface outlet. `tau_0` and `epsilon` were calibrated to compensate. The template also had `fs = 1, 1` (bed fractions summing to 2, doubling resuspension) and `epsilon = 0.02` g m⁻² s⁻¹.
+
+Spectacle exposed it: with the calibrated `w_ss` made negative, surface solids fell from 4,888 to 4.3 mg/L (observed 14.5). The fix is `fix_noncohesive()` in `scripts/pest_funs.R`, called from `fresh_build()`: `w_ss` = −0.5, −0.03, `fs` = 0.6, 0.4, `epsilon` = 3e-4, `tau_0` = 0.08, 0.05, written into the built `aed.nml` and mirrored into the Aeme object's configuration (which `run_aeme_param()` regenerates the files from). The parameter table now has `w_ss` bounds of −2.0 to −0.1 (class 1) and −1.0 to −0.03 (class 2), and `epsilon` bounds of 5e-5 to 2e-3. With the new defaults and no solids parameters overridden, Spectacle's mean solids are 4 mg/L. Stage 3 onward is recalibrated for every lake in new roots (`pest_workflow_fixC`, `staged-calibration-v4/checkpoints_fixC`; `scripts/run_fixC_all.sh`). Solids results in the fixA, fixB and earlier roots are not comparable.
+
+## Per-sub-region `transform`
+
+A new region field `transform` (NULL, `"log"`, `"log1p"`, `"log10"`, `"sqrt"`, or `list(fun, offset)`) is applied to observations and model values in the PEST observation table, in the calibration data frame and in the sensitivity analysis. It was verified to give results identical to a derived log1p AEME variable, and replaces that route. The draft is in a scratch clone of aemetools (branch `feature/region-transform`) and has not been merged into the project's own library; the workflow runs use a library copy that includes it. `PEST_REGION_TRANSFORM="PHY_tchla=log1p,PHY_cyano=log1p"` switches it on in v6.
+
+# Rototoa comparison: pilot, fixA, fixB
+
+fixA is the freeze fix plus fixed pins. fixB adds log1p chl-a and cyanobacteria targets. Skill is measured against the raw observations of a 50-member baseline ensemble.
+
+| Variable (bias) | Pilot | fixA | fixB |
+|---|---|---|---|
+| Surface temperature, °C | −1.55 | −0.31 | −0.22 |
+| Bottom oxygen, mg/L | +6.6 | +3.3 | +3.3 |
+| Water level, m | +0.82 | −0.06 | n/a |
+| Surface FRP, mg/L | +0.014 | +0.036 | +0.035 |
+| Surface chl-a, µg/L | −3.0 | −3.1 | −3.0 |
+
+fixA is a clear improvement for temperature, oxygen, water level and solids. Phosphorus is worse than in the pilot, and chl-a is unchanged. fixB's gain over fixA was small (log1p chl-a RMSE 0.95 → 0.91, total nitrogen RMSE 7–9% lower, surface ammonium worse). The automatic rule in `choose_recipe.R` selected fixB for the next lakes.
+
+## Phosphorus is not calibrated at Rototoa
+
+In stage 4, `PHS_frp` is dropped as a target because 89% of its observations sit at the detection floor. That leaves every phosphorus parameter (`fsed_frp`, `ksed_frp`, `kpo4p`, `w_po4ads`) without a target, so they stay at defaults. The model overshoots FRP by about 0.035 mg/L. Handling censored data one-sidedly would address this; the decision was to proceed without it for now.
+
+## Chl-a is nearly absent in the model, not only low
+
+The reference run shows modelled surface chl-a averaging 0.08 µg/L (maximum 0.8) against observations of about 3 µg/L. This is a structural limit, so changing the weighting or transform cannot fix it.
+
+# Kuwakatai (first lake under the fixB recipe)
+
+Calibration, a 50-member baseline ensemble and sanity checks all completed (50 of 50 members). The fit is mixed:
+
+- temperature is good at the surface (r = 0.94, KGE 0.91);
+- oxygen is biased −2 to −3 mg/L but has the right seasonal shape;
+- chl-a is far too high (+39 µg/L at the surface, ensemble sd 44 µg/L), the opposite of Rototoa;
+- solids are over-predicted by +3 to +10 mg/L.
+
+Investigating the solids:
+
+- The inflow solids units are correct: own catchment 9.8 mg/L flow-weighted, with Rototoa's outflow carrying no solids column.
+- The stage-3 screen kept only `epsilon`, so `tau_0` and `w_ss` ran at defaults.
+- A forward test with `w_ss[1]` raised from 0.46 to 2.0 cut the mid-depth bias from +3.2 to +0.5 mg/L.
+
+Consequences, as implemented on 4 October:
+
+- Stage 3 now always calibrates `epsilon`, `tau_0` and `w_ss` (`force_keep`), linked to the solids regions.
+- Kuwakatai's stage 3 and 4 results and outputs are archived and the lake is rerun from stage 3.
+- The best-parameter run (+3 mg/L bias) is much better than the ensemble median (+7 to +10), which suggests some members have extreme solids and blooms. That is not yet understood.
+
+# Spectacle: calibration completed but the model is not usable
+
+Stage 4 finished with the measured sediment fluxes fixed (after a warm restart: the first attempt's results read crashed with "cannot change value of locked binding for 'x'"). The 50-member baseline ensemble passes the integrity checks, but the fit is poor, and a single forward run with the posterior best parameters reproduces it, so this is not an ensemble artefact:
+
+| Variable | Observed mean | Modelled at observations | Bias |
+|---|---|---|---|
+| Suspended solids, surface (mg/L) | 14.5 | 4,888 | +4,874 |
+| Surface temperature (°C) | 18.8 | 15.4 | −3.4 |
+| Water level (m) | 10.2 | 8.4 | −1.8 |
+| Chl-a, surface (µg/L) | 55.6 | 29.1 | −26.5 |
+| Bottom oxygen (mg/L) | 4.9 | 8.3 | +3.3 |
+
+Stage 3 never fitted the solids: its best phi was about 1,300–1,400 (about 150 in the older calibration), and `tau_0[1]` ended at its upper bound of 20. The inflow solids are 64 mg/L flow-weighted after the unit fix (lake observations: 13 mg/L), so the modelled 4,900 mg/L must come from resuspension. The temperature and water-level biases are larger than at any other lake and are not explained yet. The Spectacle result should not be used (or Slipper started) until this is diagnosed.
+
+**Cause found on 5 October:** the settling velocity sign (section above). The tests below were run before that and show that the solids did not respond to anything except the sign.
+
+Nine forward tests with the posterior best parameters (`R/pest_workflow/test_spectacle_solids.R`) show that the modelled solids do not respond to anything solids-related:
+
+| Test | Surface solids, mg/L (observed 14.5) |
+|---|---|
+| Control | 4,888 |
+| `epsilon` = 0 (resuspension off) | 4,990 |
+| `w_ss[1]` = 2.0 | 5,026 |
+| Seepage rate = 0 | 5,130 |
+| Inflow solids = 0 (verified: 0 t load) | 4,289 |
+| Inflow solids ÷ 100 | 4,356 |
+| Second particle class fast-settling, no resuspension | 4,939 |
+| Both classes settle at 1 m/d, no resuspension | 4,724 |
+
+The lake sits at about 6,000 mg/L from the first year in every case, with 7 flushes a year. The older (pre-fix) Spectacle ensemble was just as bad (solids about 4,000 mg/L, temperature 14.4 against 18.5 °C, chl-a 0.04 against 57 µg/L). So this is not a regression from the recent changes, and it is not an inflow, resuspension or settling effect. The next step is to read the raw GLM output for Spectacle to see what the modelled `NCS_ss1` series really is.
+
+# Bloom sensitivity analysis
+
+`sa_bloom.R` runs a Morris screen of full-model runs (about 46 s each at a small lake) with the lake's posterior best parameters as the reference. It varies every adjusted parameter plus about 30–50 candidates the calibration does not adjust (phytoplankton, phosphorus, sediment), scaled linearly or log-scaled between their bounds. The responses are surface chl-a, cyanobacteria, green and diatom: mean, summer mean, 90th and 99th percentile, maximum and bloom-day fraction. The question it answers is whether any parameter combination can lift modelled chl-a towards the observations.
+
+## Lake choice
+
+Rototoa has the lowest chl-a of all lakes (observed mean 3 µg/L, never above 9), so it cannot show whether the phytoplankton calibration works. The lakes with real blooms are Spectacle (maximum 250), Pehiakura Small (90th percentile 123), Whatihua (7 years of data), Kawaupaka (maximum 94, and the only lake with a clear cyanobacteria signal) and Pupuke. No lake has green or diatom observations, so only total chl-a and cyano can be targets. Kawaupaka was chosen because it has real blooms and cyano data, and it had stage 1–3 checkpoints from an earlier calibration.
+
+## Kawaupaka result (earlier calibration as reference, 606 runs, none failed)
+
+- **Chl-a is not capped.** The mean surface chl-a over the runs ranges from 0.13 µg/L (the reference run, the lowest of all) up to 57 µg/L, and the 90th percentile up to 91 µg/L. Observations: mean 15.8, 90th percentile 25 µg/L.
+- **The collapse is a corner of the parameter space.** 201 of 605 runs have a mean between 8 and 25 µg/L (243 pass the acceptance rule below). The median run has a mean of 8 µg/L. Only 30 runs fall below 1 µg/L.
+- **The top influences are already calibrated.** Second green group respiration, settling velocity, growth rate and light half-saturation dominate (μ* about 20–40 against a reference value of 0.13), followed by cyano respiration and settling, nitrification rate, DOM mineralisation and shortwave scaling. None of the extra candidate parameters ranked in the top 10.
+- **The response is very steep,** so the lake can flip between a collapsed state and a bloom state. An iES that starts in the collapsed state may never find the bloom state.
+
+## Bloom-seeded prior (method under test)
+
+`build_bloom_prior.R` keeps the screen runs whose modelled surface chl-a mean is within a factor of 2.5 of the observed mean and the 90th percentile within a factor of 3 (cyano 90th percentile within a factor of 5 where the lake has cyano data), widening the factors if fewer than 40 runs pass. Their parameter sets are written as a CSV, and `PEST_BLOOM_PRIOR=<csv>` makes `pest_calib_v6.R` use them as the stage-4 iES prior. This needed a small aemetools change (a data frame of parameter sets accepted as `prior_par_ensemble`), installed in a separate library (`renv_lib_regtr2_root`) so running calibrations are not disturbed.
+
+Test plan for Kawaupaka: an unseeded calibration under the current recipe, then a seeded stage 4 with the same stages 1–3, compared on chl-a, cyano and the other variables. If seeding works, it becomes a step for the remaining lakes: calibrate stages 1–3, run the bloom screen from the stage-3 state, build the prior, then run stage 4.
+
+## Kawaupaka calibration under the current recipe, unseeded and seeded
+
+Both calibrations finished (stages 3–4, log1p chl-a/cyano targets, forced solids). The first baseline ensembles failed because `build_lake_aeme0()` sized Kawaupaka's model window to its observations (2021-01-18 to 2023-06-21); `build_ensemble_aeme0()` now widens the window to `simulation_time` (the same applies to any lake with a short observation record). After rerunning (50-member baseline, all variables vs observations):
+
+| Variable (bias) | Unseeded | Seeded |
+|---|---|---|
+| Surface chl-a, µg/L (obs mean about 19) | +20.4 | +18.1 |
+| Mid-depth chl-a, µg/L | +10.9 | +8.6 |
+| Surface temperature, °C | +0.63 | −0.02 |
+| Mid-depth temperature, °C | −0.90 | −0.63 |
+| Mid-depth oxygen, mg/L | −2.2 | −1.3 |
+| Water level, m | −3.4 | −3.4 |
+| Mid-depth solids, mg/L | −26 | −25 |
+| Observations inside the 5–95% band, mid-depth temperature | 33% | 60% |
+
+- **Chl-a no longer collapses,** with or without seeding (it was 0.13 µg/L in the earlier calibration). The ensemble overshoots, roughly doubling the observed mean.
+- **Seeding is marginally better** on chl-a, temperature and oxygen, but its posterior kept only 18 members (17 usable) against 50, which narrows the bands. The evidence does not justify making it a default step; it stays an optional fallback for a lake whose stage 4 collapses.
+- **Remaining problems** are the solids profile (surface +5 to +7 mg/L, mid-depth −26, bottom −18), the water level (−3.4 m) and the thermocline depth (−3 m).
+
+# Operational lessons
+
+- Silent native crashes in PEST runs are routine and resumable; identical repeat failures are real bugs.
+- 24 workers need about 25 GB of free disk. The disk guard in `run_ensemble.R` limits workers accordingly. A combined ensemble file written under low disk was corrupt and had to be rebuilt from the member caches.
+- Do not edit a running Rscript (lazy file reading can break it at the end of the run).
+- Do not name a `parLapply` argument `fun`, and keep worker functions at top level so closures do not ship whole ensembles to workers.
+- Copying the large aemetools repository once pushed free disk to 2.8 GB. On 4 October, 203 GB of GLM output older than 3 hours and 92 PANTHER agent folders were deleted, taking free space from 30 GB to 235 GB.
+
+# Status and next steps
+
+| Item | State |
+|---|---|
+| Rototoa | fixA and fixB complete; fixB posterior and ensemble in `pest_workflow_fixB/`. Scenarios not rerun for the new recipe; dashboard rows still the old ones |
+| Kuwakatai | rerun finished 5 October with the forced solids calibration: solids bias roughly halved, chl-a still too high (+51 µg/L surface) |
+| Spectacle | cause of the solids problem found (settling sign); recalibrating from stage 3 in the fixC run |
+| Slipper | not started (needs Spectacle's outflow) |
+| Kawaupaka | unseeded and seeded calibrations and ensembles done (see above); chl-a in range, solids profile and water level poor |
+| Bloom screen | Rototoa run cancelled; Kawaupaka run done (see above) |
+| Not started | other lakes; scenarios for the new recipe; dashboard load; bloom/trophic metrics in the scenario comparison; the targets pipeline (`_targets_pest.R`, `recipes/*.yml`); installing the transform and prior tooling into the project renv |
+
+**5 October, afternoon:** `scripts/run_fixC_all.sh` recalibrates, in order, Kawaupaka, Spectacle, Rototoa, Kuwakatai, Whatihua, Tomarata and Slipper from stage 3 with the corrected particle settings (stages 1–2 reused). Results in the earlier roots (pest_workflow, fixA, fixB) predate the fix.

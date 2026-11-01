@@ -1,0 +1,51 @@
+label,description,units,conversion_factor,conv_unit,title
+PREC,Precipitation (rain + snow) volume,in-acre/timestep,102.7901531,m³/timestep,Precipitation
+SURO,Surface outflow volume,in-acre/timestep,102.7901531,m³/timestep,Surface Outflow
+IFWO,Interflow outflow volume,in-acre/timestep,102.7901531,m³/timestep,Interflow
+AGWO,Groundwater outflow volume,in-acre/timestep,102.7901531,m³/timestep,Groundwater
+MODFLOW,Modflow point source,in-acre/timestep,102.7901531,m³/timestep,Modflow
+INF_LOSS,Infiltration flow loss volume (infiltration loss reach),ft³/timestep,0.0283168,m³/timestep,Infiltration Loss
+INF_GAIN,Infiltration flow gain volume (infiltration target reach),ft³/timestep,0.0283168,m³/timestep,Infiltration Gain
+RO,Total outflow rate from RCHRES at the end of the interval,cfs,25.48512,m³/timestep,Stream Outflow
+WSSD,Washoff of detached sediment,ton/timestep,907.18474,kg/timestep,Sediment Washoff
+SOBER1,Sediment class 1 load from stream bank erosion,ton/timestep,907.18474,kg/timestep,Bank Erosion 1
+SOBER2,Sediment class 2 load from stream bank erosion,ton/timestep,907.18474,kg/timestep,Bank Erosion 2
+SOBER3,Sediment class 3 load from stream bank erosion,ton/timestep,907.18474,kg/timestep,Bank Erosion 3
+SOBER,Total sediment load from stream bank erosion,ton/timestep,907.18474,kg/timestep,Bank Erosion Total
+SSEDOUT1,Suspended sediment class 1 concentration in outflow,mg/L,0.001,kg/m³,Suspended Sediment 1
+SSEDOUT2,Suspended sediment class 2 concentration in outflow,mg/L,0.001,kg/m³,Suspended Sediment 2
+SSEDOUT3,Suspended sediment class 3 concentration in outflow,mg/L,0.001,kg/m³,Suspended Sediment 3
+SSEDOUT,Total suspended solid concentration in outflow,mg/L,1.00E-06,t/m³,Suspended Sediment
+BEDDEP,Total sediment bed depth,ft,0.3048,m,Bed Depth
+DEPSCR1,Sediment class 1 deposition or scour,ton/timestep,907.18474,kg/timestep,Sediment Class 1
+DEPSCR2,Sediment class 2 deposition or scour,ton/timestep,907.18474,kg/timestep,Sediment Class 2
+DEPSCR3,Sediment class 3 deposition or scour,ton/timestep,907.18474,kg/timestep,Sediment Class 3
+DEPSCR,Net total sediment deposition or scour,ton/timestep,907.18474,kg/timestep,Dep/Scour Total
+SCR,Total sediment scour in the reach,ton/timestep,907.18474,kg/timestep,Scour
+ROSED,Total sediment in outflow from RCHRES,ton/timestep,907.18474,kg/timestep,Total Sediment (outflow)
+CONCOUT1,TN (total nitrogen) concentration in outflow,mg/L,1,g/m³,Total Nitrogen (outflow)
+CONCOUT2,TP (total phosphorus) concentration in outflow,mg/L,1,g/m³,Total Phosphorus (outflow)
+CONCOUT3,TCU concentration in outflow,mg/L,0.001,kg/m³,TCU (outflow)
+CONCOUT4,TZN concentration in outflow,mg/L,0.001,kg/m³,TZN (outflow)
+CONCOUT5,ECOLI concentration in outflow,mpn/100mL,10,mpn/L,E. coli (outflow)
+DOX,Dissolved oxygen instream concentration,mg/L,1,mg/L,Dissolved Oxygen
+BOD,Biochemical oxygen demand instream concentration,mg/L,1,mg/L,BOD
+NO3,Nitrate instream concentration,mg/L,1,g/m³,Nitrate
+TAM,Total dissolved ammonia (NH3 + NH4) instream concentration,mg/L,1,g/m³,Ammonia
+NO2,Nitrite instream concentration,mg/L,1,g/m³,Nitrite
+PO4,Ortho-phosphorus instream concentration,mg/L,1,g/m³,Ortho-P
+CONCSNH4,Particulate NH4-N concentration in RCHRES,mg/L,1,g/m³,Particulate NH4-N
+CONCSPO4,Particulate PO4-P concentration in RCHRES,mg/L,1,g/m³,Particulate PO4-P
+ORN,Dead refractory organic nitrogen concentration,mg/L,1,g/m³,Org-N Refractory
+TORN,Total organic nitrogen concentration,mg/L,1,g/m³,Total Org-N
+ORP,Dead refractory organic phosphorus concentration,mg/L,1,g/m³,Org-P Refractory
+TORP,Total organic phosphorus concentration,mg/L,1,g/m³,Total Org-P
+NOX,Total oxidized nitrogen (NO3 + NO2) concentration,mg/L,1,g/m³,Oxidized N
+DIN,Total dissolved inorganic nitrogen (NO3 + NO2 + TAM) concentration,mg/L,1,g/m³,DIN
+TN,Total nitrogen concentration,mg/L,1,g/m³,Total Nitrogen
+TP,Total phosphorus concentration,mg/L,1,g/m³,Total Phosphorus
+TEMP,Reach temperature,°C,1,°C,Temperature
+TEMP_SURO,Flow weighted temp of surface runoff,°C,1,°C,SURO Temp
+TEMP_IFWO,Flow weighted temp of interflow outflow,°C,1,°C,IFWO Temp
+TEMP_AGWO,Flow weighted temp of active groundwater outflow,°C,1,°C,AGWO Temp
+TEMP_PERO,Flow weighted temp of total outflow from land,°C,1,°C,PERO Temp
