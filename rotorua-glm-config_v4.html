@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.10.20">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-10-20">
+<meta name="dcterms.date" content="2026-11-01">
 
 <title>Lake Rotorua — GLM Configuration – Rotorua Lake Modelling</title>
 <style>
@@ -80,10 +80,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3b79382dac7a3151da62fb1e9f672ee1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -254,6 +254,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows and Alum (report summaries)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Calibration: Next Steps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./light-data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Light Data (Kw)</span></a>
   </div>
@@ -286,6 +310,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -411,6 +441,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Extreme &amp; Storm Events</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -484,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">20 October 2026</p>
+      <p class="date">01 November 2026</p>
     </div>
   </div>
   
@@ -554,7 +590,7 @@ Note
 <div class="cell-output-display">
 <style>
   @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=JetBrains+Mono:wght@400;500&display=swap");
-  #glm-cfg-230034 {
+  #glm-cfg-235230 {
     --bg: #fafaf8; --bg2: #f0efeb; --bg3: #e6e5e0;
     --tx: #2c2c2a; --tx2: #5f5e5a; --tx3: #888780;
     --bd: rgba(0,0,0,0.1);
@@ -570,7 +606,7 @@ Note
     --mono: "JetBrains Mono", monospace;
   }
   @media (prefers-color-scheme: dark) {
-    #glm-cfg-230034 {
+    #glm-cfg-235230 {
       --bg: #1a1a18; --bg2: #2a2a27; --bg3: #3a3a36;
       --tx: #e8e6dc; --tx2: #b4b2a9; --tx3: #888780;
       --bd: rgba(255,255,255,0.1);
@@ -585,7 +621,7 @@ Note
     }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  #glm-cfg-230034 { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  #glm-cfg-235230 { font-family: var(--font); background: var(--bg); color: var(--tx); line-height: 1.5; padding: 24px; max-width: 1100px; margin: 0 auto; }
   .header { margin-bottom: 28px; }
   .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
   .header p { font-size: 13px; color: var(--tx2); }
@@ -667,7 +703,7 @@ Note
   .warn-banner p:last-child { margin-bottom: 0; }
   .warn-banner strong { font-weight: 600; }
 </style>
-<div id="glm-cfg-230034">
+<div id="glm-cfg-235230">
 <div class="header">
   <div class="toggle-container">
     <span>Show parameter labels</span>
@@ -693,7 +729,7 @@ Note
   </div>
 </div>
 <script>
-const CFG = {"parameter_library":{"sim_name":"Run name","max_layers":"Layers","min_layer_vol":"Min layer volume","min_layer_thick":"Min layer thickness","max_layer_thick":"Max layer thickness","density_model":"Density model","non_avg":"Non-averaged","surface_mixing":"Surface mixing","coef_mix_conv":"Convective mixing","coef_wind_stir":"Wind stirring","coef_mix_shear":"Shear mixing","coef_mix_turb":"Turbulence mixing","coef_mix_KH":"KH mixing","deep_mixing":"Deep mixing","coef_mix_hyp":"Hypolimnetic mixing","diff":"Diffusivity","wq_lib":"WQ library","wq_nml_file":"WQ config file","bioshade_feedback":"Bioshade feedback","mobility_off":"Mobility off","ode_method":"ODE method","split_factor":"Split factor","repair_state":"Repair state","lake_name":"Lake name","latitude":"Latitude","longitude":"Longitude","base_elev":"Base elevation","crest_elev":"Crest elevation","bsn_len":"Basin length","bsn_wid":"Basin width","bsn_vals":"Basin values","H":"Elevations","A":"Areas","timefmt":"Time format","start":"Start","stop":"Stop","dt":"Timestep","num_days":"Number of days","timezone":"Timezone","out_dir":"Output directory","out_fn":"Output filename","nsave":"Save frequency","csv_lake_fname":"Lake CSV filename","csv_point_nlevs":"Point levels","csv_point_fname":"Point filename","csv_point_frombot":"Point from bottom","csv_point_at":"Point depths","csv_point_nvars":"Point variables count","csv_point_vars":"Point variables","csv_outlet_allinone":"Outlet all-in-one","csv_outlet_fname":"Outlet filename","csv_outlet_nvars":"Outlet variables count","csv_outlet_vars":"Outlet variables","csv_ovrflw_fname":"Overflow filename","lake_depth":"Lake depth","num_depths":"Number of depths","the_depths":"Depths","the_temps":"Temperatures","the_sals":"Salinities","num_wq_vars":"WQ variables count","wq_names":"WQ names","wq_init_vals":"WQ initial values","light_mode":"Light mode","Kw":"Light extinction","Kw_file":"Kw file","n_bands":"Number of bands","light_extc":"Light extinction coefficients","energy_frac":"Energy fractions","Benthic_Imin":"Benthic min light","AP":"Atmospheric pressure","Oz":"Ozone","WatVap":"Water vapour","AOD500":"AOD 500nm","AOD380":"AOD 380nm","Albedo":"Albedo","sed_heat_Ksoil":"Soil conductivity","sed_temp_depth":"Sediment depth","sed_temp_mean":"Mean sediment temp","sed_temp_amplitude":"Sediment temp amplitude","sed_temp_peak_doy":"Sediment temp peak DOY","benthic_mode":"Benthic mode","n_zones":"Number of zones","zone_heights":"Zone heights","sed_reflectivity":"Sediment reflectivity","sed_roughness":"Sediment roughness","snow_albedo_factor":"Snow albedo factor","snow_rho_min":"Min snow density","snow_rho_max":"Max snow density","met_sw":"Met surface heating","meteo_fl":"Met file","subdaily":"Subdaily","time_fmt":"Time format","rad_mode":"Radiation mode","albedo_mode":"Albedo mode","sw_factor":"SW factor","lw_type":"LW type","cloud_mode":"Cloud mode","lw_factor":"LW factor","atm_stab":"Atmospheric stability","rh_factor":"RH factor","at_factor":"AT factor","ce":"Latent heat coef","ch":"Sensible heat coef","rain_sw":"Rain switch","rain_factor":"Rain factor","catchrain":"Catchment rain","rain_threshold":"Rain threshold","runoff_coef":"Runoff coefficient","cd":"Drag coefficient","wind_factor":"Wind factor","fetch_mode":"Fetch mode","Aws":"Wind sheltering area","Xws":"Wind sheltering length","num_dir":"Number of directions","wind_dir":"Wind directions","fetch_scale":"Fetch scale","num_inflows":"Number of inflows","names_of_strms":"Stream names","subm_flag":"Submerged flag","strm_hf_angle":"Half angle","strmbd_slope":"Streambed slope","strmbd_drag":"Streambed drag","coef_inf_entrain":"Entrainment coef","inflow_factor":"Inflow factor","inflow_fl":"Inflow file","inflow_varnum":"Inflow var count","inflow_vars":"Inflow variables","time_fmt.1":"Time format","num_outlet":"Number of outlets","outflow_fl":"Outflow file","time_fmt.2":"Time format","outflow_factor":"Outflow factor","outflow_thick_limit":"Outflow thick limit","single_layer_draw":"Single layer draw","flt_off_sw":"Floating offtake","outlet_type":"Outlet type","outl_elvs":"Outlet elevations","bsn_len_outl":"Basin length at outlet","bsn_wid_outl":"Basin width at outlet","crit_O2":"Critical O2","crit_O2_dep":"Critical O2 depth","crit_O2_days":"Critical O2 days","outlet_crit":"Outlet criteria","O2name":"O2 name","O2idx":"O2 index","target_temp":"Target temperature","min_lake_temp":"Min lake temperature","fac_range_upper":"Upper range factor","fac_range_lower":"Lower range factor","mix_withdraw":"Mix withdraw","coupl_oxy_sw":"Coupled oxygen switch","withdrTemp_fl":"Withdrawal temp file","seepage":"Seepage","seepage_rate":"Seepage rate","crest_width":"Crest width","crest_factor":"Crest factor","oxy_initial":"Initial O2","oxy_min":"Min O2","oxy_max":"Max O2","fsed_oxy":"Sediment O2 flux","ksed_oxy":"Half-sat O2 for SOD","theta_sed_oxy":"Theta sed oxy","fsed_oxy_variable":"Sed O2 var link","oxy_piston_model":"Piston model","altitude":"Altitude","amm_initial":"Initial NH4","nit_initial":"Initial NO3","amm_min":"Min NH4","nit_min":"Min NO3","simN2O":"Simulate N2O","rnitrif":"Nitrification rate","theta_nitrif":"Theta nitrification","knitrif":"K nitrification","simNitrfpH":"pH limit nitrif","rdenit":"Denitrification rate","theta_denit":"Theta denitrification","kdenit":"K denitrification","KNO3":"K NO3","oxy_lim":"O2 limitation switch","fsed_amm":"Sed NH4 flux","fsed_nit":"Sed NO3 flux","theta_sed_amm":"Theta sed NH4","theta_sed_nit":"Theta sed NO3","K_sed_amm":"K sed NH4","K_sed_nit":"K sed NO3","fsed_amm_variable":"Sed NH4 var link","fsed_nit_variable":"Sed NO3 var link","simDryDeposition":"Dry deposition","simWetDeposition":"Wet deposition","atm_din_dd":"DIN dry dep flux","atm_din_conc":"DIN rain conc","f_dindep_nox":"Fraction as NOx","frp_initial":"Initial FRP","frp_min":"Min FRP","simPO4Adsorption":"Simulate adsorption","ads_use_external_tss":"External TSS","PO4AdsCSS":"Sorbent conc","Kpo4p":"Adsorption coef","ads_use_pH":"pH-dependent ads","fsed_frp":"Sed PO4 flux","theta_sed_frp":"Theta sed PO4","K_sed_frp":"K sed PO4","fsed_frp_variable":"Sed PO4 var link","simDryDeposition.1":"Dry deposition","simWetDeposition.1":"Wet deposition","atm_pip_dd":"PIP dry dep flux","atm_frp_conc":"FRP rain conc","rsi_initial":"Initial RSi","rsi_min":"Min RSi","rsi_max":"Max RSi","fsed_rsi":"Sed RSi flux","theta_sed_rsi":"Theta sed RSi","K_sed_rsi":"K sed RSi","fsed_rsi_variable":"Sed RSi var link","num_phytos":"Number of groups","the_phytos":"Group IDs","settling":"Settling model","do_mpb":"Microphytobenthos","p_excretion_target_variable":"P excretion target","n_excretion_target_variable":"N excretion target","si_excretion_target_variable":"Si excretion target","c_excretion_target_variable":"C excretion target","R_growth":"Max growth rate","fT_Method":"Temperature function","theta_growth":"Theta growth","T_std":"Standard temperature","T_opt":"Optimum temperature","T_max":"Maximum temperature","lightModel":"Light model","I_K":"Light half-sat","I_S":"Light saturation","KePHY":"Specific extinction","simDINUptake":"DIN uptake model","N_o":"Min internal N","K_N":"Half-sat N uptake","X_ncon":"Constant N:C","X_nmin":"Min N:C","X_nmax":"Max N:C","R_nuptake":"N uptake rate","simDIPUptake":"DIP uptake model","P_0":"Min internal P","K_P":"Half-sat P uptake","X_pcon":"Constant P:C","X_pmin":"Min P:C","X_pmax":"Max P:C","R_puptake":"P uptake rate","simSiUptake":"Si uptake model","Si_0":"Min internal Si","K_Si":"Half-sat Si uptake","X_sicon":"Constant Si:C","R_resp":"Respiration rate","theta_resp":"Theta respiration","k_fres":"Fraction to DOM","k_fdom":"DOM fraction","R_mortality":"Mortality rate","w_p":"Settling velocity","sedflux_model":"Sediment model","nzones":"Number of zones","fsed_oxy.1":"Sed O2 flux","fsed_amm.1":"Sed NH4 flux","fsed_nit.1":"Sed NO3 flux","fsed_frp.1":"Sed PO4 flux","fsed_rsi.1":"Sed RSi flux","dz_sed":"Sediment layer thickness","n_sed_layers":"Number of layers","n_zones_sed":"Number of zones","w_sed":"Burial velocity","porosity":"Porosity","ksed_o2":"K sed O2","fsed_doc":"DOC sedimentation","fsed_poc":"POC sedimentation","Kd_OM":"OM decomposition rate","theta_Kd_OM":"Theta OM decomp","rnitrif.1":"Sed nitrification","rdenit.1":"Sed denitrification","ksed_nh4":"K sed NH4","ksed_no3":"K sed NO3","ksed_po4_release":"K sed PO4 release","K_sorp_PO4":"PO4 sorption coef","Kd_BSi":"BSi dissolution rate","theta_Kd_BSi":"Theta BSi dissoln","poc_initial":"Initial POC concentration","doc_initial":"Initial DOC concentration","pon_initial":"Initial PON concentration","don_initial":"Initial DON concentration","pop_initial":"Initial POP concentration","dop_initial":"Initial DOP concentration","cpom_initial":"Initial CPOM concentration","Rpoc_hydrol":"POC hydrolysis rate","Rpon_hydrol":"PON hydrolysis rate","Rpop_hydrol":"POP hydrolysis rate","theta_hydrol":"Hydrolysis temperature scaling","Kpom_hydrol":"POM hydrolysis O2 half-saturation","Rdom_minerl":"DOM mineralisation rate","theta_minerl":"Mineralisation temperature scaling","Kdom_minerl":"DOM mineralisation O2 half-saturation","simDenitrification":"Denitrification model option","f_an":"Anaerobic mineralisation fraction","K_nit":"Denitrification NO3 half-saturation","dom_miner_oxy_reactant_var":"Aerobic mineralisation O2 link","dom_miner_nit_reactant_var":"Denitrification NO3 link","dom_miner_no2_reactant_var":"Denitrification NO2 link","dom_miner_n2o_reactant_var":"N2O reduction link","dom_miner_fe3_reactant_var":"Iron reduction link","dom_miner_so4_reactant_var":"Sulfate reduction link","dom_miner_ch4_reactant_var":"Methane production link","doc_miner_product_variable":"DIC production link","don_miner_product_variable":"NH4 production link","dop_miner_product_variable":"PO4 production link","simRPools":"Refractory OM pools option","Rdomr_minerl":"DOMR mineralisation rate","Rcpom_bdown":"CPOM breakdown rate","X_cpom_n":"CPOM nitrogen stoichiometry","X_cpom_p":"CPOM phosphorus stoichiometry","KeDOM":"DOM light attenuation coefficient","KePOM":"POM light attenuation coefficient","KeDOMR":"DOMR light attenuation coefficient","KeCPOM":"CPOM light attenuation coefficient","simPhotolysis":"Photo-mineralisation option","photo_c":"Photolysis constant","settling.1":"POM settling method","w_pom":"POM sedimentation velocity","d_pom":"POM particle diameter","rho_pom":"POM particle density","w_cpom":"CPOM sedimentation velocity","d_cpom":"CPOM particle diameter","rho_cpom":"CPOM particle density","resuspension":"POM resuspension method","resus_link":"Resuspension diagnostic link","sedimentOMfrac":"Sediment organic matter fraction","Xsc":"Sediment C stoichiometry","Xsn":"Sediment N stoichiometry","Xsp":"Sediment P stoichiometry","fsed_doc.1":"Sediment DOC flux","fsed_don":"Sediment DON flux","fsed_dop":"Sediment DOP flux","ksed_dom":"Sediment DOM flux O2 half-saturation","theta_sed_dom":"Sediment DOM flux temperature scaling","fsed_doc_variable":"Sediment DOC spatial link","fsed_don_variable":"Sediment DON spatial link","fsed_dop_variable":"Sediment DOP spatial link","p_name":"Group name","p_initial":"Initial concentration","p0":"Minimum concentration","w_p.1":"Sedimentation rate","Xcc":"Carbon to chlorophyll ratio","R_growth.1":"Max growth rate","fT_Method.1":"Temperature limitation method","theta_growth.1":"Growth temperature scaling","T_std.1":"Standard temperature","T_opt.1":"Optimum temperature","T_max.1":"Maximum temperature","lightModel.1":"Light model","I_K.1":"Light half-saturation constant","I_S.1":"Saturating light intensity","KePHY.1":"Specific attenuation coefficient","f_pr":"Exudation fraction","R_resp.1":"Respiration rate","theta_resp.1":"Respiration temperature scaling","k_fres.1":"Respiration fraction","k_fdom.1":"DOM fraction","salTol":"Salinity tolerance function","S_bep":"Salinity limitation at S_maxsp","S_maxsp":"Maximum salinity","S_opt":"Optimal salinity","simDINUptake.1":"Simulate DIN uptake","simDONUptake":"Simulate DON uptake","simNFixation":"Simulate N fixation","simINDynamics":"Internal N dynamics","N_o.1":"N uptake threshold","K_N.1":"N half-saturation constant","X_ncon.1":"Constant internal N","X_nmin.1":"Minimum internal N","X_nmax.1":"Maximum internal N","R_nuptake.1":"Max N uptake rate","k_nfix":"N fixation growth reduction","R_nfix":"N fixation rate","simDIPUptake.1":"Simulate DIP uptake","simIPDynamics":"Internal P dynamics","P_0.1":"P uptake threshold","K_P.1":"P half-saturation constant","X_pcon.1":"Constant internal P","X_pmin.1":"Minimum internal P","X_pmax.1":"Maximum internal P","R_puptake.1":"Max P uptake rate","simSiUptake.1":"Simulate Si uptake","Si_0.1":"Si uptake threshold","K_Si.1":"Si half-saturation constant","X_sicon.1":"Constant internal Si","c1":"Density increase rate coefficient","c3":"Density decrease rate coefficient","f1":"Downward motility N fraction","f2":"Upward motility N fraction","d_phy":"Mean cell diameter","zoop_name":"Group name","zoop_initial":"Initial concentration","min_zoo":"Minimum concentration","Rgrz_zoo":"Grazing rate","fassim_zoo":"Assimilation efficiency","Kgrz_zoo":"Grazing half-saturation constant","theta_grz_zoo":"Grazing temperature multiplier","Cmin_grz_zoo":"Minimum prey concentration","Rresp_zoo":"Respiration rate","theta_resp_zoo":"Respiration temperature multiplier","Tstd_zoo":"Standard temperature","Topt_zoo":"Optimal temperature","Tmax_zoo":"Maximum temperature","ffecal_zoo":"Fecal pellet fraction","fexcr_zoo":"Excretion fraction","ffecal_sed":"Fecal pellet sinking fraction","Rmort_zoo":"Mortality rate","saltfunc_zoo":"Salinity limitation function","Smin_zoo":"Minimum salinity","Smax_zoo":"Maximum salinity","Sint_zoo":"Salinity intercept","INC_zoo":"Internal N:C ratio","IPC_zoo":"Internal P:C ratio","DOmin_zoo":"Minimum oxygen concentration","num_prey":"Number of prey","prey(1)%zoop_prey":"Prey 1 state variable","prey(1)%Pzoo_prey":"Prey 1 preference factor","prey(2)%zoop_prey":"Prey 2 state variable","prey(2)%Pzoo_prey":"Prey 2 preference factor","prey(3)%zoop_prey":"Prey 3 state variable","prey(3)%Pzoo_prey":"Prey 3 preference factor","m_name":"Group name","m0":"Minimum above-ground density","K_CD":"Drag coefficient constant","f_bg":"Below-ground biomass fraction","k_omega":"Plant density-coverage constant","Xcc.1":"Carbon to chlorophyll ratio","R_growth.2":"Max growth rate","fT_Method.2":"Temperature limitation method","theta_growth.2":"Growth temperature scaling","T_std.2":"Standard temperature","T_opt.2":"Optimum temperature","T_max.2":"Maximum temperature","lightModel.2":"Light model","I_K.2":"Light half-saturation constant","I_S.2":"Saturating light intensity","KeMAC":"Specific attenuation coefficient","f_pr.1":"Exudation fraction","R_resp.2":"Respiration rate","theta_resp.2":"Respiration temperature scaling","salTol.1":"Salinity tolerance function","S_bep.1":"Salinity limitation at S_maxsp","S_maxsp.1":"Maximum salinity","S_opt.1":"Optimal salinity","K_N.2":"N half-saturation constant","X_ncon.2":"Constant internal N","K_P.2":"P half-saturation constant","X_pcon.2":"Constant internal P"},"lake":{"name":"rotorua","latitude":-38.0867,"longitude":176.2719,"max_depth":20.7669,"base_elev":258.38,"crest_elev":279.1469,"H":[258.38,259.38,259.88,260.38,260.88,261.38,261.88,262.38,262.88,263.38,263.88,264.38,264.88,265.38,265.88,266.38,266.88,267.38,267.88,268.38,268.88,269.38,269.88,270.38,270.88,271.38,271.88,272.38,272.88,273.38,273.88,274.38,274.58,274.78,274.98,275.18,275.38,275.58,275.78,275.98,276.18,276.38,276.58,276.78,276.98,277.18,277.38,277.58,277.78,277.98,278.18,278.38,278.58,278.78,278.98,279.18,279.38,279.88,280.38,280.88,281.38,281.88,282.38,282.88,283.38,283.88,284.38],"A":[2238021.64,6434121.72,9167369.63,10188735.7,11210101.76,12153926.21,13097750.66,14356458.69,15615166.72,17777166.27,19939165.82,22670599.52,25402033.22,27420978.08,28990896.26,30472820.96,32016679.87,33754965.5,35757877.18,38089519.33,40910958.4,43547542.98,45494689.89,47007184.67,48319042.37,49486877.89,50683228.83,51964282.69,53393732.32,54945495.94,56823917.5,59540433.18,60693795.46,61847157.74,62961985.45,64038278.58,65114571.71,66050855.31,66987138.9,67892247.43,68766180.9,69640114.37,70424922.32,71209730.27,71988352.21,72760788.16,73533224.1,74226992.76,74920761.43,75581216.77,76208358.8,76835500.83,77625622.12,78415743.41,79178591.08,79914165.13,80649739.17,86299200,86701408,87220712,87783004,88405268,89045360,89698688,90383984,91198888,92216772],"zone_heights":[8.5,13.5,18,32.35],"n_zones":4,"init_depth":21},"flows":{"inflow_names":["Awahou","Hamurana","Ngongotaha","Puarenga","Utuhina","Waingaehe","Waiohewa","Waiowhiro","Waiteti","Geothermal","Ungauged-Slow","Ungauged-Quick","WWTP"],"outflow_info":[]},"glm":{"dt":3600,"nsave":24,"Kw":0.5667,"ce":0.0013,"ch":0.0013,"cd":0.0013,"coef_wind_stir":0.23,"coef_mix_shear":0.2,"coef_mix_conv":0.125,"coef_mix_turb":0.51,"coef_mix_KH":0.3,"min_layer_thick":0.5,"max_layer_thick":1.5,"max_layers":300,"start":"1998-01-14 00:00:00","stop":"2022-06-30 00:00:00","num_inflows":13,"num_outlet":0,"light_mode":0},"aed_models":["aed_sedflux","aed_noncohesive","aed_oxygen","aed_silica","aed_nitrogen","aed_phosphorus","aed_organic_matter","aed_phytoplankton","aed_zooplankton","aed_totals"],"sediment":{"model":"Constant2d","n_zones":4,"active_zones":[1,2,3,4],"fsed_oxy":"-32.64, -32.64, -17.14, -4.9","fsed_amm":"3.82, 1.943, 0.317, 0.071","fsed_nit":"-0.4, 0.1, 0.1, 0.1","fsed_frp":"0.0783, 0.0717, 0.0103, 0.0051"},"oxygen":{"oxy_initial":312.5,"oxy_min":0,"oxy_max":500,"ksed_oxy":25,"theta_sed_oxy":1.08},"nitrogen":{"amm_initial":1.4279,"nit_initial":1.0709,"rnitrif":0.2,"rdenit":9.9687},"phosphorus":{"frp_initial":0.3229},"organic_matter":{"doc_initial":41.6285,"poc_initial":16.6514,"rdom_minerl":0.0135,"f_an":0.2064,"w_pom":-0.01},"phytoplankton":{"num_groups":3,"groups":["cyano","green","diatom"],"key_params":{"cyano":{"R_growth":1.1,"Xcc":50,"theta_growth":1.06,"w_p":0,"R_resp":0.08},"green":{"R_growth":0.7,"Xcc":40,"theta_growth":1.08,"w_p":-0.01,"R_resp":0.012},"diatom":{"R_growth":1.2,"Xcc":40,"theta_growth":1.05,"w_p":-0.2,"R_resp":0.12}}},"zooplankton":{"num_groups":3,"groups":["rotifer","cladoceran","copepod"]},"macrophyte":{"num_groups":1,"groups":["submerged"],"active_zones":[2,3]}};
+const CFG = {"parameter_library":{"sim_name":"Run name","max_layers":"Layers","min_layer_vol":"Min layer volume","min_layer_thick":"Min layer thickness","max_layer_thick":"Max layer thickness","density_model":"Density model","non_avg":"Non-averaged","surface_mixing":"Surface mixing","coef_mix_conv":"Convective mixing","coef_wind_stir":"Wind stirring","coef_mix_shear":"Shear mixing","coef_mix_turb":"Turbulence mixing","coef_mix_KH":"KH mixing","deep_mixing":"Deep mixing","coef_mix_hyp":"Hypolimnetic mixing","diff":"Diffusivity","wq_lib":"WQ library","wq_nml_file":"WQ config file","bioshade_feedback":"Bioshade feedback","mobility_off":"Mobility off","ode_method":"ODE method","split_factor":"Split factor","repair_state":"Repair state","lake_name":"Lake name","latitude":"Latitude","longitude":"Longitude","base_elev":"Base elevation","crest_elev":"Crest elevation","bsn_len":"Basin length","bsn_wid":"Basin width","bsn_vals":"Basin values","H":"Elevations","A":"Areas","timefmt":"Time format","start":"Start","stop":"Stop","dt":"Timestep","num_days":"Number of days","timezone":"Timezone","out_dir":"Output directory","out_fn":"Output filename","nsave":"Save frequency","csv_lake_fname":"Lake CSV filename","csv_point_nlevs":"Point levels","csv_point_fname":"Point filename","csv_point_frombot":"Point from bottom","csv_point_at":"Point depths","csv_point_nvars":"Point variables count","csv_point_vars":"Point variables","csv_outlet_allinone":"Outlet all-in-one","csv_outlet_fname":"Outlet filename","csv_outlet_nvars":"Outlet variables count","csv_outlet_vars":"Outlet variables","csv_ovrflw_fname":"Overflow filename","lake_depth":"Lake depth","num_depths":"Number of depths","the_depths":"Depths","the_temps":"Temperatures","the_sals":"Salinities","num_wq_vars":"WQ variables count","wq_names":"WQ names","wq_init_vals":"WQ initial values","light_mode":"Light mode","Kw":"Light extinction","Kw_file":"Kw file","n_bands":"Number of bands","light_extc":"Light extinction coefficients","energy_frac":"Energy fractions","Benthic_Imin":"Benthic min light","AP":"Atmospheric pressure","Oz":"Ozone","WatVap":"Water vapour","AOD500":"AOD 500nm","AOD380":"AOD 380nm","Albedo":"Albedo","sed_heat_Ksoil":"Soil conductivity","sed_temp_depth":"Sediment depth","sed_temp_mean":"Mean sediment temp","sed_temp_amplitude":"Sediment temp amplitude","sed_temp_peak_doy":"Sediment temp peak DOY","benthic_mode":"Benthic mode","n_zones":"Number of zones","zone_heights":"Zone heights","sed_reflectivity":"Sediment reflectivity","sed_roughness":"Sediment roughness","snow_albedo_factor":"Snow albedo factor","snow_rho_min":"Min snow density","snow_rho_max":"Max snow density","met_sw":"Met surface heating","meteo_fl":"Met file","subdaily":"Subdaily","time_fmt":"Time format","rad_mode":"Radiation mode","albedo_mode":"Albedo mode","sw_factor":"SW factor","lw_type":"LW type","cloud_mode":"Cloud mode","lw_factor":"LW factor","atm_stab":"Atmospheric stability","rh_factor":"RH factor","at_factor":"AT factor","ce":"Latent heat coef","ch":"Sensible heat coef","rain_sw":"Rain switch","rain_factor":"Rain factor","catchrain":"Catchment rain","rain_threshold":"Rain threshold","runoff_coef":"Runoff coefficient","cd":"Drag coefficient","wind_factor":"Wind factor","fetch_mode":"Fetch mode","Aws":"Wind sheltering area","Xws":"Wind sheltering length","num_dir":"Number of directions","wind_dir":"Wind directions","fetch_scale":"Fetch scale","num_inflows":"Number of inflows","names_of_strms":"Stream names","subm_flag":"Submerged flag","strm_hf_angle":"Half angle","strmbd_slope":"Streambed slope","strmbd_drag":"Streambed drag","coef_inf_entrain":"Entrainment coef","inflow_factor":"Inflow factor","inflow_fl":"Inflow file","inflow_varnum":"Inflow var count","inflow_vars":"Inflow variables","time_fmt.1":"Time format","num_outlet":"Number of outlets","outflow_fl":"Outflow file","time_fmt.2":"Time format","outflow_factor":"Outflow factor","outflow_thick_limit":"Outflow thick limit","single_layer_draw":"Single layer draw","flt_off_sw":"Floating offtake","outlet_type":"Outlet type","outl_elvs":"Outlet elevations","bsn_len_outl":"Basin length at outlet","bsn_wid_outl":"Basin width at outlet","crit_O2":"Critical O2","crit_O2_dep":"Critical O2 depth","crit_O2_days":"Critical O2 days","outlet_crit":"Outlet criteria","O2name":"O2 name","O2idx":"O2 index","target_temp":"Target temperature","min_lake_temp":"Min lake temperature","fac_range_upper":"Upper range factor","fac_range_lower":"Lower range factor","mix_withdraw":"Mix withdraw","coupl_oxy_sw":"Coupled oxygen switch","withdrTemp_fl":"Withdrawal temp file","seepage":"Seepage","seepage_rate":"Seepage rate","crest_width":"Crest width","crest_factor":"Crest factor","oxy_initial":"Initial O2","oxy_min":"Min O2","oxy_max":"Max O2","fsed_oxy":"Sediment O2 flux","ksed_oxy":"Half-sat O2 for SOD","theta_sed_oxy":"Theta sed oxy","fsed_oxy_variable":"Sed O2 var link","oxy_piston_model":"Piston model","altitude":"Altitude","amm_initial":"Initial NH4","nit_initial":"Initial NO3","amm_min":"Min NH4","nit_min":"Min NO3","simN2O":"Simulate N2O","rnitrif":"Nitrification rate","theta_nitrif":"Theta nitrification","knitrif":"K nitrification","simNitrfpH":"pH limit nitrif","rdenit":"Denitrification rate","theta_denit":"Theta denitrification","kdenit":"K denitrification","KNO3":"K NO3","oxy_lim":"O2 limitation switch","fsed_amm":"Sed NH4 flux","fsed_nit":"Sed NO3 flux","theta_sed_amm":"Theta sed NH4","theta_sed_nit":"Theta sed NO3","K_sed_amm":"K sed NH4","K_sed_nit":"K sed NO3","fsed_amm_variable":"Sed NH4 var link","fsed_nit_variable":"Sed NO3 var link","simDryDeposition":"Dry deposition","simWetDeposition":"Wet deposition","atm_din_dd":"DIN dry dep flux","atm_din_conc":"DIN rain conc","f_dindep_nox":"Fraction as NOx","frp_initial":"Initial FRP","frp_min":"Min FRP","simPO4Adsorption":"Simulate adsorption","ads_use_external_tss":"External TSS","PO4AdsCSS":"Sorbent conc","Kpo4p":"Adsorption coef","ads_use_pH":"pH-dependent ads","fsed_frp":"Sed PO4 flux","theta_sed_frp":"Theta sed PO4","K_sed_frp":"K sed PO4","fsed_frp_variable":"Sed PO4 var link","simDryDeposition.1":"Dry deposition","simWetDeposition.1":"Wet deposition","atm_pip_dd":"PIP dry dep flux","atm_frp_conc":"FRP rain conc","rsi_initial":"Initial RSi","rsi_min":"Min RSi","rsi_max":"Max RSi","fsed_rsi":"Sed RSi flux","theta_sed_rsi":"Theta sed RSi","K_sed_rsi":"K sed RSi","fsed_rsi_variable":"Sed RSi var link","num_phytos":"Number of groups","the_phytos":"Group IDs","settling":"Settling model","do_mpb":"Microphytobenthos","p_excretion_target_variable":"P excretion target","n_excretion_target_variable":"N excretion target","si_excretion_target_variable":"Si excretion target","c_excretion_target_variable":"C excretion target","R_growth":"Max growth rate","fT_Method":"Temperature function","theta_growth":"Theta growth","T_std":"Standard temperature","T_opt":"Optimum temperature","T_max":"Maximum temperature","lightModel":"Light model","I_K":"Light half-sat","I_S":"Light saturation","KePHY":"Specific extinction","simDINUptake":"DIN uptake model","N_o":"Min internal N","K_N":"Half-sat N uptake","X_ncon":"Constant N:C","X_nmin":"Min N:C","X_nmax":"Max N:C","R_nuptake":"N uptake rate","simDIPUptake":"DIP uptake model","P_0":"Min internal P","K_P":"Half-sat P uptake","X_pcon":"Constant P:C","X_pmin":"Min P:C","X_pmax":"Max P:C","R_puptake":"P uptake rate","simSiUptake":"Si uptake model","Si_0":"Min internal Si","K_Si":"Half-sat Si uptake","X_sicon":"Constant Si:C","R_resp":"Respiration rate","theta_resp":"Theta respiration","k_fres":"Fraction to DOM","k_fdom":"DOM fraction","R_mortality":"Mortality rate","w_p":"Settling velocity","sedflux_model":"Sediment model","nzones":"Number of zones","fsed_oxy.1":"Sed O2 flux","fsed_amm.1":"Sed NH4 flux","fsed_nit.1":"Sed NO3 flux","fsed_frp.1":"Sed PO4 flux","fsed_rsi.1":"Sed RSi flux","dz_sed":"Sediment layer thickness","n_sed_layers":"Number of layers","n_zones_sed":"Number of zones","w_sed":"Burial velocity","porosity":"Porosity","ksed_o2":"K sed O2","fsed_doc":"DOC sedimentation","fsed_poc":"POC sedimentation","Kd_OM":"OM decomposition rate","theta_Kd_OM":"Theta OM decomp","rnitrif.1":"Sed nitrification","rdenit.1":"Sed denitrification","ksed_nh4":"K sed NH4","ksed_no3":"K sed NO3","ksed_po4_release":"K sed PO4 release","K_sorp_PO4":"PO4 sorption coef","Kd_BSi":"BSi dissolution rate","theta_Kd_BSi":"Theta BSi dissoln","poc_initial":"Initial POC concentration","doc_initial":"Initial DOC concentration","pon_initial":"Initial PON concentration","don_initial":"Initial DON concentration","pop_initial":"Initial POP concentration","dop_initial":"Initial DOP concentration","cpom_initial":"Initial CPOM concentration","Rpoc_hydrol":"POC hydrolysis rate","Rpon_hydrol":"PON hydrolysis rate","Rpop_hydrol":"POP hydrolysis rate","theta_hydrol":"Hydrolysis temperature scaling","Kpom_hydrol":"POM hydrolysis O2 half-saturation","Rdom_minerl":"DOM mineralisation rate","theta_minerl":"Mineralisation temperature scaling","Kdom_minerl":"DOM mineralisation O2 half-saturation","simDenitrification":"Denitrification model option","f_an":"Anaerobic mineralisation fraction","K_nit":"Denitrification NO3 half-saturation","dom_miner_oxy_reactant_var":"Aerobic mineralisation O2 link","dom_miner_nit_reactant_var":"Denitrification NO3 link","dom_miner_no2_reactant_var":"Denitrification NO2 link","dom_miner_n2o_reactant_var":"N2O reduction link","dom_miner_fe3_reactant_var":"Iron reduction link","dom_miner_so4_reactant_var":"Sulfate reduction link","dom_miner_ch4_reactant_var":"Methane production link","doc_miner_product_variable":"DIC production link","don_miner_product_variable":"NH4 production link","dop_miner_product_variable":"PO4 production link","simRPools":"Refractory OM pools option","Rdomr_minerl":"DOMR mineralisation rate","Rcpom_bdown":"CPOM breakdown rate","X_cpom_n":"CPOM nitrogen stoichiometry","X_cpom_p":"CPOM phosphorus stoichiometry","KeDOM":"DOM light attenuation coefficient","KePOM":"POM light attenuation coefficient","KeDOMR":"DOMR light attenuation coefficient","KeCPOM":"CPOM light attenuation coefficient","simPhotolysis":"Photo-mineralisation option","photo_c":"Photolysis constant","settling.1":"POM settling method","w_pom":"POM sedimentation velocity","d_pom":"POM particle diameter","rho_pom":"POM particle density","w_cpom":"CPOM sedimentation velocity","d_cpom":"CPOM particle diameter","rho_cpom":"CPOM particle density","resuspension":"POM resuspension method","resus_link":"Resuspension diagnostic link","sedimentOMfrac":"Sediment organic matter fraction","Xsc":"Sediment C stoichiometry","Xsn":"Sediment N stoichiometry","Xsp":"Sediment P stoichiometry","fsed_doc.1":"Sediment DOC flux","fsed_don":"Sediment DON flux","fsed_dop":"Sediment DOP flux","ksed_dom":"Sediment DOM flux O2 half-saturation","theta_sed_dom":"Sediment DOM flux temperature scaling","fsed_doc_variable":"Sediment DOC spatial link","fsed_don_variable":"Sediment DON spatial link","fsed_dop_variable":"Sediment DOP spatial link","p_name":"Group name","p_initial":"Initial concentration","p0":"Minimum concentration","w_p.1":"Sedimentation rate","Xcc":"Carbon to chlorophyll ratio","R_growth.1":"Max growth rate","fT_Method.1":"Temperature limitation method","theta_growth.1":"Growth temperature scaling","T_std.1":"Standard temperature","T_opt.1":"Optimum temperature","T_max.1":"Maximum temperature","lightModel.1":"Light model","I_K.1":"Light half-saturation constant","I_S.1":"Saturating light intensity","KePHY.1":"Specific attenuation coefficient","f_pr":"Exudation fraction","R_resp.1":"Respiration rate","theta_resp.1":"Respiration temperature scaling","k_fres.1":"Respiration fraction","k_fdom.1":"DOM fraction","salTol":"Salinity tolerance function","S_bep":"Salinity limitation at S_maxsp","S_maxsp":"Maximum salinity","S_opt":"Optimal salinity","simDINUptake.1":"Simulate DIN uptake","simDONUptake":"Simulate DON uptake","simNFixation":"Simulate N fixation","simINDynamics":"Internal N dynamics","N_o.1":"N uptake threshold","K_N.1":"N half-saturation constant","X_ncon.1":"Constant internal N","X_nmin.1":"Minimum internal N","X_nmax.1":"Maximum internal N","R_nuptake.1":"Max N uptake rate","k_nfix":"N fixation growth reduction","R_nfix":"N fixation rate","simDIPUptake.1":"Simulate DIP uptake","simIPDynamics":"Internal P dynamics","P_0.1":"P uptake threshold","K_P.1":"P half-saturation constant","X_pcon.1":"Constant internal P","X_pmin.1":"Minimum internal P","X_pmax.1":"Maximum internal P","R_puptake.1":"Max P uptake rate","simSiUptake.1":"Simulate Si uptake","Si_0.1":"Si uptake threshold","K_Si.1":"Si half-saturation constant","X_sicon.1":"Constant internal Si","c1":"Density increase rate coefficient","c3":"Density decrease rate coefficient","f1":"Downward motility N fraction","f2":"Upward motility N fraction","d_phy":"Mean cell diameter","zoop_name":"Group name","zoop_initial":"Initial concentration","min_zoo":"Minimum concentration","Rgrz_zoo":"Grazing rate","fassim_zoo":"Assimilation efficiency","Kgrz_zoo":"Grazing half-saturation constant","theta_grz_zoo":"Grazing temperature multiplier","Cmin_grz_zoo":"Minimum prey concentration","Rresp_zoo":"Respiration rate","theta_resp_zoo":"Respiration temperature multiplier","Tstd_zoo":"Standard temperature","Topt_zoo":"Optimal temperature","Tmax_zoo":"Maximum temperature","ffecal_zoo":"Fecal pellet fraction","fexcr_zoo":"Excretion fraction","ffecal_sed":"Fecal pellet sinking fraction","Rmort_zoo":"Mortality rate","saltfunc_zoo":"Salinity limitation function","Smin_zoo":"Minimum salinity","Smax_zoo":"Maximum salinity","Sint_zoo":"Salinity intercept","INC_zoo":"Internal N:C ratio","IPC_zoo":"Internal P:C ratio","DOmin_zoo":"Minimum oxygen concentration","num_prey":"Number of prey","prey(1)%zoop_prey":"Prey 1 state variable","prey(1)%Pzoo_prey":"Prey 1 preference factor","prey(2)%zoop_prey":"Prey 2 state variable","prey(2)%Pzoo_prey":"Prey 2 preference factor","prey(3)%zoop_prey":"Prey 3 state variable","prey(3)%Pzoo_prey":"Prey 3 preference factor","m_name":"Group name","m0":"Minimum above-ground density","K_CD":"Drag coefficient constant","f_bg":"Below-ground biomass fraction","k_omega":"Plant density-coverage constant","Xcc.1":"Carbon to chlorophyll ratio","R_growth.2":"Max growth rate","fT_Method.2":"Temperature limitation method","theta_growth.2":"Growth temperature scaling","T_std.2":"Standard temperature","T_opt.2":"Optimum temperature","T_max.2":"Maximum temperature","lightModel.2":"Light model","I_K.2":"Light half-saturation constant","I_S.2":"Saturating light intensity","KeMAC":"Specific attenuation coefficient","f_pr.1":"Exudation fraction","R_resp.2":"Respiration rate","theta_resp.2":"Respiration temperature scaling","salTol.1":"Salinity tolerance function","S_bep.1":"Salinity limitation at S_maxsp","S_maxsp.1":"Maximum salinity","S_opt.1":"Optimal salinity","K_N.2":"N half-saturation constant","X_ncon.2":"Constant internal N","K_P.2":"P half-saturation constant","X_pcon.2":"Constant internal P"},"lake":{"name":"rotorua","latitude":-38.0867,"longitude":176.2719,"max_depth":20.7666,"base_elev":258.38,"crest_elev":279.1466,"H":[258.38,259.38,259.88,260.38,260.88,261.38,261.88,262.38,262.88,263.38,263.88,264.38,264.88,265.38,265.88,266.38,266.88,267.38,267.88,268.38,268.88,269.38,269.88,270.38,270.88,271.38,271.88,272.38,272.88,273.38,273.88,274.38,274.58,274.78,274.98,275.18,275.38,275.58,275.78,275.98,276.18,276.38,276.58,276.78,276.98,277.18,277.38,277.58,277.78,277.98,278.18,278.38,278.58,278.78,278.98,279.18,279.38,279.88,280.38,280.88,281.38,281.88,282.38,282.88,283.38,283.88,284.38],"A":[2238021.64,6434121.72,9167369.63,10188735.7,11210101.76,12153926.21,13097750.66,14356458.69,15615166.72,17777166.27,19939165.82,22670599.52,25402033.22,27420978.08,28990896.26,30472820.96,32016679.87,33754965.5,35757877.18,38089519.33,40910958.4,43547542.98,45494689.89,47007184.67,48319042.37,49486877.89,50683228.83,51964282.69,53393732.32,54945495.94,56823917.5,59540433.18,60693795.46,61847157.74,62961985.45,64038278.58,65114571.71,66050855.31,66987138.9,67892247.43,68766180.9,69640114.37,70424922.32,71209730.27,71988352.21,72760788.16,73533224.1,74226992.76,74920761.43,75581216.77,76208358.8,76835500.83,77625622.12,78415743.41,79178591.08,79914165.13,80649739.17,86299200,86701408,87220712,87783004,88405268,89045360,89698688,90383984,91198888,92216772],"zone_heights":[8.5,13.5,18,32.35],"n_zones":4,"init_depth":21},"flows":{"inflow_names":["Awahou","Hamurana","Ngongotaha","Puarenga","Utuhina","Waingaehe","Waiohewa","Waiowhiro","Waiteti","Geothermal","Ungauged-Slow","Ungauged-Quick","WWTP"],"outflow_info":[]},"glm":{"dt":3600,"nsave":24,"Kw":0.5667,"ce":0.0013,"ch":0.0013,"cd":0.0013,"coef_wind_stir":0.23,"coef_mix_shear":0.2,"coef_mix_conv":0.125,"coef_mix_turb":0.51,"coef_mix_KH":0.3,"min_layer_thick":0.5,"max_layer_thick":1.5,"max_layers":300,"start":"1998-01-14 00:00:00","stop":"2022-06-30 00:00:00","num_inflows":13,"num_outlet":0,"light_mode":0},"aed_models":["aed_sedflux","aed_noncohesive","aed_oxygen","aed_silica","aed_nitrogen","aed_phosphorus","aed_organic_matter","aed_phytoplankton","aed_zooplankton","aed_totals"],"sediment":{"model":"Constant2d","n_zones":4,"active_zones":[1,2,3,4],"fsed_oxy":"-32.64, -32.64, -17.14, -4.9","fsed_amm":"3.82, 1.943, 0.317, 0.071","fsed_nit":"-0.4, 0.1, 0.1, 0.1","fsed_frp":"0.0783, 0.0717, 0.0103, 0.0051"},"oxygen":{"oxy_initial":312.5,"oxy_min":0,"oxy_max":500,"ksed_oxy":25,"theta_sed_oxy":1.08},"nitrogen":{"amm_initial":1.4279,"nit_initial":1.0709,"rnitrif":0.2,"rdenit":9.9687},"phosphorus":{"frp_initial":0.3229},"organic_matter":{"doc_initial":41.6285,"poc_initial":16.6514,"rdom_minerl":0.0135,"f_an":0.2064,"w_pom":-0.01},"phytoplankton":{"num_groups":3,"groups":["cyano","green","diatom"],"key_params":{"cyano":{"R_growth":1.1,"Xcc":50,"theta_growth":1.06,"w_p":0,"R_resp":0.08},"green":{"R_growth":0.7,"Xcc":40,"theta_growth":1.08,"w_p":-0.01,"R_resp":0.012},"diatom":{"R_growth":1.2,"Xcc":40,"theta_growth":1.05,"w_p":-0.2,"R_resp":0.12}}},"zooplankton":{"num_groups":3,"groups":["rotifer","cladoceran","copepod"]},"macrophyte":{"num_groups":1,"groups":["submerged"],"active_zones":[2,3]}};
 const LIB = CFG.parameter_library || {};
 
 // ===== Header =====
@@ -1145,7 +1181,7 @@ document.getElementById("name-toggle").addEventListener("change", function() {
    latitude = -38.08672
    longitude = 176.2719
    base_elev = 258.38
-   crest_elev = 279.1469
+   crest_elev = 279.1466
    bsn_len = 10234.2
    bsn_wid = 10173.6
    bsn_vals = 67
@@ -1178,7 +1214,7 @@ document.getElementById("name-toggle").addEventListener("change", function() {
    the_sals = 0, 0
    num_wq_vars = 15
    wq_names = 'OGM_doc','OGM_poc','OXY_oxy','NIT_amm','OGM_don','NIT_nit','OGM_pon','OGM_dop','PHS_frp','OGM_pop','PHY_cyano','PHY_diatom','PHY_green','SIL_rsi','ZOO_zoo01'
-   wq_init_vals = 0.0060055, 0.0060055, 0.0024022, 0.0024022, 0.32, 0.32, 0.000280134, 0.000280134, 0.00420201, 0.00420201, 0.0002101005, 0.0002101005, 0.00140067, 0.00140067, 0.0003097376, 0.0003097376, 0.0003097376, 0.0003097376, 0.0003097376, 0.0003097376, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+   wq_init_vals = 41.6285, 41.6285, 16.6514, 16.6514, 312.5, 312.5, 1.4279, 1.4279, 21.4183, 21.4183, 1.0709, 1.0709, 7.1394, 7.1394, 0.3229, 0.3229, 0.3229, 0.3229, 0.3229, 0.3229, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 /
 &amp;meteorology
    met_sw = .true.
@@ -1230,20 +1266,6 @@ document.getElementById("name-toggle").addEventListener("change", function() {
    inflow_vars = 'flow','OGM_doc','OGM_poc','OXY_oxy','salt','temp','NCS_ss1','NIT_amm','OGM_don','NIT_nit','OGM_pon','OGM_dop','PHS_frp','PHS_frp_ads','OGM_pop','PHY_cyano','PHY_diatom','PHY_green','SIL_rsi','ZOO_zoo01'
    coef_inf_entrain = 0
 /
-&amp;outflow
-   num_outlet = 0
-   outlet_type = 2
-   flt_off_sw = .true.
-   outl_elvs = 20
-   bsn_len_outl = 2870.71
-   bsn_wid_outl = 2853.71
-   outflow_fl = 'bcs/outflow_wbal.csv'
-   outflow_factor = 1
-   crest_width = 26
-   crest_factor = 0.3622977
-   seepage = .true.
-   seepage_rate = 0
-/
 &amp;sediment
    benthic_mode = 2
    n_zones = 4
@@ -1277,9 +1299,14 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 /
 &amp;mass_balance
    balance_file = 'mass_balance'
-   balance_varnum = 15
-   balance_vars = 'OGM_doc','OGM_poc','OXY_oxy','NIT_amm','OGM_don','NIT_nit','OGM_pon','OGM_dop','PHS_frp','OGM_pop','PHY_cyano','PHY_diatom','PHY_green','SIL_rsi','ZOO_zoo01'
+   balance_varnum = 20
+   balance_vars = 'NIT_nit','NIT_amm','OGM_don','OGM_pon','PHY_cyano_IN','PHY_green_IN','PHY_diatom_IN','PHS_frp','OGM_dop','OGM_pop','PHY_cyano_IP','PHY_green_IP','PHY_diatom_IP','OGM_doc','OGM_poc','PHY_cyano','PHY_green','PHY_diatom','NCS_ss1','NCS_ss2'
    timezone = 0
+/
+&amp;outflow
+   num_outlet = 0
+   crest_width = 26
+   crest_factor = 0.36209
 /</code></pre>
 </div>
 </div>
@@ -2516,25 +2543,25 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 <tr class="odd">
 <td style="text-align: left;">Schmidt stability</td>
 <td style="text-align: left;">2000–2022</td>
-<td style="text-align: right;">76.50</td>
-<td style="text-align: right; color: rgba(183, 28, 28, 255) !important;">-16.50</td>
-<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">75.30</td>
+<td style="text-align: right; color: rgba(183, 28, 28, 255) !important;">-18.00</td>
+<td style="text-align: right;">0.75</td>
 <td style="text-align: right;">221</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Water temperature</td>
 <td style="text-align: left;">2000–2022</td>
-<td style="text-align: right;">1.23</td>
-<td style="text-align: right; color: rgba(183, 28, 28, 255) !important;">-0.94</td>
+<td style="text-align: right;">1.19</td>
+<td style="text-align: right; color: rgba(183, 28, 28, 255) !important;">-0.92</td>
 <td style="text-align: right;">0.98</td>
 <td style="text-align: right;">64250</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Thermocline depth</td>
 <td style="text-align: left;">2000–2022</td>
-<td style="text-align: right;">26.10</td>
+<td style="text-align: right;">26.30</td>
 <td style="text-align: right; color: rgba(183, 28, 28, 255) !important;">-22.00</td>
-<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">0.57</td>
 <td style="text-align: right;">221</td>
 </tr>
 <tr class="even">
@@ -2582,13 +2609,13 @@ document.getElementById("name-toggle").addEventListener("change", function() {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>R version 4.6.1 (2026-06-24)
+<pre><code>R version 4.6.2 (2026-10-29)
 Platform: x86_64-pc-linux-gnu
-Running under: Ubuntu 24.04.5 LTS
+Running under: Ubuntu 26.04.1 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.32.so;  LAPACK version 3.12.0
 
 locale:
  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
@@ -2603,36 +2630,36 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
-[1] targets_1.12.0   kableExtra_1.4.0 knitr_1.51       AEME_0.4.0.9000 
+[1] targets_1.12.0   kableExtra_1.4.0 knitr_1.51       AEME_0.4.1      
 [5] patchwork_1.3.2  scales_1.4.0     ggplot2_4.0.3    dplyr_1.2.1     
 
 loaded via a namespace (and not attached):
  [1] stringdist_0.9.17    gtable_0.3.6         xfun_0.60           
- [4] htmlwidgets_1.6.4    gh_1.5.0             processx_3.9.0      
+ [4] htmlwidgets_1.6.4    gh_1.6.1             processx_3.9.0      
  [7] lattice_0.22-9       callr_3.7.6          tzdb_0.5.0          
-[10] vctrs_0.7.3          tools_4.6.1          ps_1.9.3            
-[13] generics_0.1.4       base64url_1.4        parallel_4.6.1      
+[10] vctrs_0.7.3          tools_4.6.2          ps_1.9.3            
+[13] generics_0.1.4       base64url_1.4        parallel_4.6.2      
 [16] tibble_3.3.1         proxy_0.4-29         pkgconfig_2.0.3     
 [19] KernSmooth_2.23-26   secretbase_1.2.2     data.table_1.18.4   
 [22] RColorBrewer_1.1-3   S7_0.2.2             clitable_0.1.0      
-[25] lifecycle_1.0.5      compiler_4.6.1       farver_2.1.2        
+[25] lifecycle_1.0.5      compiler_4.6.2       farver_2.1.2        
 [28] stringr_1.6.0        textshaping_1.0.5    codetools_0.2-20    
 [31] ncdf4_1.24           htmltools_0.5.9      class_7.3-23        
 [34] yaml_2.3.12          pillar_1.11.1        crayon_1.5.3        
 [37] tidyr_1.3.2          classInt_0.4-11      wk_0.9.5            
 [40] rLakeAnalyzer_1.12.0 tidyselect_1.2.1     digest_0.6.39       
-[43] stringi_1.8.7        sf_1.1-1             purrr_1.2.2         
-[46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
+[43] stringi_1.8.9        sf_1.1-3             purrr_1.2.2         
+[46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.2          
 [49] cli_3.6.6            magrittr_2.0.5       e1071_1.7-17        
-[52] readr_2.2.0          withr_3.0.2          prettyunits_1.2.0   
-[55] backports_1.5.1      bit64_4.8.0          lubridate_1.9.5     
+[52] readr_2.2.0          withr_3.0.3          prettyunits_1.2.0   
+[55] backports_1.5.1      bit64_4.8.6          lubridate_1.9.5     
 [58] timechange_0.4.0     rmarkdown_2.31       bit_4.6.0           
-[61] igraph_2.3.1         otel_0.2.0           zoo_1.8-15          
+[61] igraph_2.3.1         otel_0.2.0           zoo_1.9-1           
 [64] hms_1.1.4            evaluate_1.0.5       viridisLite_0.4.3   
-[67] s2_1.1.9             rlang_1.3.0          Rcpp_1.1.1-1.1      
+[67] s2_1.1.13            rlang_1.3.0          Rcpp_1.1.2          
 [70] glue_1.8.1           DBI_1.3.0            xml2_1.5.2          
 [73] renv_1.2.4           vroom_1.7.1          svglite_2.2.2       
-[76] rstudioapi_0.18.0    jsonlite_2.0.0       R6_2.6.1            
+[76] rstudioapi_0.19.0    jsonlite_2.0.0       R6_2.6.1            
 [79] systemfonts_1.3.2    units_1.0-1         </code></pre>
 </div>
 </div>

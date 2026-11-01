@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-01">
+
+<title>Alum stream step: calibration design from the thesis stoichiometry – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-alum-stream-calibration.html">Alum Stream Step: Thesis Calibration Design</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows and Alum (report summaries)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Calibration: Next Steps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link active" data-scroll-target="#sec-summary"><span class="header-section-number">1</span> Summary</a></li>
+  <li><a href="#sec-previous" id="toc-sec-previous" class="nav-link" data-scroll-target="#sec-previous"><span class="header-section-number">2</span> What was used before</a></li>
+  <li><a href="#sec-thesis" id="toc-sec-thesis" class="nav-link" data-scroll-target="#sec-thesis"><span class="header-section-number">3</span> What the thesis gives</a></li>
+  <li><a href="#sec-design" id="toc-sec-design" class="nav-link" data-scroll-target="#sec-design"><span class="header-section-number">4</span> Design</a>
+  <ul class="collapse">
+  <li><a href="#sec-hypotheses" id="toc-sec-hypotheses" class="nav-link" data-scroll-target="#sec-hypotheses"><span class="header-section-number">4.1</span> Hypotheses for the stream step</a></li>
+  <li><a href="#sec-lake" id="toc-sec-lake" class="nav-link" data-scroll-target="#sec-lake"><span class="header-section-number">4.2</span> Lake side, the same for all runs</a></li>
+  <li><a href="#sec-targets" id="toc-sec-targets" class="nav-link" data-scroll-target="#sec-targets"><span class="header-section-number">4.3</span> Targets</a></li>
+  <li><a href="#sec-compare" id="toc-sec-compare" class="nav-link" data-scroll-target="#sec-compare"><span class="header-section-number">4.4</span> What to compare across runs</a></li>
+  <li><a href="#sec-stages" id="toc-sec-stages" class="nav-link" data-scroll-target="#sec-stages"><span class="header-section-number">4.5</span> Stages</a></li>
+  </ul></li>
+  <li><a href="#sec-h1" id="toc-sec-h1" class="nav-link" data-scroll-target="#sec-h1"><span class="header-section-number">5</span> First result: H1 and H1b on the best member</a>
+  <ul class="collapse">
+  <li><a href="#the-stream-step" id="toc-the-stream-step" class="nav-link" data-scroll-target="#the-stream-step"><span class="header-section-number">5.1</span> The stream step</a></li>
+  <li><a href="#the-lake-and-the-whole-system" id="toc-the-lake-and-the-whole-system" class="nav-link" data-scroll-target="#the-lake-and-the-whole-system"><span class="header-section-number">5.2</span> The lake and the whole system</a></li>
+  <li><a href="#what-this-shows" id="toc-what-this-shows" class="nav-link" data-scroll-target="#what-this-shows"><span class="header-section-number">5.3</span> What this shows</a></li>
+  </ul></li>
+  <li><a href="#sec-fit" id="toc-sec-fit" class="nav-link" data-scroll-target="#sec-fit"><span class="header-section-number">6</span> Step 1: the stream rule against the stream observations</a></li>
+  <li><a href="#sec-stoich" id="toc-sec-stoich" class="nav-link" data-scroll-target="#sec-stoich"><span class="header-section-number">7</span> Lake stoichiometry set in R</a></li>
+  <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next"><span class="header-section-number">8</span> Next steps</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-alum-stream-calibration.html">Alum Stream Step: Thesis Calibration Design</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Alum stream step: calibration design from the thesis stoichiometry</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Comparing the McIntosh ramp used so far with the Sanila thesis Al:P ratios</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-summary" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
+<p>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (<a href="#sec-previous" class="quarto-xref">Section&nbsp;2</a>). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see “Alum applied per P removed, and the fate of alum and P” on the <a href="./rotorua-alum-next-steps.html#sec-alum-fate">next-steps page</a>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</p>
+<ul>
+<li><strong>The thesis finding.</strong> Alum reduced DRP in all waters, and the Al:P molar ratios ranged from 0.7:1 to 15.1:1. Where DRP stayed measurable after treatment, the ratio was near 1:1 (Lake Rotorua 0.7:1, Puarenga Stream 0.98:1). Where DRP fell below detection, the dose was in surplus and a minimum effective dose could not be determined.</li>
+<li><strong>What that means for the comparison.</strong> Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the next-steps page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</li>
+<li><strong>The design.</strong> Three stream-step hypotheses on the same lake: the previous rule (H0), the thesis stoichiometry in both streams (H1), and the thesis in the Puarenga with the measured Utuhina removal kept (H1b). A calibrated efficiency (H2) follows if H1 does not settle it (<a href="#sec-design" class="quarto-xref">Section&nbsp;4</a>).</li>
+<li><strong>First results.</strong> H1 and H1b have been run on the best member of the joint stage (<a href="#sec-h1" class="quarto-xref">Section&nbsp;5</a>). The stream rule was then fitted to the Utuhina data (<a href="#sec-fit" class="quarto-xref">Section&nbsp;6</a>): removal is a plateau near 43% and the efficiency ε is not identified, so the thesis value is neither confirmed nor excluded. The thesis lake stoichiometry is applied by scaling the input in R, not by a new module parameter (<a href="#sec-stoich" class="quarto-xref">Section&nbsp;7</a>).</li>
+</ul>
+</section>
+<section id="sec-previous" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-previous"><span class="header-section-number">2</span> What was used before</h2>
+<p>The stream step moves a fraction <code>f</code> of the inflow FRP into suspended alum-bound P (<code>ALU_alp</code>) and removes the same amount of capacity from the free pool (<code>ALU_ala</code>) before the inflow enters the lake. The dose ratio is <code>R</code> = (<code>ALU_ala</code> + <code>ALU_alp</code>) / FRP, in mol Al per mol P (the capacity ratio of the module is 1, so a mole of capacity is a mole of Al).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stream</th>
+<th>Distance to the lake</th>
+<th>Rule</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Puarenga</td>
+<td>about 300 m</td>
+<td><code>f = 0.9 × min(1, R / 23)</code></td>
+<td>McIntosh paired up- and downstream samples (Hamilton et al.&nbsp;2015, Fig 20)</td>
+</tr>
+<tr class="even">
+<td>Utuhina</td>
+<td>about 700 m</td>
+<td><code>f = 0.45</code></td>
+<td>Measured downstream DRP against the reconstructed untreated DRP (Hamilton et al.&nbsp;2015)</td>
+</tr>
+</tbody>
+</table>
+<p>Below <code>R</code> = 23 the Puarenga rule binds <code>0.9 R / 23</code> of the FRP, which spends 23 / 0.9 ≈ 26 mol Al per mol P removed. Applied to the dosed days of 2006 to 2022-06 (<a href="#tbl-previous" class="quarto-xref">Table&nbsp;1</a>), this gives about 30 mol/mol across both streams.</p>
+<div class="cell">
+<div id="tbl-previous" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-previous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Stream step of the previous setup on the dosed days, 2006 to 2022-06 (best member inflows). Ratios in mol Al per mol P bound. ‘Capped’ is the share of dosed days (or of the Al) on which the rule has reached its cap.
+</figcaption>
+<div aria-describedby="tbl-previous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stream</th>
+<th style="text-align: left;">Al applied (t)</th>
+<th style="text-align: left;">P bound (t)</th>
+<th style="text-align: left;">Al:P (mol/mol)</th>
+<th style="text-align: left;">FRP removed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">394</td>
+<td style="text-align: left;">16.7</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">45%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">463</td>
+<td style="text-align: left;">16.0</td>
+<td style="text-align: left;">33.2</td>
+<td style="text-align: left;">73%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The Puarenga series in the with-alum inflow file is built with the same ramp and cap, so it is not an independent check on this rule. The Utuhina downstream series is a measurement.</p>
+</section>
+<section id="sec-thesis" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-thesis"><span class="header-section-number">3</span> What the thesis gives</h2>
+<p>The thesis result, as stated by the author:</p>
+<blockquote class="blockquote">
+<p>Alum reduced DRP across all waters, but the Al:P molar ratios, ranging from 0.7:1 to 15.1:1 and post-treatment pH values ranging from 6.9 to 7.9, indicate that alum dose requirements varied with differing water chemistry. Where post-treatment DRP remained measurable, Al:P molar ratios were near 1:1 (Lake Rotorua 0.7:1; Puarenga Stream 0.98:1). Where DRP fell below detection, results indicated surplus alum (aluminium) dosing, and a minimum effective dose could not be determined.</p>
+</blockquote>
+<p>Three consequences for the model:</p>
+<ol type="1">
+<li><strong>The stoichiometric rate is about 1 mol Al per mol P</strong> when P is limiting, for both the Puarenga and the lake water. The module’s capacity ratio of 1 matches this. The 26:1 of the stream ramp does not.</li>
+<li><strong>Surplus doses cannot give a ratio.</strong> If DRP is removed to below detection, the ratio is an upper bound on the dose needed, not a measurement. The model ratio should be compared on days when the model leaves measurable DRP (unsaturated days), and the share of Al applied on saturated days should be reported with it.</li>
+<li><strong>The data are from jar tests</strong> with hours of contact in mixed samples. The stream reaches are 300 to 700 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</li>
+</ol>
+<p>The thesis range also includes surplus-dose ratios up to 15.1:1. The thesis also cites an operational field ratio of about 7:1 for the Utuhina and Puarenga inflows (McDowell and Hawke, 2006), which it attributes to turbulence, short flocculation contact times and hydrodynamic losses in the stream. That is a dose-over-removal figure for real dosing, so it includes surplus days. Its jar-test value for Lake Rotorua (0.7:1, a 1.0 mg Al/L dose removing 1.60 of 1.62 mg DRP/L) is the best-case chemistry.</p>
+</section>
+<section id="sec-design" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-design"><span class="header-section-number">4</span> Design</h2>
+<section id="sec-hypotheses" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="sec-hypotheses"><span class="header-section-number">4.1</span> Hypotheses for the stream step</h3>
+<p>The stream step binds <code>B</code> mmol P per m³ of inflow, taken from the free capacity.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Run</th>
+<th>Stream step</th>
+<th>Free parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H0 (previous)</td>
+<td>Puarenga <code>0.9·min(1, R/23)</code>, Utuhina flat 0.45</td>
+<td>none, reference</td>
+</tr>
+<tr class="even">
+<td>H1 (thesis stoichiometry)</td>
+<td>both streams: <code>B = min(f_max · FRP, ε · dose)</code>, ε = 1 mol P per mol Al</td>
+<td>none (<code>f_max</code> = 0.9, as the old cap)</td>
+</tr>
+<tr class="odd">
+<td>H1b (thesis, Puarenga only)</td>
+<td>Puarenga as H1, Utuhina as H0</td>
+<td>none</td>
+</tr>
+<tr class="even">
+<td>H2 (calibrated)</td>
+<td>as H1 with ε free per stream</td>
+<td>ε (Puarenga), ε (Utuhina), <code>f_max</code></td>
+</tr>
+</tbody>
+</table>
+<p>H1b is there because H1 contradicts a measurement for the Utuhina (<a href="#sec-h1" class="quarto-xref">Section&nbsp;5</a>). Priors for H2: ε between 0.04 (the ramp) and 1 (the thesis), <code>f_max</code> between 0.7 and 1.</p>
+</section>
+<section id="sec-lake" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="sec-lake"><span class="header-section-number">4.2</span> Lake side, the same for all runs</h3>
+<ul>
+<li><strong>Stoichiometry, set in R.</strong> The module uses capacity one for one with P (<code>aed_alum.F90</code>), and no parameter is added. The thesis lake ratio of 0.7:1 means 1 mol of Al binds β = 1/0.7 = 1.43 mol P, so the input is scaled instead (<a href="#sec-stoich" class="quarto-xref">Section&nbsp;7</a>): <code>ALU_ala</code> and <code>ALU_alp</code> become P-binding capacity, β times the Al dose, and aluminium is the capacity divided by β wherever it is reported. H1 and H1b keep β = 1.</li>
+<li><strong>Rates.</strong> Refit <code>w_ala</code> (thesis 0.3 to 1.5 m/d), <code>K_P</code> (about 0.3), <code>k_w</code>, <code>k_s</code>, <code>k_age_w</code>, <code>k_age_s</code>, <code>k_bur</code>, <code>k_res</code> as in stage <code>p4</code>, from the member of the joint stage. The sensitivity screen found the alum parameters carry 6.5% of the objective, and <code>k_age_w</code> is the first driver of the alum in the water.</li>
+</ul>
+</section>
+<section id="sec-targets" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="sec-targets"><span class="header-section-number">4.3</span> Targets</h3>
+<ul>
+<li><strong>Streams.</strong> The measured Utuhina downstream DRP, and the McIntosh Puarenga paired up- and downstream samples used directly. The Puarenga series in the inflow file cannot be used because it is built from the ramp.</li>
+<li><strong>Lake.</strong> The existing calibration and held-out targets of the joint stage (TP, FRP, chlorophyll, oxygen), and the ERI 178 aluminium survey once the values are in hand.</li>
+</ul>
+</section>
+<section id="sec-compare" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="sec-compare"><span class="header-section-number">4.4</span> What to compare across runs</h3>
+<ol type="1">
+<li>The objective on the calibration and held-out windows, and the surface TP, FRP and chlorophyll bias.</li>
+<li>Al:P on unsaturated days for the streams, the lake and the whole system, against about 1.</li>
+<li>The share of Al applied on saturated (surplus) days for each stream.</li>
+<li>The reduction in P export with alum (14.9 t P/yr in the previous setup).</li>
+<li>Whether the new parameters narrow under the ensemble, and whether ε and <code>k_w</code> trade off (both set how fast P is removed).</li>
+</ol>
+</section>
+<section id="sec-stages" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="sec-stages"><span class="header-section-number">4.5</span> Stages</h3>
+<ol type="1">
+<li><strong>H1 and H1b on the best member</strong> (this page, <a href="#sec-h1" class="quarto-xref">Section&nbsp;5</a>): one run each, no refit. Shows what the thesis rule does before any calibration.</li>
+<li><strong>H2 ensemble</strong>: ε and <code>f_max</code> free together with the lake alum parameters, ES-MDA as in stage <code>p4</code>.</li>
+<li><strong>Compare</strong> H0, H1b and H2 on the criteria above, and decide the stream rule.</li>
+</ol>
+</section>
+</section>
+<section id="sec-h1" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-h1"><span class="header-section-number">5</span> First result: H1 and H1b on the best member</h2>
+<p>Both runs use member 46 of stage <code>j</code> with the alum parameters unchanged. Only the stream step differs. The base is the previous (flood × 0.5) base with the untreated FRP and the dose rebuilt from it, so every other inflow variable is the same; the rebuild reproduces the previous bound P to machine precision (<code>calibration/alum/60_h1_base.R</code>). Both runs cover 2005-01 to 2022-06 (<code>calibration/historical/run_hist.R</code>, <code>calibration/alum/61_h1_compare.R</code>).</p>
+<section id="the-stream-step" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="the-stream-step"><span class="header-section-number">5.1</span> The stream step</h3>
+<div class="cell">
+<div id="tbl-h1-stream" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-h1-stream-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Stream step under each rule on the dosed days, 2006 to 2022-06. Al:P is mol Al applied per mol P bound in the stream step. ‘At cap’ is the share of dosed days on which the rule has removed the maximum (90% of the FRP for H1), and ‘uncapped Al:P’ is the ratio on the other days.
+</figcaption>
+<div aria-describedby="tbl-h1-stream-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 30%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 5%">
+<col style="width: 12%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stream</th>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">P bound (t)</th>
+<th style="text-align: left;">FRP removed</th>
+<th style="text-align: left;">Al:P</th>
+<th style="text-align: left;">Days at cap</th>
+<th style="text-align: left;">Al:P uncapped</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">Previous (ramp / 0.45)</td>
+<td style="text-align: left;">16.0</td>
+<td style="text-align: left;">73%</td>
+<td style="text-align: left;">33.2</td>
+<td style="text-align: left;">58.9%</td>
+<td style="text-align: left;">25.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">H1 (thesis)</td>
+<td style="text-align: left;">19.7</td>
+<td style="text-align: left;">90%</td>
+<td style="text-align: left;">27.1</td>
+<td style="text-align: left;">99.7%</td>
+<td style="text-align: left;">1.0 (0.4% of days)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">H1b (thesis in Puarenga only)</td>
+<td style="text-align: left;">19.7</td>
+<td style="text-align: left;">90%</td>
+<td style="text-align: left;">27.1</td>
+<td style="text-align: left;">99.7%</td>
+<td style="text-align: left;">1.0 (0.4% of days)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">Previous (ramp / 0.45)</td>
+<td style="text-align: left;">16.7</td>
+<td style="text-align: left;">45%</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">0.0%</td>
+<td style="text-align: left;">no cap</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">H1 (thesis)</td>
+<td style="text-align: left;">33.4</td>
+<td style="text-align: left;">90%</td>
+<td style="text-align: left;">13.5</td>
+<td style="text-align: left;">99.6%</td>
+<td style="text-align: left;">1.0 (0.4% of days)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">H1b (thesis in Puarenga only)</td>
+<td style="text-align: left;">16.7</td>
+<td style="text-align: left;">45%</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">0.0%</td>
+<td style="text-align: left;">no cap</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>With the thesis rule the 90% cap is reached on 99.6% of the dosed days in both streams, and the dose is in surplus on virtually all of them. The ratio is 1.0 only on the 0.4% of days where the dose is below the FRP. This is the situation the thesis describes for the surplus case: the field doses cannot show what the minimum effective ratio is. Over all dosed days the ratio is 27 (Puarenga) and 13.5 (Utuhina) under H1, close to the previous Puarenga value (33) because the dose is large either way. In that sense the previous ramp and the thesis rule agree on the Puarenga: both remove most of the FRP when the dose is large, and the Al:P over all days is mainly the dose.</p>
+<p>The rule changes the removal most at low doses. For the Puarenga the P bound rises from 16.0 to 19.7 t (+23%). For the Utuhina, H1 would double the removal (16.7 to 33.4 t, 90% of the FRP), which contradicts the measured downstream DRP: the observed removal there is 16.4 t, 44% of the FRP (<a href="#tbl-previous" class="quarto-xref">Table&nbsp;1</a>). H1 is therefore rejected for the Utuhina, and H1b is the version to carry forward.</p>
+</section>
+<section id="the-lake-and-the-whole-system" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="the-lake-and-the-whole-system"><span class="header-section-number">5.2</span> The lake and the whole system</h3>
+<div class="cell">
+<div id="tbl-h1-lake" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-h1-lake-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Best member (member 46) with each stream rule: P bound by alum in the streams, the lake water and the bed, Al:P ratios (mol/mol), and the modelled P export 2011 to 2021.
+</figcaption>
+<div aria-describedby="tbl-h1-lake-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">Stream P bound (t P/yr)</th>
+<th style="text-align: left;">Lake water (t P/yr)</th>
+<th style="text-align: left;">Lake bed (t P/yr)</th>
+<th style="text-align: left;">Total (t P/yr)</th>
+<th style="text-align: left;">Al:P streams</th>
+<th style="text-align: left;">Al:P lake</th>
+<th style="text-align: left;">Al:P whole</th>
+<th style="text-align: left;">Export (t P/yr)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Previous (ramp)</td>
+<td style="text-align: left;">1.99</td>
+<td style="text-align: left;">10.2</td>
+<td style="text-align: left;">0.22</td>
+<td style="text-align: left;">12.4</td>
+<td style="text-align: left;">30.0</td>
+<td style="text-align: left;">5.5</td>
+<td style="text-align: left;">4.80</td>
+<td style="text-align: left;">10.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1 (thesis, both)</td>
+<td style="text-align: left;">3.22</td>
+<td style="text-align: left;">9.8</td>
+<td style="text-align: left;">0.21</td>
+<td style="text-align: left;">13.2</td>
+<td style="text-align: left;">18.5</td>
+<td style="text-align: left;">5.6</td>
+<td style="text-align: left;">4.51</td>
+<td style="text-align: left;">10.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1b (thesis, Puarenga)</td>
+<td style="text-align: left;">2.21</td>
+<td style="text-align: left;">10.1</td>
+<td style="text-align: left;">0.22</td>
+<td style="text-align: left;">12.6</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">5.5</td>
+<td style="text-align: left;">4.75</td>
+<td style="text-align: left;">10.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1b + 0.7:1 lake (beta 1.43)</td>
+<td style="text-align: left;">2.21</td>
+<td style="text-align: left;">11.7</td>
+<td style="text-align: left;">0.25</td>
+<td style="text-align: left;">14.1</td>
+<td style="text-align: left;">27.0</td>
+<td style="text-align: left;">4.9</td>
+<td style="text-align: left;">4.23</td>
+<td style="text-align: left;">9.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The lake takes up what the streams leave. When the stream step binds 1.2 t P/yr more (H1), the lake water binds 0.4 t P/yr less, so the total moves by only 0.8 t P/yr (6%) and the whole-system ratio from 4.8 to 4.5 (H1) or 4.75 (H1b). The modelled export, 10.6 t P/yr in the previous setup, changes by 0.1 to 0.2 t P/yr. The stream step as a whole is therefore a weak control on the lake, in line with the earlier finding that the stream reaction variants are indistinguishable in the lake data.</p>
+<div class="cell">
+<div id="tbl-h1-fit" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-h1-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Fit of the surface (0 to 5 m) samples, 2006 to 2022-06: bias of the mean (simulated minus observed, in per cent), RMSE and correlation. TP includes the refractory DOP offset.
+</figcaption>
+<div aria-describedby="tbl-h1-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 17%">
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">Bias (%)</th>
+<th style="text-align: right;">RMSE</th>
+<th style="text-align: left;">r</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Previous (ramp)</td>
+<td style="text-align: left;">TP</td>
+<td style="text-align: right;">369</td>
+<td style="text-align: left;">-7.5</td>
+<td style="text-align: right;">0.01070</td>
+<td style="text-align: left;">0.34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Previous (ramp)</td>
+<td style="text-align: left;">FRP</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: left;">-21.2</td>
+<td style="text-align: right;">0.00644</td>
+<td style="text-align: left;">0.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Previous (ramp)</td>
+<td style="text-align: left;">Chlorophyll</td>
+<td style="text-align: right;">1211</td>
+<td style="text-align: left;">-5.4</td>
+<td style="text-align: right;">8.52000</td>
+<td style="text-align: left;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1 (thesis, both)</td>
+<td style="text-align: left;">TP</td>
+<td style="text-align: right;">369</td>
+<td style="text-align: left;">-8.9</td>
+<td style="text-align: right;">0.01080</td>
+<td style="text-align: left;">0.34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1 (thesis, both)</td>
+<td style="text-align: left;">FRP</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: left;">-24.0</td>
+<td style="text-align: right;">0.00638</td>
+<td style="text-align: left;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1 (thesis, both)</td>
+<td style="text-align: left;">Chlorophyll</td>
+<td style="text-align: right;">1211</td>
+<td style="text-align: left;">-6.6</td>
+<td style="text-align: right;">8.40000</td>
+<td style="text-align: left;">0.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1b (thesis, Puarenga)</td>
+<td style="text-align: left;">TP</td>
+<td style="text-align: right;">369</td>
+<td style="text-align: left;">-7.7</td>
+<td style="text-align: right;">0.01070</td>
+<td style="text-align: left;">0.34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1b (thesis, Puarenga)</td>
+<td style="text-align: left;">FRP</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: left;">-21.3</td>
+<td style="text-align: right;">0.00643</td>
+<td style="text-align: left;">0.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1b (thesis, Puarenga)</td>
+<td style="text-align: left;">Chlorophyll</td>
+<td style="text-align: right;">1211</td>
+<td style="text-align: left;">-5.5</td>
+<td style="text-align: right;">8.50000</td>
+<td style="text-align: left;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1b + 0.7:1 lake (beta 1.43)</td>
+<td style="text-align: left;">TP</td>
+<td style="text-align: right;">369</td>
+<td style="text-align: left;">-20.6</td>
+<td style="text-align: right;">0.01140</td>
+<td style="text-align: left;">0.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1b + 0.7:1 lake (beta 1.43)</td>
+<td style="text-align: left;">FRP</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: left;">-47.9</td>
+<td style="text-align: right;">0.00598</td>
+<td style="text-align: left;">0.23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1b + 0.7:1 lake (beta 1.43)</td>
+<td style="text-align: left;">Chlorophyll</td>
+<td style="text-align: right;">1211</td>
+<td style="text-align: left;">-13.6</td>
+<td style="text-align: right;">8.05000</td>
+<td style="text-align: left;">0.07</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-h1-fit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-h1-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/h1/h1_fit.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Annual means of the surface samples against the simulations under each stream rule."><img src="images/h1/h1_fit.png" class="img-fluid figure-img" style="width:80.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-h1-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Annual means of the surface samples against the simulations under each stream rule.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The fit does not distinguish the rules. H1b is within 0.2 percentage points of the previous bias for TP and chlorophyll. H1 is slightly worse (TP -8.9% against -7.5%, FRP -24% against -21%), because binding more P in the streams leaves less FRP in the lake, and surface FRP is already low in the best member.</p>
+</section>
+<section id="what-this-shows" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="what-this-shows"><span class="header-section-number">5.3</span> What this shows</h3>
+<ul>
+<li><strong>The thesis and the ramp agree where it matters.</strong> Both give near-complete removal at large doses. They differ only at low doses, which are a small part of the Al applied.</li>
+<li><strong>The thesis 1:1 cannot be tested against the field doses.</strong> On 99.6% of the dosed days the thesis rule saturates, so the data cannot show an efficiency. The thesis says this too (“a minimum effective dose could not be determined”).</li>
+<li><strong>H1 fails for the Utuhina</strong> because the measured downstream DRP shows only 44% removal at the same doses. The Utuhina reach therefore does not reach the jar-test efficiency, which supports a calibrated ε (H2) at least for that stream.</li>
+<li><strong>The lake data do not respond to the stream rule</strong>, so the choice should rest on the stream measurements and on physical grounds, not on the lake fit.</li>
+</ul>
+<p>This is one member with its parameters unchanged, not a calibration. The lake alum parameters (<code>k_w</code>, <code>K_P</code>, <code>w_ala</code>, ageing and burial) were fitted under the previous rule and the lake already compensates for the difference, so a refit is the proper test of whether the thesis stoichiometry changes the lake parameters.</p>
+</section>
+</section>
+<section id="sec-fit" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-fit"><span class="header-section-number">6</span> Step 1: the stream rule against the stream observations</h2>
+<p>This step fits the rule <code>f = min(f_max, ε R)</code> to the stream data alone, with no lake model (<code>calibration/alum/62_stream_fit.R</code>). <code>R</code> is the dose over the untreated DRP, in mol Al per mol P, and ε is the mol of P bound per mol of Al.</p>
+<p><strong>The data.</strong> The Utuhina inflow was sampled downstream of the dosing point, so on dosed days the removal is <code>f_obs = 1 − DRP(measured) / DRP(untreated)</code>, taking the untreated DRP from the reconstructed no-alum series (Hamilton et al.&nbsp;2015, p.&nbsp;36). Both series are daily, interpolated from monthly samples, so the 4,980 dosed days of 2007 to 2022-06 are not independent. The intervals below come from a bootstrap over the 178 calendar months.</p>
+<p>For the Puarenga there is nothing to fit. The McIntosh spot samples (Hamilton et al.&nbsp;2015, Fig 20) are not in the repository, and the Puarenga treated DRP in the with-alum file is built from the ramp: its removal by dose-ratio bin follows <code>0.9·min(1, R/23)</code> (<a href="#tbl-fit-byR" class="quarto-xref">Table&nbsp;5</a>), so fitting it would only return the ramp. The report text constrains the Puarenga only from below: more than 80% reduction at a mass ratio Al:PO₄-P of about 20 (R = 23 mol/mol) needs ε ≥ 0.8/23 = 0.035, and the ramp (0.9/23 = 0.039) sits at that bound. The thesis value of about 1 is 25 times higher, and the data in hand cannot choose between them.</p>
+<div class="cell">
+<div id="tbl-fit-byR" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fit-byR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Fraction of the DRP removed by dose ratio R on the dosed days (2007 to 2022-06). Utuhina: measured downstream against the reconstructed untreated DRP. Puarenga: the with-alum inflow file, which is built from the ramp, so it is not an observation. ‘sd’ is the day-to-day standard deviation.
+</figcaption>
+<div aria-describedby="tbl-fit-byR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stream</th>
+<th style="text-align: left;">R (mol/mol)</th>
+<th style="text-align: right;">Days</th>
+<th style="text-align: left;">Mean R</th>
+<th style="text-align: left;">Al (kg/d)</th>
+<th style="text-align: left;">Removed</th>
+<th style="text-align: left;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">0.4</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">25%</td>
+<td style="text-align: left;">0.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">1-2</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: left;">1.6</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">43%</td>
+<td style="text-align: left;">0.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">2-5</td>
+<td style="text-align: right;">204</td>
+<td style="text-align: left;">4.0</td>
+<td style="text-align: left;">45</td>
+<td style="text-align: left;">49%</td>
+<td style="text-align: left;">0.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">5-10</td>
+<td style="text-align: right;">1630</td>
+<td style="text-align: left;">7.8</td>
+<td style="text-align: left;">54</td>
+<td style="text-align: left;">38%</td>
+<td style="text-align: left;">0.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">10-23</td>
+<td style="text-align: right;">2617</td>
+<td style="text-align: left;">14.0</td>
+<td style="text-align: left;">76</td>
+<td style="text-align: left;">43%</td>
+<td style="text-align: left;">0.19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">23-50</td>
+<td style="text-align: right;">425</td>
+<td style="text-align: left;">28.2</td>
+<td style="text-align: left;">131</td>
+<td style="text-align: left;">55%</td>
+<td style="text-align: left;">0.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">50-Inf</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: left;">69.7</td>
+<td style="text-align: left;">377</td>
+<td style="text-align: left;">65%</td>
+<td style="text-align: left;">0.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">0.4</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">36%</td>
+<td style="text-align: left;">0.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">1-2</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">1.5</td>
+<td style="text-align: left;">14</td>
+<td style="text-align: left;">21%</td>
+<td style="text-align: left;">0.34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">2-5</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: left;">2.8</td>
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">13%</td>
+<td style="text-align: left;">0.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">5-10</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: left;">7.8</td>
+<td style="text-align: left;">70</td>
+<td style="text-align: left;">37%</td>
+<td style="text-align: left;">0.22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">10-23</td>
+<td style="text-align: right;">1140</td>
+<td style="text-align: left;">17.6</td>
+<td style="text-align: left;">110</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">0.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">23-50</td>
+<td style="text-align: right;">1842</td>
+<td style="text-align: left;">31.4</td>
+<td style="text-align: left;">149</td>
+<td style="text-align: left;">87%</td>
+<td style="text-align: left;">0.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">50-Inf</td>
+<td style="text-align: right;">184</td>
+<td style="text-align: left;">67.8</td>
+<td style="text-align: left;">285</td>
+<td style="text-align: left;">89%</td>
+<td style="text-align: left;">0.08</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-fit-utuhina" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fit-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Rules fitted to the Utuhina removal (least squares on the daily fraction), with 5 to 95% intervals from a bootstrap over months, and the previous and H1 rules for comparison. RMSE is in fraction of the DRP removed; bias is the mean of the rule minus the observed removal.
+</figcaption>
+<div aria-describedby="tbl-fit-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 7%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">ε</th>
+<th style="text-align: left;">f_max</th>
+<th style="text-align: left;">RMSE</th>
+<th style="text-align: left;">Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Fitted: flat</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.42 (0.40 to 0.45)</td>
+<td style="text-align: left;">0.200</td>
+<td style="text-align: left;">-0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fitted: min(f_max, ε R)</td>
+<td style="text-align: left;">0.71 (0.14 to 2.12)</td>
+<td style="text-align: left;">0.43 (0.40 to 0.45)</td>
+<td style="text-align: left;">0.200</td>
+<td style="text-align: left;">-0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fitted: saturating</td>
+<td style="text-align: left;">1.00 (0.07 to 3.00)</td>
+<td style="text-align: left;">0.43 (0.40 to 0.55)</td>
+<td style="text-align: left;">0.200</td>
+<td style="text-align: left;">-0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">previous: flat 0.45</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.202</td>
+<td style="text-align: left;">+0.025</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">previous: ramp 0.9 min(1, R/23)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.266</td>
+<td style="text-align: left;">+0.057</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1: min(0.9, 1 R)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.514</td>
+<td style="text-align: left;">+0.473</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-fit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/h1/stream_fit.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Utuhina removal against dose ratio, with the fitted and previous rules."><img src="images/h1/stream_fit.png" class="img-fluid figure-img" style="width:80.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Utuhina removal against dose ratio, with the fitted and previous rules.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What the Utuhina data say</strong></p>
+<ul>
+<li><strong>The removal is a plateau near 43%, not a function of the dose.</strong> The fitted <code>f_max</code> is 0.42 (0.40 to 0.45), and the flat rule fits as well as the two-parameter rules (RMSE 0.200 for all three). The previous flat 0.45 is inside the interval and is as good (RMSE 0.202). The previous ramp is worse (0.266) and H1 much worse (0.514), because both over-remove at low and moderate doses.</li>
+<li><strong>ε is not identified.</strong> Its interval runs from 0.14 to 2.1, so the Utuhina data are consistent with the thesis value (1) and with values 5 times lower. The plateau is reached at the lowest doses (a mean of 25 to 45 kg Al/d at R between 1 and 5 already gives 43 to 49%), so the dose never limits the removal, and the data cannot show what limits it.</li>
+<li><strong>The removal rises only slightly at high doses</strong>: 55% at R of 23 to 50 and 65% above 50, from 480 days. This is the only sign of a dose response.</li>
+<li><strong>Something other than capacity limits the Utuhina removal.</strong> A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 700 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</li>
+</ul>
+</section>
+<section id="sec-stoich" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-stoich"><span class="header-section-number">7</span> Lake stoichiometry set in R</h2>
+<p>The module binds one mol of P per mol of capacity, and nothing is added to it. The thesis lake ratio (0.7 mol Al per mol P) is applied in R by scaling the input (<code>calibration/alum/63_stoich_base.R</code>): the dose delivered to the module is β = 1/0.7 = 1.43 times the Al dose, so <code>ALU_ala</code> and <code>ALU_alp</code> are in mmol of P-binding capacity per m³, not mmol of Al. The stream step is applied to this capacity (<code>B = min(f_max · FRP, capacity)</code>), and the Al reported anywhere is the capacity divided by β. The run below uses the Puarenga with the thesis rule (cap 0.9) and the Utuhina with its measured 0.45 (H1b), on member 46.</p>
+<p>This changes the model, as intended: each mol of capacity consumed now stands for 1/β mol of Al, so the same Al binds 1.43 times more P. It is not independent of the lake rates, though. Capacity is lost mostly by ageing and settling (57% and 28% of the water column losses in member 46), so a larger β raises P uptake by much less than β, and β trades off with <code>k_w</code> and <code>k_age_w</code>, which set how much capacity binds P before it ages out. In a refit β is therefore fixed (at 1 or 1.43) and the rates are fitted, not both.</p>
+<div class="cell">
+<div id="tbl-h1-beta" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-h1-beta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P (β = 1.43) and the lake rates unchanged, against the previous setup and H1b. Al is the capacity divided by β.
+</figcaption>
+<div aria-describedby="tbl-h1-beta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 21%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 7%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">Total P bound (t P/yr)</th>
+<th style="text-align: left;">Al:P lake</th>
+<th style="text-align: left;">Al:P whole</th>
+<th style="text-align: left;">Export (t P/yr)</th>
+<th style="text-align: left;">TP bias</th>
+<th style="text-align: left;">FRP bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Previous (ramp)</td>
+<td style="text-align: left;">12.4</td>
+<td style="text-align: left;">5.5</td>
+<td style="text-align: left;">4.80</td>
+<td style="text-align: left;">10.6</td>
+<td style="text-align: left;">-7%</td>
+<td style="text-align: left;">-21%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">H1b (thesis, Puarenga)</td>
+<td style="text-align: left;">12.6</td>
+<td style="text-align: left;">5.5</td>
+<td style="text-align: left;">4.75</td>
+<td style="text-align: left;">10.5</td>
+<td style="text-align: left;">-8%</td>
+<td style="text-align: left;">-21%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">H1b + 0.7:1 lake (beta 1.43)</td>
+<td style="text-align: left;">14.1</td>
+<td style="text-align: left;">4.9</td>
+<td style="text-align: left;">4.23</td>
+<td style="text-align: left;">9.1</td>
+<td style="text-align: left;">-21%</td>
+<td style="text-align: left;">-48%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>With the rates unchanged, β = 1.43 raises the P bound from 12.6 to 14.1 t P/yr (+12%, not +43%), lowers the export from 10.5 to 9.1 t P/yr, and pushes the surface bias to -21% for TP and -48% for FRP, against -8% and -21% before. The whole-system ratio falls to 4.2 mol Al per mol P and the lake ratio to 4.9. The fit is worse because the lake rates were fitted with one-for-one binding, so the lake now removes too much P. A refit of <code>k_w</code>, <code>K_P</code> and the ageing rates under β = 1.43 is needed before the fit can be compared, and it is the test of whether the data prefer the thesis value.</p>
+</section>
+<section id="sec-next" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="sec-next"><span class="header-section-number">8</span> Next steps</h2>
+<ol type="1">
+<li><strong>Puarenga data.</strong> The Puarenga rule is the open question: the ramp (ε 0.04) and the thesis (ε about 1) both fit what is available. The McIntosh paired up- and downstream spot samples (2011 to 2013, Hamilton et al.&nbsp;2015 Fig 20) or the BoPRC upstream and downstream monitoring would fit ε and <code>f_max</code> directly. They are not in the repository.</li>
+<li><strong>Utuhina.</strong> Use the plateau (0.43, interval 0.40 to 0.45) as the removal rule, which is the previous 0.45 within error. Decide whether the plateau is a contact-time limit or an artefact of the reconstructed untreated DRP (the pre-dosing DRP:TP ratio).</li>
+<li><strong>Refit the lake alum parameters</strong> with H1b and β fixed at 1 and then at 1.43, as in stage <code>p4</code>, and compare the objective, the rates and their spread. β = 1.43 with the previous rates fits worse (<a href="#tbl-h1-beta" class="quarto-xref">Table&nbsp;7</a>).</li>
+<li><strong>Report the surplus share</strong> with every ratio, so that the comparison with the thesis uses only the unsaturated days.</li>
+</ol>
+<p>The code is in <code>calibration/alum/60_h1_base.R</code> (H1 and H1b inflows), <code>61_h1_compare.R</code> (comparison), <code>62_stream_fit.R</code> (step 1), <code>63_stoich_base.R</code> (lake stoichiometry in R) and <code>calibration/historical/run_hist.R</code> (the member run, with <code>HIST_BASE</code> set to the new base).</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Alum stream step: calibration design from the thesis stoichiometry"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Comparing the McIntosh ramp used so far with the Sanila thesis Al:P ratios"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: true</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (@sec-previous). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see "Alum applied per P removed, and the fate of alum and P" on the <span class="co">[</span><span class="ot">next-steps page</span><span class="co">](rotorua-alum-next-steps.qmd#sec-alum-fate)</span>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The thesis finding.** Alum reduced DRP in all waters, and the Al:P molar ratios ranged from 0.7:1 to 15.1:1. Where DRP stayed measurable after treatment, the ratio was near 1:1 (Lake Rotorua 0.7:1, Puarenga Stream 0.98:1). Where DRP fell below detection, the dose was in surplus and a minimum effective dose could not be determined.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**What that means for the comparison.** Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the next-steps page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The design.** Three stream-step hypotheses on the same lake: the previous rule (H0), the thesis stoichiometry in both streams (H1), and the thesis in the Puarenga with the measured Utuhina removal kept (H1b). A calibrated efficiency (H2) follows if H1 does not settle it (@sec-design).</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**First results.** H1 and H1b have been run on the best member of the joint stage (@sec-h1). The stream rule was then fitted to the Utuhina data (@sec-fit): removal is a plateau near 43% and the efficiency ε is not identified, so the thesis value is neither confirmed nor excluded. The thesis lake stoichiometry is applied by scaling the input in R, not by a new module parameter (@sec-stoich).</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was used before {#sec-previous}</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(readr); <span class="fu">library</span>(knitr)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/stream_rules.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>The stream step moves a fraction <span class="in">`f`</span> of the inflow FRP into suspended alum-bound P (<span class="in">`ALU_alp`</span>) and removes the same amount of capacity from the free pool (<span class="in">`ALU_ala`</span>) before the inflow enters the lake. The dose ratio is <span class="in">`R`</span> = (<span class="in">`ALU_ala`</span> + <span class="in">`ALU_alp`</span>) / FRP, in mol Al per mol P (the capacity ratio of the module is 1, so a mole of capacity is a mole of Al).</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stream <span class="pp">|</span> Distance to the lake <span class="pp">|</span> Rule <span class="pp">|</span> Source <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Puarenga <span class="pp">|</span> about 300 m <span class="pp">|</span> <span class="in">`f = 0.9 × min(1, R / 23)`</span> <span class="pp">|</span> McIntosh paired up- and downstream samples (Hamilton et al. 2015, Fig 20) <span class="pp">|</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Utuhina <span class="pp">|</span> about 700 m <span class="pp">|</span> <span class="in">`f = 0.45`</span> <span class="pp">|</span> Measured downstream DRP against the reconstructed untreated DRP (Hamilton et al. 2015) <span class="pp">|</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Below <span class="in">`R`</span> = 23 the Puarenga rule binds <span class="in">`0.9 R / 23`</span> of the FRP, which spends 23 / 0.9 ≈ 26 mol Al per mol P removed. Applied to the dosed days of 2006 to 2022-06 (@tbl-previous), this gives about 30 mol/mol across both streams.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-previous</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Stream step of the previous setup on the dosed days, 2006 to 2022-06 (best member inflows). Ratios in mol Al per mol P bound. 'Capped' is the share of dosed days (or of the Al) on which the rule has reached its cap."</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> rules <span class="sc">|&gt;</span> <span class="fu">filter</span>(run <span class="sc">==</span> <span class="st">"Q50 (previous)"</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Stream =</span> p<span class="sc">$</span>stream, <span class="st">`</span><span class="at">Al applied (t)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f"</span>, p<span class="sc">$</span>Al_t), <span class="st">`</span><span class="at">P bound (t)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, p<span class="sc">$</span>P_bound_t), <span class="st">`</span><span class="at">Al:P (mol/mol)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, p<span class="sc">$</span>ratio_molmol), <span class="st">`</span><span class="at">FRP removed</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f%%"</span>, <span class="dv">100</span> <span class="sc">*</span> p<span class="sc">$</span>frac_FRP_removed), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>The Puarenga series in the with-alum inflow file is built with the same ramp and cap, so it is not an independent check on this rule. The Utuhina downstream series is a measurement.</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the thesis gives {#sec-thesis}</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>The thesis result, as stated by the author:</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Alum reduced DRP across all waters, but the Al:P molar ratios, ranging from 0.7:1 to 15.1:1 and post-treatment pH values ranging from 6.9 to 7.9, indicate that alum dose requirements varied with differing water chemistry. Where post-treatment DRP remained measurable, Al:P molar ratios were near 1:1 (Lake Rotorua 0.7:1; Puarenga Stream 0.98:1). Where DRP fell below detection, results indicated surplus alum (aluminium) dosing, and a minimum effective dose could not be determined.</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>Three consequences for the model:</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**The stoichiometric rate is about 1 mol Al per mol P** when P is limiting, for both the Puarenga and the lake water. The module's capacity ratio of 1 matches this. The 26:1 of the stream ramp does not.</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Surplus doses cannot give a ratio.** If DRP is removed to below detection, the ratio is an upper bound on the dose needed, not a measurement. The model ratio should be compared on days when the model leaves measurable DRP (unsaturated days), and the share of Al applied on saturated days should be reported with it.</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**The data are from jar tests** with hours of contact in mixed samples. The stream reaches are 300 to 700 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>The thesis range also includes surplus-dose ratios up to 15.1:1. The thesis also cites an operational field ratio of about 7:1 for the Utuhina and Puarenga inflows (McDowell and Hawke, 2006), which it attributes to turbulence, short flocculation contact times and hydrodynamic losses in the stream. That is a dose-over-removal figure for real dosing, so it includes surplus days. Its jar-test value for Lake Rotorua (0.7:1, a 1.0 mg Al/L dose removing 1.60 of 1.62 mg DRP/L) is the best-case chemistry.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Design {#sec-design}</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Hypotheses for the stream step {#sec-hypotheses}</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>The stream step binds <span class="in">`B`</span> mmol P per m³ of inflow, taken from the free capacity.</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Run <span class="pp">|</span> Stream step <span class="pp">|</span> Free parameters <span class="pp">|</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H0 (previous) <span class="pp">|</span> Puarenga <span class="in">`0.9·min(1, R/23)`</span>, Utuhina flat 0.45 <span class="pp">|</span> none, reference <span class="pp">|</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H1 (thesis stoichiometry) <span class="pp">|</span> both streams: <span class="in">`B = min(f_max · FRP, ε · dose)`</span>, ε = 1 mol P per mol Al <span class="pp">|</span> none (<span class="in">`f_max`</span> = 0.9, as the old cap) <span class="pp">|</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H1b (thesis, Puarenga only) <span class="pp">|</span> Puarenga as H1, Utuhina as H0 <span class="pp">|</span> none <span class="pp">|</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> H2 (calibrated) <span class="pp">|</span> as H1 with ε free per stream <span class="pp">|</span> ε (Puarenga), ε (Utuhina), <span class="in">`f_max`</span> <span class="pp">|</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>H1b is there because H1 contradicts a measurement for the Utuhina (@sec-h1). Priors for H2: ε between 0.04 (the ramp) and 1 (the thesis), <span class="in">`f_max`</span> between 0.7 and 1.</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">### Lake side, the same for all runs {#sec-lake}</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Stoichiometry, set in R.** The module uses capacity one for one with P (<span class="in">`aed_alum.F90`</span>), and no parameter is added. The thesis lake ratio of 0.7:1 means 1 mol of Al binds β = 1/0.7 = 1.43 mol P, so the input is scaled instead (@sec-stoich): <span class="in">`ALU_ala`</span> and <span class="in">`ALU_alp`</span> become P-binding capacity, β times the Al dose, and aluminium is the capacity divided by β wherever it is reported. H1 and H1b keep β = 1.</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rates.** Refit <span class="in">`w_ala`</span> (thesis 0.3 to 1.5 m/d), <span class="in">`K_P`</span> (about 0.3), <span class="in">`k_w`</span>, <span class="in">`k_s`</span>, <span class="in">`k_age_w`</span>, <span class="in">`k_age_s`</span>, <span class="in">`k_bur`</span>, <span class="in">`k_res`</span> as in stage <span class="in">`p4`</span>, from the member of the joint stage. The sensitivity screen found the alum parameters carry 6.5% of the objective, and <span class="in">`k_age_w`</span> is the first driver of the alum in the water.</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targets {#sec-targets}</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Streams.** The measured Utuhina downstream DRP, and the McIntosh Puarenga paired up- and downstream samples used directly. The Puarenga series in the inflow file cannot be used because it is built from the ramp.</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Lake.** The existing calibration and held-out targets of the joint stage (TP, FRP, chlorophyll, oxygen), and the ERI 178 aluminium survey once the values are in hand.</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### What to compare across runs {#sec-compare}</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>The objective on the calibration and held-out windows, and the surface TP, FRP and chlorophyll bias.</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Al:P on unsaturated days for the streams, the lake and the whole system, against about 1.</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>The share of Al applied on saturated (surplus) days for each stream.</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The reduction in P export with alum (14.9 t P/yr in the previous setup).</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Whether the new parameters narrow under the ensemble, and whether ε and <span class="in">`k_w`</span> trade off (both set how fast P is removed).</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stages {#sec-stages}</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**H1 and H1b on the best member** (this page, @sec-h1): one run each, no refit. Shows what the thesis rule does before any calibration.</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**H2 ensemble**: ε and <span class="in">`f_max`</span> free together with the lake alum parameters, ES-MDA as in stage <span class="in">`p4`</span>.</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Compare** H0, H1b and H2 on the criteria above, and decide the stream rule.</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## First result: H1 and H1b on the best member {#sec-h1}</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>Both runs use member 46 of stage <span class="in">`j`</span> with the alum parameters unchanged. Only the stream step differs. The base is the previous (flood × 0.5) base with the untreated FRP and the dose rebuilt from it, so every other inflow variable is the same; the rebuild reproduces the previous bound P to machine precision (<span class="in">`calibration/alum/60_h1_base.R`</span>). Both runs cover 2005-01 to 2022-06 (<span class="in">`calibration/historical/run_hist.R`</span>, <span class="in">`calibration/alum/61_h1_compare.R`</span>).</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="fu">### The stream step</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-h1-stream</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Stream step under each rule on the dosed days, 2006 to 2022-06. Al:P is mol Al applied per mol P bound in the stream step. 'At cap' is the share of dosed days on which the rule has removed the maximum (90% of the FRP for H1), and 'uncapped Al:P' is the ratio on the other days."</span></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> rules <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">run =</span> <span class="fu">factor</span>(run, <span class="fu">c</span>(<span class="st">"Q50 (previous)"</span>, <span class="st">"H1"</span>, <span class="st">"H1b"</span>)), <span class="at">stream =</span> <span class="fu">factor</span>(stream, <span class="fu">c</span>(<span class="st">"Puarenga"</span>, <span class="st">"Utuhina"</span>))) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(stream, run)</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Stream =</span> r<span class="sc">$</span>stream, <span class="at">Rule =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">Q50 (previous)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Previous (ramp / 0.45)"</span>, <span class="at">H1 =</span> <span class="st">"H1 (thesis)"</span>, <span class="at">H1b =</span> <span class="st">"H1b (thesis in Puarenga only)"</span>)[<span class="fu">as.character</span>(r<span class="sc">$</span>run)], <span class="st">`</span><span class="at">P bound (t)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, r<span class="sc">$</span>P_bound_t), <span class="st">`</span><span class="at">FRP removed</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f%%"</span>, <span class="dv">100</span> <span class="sc">*</span> r<span class="sc">$</span>frac_FRP_removed), <span class="st">`</span><span class="at">Al:P</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, r<span class="sc">$</span>ratio_molmol), <span class="st">`</span><span class="at">Days at cap</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f%%"</span>, <span class="dv">100</span> <span class="sc">*</span> r<span class="sc">$</span>days_at_cap), <span class="st">`</span><span class="at">Al:P uncapped</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ifelse</span>(r<span class="sc">$</span>days_at_cap <span class="sc">&gt;</span> <span class="fl">0.995</span>, <span class="st">"1.0 (0.4% of days)"</span>, <span class="fu">ifelse</span>(r<span class="sc">$</span>days_at_cap <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"no cap"</span>, <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, r<span class="sc">$</span>ratio_molmol_uncapped))), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>With the thesis rule the 90% cap is reached on 99.6% of the dosed days in both streams, and the dose is in surplus on virtually all of them. The ratio is 1.0 only on the 0.4% of days where the dose is below the FRP. This is the situation the thesis describes for the surplus case: the field doses cannot show what the minimum effective ratio is. Over all dosed days the ratio is 27 (Puarenga) and 13.5 (Utuhina) under H1, close to the previous Puarenga value (33) because the dose is large either way. In that sense the previous ramp and the thesis rule agree on the Puarenga: both remove most of the FRP when the dose is large, and the Al:P over all days is mainly the dose.</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>The rule changes the removal most at low doses. For the Puarenga the P bound rises from 16.0 to 19.7 t (+23%). For the Utuhina, H1 would double the removal (16.7 to 33.4 t, 90% of the FRP), which contradicts the measured downstream DRP: the observed removal there is 16.4 t, 44% of the FRP (@tbl-previous). H1 is therefore rejected for the Utuhina, and H1b is the version to carry forward.</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="fu">### The lake and the whole system</span></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-h1-lake</span></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Best member (member 46) with each stream rule: P bound by alum in the streams, the lake water and the bed, Al:P ratios (mol/mol), and the modelled P export 2011 to 2021."</span></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/h1_compare.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Run =</span> h<span class="sc">$</span>run, <span class="st">`</span><span class="at">Stream P bound (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, h<span class="sc">$</span>P_bound_stream_t_yr), <span class="st">`</span><span class="at">Lake water (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>P_bound_lake_water_t_yr), <span class="st">`</span><span class="at">Lake bed (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, h<span class="sc">$</span>P_bound_lake_bed_t_yr), <span class="st">`</span><span class="at">Total (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>P_bound_total_t_yr),</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Al:P streams</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>AlP_stream), <span class="st">`</span><span class="at">Al:P lake</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>AlP_lake), <span class="st">`</span><span class="at">Al:P whole</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, h<span class="sc">$</span>AlP_whole), <span class="st">`</span><span class="at">Export (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>export_2011_21_t_yr), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>The lake takes up what the streams leave. When the stream step binds 1.2 t P/yr more (H1), the lake water binds 0.4 t P/yr less, so the total moves by only 0.8 t P/yr (6%) and the whole-system ratio from 4.8 to 4.5 (H1) or 4.75 (H1b). The modelled export, 10.6 t P/yr in the previous setup, changes by 0.1 to 0.2 t P/yr. The stream step as a whole is therefore a weak control on the lake, in line with the earlier finding that the stream reaction variants are indistinguishable in the lake data.</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-h1-fit</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Fit of the surface (0 to 5 m) samples, 2006 to 2022-06: bias of the mean (simulated minus observed, in per cent), RMSE and correlation. TP includes the refractory DOP offset."</span></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/h1_fit.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="at">PHS_tp =</span> <span class="st">"TP"</span>, <span class="at">PHS_frp =</span> <span class="st">"FRP"</span>, <span class="at">PHY_tchla =</span> <span class="st">"Chlorophyll"</span>)[variable])</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Run =</span> f<span class="sc">$</span>run, <span class="at">Variable =</span> f<span class="sc">$</span>variable, <span class="at">n =</span> f<span class="sc">$</span>n, <span class="st">`</span><span class="at">Bias (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, f<span class="sc">$</span>bias_pct), <span class="at">RMSE =</span> <span class="fu">signif</span>(f<span class="sc">$</span>rmse, <span class="dv">3</span>), <span class="at">r =</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, f<span class="sc">$</span>r), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-h1-fit</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Annual means of the surface samples against the simulations under each stream rule."</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "80%"</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/h1/h1_fit.png"</span>)</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>The fit does not distinguish the rules. H1b is within 0.2 percentage points of the previous bias for TP and chlorophyll. H1 is slightly worse (TP -8.9% against -7.5%, FRP -24% against -21%), because binding more P in the streams leaves less FRP in the lake, and surface FRP is already low in the best member.</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">### What this shows</span></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The thesis and the ramp agree where it matters.** Both give near-complete removal at large doses. They differ only at low doses, which are a small part of the Al applied.</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The thesis 1:1 cannot be tested against the field doses.** On 99.6% of the dosed days the thesis rule saturates, so the data cannot show an efficiency. The thesis says this too ("a minimum effective dose could not be determined").</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**H1 fails for the Utuhina** because the measured downstream DRP shows only 44% removal at the same doses. The Utuhina reach therefore does not reach the jar-test efficiency, which supports a calibrated ε (H2) at least for that stream.</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The lake data do not respond to the stream rule**, so the choice should rest on the stream measurements and on physical grounds, not on the lake fit.</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>This is one member with its parameters unchanged, not a calibration. The lake alum parameters (<span class="in">`k_w`</span>, <span class="in">`K_P`</span>, <span class="in">`w_ala`</span>, ageing and burial) were fitted under the previous rule and the lake already compensates for the difference, so a refit is the proper test of whether the thesis stoichiometry changes the lake parameters.</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Step 1: the stream rule against the stream observations {#sec-fit}</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>This step fits the rule <span class="in">`f = min(f_max, ε R)`</span> to the stream data alone, with no lake model (<span class="in">`calibration/alum/62_stream_fit.R`</span>). <span class="in">`R`</span> is the dose over the untreated DRP, in mol Al per mol P, and ε is the mol of P bound per mol of Al.</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>**The data.** The Utuhina inflow was sampled downstream of the dosing point, so on dosed days the removal is <span class="in">`f_obs = 1 − DRP(measured) / DRP(untreated)`</span>, taking the untreated DRP from the reconstructed no-alum series (Hamilton et al. 2015, p. 36). Both series are daily, interpolated from monthly samples, so the 4,980 dosed days of 2007 to 2022-06 are not independent. The intervals below come from a bootstrap over the 178 calendar months.</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>For the Puarenga there is nothing to fit. The McIntosh spot samples (Hamilton et al. 2015, Fig 20) are not in the repository, and the Puarenga treated DRP in the with-alum file is built from the ramp: its removal by dose-ratio bin follows <span class="in">`0.9·min(1, R/23)`</span> (@tbl-fit-byR), so fitting it would only return the ramp. The report text constrains the Puarenga only from below: more than 80% reduction at a mass ratio Al:PO₄-P of about 20 (R = 23 mol/mol) needs ε ≥ 0.8/23 = 0.035, and the ramp (0.9/23 = 0.039) sits at that bound. The thesis value of about 1 is 25 times higher, and the data in hand cannot choose between them.</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-fit-byR</span></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Fraction of the DRP removed by dose ratio R on the dosed days (2007 to 2022-06). Utuhina: measured downstream against the reconstructed untreated DRP. Puarenga: the with-alum inflow file, which is built from the ramp, so it is not an observation. 'sd' is the day-to-day standard deviation."</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/stream_fit_byR.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Stream =</span> b<span class="sc">$</span>stream, <span class="st">`</span><span class="at">R (mol/mol)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">chartr</span>(<span class="st">","</span>, <span class="st">"-"</span>, <span class="fu">gsub</span>(<span class="st">"[][()]"</span>, <span class="st">""</span>, <span class="fu">as.character</span>(b<span class="sc">$</span>Rbin))), <span class="at">Days =</span> b<span class="sc">$</span>days, <span class="st">`</span><span class="at">Mean R</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, b<span class="sc">$</span>R_mean), <span class="st">`</span><span class="at">Al (kg/d)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f"</span>, b<span class="sc">$</span>al_kgd_mean), <span class="st">`</span><span class="at">Removed</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f%%"</span>, <span class="dv">100</span> <span class="sc">*</span> b<span class="sc">$</span>f_obs), <span class="at">sd =</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, b<span class="sc">$</span>f_sd), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-fit-utuhina</span></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Rules fitted to the Utuhina removal (least squares on the daily fraction), with 5 to 95% intervals from a bootstrap over months, and the previous and H1 rules for comparison. RMSE is in fraction of the DRP removed; bias is the mean of the rule minus the observed removal."</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/stream_fit_utuhina.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>nm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">flat =</span> <span class="st">"Fitted: flat"</span>, <span class="at">linear_cap =</span> <span class="st">"Fitted: min(f_max, ε R)"</span>, <span class="at">saturating =</span> <span class="st">"Fitted: saturating"</span>)</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>ci <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="fu">ifelse</span>(<span class="fu">is.na</span>(x), <span class="st">""</span>, <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f to %.2f)"</span>, x, lo, hi))</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Rule =</span> <span class="fu">ifelse</span>(u<span class="sc">$</span>rule <span class="sc">%in%</span> <span class="fu">names</span>(nm), nm[u<span class="sc">$</span>rule], u<span class="sc">$</span>rule), ε <span class="ot">=</span> <span class="fu">ci</span>(u<span class="sc">$</span>eps, u<span class="sc">$</span>eps_lo, u<span class="sc">$</span>eps_hi), <span class="st">`</span><span class="at">f_max</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ci</span>(u<span class="sc">$</span>f_max, u<span class="sc">$</span>fmax_lo, u<span class="sc">$</span>fmax_hi), <span class="at">RMSE =</span> <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, u<span class="sc">$</span>rmse), <span class="at">Bias =</span> <span class="fu">sprintf</span>(<span class="st">"%+.3f"</span>, u<span class="sc">$</span>mean_bias), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-fit</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Utuhina removal against dose ratio, with the fitted and previous rules."</span></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "80%"</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/h1/stream_fit.png"</span>)</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>**What the Utuhina data say**</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The removal is a plateau near 43%, not a function of the dose.** The fitted <span class="in">`f_max`</span> is 0.42 (0.40 to 0.45), and the flat rule fits as well as the two-parameter rules (RMSE 0.200 for all three). The previous flat 0.45 is inside the interval and is as good (RMSE 0.202). The previous ramp is worse (0.266) and H1 much worse (0.514), because both over-remove at low and moderate doses.</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ε is not identified.** Its interval runs from 0.14 to 2.1, so the Utuhina data are consistent with the thesis value (1) and with values 5 times lower. The plateau is reached at the lowest doses (a mean of 25 to 45 kg Al/d at R between 1 and 5 already gives 43 to 49%), so the dose never limits the removal, and the data cannot show what limits it.</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The removal rises only slightly at high doses**: 55% at R of 23 to 50 and 65% above 50, from 480 days. This is the only sign of a dose response.</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Something other than capacity limits the Utuhina removal.** A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 700 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lake stoichiometry set in R {#sec-stoich}</span></span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>The module binds one mol of P per mol of capacity, and nothing is added to it. The thesis lake ratio (0.7 mol Al per mol P) is applied in R by scaling the input (<span class="in">`calibration/alum/63_stoich_base.R`</span>): the dose delivered to the module is β = 1/0.7 = 1.43 times the Al dose, so <span class="in">`ALU_ala`</span> and <span class="in">`ALU_alp`</span> are in mmol of P-binding capacity per m³, not mmol of Al. The stream step is applied to this capacity (<span class="in">`B = min(f_max · FRP, capacity)`</span>), and the Al reported anywhere is the capacity divided by β. The run below uses the Puarenga with the thesis rule (cap 0.9) and the Utuhina with its measured 0.45 (H1b), on member 46.</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>This changes the model, as intended: each mol of capacity consumed now stands for 1/β mol of Al, so the same Al binds 1.43 times more P. It is not independent of the lake rates, though. Capacity is lost mostly by ageing and settling (57% and 28% of the water column losses in member 46), so a larger β raises P uptake by much less than β, and β trades off with <span class="in">`k_w`</span> and <span class="in">`k_age_w`</span>, which set how much capacity binds P before it ages out. In a refit β is therefore fixed (at 1 or 1.43) and the rates are fitted, not both.</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-h1-beta</span></span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P (β = 1.43) and the lake rates unchanged, against the previous setup and H1b. Al is the capacity divided by β."</span></span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/h1_compare.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(run <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Previous (ramp)"</span>, <span class="st">"H1b (thesis, Puarenga)"</span>, <span class="st">"H1b + 0.7:1 lake (beta 1.43)"</span>))</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/h1/h1_fit.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(run <span class="sc">%in%</span> h<span class="sc">$</span>run) <span class="sc">|&gt;</span> <span class="fu">select</span>(run, variable, bias_pct) <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> variable, <span class="at">values_from =</span> bias_pct)</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">left_join</span>(h, f, <span class="at">by =</span> <span class="st">"run"</span>)</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Run =</span> h<span class="sc">$</span>run, <span class="st">`</span><span class="at">Total P bound (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>P_bound_total_t_yr), <span class="st">`</span><span class="at">Al:P lake</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>AlP_lake), <span class="st">`</span><span class="at">Al:P whole</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, h<span class="sc">$</span>AlP_whole), <span class="st">`</span><span class="at">Export (t P/yr)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, h<span class="sc">$</span>export_2011_21_t_yr), <span class="st">`</span><span class="at">TP bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f%%"</span>, h<span class="sc">$</span>PHS_tp), <span class="st">`</span><span class="at">FRP bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">"%.0f%%"</span>, h<span class="sc">$</span>PHS_frp), <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>With the rates unchanged, β = 1.43 raises the P bound from 12.6 to 14.1 t P/yr (+12%, not +43%), lowers the export from 10.5 to 9.1 t P/yr, and pushes the surface bias to -21% for TP and -48% for FRP, against -8% and -21% before. The whole-system ratio falls to 4.2 mol Al per mol P and the lake ratio to 4.9. The fit is worse because the lake rates were fitted with one-for-one binding, so the lake now removes too much P. A refit of <span class="in">`k_w`</span>, <span class="in">`K_P`</span> and the ageing rates under β = 1.43 is needed before the fit can be compared, and it is the test of whether the data prefer the thesis value.</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next steps {#sec-next}</span></span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Puarenga data.** The Puarenga rule is the open question: the ramp (ε 0.04) and the thesis (ε about 1) both fit what is available. The McIntosh paired up- and downstream spot samples (2011 to 2013, Hamilton et al. 2015 Fig 20) or the BoPRC upstream and downstream monitoring would fit ε and <span class="in">`f_max`</span> directly. They are not in the repository.</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Utuhina.** Use the plateau (0.43, interval 0.40 to 0.45) as the removal rule, which is the previous 0.45 within error. Decide whether the plateau is a contact-time limit or an artefact of the reconstructed untreated DRP (the pre-dosing DRP:TP ratio).</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Refit the lake alum parameters** with H1b and β fixed at 1 and then at 1.43, as in stage <span class="in">`p4`</span>, and compare the objective, the rates and their spread. β = 1.43 with the previous rates fits worse (@tbl-h1-beta).</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Report the surplus share** with every ratio, so that the comparison with the thesis uses only the unsaturated days.</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>The code is in <span class="in">`calibration/alum/60_h1_base.R`</span> (H1 and H1b inflows), <span class="in">`61_h1_compare.R`</span> (comparison), <span class="in">`62_stream_fit.R`</span> (step 1), <span class="in">`63_stoich_base.R`</span> (lake stoichiometry in R) and <span class="in">`calibration/historical/run_hist.R`</span> (the member run, with <span class="in">`HIST_BASE`</span> set to the new base).</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

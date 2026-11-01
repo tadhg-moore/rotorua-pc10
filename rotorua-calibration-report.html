@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-01">
+
+<title>Lake Rotorua GLM-AED calibration report – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-calibration-report.html">Calibration Report (nutrients, light, alum, anoxia)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows and Alum (report summaries)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Calibration: Next Steps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link active" data-scroll-target="#sec-summary"><span class="header-section-number">1</span> Summary</a></li>
+  <li><a href="#sec-setup" id="toc-sec-setup" class="nav-link" data-scroll-target="#sec-setup"><span class="header-section-number">2</span> Set-up common to the stages</a>
+  <ul class="collapse">
+  <li><a href="#model-and-data" id="toc-model-and-data" class="nav-link" data-scroll-target="#model-and-data"><span class="header-section-number">2.1</span> Model and data</a></li>
+  <li><a href="#calibration-method" id="toc-calibration-method" class="nav-link" data-scroll-target="#calibration-method"><span class="header-section-number">2.2</span> Calibration method</a></li>
+  <li><a href="#diagnostic-tools-written" id="toc-diagnostic-tools-written" class="nav-link" data-scroll-target="#diagnostic-tools-written"><span class="header-section-number">2.3</span> Diagnostic tools written</a></li>
+  </ul></li>
+  <li><a href="#sec-stages" id="toc-sec-stages" class="nav-link" data-scroll-target="#sec-stages"><span class="header-section-number">3</span> What was done, stage by stage</a>
+  <ul class="collapse">
+  <li><a href="#sec-nutrients-diagnosis" id="toc-sec-nutrients-diagnosis" class="nav-link" data-scroll-target="#sec-nutrients-diagnosis"><span class="header-section-number">3.1</span> Why the nutrient fit stalled (2c-2d)</a></li>
+  <li><a href="#sec-aed-source" id="toc-sec-aed-source" class="nav-link" data-scroll-target="#sec-aed-source"><span class="header-section-number">3.2</span> What the AED source showed</a></li>
+  <li><a href="#variant-2e-structural-fixes" id="toc-variant-2e-structural-fixes" class="nav-link" data-scroll-target="#variant-2e-structural-fixes"><span class="header-section-number">3.3</span> Variant 2e: structural fixes</a></li>
+  <li><a href="#sec-light" id="toc-sec-light" class="nav-link" data-scroll-target="#sec-light"><span class="header-section-number">3.4</span> Light limitation was the real problem</a></li>
+  <li><a href="#sec-l-f-g" id="toc-sec-l-f-g" class="nav-link" data-scroll-target="#sec-l-f-g"><span class="header-section-number">3.5</span> The light stage and the biology refit</a></li>
+  <li><a href="#sec-alum" id="toc-sec-alum" class="nav-link" data-scroll-target="#sec-alum"><span class="header-section-number">3.6</span> Alum calibration</a></li>
+  <li><a href="#sec-anoxia" id="toc-sec-anoxia" class="nav-link" data-scroll-target="#sec-anoxia"><span class="header-section-number">3.7</span> Bottom anoxia</a></li>
+  </ul></li>
+  <li><a href="#sec-quirks" id="toc-sec-quirks" class="nav-link" data-scroll-target="#sec-quirks"><span class="header-section-number">4</span> Bugs and quirks found in the toolchain</a></li>
+  <li><a href="#sec-limits" id="toc-sec-limits" class="nav-link" data-scroll-target="#sec-limits"><span class="header-section-number">5</span> Known limitations and next steps</a></li>
+  <li><a href="#sec-repro" id="toc-sec-repro" class="nav-link" data-scroll-target="#sec-repro"><span class="header-section-number">6</span> Reproducing the work</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-calibration-report.html">Calibration Report (nutrients, light, alum, anoxia)</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Lake Rotorua GLM-AED calibration report</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Nutrients, light, alum and bottom anoxia: work done 21-26 October 2026</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-summary" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
+<p>This page documents the calibration work done on the Lake Rotorua GLM-AED model after the first biogeochemistry (step 2b) and alum (step 3) fits. Everything below was run on the project machine with the scripts in <code>calibration/</code> (see <a href="#sec-repro" class="quarto-xref">Section&nbsp;6</a>); the figures come from <code>website/images/</code>. The page does not execute any code, so it renders without the model outputs.</p>
+<p><strong>What was done, in order</strong></p>
+<ol type="1">
+<li>Reviewed why total N and total P and the nutrient species were still poorly fitted after step 2b, built budget tools (<code>R/nutrient_budget_helpers.R</code>), and tried three variants of the nutrient calibration (2c, 2d, 2e).</li>
+<li>Read the AED source (<code>libaed-water</code>) and found structural reasons for the misfit: no sediment nitrate sink, inert P sorption, inert particulate organic matter, and sediment fluxes that are applied with an oxygen and temperature factor.</li>
+<li>Found that the model was <strong>light-limited because its suspended solids were about 7 times too high</strong> (34 g/m³ against a few g/m³), with attenuation of 2.3 m⁻¹ against 0.8 observed. The biology had been tuned to a dark lake.</li>
+<li>Calibrated the light and solids parameters (stage <code>l</code>), then recalibrated the phytoplankton and nutrients under the corrected light (<code>f</code>), then added diatoms with a silica supply and seasonal-cycle terms (<code>g</code>).</li>
+<li>Switched the alum module on and calibrated the alum parameters to FRP and total P (<code>alum</code>), then tuned bottom-water oxygen and anoxia with alum on (<code>o</code>). Two further rounds (<code>p</code>, <code>l2</code>, <code>o2</code>) tested a joint FRP stage and a second light and oxygen fit.</li>
+</ol>
+<p><strong>Where the model stands</strong> (2007-2022 means, alum on; observed in brackets)</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>O member</th>
+<th>O2 member</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Anoxic days (bottom DO &lt; 2 mg/L) on observed days</td>
+<td>236</td>
+<td>288</td>
+<td>239</td>
+</tr>
+<tr class="even">
+<td>Year-to-year correlation of anoxic days</td>
+<td>0.74</td>
+<td>0.65</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Bottom DO (≥ 17 m): correlation / bias (mg/L)</td>
+<td>0.91 / -0.08</td>
+<td>0.91 / -0.08</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Chlorophyll (µg/L)</td>
+<td>11.6 (+17%)</td>
+<td>10.6 (+7%)</td>
+<td>9.9</td>
+</tr>
+<tr class="odd">
+<td>Total P surface (g/m³)</td>
+<td>0.0212 (-3%)</td>
+<td>0.0208 (-5%)</td>
+<td>0.0219</td>
+</tr>
+<tr class="even">
+<td>FRP surface (g/m³)</td>
+<td>0.0018 (-46%)</td>
+<td>0.0019 (-44%)</td>
+<td>0.0034</td>
+</tr>
+<tr class="odd">
+<td>FRP bottom (g/m³)</td>
+<td>0.0050 (-22%)</td>
+<td>0.0054 (-16%)</td>
+<td>0.0065</td>
+</tr>
+</tbody>
+</table>
+<p>Pre-alum (1990-2009, alum off) the O member gives: nitrate 0.0130 (observed 0.0131), total P 0.0390 (0.0384), FRP 0.0124 (0.0118), chlorophyll 13.1 µg/L (11.6).</p>
+<p><strong>Main limitations:</strong> surface FRP is about 45% low (high-FRP episodes are missed), the 2021-22 total P rebound is not reproduced, and there is no month-to-month skill for chlorophyll, total P or FRP (<a href="#sec-limits" class="quarto-xref">Section&nbsp;5</a>).</p>
+</section>
+<section id="sec-setup" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-setup"><span class="header-section-number">2</span> Set-up common to the stages</h2>
+<section id="model-and-data" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="model-and-data"><span class="header-section-number">2.1</span> Model and data</h3>
+<ul>
+<li><strong>Model:</strong> GLM v4 with AED. AED modules in the build: sedflux (constant 2D, four sediment zones), noncohesive solids, oxygen, silica, nitrogen, phosphorus, organic matter (with refractory pools), phytoplankton (cyanobacteria, greens, diatoms), totals and alum.</li>
+<li><strong>Forcing:</strong> hourly bias-corrected ERA5 (wind unscaled), 14 inflows including rainfall, geothermal and the wastewater plant, and the Ōhau weir outflow file.</li>
+<li><strong>Spin-up:</strong> 540 days in every run.</li>
+<li><strong>Two bases.</strong> The pre-alum base <code>calibration/step2/aeme_base_1990_v2.rds</code> has <strong>no alum dose in its inflows</strong>; the alum base <code>calibration/step3/aeme_base_2005_alum.rds</code> does (Utuhina from 2006-06, Puarenga from 2010 with a gap in 2019). Any alum calibration has to use the alum base. A first attempt on the pre-alum base gave 80 identical members because no alum entered the lake.</li>
+<li><strong>Observations:</strong> lake chemistry at two sites since 1990 (about 25 samples a year), buoy and sensor oxygen and temperature (dense from 2007), Secchi depth, the visible-light extinction coefficient (VLEC, 1996-2017), PAR profiles and turbidity.</li>
+</ul>
+</section>
+<section id="calibration-method" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="calibration-method"><span class="header-section-number">2.2</span> Calibration method</h3>
+<ul>
+<li><strong>Ensemble smoother with multiple data assimilation (ES-MDA)</strong> in <code>calibration/step2/step2_ies.R</code>: an ensemble of 60 to 120 parameter sets, 5 or 6 assimilation steps, parameters on a [0,1] scale (log where the range spans orders of magnitude), run in parallel. The final best member is the lowest-phi member of the last ensemble.</li>
+<li><strong>Residuals</strong> are in units of a stated tolerance, so each counts equally. The score phi is the mean squared residual. The standard nutrient score has bias and RMSE of log ratios for chlorophyll, total P, FRP, total N, nitrate and ammonium in the surface 0-5 m, five chlorophyll signature terms, and a temperature and oxygen guard. Later stages added terms (<a href="#tbl-stages" class="quarto-xref">Table&nbsp;1</a>).</li>
+<li><strong>Stage switches</strong> are in <code>calibration/step2/step2_common.R</code> and chosen with the environment variable <code>S2_STAGE</code>. Each stage starts from the previous best member and fixes everything it does not free.</li>
+<li><strong>Unattended chains:</strong> <code>calibration/step2/pipeline*.sh</code> run a stage, then a 20- or 17-year forward run and the diagnostics, writing progress to <code>calibration/logs/pipeline.status</code>.</li>
+</ul>
+</section>
+<section id="diagnostic-tools-written" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="diagnostic-tools-written"><span class="header-section-number">2.3</span> Diagnostic tools written</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>R/nutrient_budget_helpers.R</code></td>
+<td><code>nutrient_budget()</code>, <code>budget_table()</code>, <code>plot_nutrient_budget()</code>: N and P budgets (t/yr) from the GLM mass-balance csv (inflow, outflow, stock change) and <code>output.nc</code> (denitrification, uptake, sediment fluxes)</td>
+</tr>
+<tr class="even">
+<td><code>R/phyto_limitation_helpers.R</code></td>
+<td><code>phyto_limitation()</code>, <code>plot_phyto_limitation()</code>: share of growth limited by light, N, P or silica, by month or hour</td>
+</tr>
+<tr class="odd">
+<td><code>calibration/step2/run_forward.R</code></td>
+<td>one forward run of a stage’s best member, with the mass balance written</td>
+</tr>
+<tr class="even">
+<td><code>calibration/anoxia/01_bottom_anoxia.R</code></td>
+<td>observed against simulated bottom DO and anoxic days per water year</td>
+</tr>
+<tr class="odd">
+<td><code>calibration/alum/01_alum_fit.R</code></td>
+<td>FRP, total P and chlorophyll by year for an alum-on run</td>
+</tr>
+<tr class="even">
+<td><code>calibration/light/*.R</code></td>
+<td>light data audit, model light check, resuspension sensitivity</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="sec-stages" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-stages"><span class="header-section-number">3</span> What was done, stage by stage</h2>
+<div id="tbl-stages" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Stages, what each changed, and the outcome.
+</figcaption>
+<div aria-describedby="tbl-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>What was freed or changed</th>
+<th>Window</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2b</td>
+<td>phytoplankton, N, P, sediment fluxes (pre-alum)</td>
+<td>1990-2006</td>
+<td>start point; best phi 0.70 (held-out 1.48)</td>
+</tr>
+<tr class="even">
+<td>2c</td>
+<td>sediment NH4 and FRP anchored to zone estimates</td>
+<td>1990-2006</td>
+<td>no gain (0.76; FRP and ammonium worse)</td>
+</tr>
+<tr class="odd">
+<td>2d</td>
+<td>kpo4p and w_po4ads fixed; sediment fluxes within ×4 of 2b</td>
+<td>1990-2006</td>
+<td>no gain (0.69; held-out 1.61)</td>
+</tr>
+<tr class="even">
+<td>2e</td>
+<td>per-zone sediment nitrate flux, Ksed, capped rdenit, POM rates</td>
+<td>1990-2006</td>
+<td>cal 0.59, held-out 2.06; chlorophyll 16 µg/L</td>
+</tr>
+<tr class="odd">
+<td>l</td>
+<td>resuspension, solids settling, Kw, Ke_ss, KePHY</td>
+<td>1990-2006</td>
+<td>0.51 → 0.34; Kd 2.3 → 0.7 m⁻¹</td>
+</tr>
+<tr class="even">
+<td>f</td>
+<td>biology and nutrients under corrected light</td>
+<td>1990-2006</td>
+<td>ties 2b (0.70)</td>
+</tr>
+<tr class="odd">
+<td>g</td>
+<td>diatom parameters, silica supply, seasonal terms</td>
+<td>1990-2006</td>
+<td>best biology; held-out 1.32</td>
+</tr>
+<tr class="even">
+<td>alum</td>
+<td>8 alum parameters, alum on</td>
+<td>2005-2022</td>
+<td>1.14 → 0.51</td>
+</tr>
+<tr class="odd">
+<td>o</td>
+<td>sediment O2 demand, Ksed_oxy, DOM and POC oxygen use</td>
+<td>2005-2022</td>
+<td>anoxia matched</td>
+</tr>
+<tr class="even">
+<td>p</td>
+<td>alum plus sediment P release</td>
+<td>2005-2022</td>
+<td>no gain (0.52)</td>
+</tr>
+<tr class="odd">
+<td>l2, o2</td>
+<td>light and oxygen refitted on the final biology</td>
+<td>2005-2022</td>
+<td>chlorophyll better, anoxia +20%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<section id="sec-nutrients-diagnosis" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="sec-nutrients-diagnosis"><span class="header-section-number">3.1</span> Why the nutrient fit stalled (2c-2d)</h3>
+<p>Step 2b left total N and P well fitted but the species poorly fitted (FRP and ammonium too low, nitrate too high). Variant 2c anchored the sediment FRP and ammonium release to zone values that had been derived from zone-median summer concentrations. These are <strong>not measured fluxes</strong>, which I should have flagged. The result was worse: the release was recycled by the phytoplankton and settled out again (<a href="#tbl-2c" class="quarto-xref">Table&nbsp;2</a>).</p>
+<div id="tbl-2c" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-2c-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Surface means from 20-year forward runs, 1990-2009.
+</figcaption>
+<div aria-describedby="tbl-2c-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>20-year surface mean (g/m³; chlorophyll µg/L)</th>
+<th>Observed</th>
+<th>2b</th>
+<th>2c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chlorophyll</td>
+<td>11.6</td>
+<td>14.0</td>
+<td>16.3</td>
+</tr>
+<tr class="even">
+<td>FRP</td>
+<td>0.0118</td>
+<td>0.0028</td>
+<td>0.0058</td>
+</tr>
+<tr class="odd">
+<td>Ammonium</td>
+<td>0.0282</td>
+<td>0.0056</td>
+<td>0.0055</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The budgets showed why (<a href="#fig-budget" class="quarto-xref">Figure&nbsp;1</a>). In 2b the lake lost 355 t N/yr internally (71% of 502 t/yr inflow), of which 192 t/yr was water-column denitrification, and 11.6 t P/yr of a 29.4 t/yr input. In 2c the sediment ammonium release was 1,732 t N/yr and the FRP release 57 t P/yr (twice the external P load), yet the internal loss barely changed: the extra nutrient was taken up and lost again.</p>
+<div id="fig-budget" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-budget-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/step2c/budget_process.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: N and P budgets for the forward runs (2b, 2c, 2d, 2e members)."><img src="images/step2c/budget_process.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-budget-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: N and P budgets for the forward runs (2b, 2c, 2d, 2e members).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-aed-source" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="sec-aed-source"><span class="header-section-number">3.2</span> What the AED source showed</h3>
+<p>Reading <code>libaed-water</code> (and the alum module in <code>AED_Tools_Private/libaed-dev</code>) gave structural explanations, each confirmed against the model output:</p>
+<ul>
+<li><strong>No sediment nitrate sink.</strong> <code>fsed_nit = 0</code> in all four sediment zones, and the linked <code>SDF_Fsed_nit</code> overrides <code>aed_nitrogen</code>’s own value. The only large N sink was water-column denitrification <code>NIT_nit × Rdenit × Kdenit/(Kdenit+O2) × fT × NO3/(5+NO3)</code>, which the calibration pushed high even in oxic water.</li>
+<li><strong>Sediment fluxes are not the parameter value.</strong> The realised ammonium flux is <code>Fsed_amm × Ksed_amm/(Ksed_amm+O2) × fT</code>; with oxic bottom water this is about 12-14% of the parameter in summer.</li>
+<li><strong>P sorption was inert.</strong> <code>ads_use_external_tss = .true.</code> makes the module read an empty global <code>tss</code> instead of the simulated solids, so adsorbed P was about 2% of FRP and the sorption parameters <code>kpo4p</code> and <code>w_po4ads</code> had no effect. A test with the switch off (<a href="#tbl-sorption" class="quarto-xref">Table&nbsp;3</a>) showed that real sorption removes more P and worsens FRP, so it was left off.</li>
+<li><strong>Particulate organic matter was nearly inert.</strong> <code>w_pom</code> ended at -0.006 m/d, PON and POP hydrolysis rates imply timescales of years, resuspension is off and the sediment organic pools do not evolve; settled material is simply lost.</li>
+<li><strong>Alum pH efficiency is off.</strong> <code>ads_use_pH = .false.</code>, so the alum factor <code>fpH</code> is 1; there is also no carbon module to supply pH.</li>
+</ul>
+<div id="tbl-sorption" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sorption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: P sorption test. Changing the switch has to be written into the model file with <code>write_configuration()</code>; <code>run_aeme_param()</code> only edits parameters.
+</figcaption>
+<div aria-describedby="tbl-sorption-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Case (1998-2003, 2b member)</th>
+<th>Adsorbed P / FRP</th>
+<th>Surface FRP (g/m³; obs 0.0117)</th>
+<th>Surface TP (obs 0.041)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>as built (external TSS)</td>
+<td>0.03</td>
+<td>0.0022</td>
+<td>0.039</td>
+</tr>
+<tr class="even">
+<td>solids on, kpo4p 11.4</td>
+<td>8.4</td>
+<td>0.0003</td>
+<td>0.009</td>
+</tr>
+<tr class="odd">
+<td>solids on, kpo4p 0.5</td>
+<td>0.83</td>
+<td>0.0007</td>
+<td>0.029</td>
+</tr>
+<tr class="even">
+<td>solids on, kpo4p 0.1</td>
+<td>0.22</td>
+<td>0.0015</td>
+<td>0.035</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="variant-2e-structural-fixes" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="variant-2e-structural-fixes"><span class="header-section-number">3.3</span> Variant 2e: structural fixes</h3>
+<p>2e added a per-zone sediment nitrate flux (with <code>Fsed_nit_model = 2</code>), made <code>Ksed_amm</code> and <code>Ksed_nit</code> free, capped <code>rdenit</code> at 5, and widened the settling and hydrolysis ranges for POM. The calibration score fell to 0.59 (2b: 0.70) but the held-out score rose to 2.06 (2b: 1.48), so it overfitted. Sediment nitrate uptake became a large sink (288 t N/yr), chlorophyll was 16.1 µg/L and nitrate 2.4 times observed. The next diagnostic explained why.</p>
+</section>
+<section id="sec-light" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="sec-light"><span class="header-section-number">3.4</span> Light limitation was the real problem</h3>
+<p>In AED the growth rate is <code>R_growth × fT × min(fI, fNit, fPho, fSil)</code>. The growth-limitation function showed the light factor was the smallest for 80-90% of the biomass in every season (<a href="#fig-limit" class="quarto-xref">Figure&nbsp;2</a>), even with the daily output sampled at midday. Hourly output (<code>nsave = 1</code>, one year) confirmed this: the model output is in UTC, so the daily samples at 00:00 UTC were midday in New Zealand, and in daylight (PAR &gt; 1) cyano was 70% light-limited and 30% P-limited, green 79% light, 15% N and 6% P.</p>
+<div id="fig-limit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-limit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/step2c/limitation_e.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Share of growth limited by each factor, by month, 2e member."><img src="images/step2c/limitation_e.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-limit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Share of growth limited by each factor, by month, 2e member.
+</figcaption>
+</figure>
+</div>
+<p>The light data audit (<code>calibration/light/01_light_data.R</code>) gave priors for the attenuation:</p>
+<div id="tbl-lightdata" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-lightdata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Observed light attenuation.
+</figcaption>
+<div aria-describedby="tbl-lightdata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>n</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>VLEC against Secchi</td>
+<td>210</td>
+<td>VLEC = 1.85 / Secchi, r = 0.81</td>
+</tr>
+<tr class="even">
+<td>PAR-profile Kd against Secchi</td>
+<td>142</td>
+<td>k = 2.07, r = 0.39 (noisy; only a secondary target)</td>
+</tr>
+<tr class="odd">
+<td>Kd = Kw + a × chl + b × turbidity (VLEC)</td>
+<td>186</td>
+<td>Kw 0.37 m⁻¹, a = 0.0076 m⁻¹ per mg/m³ chl, b = 0.093 m⁻¹ per NTU</td>
+</tr>
+<tr class="even">
+<td>same, 1.7 / Secchi</td>
+<td>290</td>
+<td>Kw 0.36, a = 0.0058, b = 0.078</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The model, in contrast, had <strong>mean TSS of 34 g/m³ in the upper 5 m</strong> (almost all in the second solids class, from resuspension at <code>epsilon = 3e-4</code>), giving 2.36 m⁻¹ against 0.79 observed (the model’s own water term was 0.45, phytoplankton 0.03, solids 2.05). Simulated Kd did not track the observations (r = -0.03). A sensitivity test of the resuspension rate (<a href="#tbl-resus" class="quarto-xref">Table&nbsp;5</a>) showed that cutting <code>epsilon</code> tenfold brings attenuation to the observed value but sends chlorophyll to 46 µg/L, confirming that the biology had been tuned to a dark lake.</p>
+<div id="tbl-resus" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-resus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Resuspension sensitivity (observed Kd 0.83 m⁻¹).
+</figcaption>
+<div aria-describedby="tbl-resus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Case (1998-2002, 2e member)</th>
+<th>TSS (g/m³)</th>
+<th>Attenuation (m⁻¹)</th>
+<th>Chlorophyll (µg/L)</th>
+<th>Cyano limited by light</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>base (<code>epsilon</code> 3e-4)</td>
+<td>32.7</td>
+<td>2.28</td>
+<td>15.6</td>
+<td>80%</td>
+</tr>
+<tr class="even">
+<td><code>epsilon</code> ÷ 10</td>
+<td>5.8</td>
+<td>0.85</td>
+<td>46.5</td>
+<td>4%</td>
+</tr>
+<tr class="odd">
+<td><code>epsilon</code> ÷ 100</td>
+<td>3.1</td>
+<td>0.71</td>
+<td>50.9</td>
+<td>2%</td>
+</tr>
+<tr class="even">
+<td><code>tau_0</code> × 3</td>
+<td>29.1</td>
+<td>2.09</td>
+<td>18.6</td>
+<td>73%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-l-f-g" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="sec-l-f-g"><span class="header-section-number">3.5</span> The light stage and the biology refit</h3>
+<ul>
+<li><strong>l (10 parameters):</strong> <code>epsilon</code>, <code>tau_0</code> and <code>w_ss</code> for both solids classes, <code>Ke_ss</code>, <code>Kw</code> and <code>KePHY</code> against Kd (VLEC or 1.85 / Secchi), TSS against 1.5 × turbidity, and a temperature guard. Score 0.51 → 0.34: mean TSS 4.8 g/m³ and Kd 0.62-0.72 m⁻¹ against 0.79 observed. Timing of resuspension was not captured (r about 0.1). Chlorophyll then rose to about 50 µg/L with P as the limiting factor, as expected.</li>
+<li><strong>f:</strong> biology and nutrients recalibrated with the light fixed. It tied 2b (score 0.70) and chlorophyll returned to 14.7 µg/L, but the seasonal cycle was wrong: model chlorophyll peaked in January-March (24-31 µg/L against 10-13 observed) and was about half the observed in July-October, so nitrate piled up in winter (0.07-0.11 against 0.02-0.035).</li>
+<li><strong>Silica.</strong> Silica was 1 mmol/m³ everywhere, so diatoms were always limited. With 150-300 mmol/m³, a September-October diatom bloom appeared (chlorophyll 10-14 µg/L against 5 µg/L) and October nitrate fell from 0.095 to 0.012-0.044 g/m³ (<a href="#tbl-silica" class="quarto-xref">Table&nbsp;6</a>). AEME multiplies large <code>SIL_rsi</code> inputs by 16.64 (a g/m³ to mmol/m³ conversion applied above an unknown threshold), so the concentration is written directly into the built inflow files.</li>
+<li><strong>g:</strong> freed seven diatom parameters, set silica to 200 mmol/m³ (an assumption; no stream silica measurement was available) and added monthly-climatology terms for chlorophyll, nitrate, ammonium, FRP and total P to the score. This is the best biology so far: on the shared metrics the calibration score is 0.61 and held-out 1.32 (2b: 1.48).</li>
+</ul>
+<div id="tbl-silica" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-silica-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Silica test with the 2f member (1998-2003).
+</figcaption>
+<div aria-describedby="tbl-silica-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Silica supply (mmol/m³)</th>
+<th>Mean chlorophyll (µg/L)</th>
+<th>Sep chlorophyll</th>
+<th>Oct chlorophyll</th>
+<th>Oct nitrate (g/m³)</th>
+<th>Diatom C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>14.8</td>
+<td>4.7</td>
+<td>5.0</td>
+<td>0.095</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<td>50</td>
+<td>15.2</td>
+<td>6.7</td>
+<td>5.9</td>
+<td>0.079</td>
+<td>1.1</td>
+</tr>
+<tr class="odd">
+<td>150</td>
+<td>15.8</td>
+<td>10.2</td>
+<td>8.4</td>
+<td>0.044</td>
+<td>3.4</td>
+</tr>
+<tr class="even">
+<td>300</td>
+<td>16.2</td>
+<td>13.0</td>
+<td>13.9</td>
+<td>0.012</td>
+<td>6.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>20-year surface means for the 2g member (observed in brackets): chlorophyll 13.6 µg/L (11.6), total P 0.0375 (0.0384), FRP 0.0143 (0.0118), nitrate 0.0132 (0.0131), ammonium 0.0166 (0.0282), total N 0.413 (0.434).</p>
+</section>
+<section id="sec-alum" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="sec-alum"><span class="header-section-number">3.6</span> Alum calibration</h3>
+<p>With alum on (step 3 alum base, 2005-2022, pools accumulating), the 2g member with the old step 3 alum values removed too much P (total P and FRP biased low). Eight alum parameters (<code>w_ala</code>, <code>k_w</code>, <code>K_P</code>, <code>k_s</code>, <code>k_age_w</code>, <code>k_age_s</code>, <code>k_bur</code>, <code>k_res</code>) were calibrated to FRP, total P, chlorophyll, nitrogen and aluminium, with tighter FRP scales than step 3.</p>
+<div id="tbl-alum" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Alum round 1 (tolerance units). Score 1.14 → 0.51; held-out 3.84 → 2.89.
+</figcaption>
+<div aria-describedby="tbl-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Residual (calibration 2006-06 to 2018-06)</th>
+<th>Start</th>
+<th>Best</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Total P bias</td>
+<td>-2.26</td>
+<td>-0.08</td>
+</tr>
+<tr class="even">
+<td>FRP bias</td>
+<td>-1.45</td>
+<td>-0.36</td>
+</tr>
+<tr class="odd">
+<td>Bottom summer FRP bias</td>
+<td>-0.24</td>
+<td>+0.23</td>
+</tr>
+<tr class="even">
+<td>Chlorophyll bias</td>
+<td>0.25</td>
+<td>0.42</td>
+</tr>
+<tr class="odd">
+<td>Aluminium RMSE</td>
+<td>1.41</td>
+<td>1.43</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The held-out years showed the weakness: observed total P rose from 0.014 g/m³ (2018) to 0.030 (2021) and 0.040 (2022), while the simulation stayed at 0.014-0.018. The dose record itself reproduces the Puarenga gap in 2019 (dose 0), so the model sees the dosing change. Round 2 widened the ranges and moved the calibration window to 2020-06; the best score was unchanged (0.50) and the full-period fit was slightly worse, so round 1 was kept. A joint stage (<code>p</code>) freeing the alum parameters and the sediment P release also gave no gain (best score stayed 0.52). The missing piece is probably an event-driven external P load in 2021-22 (the inflow P concentrations are nearly constant in the file) or alum-bound P release; a pH-dependent alum efficiency (<code>fpH</code>) would need a pH series and the carbon module (lake pH median 6.85, 5-95% range 6.06-7.82).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/alum_calib/annual_o.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Annual FRP, total P and chlorophyll, observed against simulated, O member (alum on)."><img src="images/alum_calib/annual_o.png" class="img-fluid figure-img" alt="Annual FRP, total P and chlorophyll, observed against simulated, O member (alum on)."></a></p>
+<figcaption>Annual FRP, total P and chlorophyll, observed against simulated, O member (alum on).</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/alum_calib/frp_series_o.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="FRP time series at the surface and bottom, O member."><img src="images/alum_calib/frp_series_o.png" class="img-fluid figure-img" alt="FRP time series at the surface and bottom, O member."></a></p>
+<figcaption>FRP time series at the surface and bottom, O member.</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-anoxia" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="sec-anoxia"><span class="header-section-number">3.7</span> Bottom anoxia</h3>
+<p>The 2g member (alum off) reproduced the daily bottom oxygen at 17 m and deeper (r = 0.90, bias +0.25 mg/L) but underestimated anoxia: 96 anoxic days against 240 observed on the observed days, and none at all in 2008, 2009, 2012 and 2020. The depletion rate of bottom DO in October-February was also about half the observed in several years.</p>
+<p>Stage <code>o</code> (alum on) freed the sediment oxygen demand in four zones, <code>Ksed_oxy</code>, <code>theta_sed_oxy</code>, <code>rdom_minerl</code>, <code>rpoc_hydrol</code> and <code>theta_minerl</code>, with the score extended by bottom-DO bias and RMSE, anoxic days and annual minimum per water year, and the depletion rate. Results over 2005-2022 are in <a href="#tbl-anoxia" class="quarto-xref">Table&nbsp;8</a>.</p>
+<div id="tbl-anoxia" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-anoxia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Bottom anoxia (bottom ≥ 17 m, daily means on observed days).
+</figcaption>
+<div aria-describedby="tbl-anoxia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>2g (alum off)</th>
+<th>O member</th>
+<th>O2 member</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Anoxic days on observed days (&lt; 2 mg/L)</td>
+<td>96</td>
+<td>236</td>
+<td>288</td>
+<td>239</td>
+</tr>
+<tr class="even">
+<td>Hits / misses / false alarms</td>
+<td>78 / 162 / 18</td>
+<td>128 / 111 / 108</td>
+<td>146 / 93 / 142</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Mean anoxic days per water year (15 years)</td>
+<td>6</td>
+<td>16</td>
+<td>19</td>
+<td>16</td>
+</tr>
+<tr class="even">
+<td>Year-to-year correlation</td>
+<td>0.58</td>
+<td>0.74</td>
+<td>0.65</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Bottom DO: correlation / bias / RMSE (mg/L)</td>
+<td>0.90 / +0.25 / 1.25</td>
+<td>0.91 / -0.08 / 1.18</td>
+<td>0.91 / -0.08 / 1.19</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/anoxia/bottom_do_o.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Observed and simulated bottom DO, O member."><img src="images/anoxia/bottom_do_o.png" class="img-fluid figure-img" alt="Observed and simulated bottom DO, O member."></a></p>
+<figcaption>Observed and simulated bottom DO, O member.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/anoxia/anoxic_days_o.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Anoxic days per water year, observed against simulated, O member."><img src="images/anoxia/anoxic_days_o.png" class="img-fluid figure-img" alt="Anoxic days per water year, observed against simulated, O member."></a></p>
+<figcaption>Anoxic days per water year, observed against simulated, O member.</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-quirks" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-quirks"><span class="header-section-number">4</span> Bugs and quirks found in the toolchain</h2>
+<ul>
+<li><strong>AEME <code>get_var()</code></strong> now returns the simulated column named <code>value</code>, not <code>sim</code>; <code>csps_pair()</code> was updated.</li>
+<li><strong>Weir fit:</strong> the newer AEME fits a GLM weir by default, which breaks the nml check; <code>glm_weir = FALSE</code> is needed in the build to keep the outflow file.</li>
+<li><strong><code>wq_init_vals</code></strong> are about 1000 times too low (oxygen 0.32 against <code>oxy_initial</code> 312.5); the effect fades within about 1.5 years (differences below 5% after 1990), so the 540-day spin-up covers it.</li>
+<li><strong>Silica:</strong> inputs above an unknown threshold are multiplied by 16.64 on build.</li>
+<li><strong>No <code>inflow_param()</code></strong>, and <code>LKE_photich</code> and <code>RAD_secchi</code> are not available as model output for <code>glm_aed</code> (naming entries only). Simulated Secchi is not available, so the light stage compares the extinction coefficient to the observed Kd.</li>
+<li><strong>Configuration switches</strong> (structural nml settings) must be written with <code>write_configuration()</code>; <code>run_aeme_param()</code> only edits parameters in an existing nml. R scripts must not be edited while a run is reading them.</li>
+<li><strong>Disk:</strong> the alum-on runs write about 6 GB per worker; eight workers filled the drive once. Use six workers and delete <code>*/runs/work</code> and forward <code>build</code> folders after use.</li>
+</ul>
+</section>
+<section id="sec-limits" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-limits"><span class="header-section-number">5</span> Known limitations and next steps</h2>
+<ul>
+<li><strong>FRP:</strong> surface FRP is about 45% low in the 2007-2022 mean. The model matches most years (observed values are often near detection) but misses episodes such as 2009 and the 2021-22 rebound.</li>
+<li><strong>Total P rebound</strong> in 2021-22 is not reproduced; an event-driven external load or alum-bound P release is the likely cause.</li>
+<li><strong>Timing:</strong> month-to-month correlation is about zero for chlorophyll, total P and FRP, and the light and solids timing (Kd r about 0.1) is not captured.</li>
+<li><strong>Alum pH efficiency</strong> (<code>fpH</code>) is off. Calibrating <code>pH_opt</code> and <code>sigma_pH</code> needs a prescribed pH series (the <code>ph_mode</code> option in <code>aed_carbon</code>).</li>
+<li><strong>Silica</strong> (200 mmol/m³) is an assumption; a stream measurement would replace it.</li>
+<li><strong>Choose the final member</strong> (O for anoxia, O2 for chlorophyll and bottom FRP) and rerun the NZESM scenarios and the alum/no-alum comparison with it. The scenario and uncertainty runs in <code>calibration/scenarios30</code> and <code>calibration/uncertainty</code> were made with the earlier 2b and step 3 members and have not been rerun.</li>
+</ul>
+</section>
+<section id="sec-repro" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-repro"><span class="header-section-number">6</span> Reproducing the work</h2>
+<p>All stage scripts are in <code>calibration/step2/</code>, <code>calibration/light/</code>, <code>calibration/anoxia/</code> and <code>calibration/alum/</code>. The parameter tables of the final members are in <code>calibration/final/</code> (<code>params_step2o_best.csv</code>, <code>params_step2o2_best.csv</code>, plus the light round 2 and 2g members) with a README.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># one stage (example: the alum stage), 80 members x 6 iterations, 6 workers</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">powershell</span> <span class="at">-File</span> calibration/step2/run_step2alum.ps1</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># forward run of a stage's best member (20 years, alum on)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">S2_BASE</span><span class="op">=</span>calibration/step3/aeme_base_2005_alum.rds <span class="va">FWD_STAGE</span><span class="op">=</span>o <span class="va">FWD_ALUM</span><span class="op">=</span>1 <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">FWD_START</span><span class="op">=</span>2005-01-01 <span class="va">FWD_STOP</span><span class="op">=</span>2022-06-29 <span class="ex">Rscript</span> calibration/step2/run_forward.R</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># diagnostics</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">ANOX_RUN</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/anoxia/01_bottom_anoxia.R</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">ALUM_RUN</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/alum/01_alum_fit.R</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">FWD_STAGES</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/step2/run_limitation.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>None of the new calibration folders (<code>calibration/</code>, <code>R/phyto_limitation_helpers.R</code>, <code>R/nutrient_budget_helpers.R</code>) and none of the new figure folders under <code>website/images/</code> has been committed to git yet.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Lake Rotorua GLM-AED calibration report"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Nutrients, light, alum and bottom anoxia: work done 21-26 October 2026"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: false</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>This page documents the calibration work done on the Lake Rotorua GLM-AED model after the first biogeochemistry (step 2b) and alum (step 3) fits. Everything below was run on the project machine with the scripts in <span class="in">`calibration/`</span> (see @sec-repro); the figures come from <span class="in">`website/images/`</span>. The page does not execute any code, so it renders without the model outputs.</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>**What was done, in order**</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Reviewed why total N and total P and the nutrient species were still poorly fitted after step 2b, built budget tools (<span class="in">`R/nutrient_budget_helpers.R`</span>), and tried three variants of the nutrient calibration (2c, 2d, 2e).</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Read the AED source (<span class="in">`libaed-water`</span>) and found structural reasons for the misfit: no sediment nitrate sink, inert P sorption, inert particulate organic matter, and sediment fluxes that are applied with an oxygen and temperature factor.</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Found that the model was **light-limited because its suspended solids were about 7 times too high** (34 g/m³ against a few g/m³), with attenuation of 2.3 m⁻¹ against 0.8 observed. The biology had been tuned to a dark lake.</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Calibrated the light and solids parameters (stage <span class="in">`l`</span>), then recalibrated the phytoplankton and nutrients under the corrected light (<span class="in">`f`</span>), then added diatoms with a silica supply and seasonal-cycle terms (<span class="in">`g`</span>).</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Switched the alum module on and calibrated the alum parameters to FRP and total P (<span class="in">`alum`</span>), then tuned bottom-water oxygen and anoxia with alum on (<span class="in">`o`</span>). Two further rounds (<span class="in">`p`</span>, <span class="in">`l2`</span>, <span class="in">`o2`</span>) tested a joint FRP stage and a second light and oxygen fit.</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>**Where the model stands** (2007-2022 means, alum on; observed in brackets)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> O member <span class="pp">|</span> O2 member <span class="pp">|</span> Observed <span class="pp">|</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Anoxic days (bottom DO &lt; 2 mg/L) on observed days <span class="pp">|</span> 236 <span class="pp">|</span> 288 <span class="pp">|</span> 239 <span class="pp">|</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Year-to-year correlation of anoxic days <span class="pp">|</span> 0.74 <span class="pp">|</span> 0.65 <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom DO (≥ 17 m): correlation / bias (mg/L) <span class="pp">|</span> 0.91 / -0.08 <span class="pp">|</span> 0.91 / -0.08 <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Chlorophyll (µg/L) <span class="pp">|</span> 11.6 (+17%) <span class="pp">|</span> 10.6 (+7%) <span class="pp">|</span> 9.9 <span class="pp">|</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Total P surface (g/m³) <span class="pp">|</span> 0.0212 (-3%) <span class="pp">|</span> 0.0208 (-5%) <span class="pp">|</span> 0.0219 <span class="pp">|</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP surface (g/m³) <span class="pp">|</span> 0.0018 (-46%) <span class="pp">|</span> 0.0019 (-44%) <span class="pp">|</span> 0.0034 <span class="pp">|</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP bottom (g/m³) <span class="pp">|</span> 0.0050 (-22%) <span class="pp">|</span> 0.0054 (-16%) <span class="pp">|</span> 0.0065 <span class="pp">|</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>Pre-alum (1990-2009, alum off) the O member gives: nitrate 0.0130 (observed 0.0131), total P 0.0390 (0.0384), FRP 0.0124 (0.0118), chlorophyll 13.1 µg/L (11.6).</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>**Main limitations:** surface FRP is about 45% low (high-FRP episodes are missed), the 2021-22 total P rebound is not reproduced, and there is no month-to-month skill for chlorophyll, total P or FRP (@sec-limits).</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Set-up common to the stages {#sec-setup}</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model and data</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Model:** GLM v4 with AED. AED modules in the build: sedflux (constant 2D, four sediment zones), noncohesive solids, oxygen, silica, nitrogen, phosphorus, organic matter (with refractory pools), phytoplankton (cyanobacteria, greens, diatoms), totals and alum.</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Forcing:** hourly bias-corrected ERA5 (wind unscaled), 14 inflows including rainfall, geothermal and the wastewater plant, and the Ōhau weir outflow file.</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Spin-up:** 540 days in every run.</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Two bases.** The pre-alum base `calibration/step2/aeme_base_1990_v2.rds` has **no alum dose in its inflows**; the alum base <span class="in">`calibration/step3/aeme_base_2005_alum.rds`</span> does (Utuhina from 2006-06, Puarenga from 2010 with a gap in 2019). Any alum calibration has to use the alum base. A first attempt on the pre-alum base gave 80 identical members because no alum entered the lake.</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Observations:** lake chemistry at two sites since 1990 (about 25 samples a year), buoy and sensor oxygen and temperature (dense from 2007), Secchi depth, the visible-light extinction coefficient (VLEC, 1996-2017), PAR profiles and turbidity.</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration method</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Ensemble smoother with multiple data assimilation (ES-MDA)** in <span class="in">`calibration/step2/step2_ies.R`</span>: an ensemble of 60 to 120 parameter sets, 5 or 6 assimilation steps, parameters on a <span class="co">[</span><span class="ot">0,1</span><span class="co">]</span> scale (log where the range spans orders of magnitude), run in parallel. The final best member is the lowest-phi member of the last ensemble.</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Residuals** are in units of a stated tolerance, so each counts equally. The score phi is the mean squared residual. The standard nutrient score has bias and RMSE of log ratios for chlorophyll, total P, FRP, total N, nitrate and ammonium in the surface 0-5 m, five chlorophyll signature terms, and a temperature and oxygen guard. Later stages added terms (@tbl-stages).</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Stage switches** are in <span class="in">`calibration/step2/step2_common.R`</span> and chosen with the environment variable <span class="in">`S2_STAGE`</span>. Each stage starts from the previous best member and fixes everything it does not free.</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Unattended chains:** <span class="in">`calibration/step2/pipeline*.sh`</span> run a stage, then a 20- or 17-year forward run and the diagnostics, writing progress to <span class="in">`calibration/logs/pipeline.status`</span>.</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnostic tools written</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Tool <span class="pp">|</span> Purpose <span class="pp">|</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/nutrient_budget_helpers.R`</span> <span class="pp">|</span> <span class="in">`nutrient_budget()`</span>, <span class="in">`budget_table()`</span>, <span class="in">`plot_nutrient_budget()`</span>: N and P budgets (t/yr) from the GLM mass-balance csv (inflow, outflow, stock change) and <span class="in">`output.nc`</span> (denitrification, uptake, sediment fluxes) <span class="pp">|</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/phyto_limitation_helpers.R`</span> <span class="pp">|</span> <span class="in">`phyto_limitation()`</span>, <span class="in">`plot_phyto_limitation()`</span>: share of growth limited by light, N, P or silica, by month or hour <span class="pp">|</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/step2/run_forward.R`</span> <span class="pp">|</span> one forward run of a stage's best member, with the mass balance written <span class="pp">|</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/anoxia/01_bottom_anoxia.R`</span> <span class="pp">|</span> observed against simulated bottom DO and anoxic days per water year <span class="pp">|</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/alum/01_alum_fit.R`</span> <span class="pp">|</span> FRP, total P and chlorophyll by year for an alum-on run <span class="pp">|</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/light/*.R`</span> <span class="pp">|</span> light data audit, model light check, resuspension sensitivity <span class="pp">|</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## What was done, stage by stage {#sec-stages}</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stage <span class="pp">|</span> What was freed or changed <span class="pp">|</span> Window <span class="pp">|</span> Result <span class="pp">|</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2b <span class="pp">|</span> phytoplankton, N, P, sediment fluxes (pre-alum) <span class="pp">|</span> 1990-2006 <span class="pp">|</span> start point; best phi 0.70 (held-out 1.48) <span class="pp">|</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2c <span class="pp">|</span> sediment NH4 and FRP anchored to zone estimates <span class="pp">|</span> 1990-2006 <span class="pp">|</span> no gain (0.76; FRP and ammonium worse) <span class="pp">|</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2d <span class="pp">|</span> kpo4p and w_po4ads fixed; sediment fluxes within ×4 of 2b <span class="pp">|</span> 1990-2006 <span class="pp">|</span> no gain (0.69; held-out 1.61) <span class="pp">|</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2e <span class="pp">|</span> per-zone sediment nitrate flux, Ksed, capped rdenit, POM rates <span class="pp">|</span> 1990-2006 <span class="pp">|</span> cal 0.59, held-out 2.06; chlorophyll 16 µg/L <span class="pp">|</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> l <span class="pp">|</span> resuspension, solids settling, Kw, Ke_ss, KePHY <span class="pp">|</span> 1990-2006 <span class="pp">|</span> 0.51 → 0.34; Kd 2.3 → 0.7 m⁻¹ <span class="pp">|</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> f <span class="pp">|</span> biology and nutrients under corrected light <span class="pp">|</span> 1990-2006 <span class="pp">|</span> ties 2b (0.70) <span class="pp">|</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> g <span class="pp">|</span> diatom parameters, silica supply, seasonal terms <span class="pp">|</span> 1990-2006 <span class="pp">|</span> best biology; held-out 1.32 <span class="pp">|</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> alum <span class="pp">|</span> 8 alum parameters, alum on <span class="pp">|</span> 2005-2022 <span class="pp">|</span> 1.14 → 0.51 <span class="pp">|</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> o <span class="pp">|</span> sediment O2 demand, Ksed_oxy, DOM and POC oxygen use <span class="pp">|</span> 2005-2022 <span class="pp">|</span> anoxia matched <span class="pp">|</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> p <span class="pp">|</span> alum plus sediment P release <span class="pp">|</span> 2005-2022 <span class="pp">|</span> no gain (0.52) <span class="pp">|</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> l2, o2 <span class="pp">|</span> light and oxygen refitted on the final biology <span class="pp">|</span> 2005-2022 <span class="pp">|</span> chlorophyll better, anoxia +20% <span class="pp">|</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>: Stages, what each changed, and the outcome. {#tbl-stages}</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why the nutrient fit stalled (2c-2d) {#sec-nutrients-diagnosis}</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>Step 2b left total N and P well fitted but the species poorly fitted (FRP and ammonium too low, nitrate too high). Variant 2c anchored the sediment FRP and ammonium release to zone values that had been derived from zone-median summer concentrations. These are **not measured fluxes**, which I should have flagged. The result was worse: the release was recycled by the phytoplankton and settled out again (@tbl-2c).</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 20-year surface mean (g/m³; chlorophyll µg/L) <span class="pp">|</span> Observed <span class="pp">|</span> 2b <span class="pp">|</span> 2c <span class="pp">|</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Chlorophyll <span class="pp">|</span> 11.6 <span class="pp">|</span> 14.0 <span class="pp">|</span> 16.3 <span class="pp">|</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP <span class="pp">|</span> 0.0118 <span class="pp">|</span> 0.0028 <span class="pp">|</span> 0.0058 <span class="pp">|</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ammonium <span class="pp">|</span> 0.0282 <span class="pp">|</span> 0.0056 <span class="pp">|</span> 0.0055 <span class="pp">|</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>: Surface means from 20-year forward runs, 1990-2009. {#tbl-2c}</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>The budgets showed why (@fig-budget). In 2b the lake lost 355 t N/yr internally (71% of 502 t/yr inflow), of which 192 t/yr was water-column denitrification, and 11.6 t P/yr of a 29.4 t/yr input. In 2c the sediment ammonium release was 1,732 t N/yr and the FRP release 57 t P/yr (twice the external P load), yet the internal loss barely changed: the extra nutrient was taken up and lost again.</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="al">![N and P budgets for the forward runs (2b, 2c, 2d, 2e members).](images/step2c/budget_process.png)</span>{#fig-budget}</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="fu">### What the AED source showed {#sec-aed-source}</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>Reading <span class="in">`libaed-water`</span> (and the alum module in <span class="in">`AED_Tools_Private/libaed-dev`</span>) gave structural explanations, each confirmed against the model output:</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**No sediment nitrate sink.** <span class="in">`fsed_nit = 0`</span> in all four sediment zones, and the linked <span class="in">`SDF_Fsed_nit`</span> overrides <span class="in">`aed_nitrogen`</span>'s own value. The only large N sink was water-column denitrification <span class="in">`NIT_nit × Rdenit × Kdenit/(Kdenit+O2) × fT × NO3/(5+NO3)`</span>, which the calibration pushed high even in oxic water.</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Sediment fluxes are not the parameter value.** The realised ammonium flux is <span class="in">`Fsed_amm × Ksed_amm/(Ksed_amm+O2) × fT`</span>; with oxic bottom water this is about 12-14% of the parameter in summer.</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**P sorption was inert.** <span class="in">`ads_use_external_tss = .true.`</span> makes the module read an empty global <span class="in">`tss`</span> instead of the simulated solids, so adsorbed P was about 2% of FRP and the sorption parameters <span class="in">`kpo4p`</span> and <span class="in">`w_po4ads`</span> had no effect. A test with the switch off (@tbl-sorption) showed that real sorption removes more P and worsens FRP, so it was left off.</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Particulate organic matter was nearly inert.** <span class="in">`w_pom`</span> ended at -0.006 m/d, PON and POP hydrolysis rates imply timescales of years, resuspension is off and the sediment organic pools do not evolve; settled material is simply lost.</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Alum pH efficiency is off.** <span class="in">`ads_use_pH = .false.`</span>, so the alum factor <span class="in">`fpH`</span> is 1; there is also no carbon module to supply pH.</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Case (1998-2003, 2b member) <span class="pp">|</span> Adsorbed P / FRP <span class="pp">|</span> Surface FRP (g/m³; obs 0.0117) <span class="pp">|</span> Surface TP (obs 0.041) <span class="pp">|</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> as built (external TSS) <span class="pp">|</span> 0.03 <span class="pp">|</span> 0.0022 <span class="pp">|</span> 0.039 <span class="pp">|</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> solids on, kpo4p 11.4 <span class="pp">|</span> 8.4 <span class="pp">|</span> 0.0003 <span class="pp">|</span> 0.009 <span class="pp">|</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> solids on, kpo4p 0.5 <span class="pp">|</span> 0.83 <span class="pp">|</span> 0.0007 <span class="pp">|</span> 0.029 <span class="pp">|</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> solids on, kpo4p 0.1 <span class="pp">|</span> 0.22 <span class="pp">|</span> 0.0015 <span class="pp">|</span> 0.035 <span class="pp">|</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>: P sorption test. Changing the switch has to be written into the model file with <span class="in">`write_configuration()`</span>; <span class="in">`run_aeme_param()`</span> only edits parameters. {#tbl-sorption}</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variant 2e: structural fixes</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>2e added a per-zone sediment nitrate flux (with <span class="in">`Fsed_nit_model = 2`</span>), made <span class="in">`Ksed_amm`</span> and <span class="in">`Ksed_nit`</span> free, capped <span class="in">`rdenit`</span> at 5, and widened the settling and hydrolysis ranges for POM. The calibration score fell to 0.59 (2b: 0.70) but the held-out score rose to 2.06 (2b: 1.48), so it overfitted. Sediment nitrate uptake became a large sink (288 t N/yr), chlorophyll was 16.1 µg/L and nitrate 2.4 times observed. The next diagnostic explained why.</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="fu">### Light limitation was the real problem {#sec-light}</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>In AED the growth rate is <span class="in">`R_growth × fT × min(fI, fNit, fPho, fSil)`</span>. The growth-limitation function showed the light factor was the smallest for 80-90% of the biomass in every season (@fig-limit), even with the daily output sampled at midday. Hourly output (<span class="in">`nsave = 1`</span>, one year) confirmed this: the model output is in UTC, so the daily samples at 00:00 UTC were midday in New Zealand, and in daylight (PAR &gt; 1) cyano was 70% light-limited and 30% P-limited, green 79% light, 15% N and 6% P.</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="al">![Share of growth limited by each factor, by month, 2e member.](images/step2c/limitation_e.png)</span>{#fig-limit}</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>The light data audit (<span class="in">`calibration/light/01_light_data.R`</span>) gave priors for the attenuation:</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Source <span class="pp">|</span> n <span class="pp">|</span> Result <span class="pp">|</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> VLEC against Secchi <span class="pp">|</span> 210 <span class="pp">|</span> VLEC = 1.85 / Secchi, r = 0.81 <span class="pp">|</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> PAR-profile Kd against Secchi <span class="pp">|</span> 142 <span class="pp">|</span> k = 2.07, r = 0.39 (noisy; only a secondary target) <span class="pp">|</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Kd = Kw + a × chl + b × turbidity (VLEC) <span class="pp">|</span> 186 <span class="pp">|</span> Kw 0.37 m⁻¹, a = 0.0076 m⁻¹ per mg/m³ chl, b = 0.093 m⁻¹ per NTU <span class="pp">|</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> same, 1.7 / Secchi <span class="pp">|</span> 290 <span class="pp">|</span> Kw 0.36, a = 0.0058, b = 0.078 <span class="pp">|</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>: Observed light attenuation. {#tbl-lightdata}</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>The model, in contrast, had **mean TSS of 34 g/m³ in the upper 5 m** (almost all in the second solids class, from resuspension at <span class="in">`epsilon = 3e-4`</span>), giving 2.36 m⁻¹ against 0.79 observed (the model's own water term was 0.45, phytoplankton 0.03, solids 2.05). Simulated Kd did not track the observations (r = -0.03). A sensitivity test of the resuspension rate (@tbl-resus) showed that cutting <span class="in">`epsilon`</span> tenfold brings attenuation to the observed value but sends chlorophyll to 46 µg/L, confirming that the biology had been tuned to a dark lake.</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Case (1998-2002, 2e member) <span class="pp">|</span> TSS (g/m³) <span class="pp">|</span> Attenuation (m⁻¹) <span class="pp">|</span> Chlorophyll (µg/L) <span class="pp">|</span> Cyano limited by light <span class="pp">|</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> base (<span class="in">`epsilon`</span> 3e-4) <span class="pp">|</span> 32.7 <span class="pp">|</span> 2.28 <span class="pp">|</span> 15.6 <span class="pp">|</span> 80% <span class="pp">|</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`epsilon`</span> ÷ 10 <span class="pp">|</span> 5.8 <span class="pp">|</span> 0.85 <span class="pp">|</span> 46.5 <span class="pp">|</span> 4% <span class="pp">|</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`epsilon`</span> ÷ 100 <span class="pp">|</span> 3.1 <span class="pp">|</span> 0.71 <span class="pp">|</span> 50.9 <span class="pp">|</span> 2% <span class="pp">|</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tau_0`</span> × 3 <span class="pp">|</span> 29.1 <span class="pp">|</span> 2.09 <span class="pp">|</span> 18.6 <span class="pp">|</span> 73% <span class="pp">|</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>: Resuspension sensitivity (observed Kd 0.83 m⁻¹). {#tbl-resus}</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a><span class="fu">### The light stage and the biology refit {#sec-l-f-g}</span></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**l (10 parameters):** <span class="in">`epsilon`</span>, <span class="in">`tau_0`</span> and <span class="in">`w_ss`</span> for both solids classes, <span class="in">`Ke_ss`</span>, <span class="in">`Kw`</span> and <span class="in">`KePHY`</span> against Kd (VLEC or 1.85 / Secchi), TSS against 1.5 × turbidity, and a temperature guard. Score 0.51 → 0.34: mean TSS 4.8 g/m³ and Kd 0.62-0.72 m⁻¹ against 0.79 observed. Timing of resuspension was not captured (r about 0.1). Chlorophyll then rose to about 50 µg/L with P as the limiting factor, as expected.</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**f:** biology and nutrients recalibrated with the light fixed. It tied 2b (score 0.70) and chlorophyll returned to 14.7 µg/L, but the seasonal cycle was wrong: model chlorophyll peaked in January-March (24-31 µg/L against 10-13 observed) and was about half the observed in July-October, so nitrate piled up in winter (0.07-0.11 against 0.02-0.035).</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Silica.** Silica was 1 mmol/m³ everywhere, so diatoms were always limited. With 150-300 mmol/m³, a September-October diatom bloom appeared (chlorophyll 10-14 µg/L against 5 µg/L) and October nitrate fell from 0.095 to 0.012-0.044 g/m³ (@tbl-silica). AEME multiplies large <span class="in">`SIL_rsi`</span> inputs by 16.64 (a g/m³ to mmol/m³ conversion applied above an unknown threshold), so the concentration is written directly into the built inflow files.</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**g:** freed seven diatom parameters, set silica to 200 mmol/m³ (an assumption; no stream silica measurement was available) and added monthly-climatology terms for chlorophyll, nitrate, ammonium, FRP and total P to the score. This is the best biology so far: on the shared metrics the calibration score is 0.61 and held-out 1.32 (2b: 1.48).</span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Silica supply (mmol/m³) <span class="pp">|</span> Mean chlorophyll (µg/L) <span class="pp">|</span> Sep chlorophyll <span class="pp">|</span> Oct chlorophyll <span class="pp">|</span> Oct nitrate (g/m³) <span class="pp">|</span> Diatom C <span class="pp">|</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|---|</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> 14.8 <span class="pp">|</span> 4.7 <span class="pp">|</span> 5.0 <span class="pp">|</span> 0.095 <span class="pp">|</span> 0.03 <span class="pp">|</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 50 <span class="pp">|</span> 15.2 <span class="pp">|</span> 6.7 <span class="pp">|</span> 5.9 <span class="pp">|</span> 0.079 <span class="pp">|</span> 1.1 <span class="pp">|</span></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 150 <span class="pp">|</span> 15.8 <span class="pp">|</span> 10.2 <span class="pp">|</span> 8.4 <span class="pp">|</span> 0.044 <span class="pp">|</span> 3.4 <span class="pp">|</span></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 300 <span class="pp">|</span> 16.2 <span class="pp">|</span> 13.0 <span class="pp">|</span> 13.9 <span class="pp">|</span> 0.012 <span class="pp">|</span> 6.5 <span class="pp">|</span></span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>: Silica test with the 2f member (1998-2003). {#tbl-silica}</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>20-year surface means for the 2g member (observed in brackets): chlorophyll 13.6 µg/L (11.6), total P 0.0375 (0.0384), FRP 0.0143 (0.0118), nitrate 0.0132 (0.0131), ammonium 0.0166 (0.0282), total N 0.413 (0.434).</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="fu">### Alum calibration {#sec-alum}</span></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>With alum on (step 3 alum base, 2005-2022, pools accumulating), the 2g member with the old step 3 alum values removed too much P (total P and FRP biased low). Eight alum parameters (<span class="in">`w_ala`</span>, <span class="in">`k_w`</span>, <span class="in">`K_P`</span>, <span class="in">`k_s`</span>, <span class="in">`k_age_w`</span>, <span class="in">`k_age_s`</span>, <span class="in">`k_bur`</span>, <span class="in">`k_res`</span>) were calibrated to FRP, total P, chlorophyll, nitrogen and aluminium, with tighter FRP scales than step 3.</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Residual (calibration 2006-06 to 2018-06) <span class="pp">|</span> Start <span class="pp">|</span> Best <span class="pp">|</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Total P bias <span class="pp">|</span> -2.26 <span class="pp">|</span> -0.08 <span class="pp">|</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP bias <span class="pp">|</span> -1.45 <span class="pp">|</span> -0.36 <span class="pp">|</span></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom summer FRP bias <span class="pp">|</span> -0.24 <span class="pp">|</span> +0.23 <span class="pp">|</span></span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Chlorophyll bias <span class="pp">|</span> 0.25 <span class="pp">|</span> 0.42 <span class="pp">|</span></span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aluminium RMSE <span class="pp">|</span> 1.41 <span class="pp">|</span> 1.43 <span class="pp">|</span></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>: Alum round 1 (tolerance units). Score 1.14 → 0.51; held-out 3.84 → 2.89. {#tbl-alum}</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>The held-out years showed the weakness: observed total P rose from 0.014 g/m³ (2018) to 0.030 (2021) and 0.040 (2022), while the simulation stayed at 0.014-0.018. The dose record itself reproduces the Puarenga gap in 2019 (dose 0), so the model sees the dosing change. Round 2 widened the ranges and moved the calibration window to 2020-06; the best score was unchanged (0.50) and the full-period fit was slightly worse, so round 1 was kept. A joint stage (<span class="in">`p`</span>) freeing the alum parameters and the sediment P release also gave no gain (best score stayed 0.52). The missing piece is probably an event-driven external P load in 2021-22 (the inflow P concentrations are nearly constant in the file) or alum-bound P release; a pH-dependent alum efficiency (<span class="in">`fpH`</span>) would need a pH series and the carbon module (lake pH median 6.85, 5-95% range 6.06-7.82).</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="al">![Annual FRP, total P and chlorophyll, observed against simulated, O member (alum on).](images/alum_calib/annual_o.png)</span></span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="al">![FRP time series at the surface and bottom, O member.](images/alum_calib/frp_series_o.png)</span></span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bottom anoxia {#sec-anoxia}</span></span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a>The 2g member (alum off) reproduced the daily bottom oxygen at 17 m and deeper (r = 0.90, bias +0.25 mg/L) but underestimated anoxia: 96 anoxic days against 240 observed on the observed days, and none at all in 2008, 2009, 2012 and 2020. The depletion rate of bottom DO in October-February was also about half the observed in several years.</span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a>Stage <span class="in">`o`</span> (alum on) freed the sediment oxygen demand in four zones, <span class="in">`Ksed_oxy`</span>, <span class="in">`theta_sed_oxy`</span>, <span class="in">`rdom_minerl`</span>, <span class="in">`rpoc_hydrol`</span> and <span class="in">`theta_minerl`</span>, with the score extended by bottom-DO bias and RMSE, anoxic days and annual minimum per water year, and the depletion rate. Results over 2005-2022 are in @tbl-anoxia.</span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> 2g (alum off) <span class="pp">|</span> O member <span class="pp">|</span> O2 member <span class="pp">|</span> Observed <span class="pp">|</span></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Anoxic days on observed days (&lt; 2 mg/L) <span class="pp">|</span> 96 <span class="pp">|</span> 236 <span class="pp">|</span> 288 <span class="pp">|</span> 239 <span class="pp">|</span></span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Hits / misses / false alarms <span class="pp">|</span> 78 / 162 / 18 <span class="pp">|</span> 128 / 111 / 108 <span class="pp">|</span> 146 / 93 / 142 <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Mean anoxic days per water year (15 years) <span class="pp">|</span> 6 <span class="pp">|</span> 16 <span class="pp">|</span> 19 <span class="pp">|</span> 16 <span class="pp">|</span></span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Year-to-year correlation <span class="pp">|</span> 0.58 <span class="pp">|</span> 0.74 <span class="pp">|</span> 0.65 <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom DO: correlation / bias / RMSE (mg/L) <span class="pp">|</span> 0.90 / +0.25 / 1.25 <span class="pp">|</span> 0.91 / -0.08 / 1.18 <span class="pp">|</span> 0.91 / -0.08 / 1.19 <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>: Bottom anoxia (bottom ≥ 17 m, daily means on observed days). {#tbl-anoxia}</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a><span class="al">![Observed and simulated bottom DO, O member.](images/anoxia/bottom_do_o.png)</span></span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a><span class="al">![Anoxic days per water year, observed against simulated, O member.](images/anoxia/anoxic_days_o.png)</span></span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bugs and quirks found in the toolchain {#sec-quirks}</span></span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**AEME `get_var()`** now returns the simulated column named <span class="in">`value`</span>, not <span class="in">`sim`</span>; <span class="in">`csps_pair()`</span> was updated.</span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Weir fit:** the newer AEME fits a GLM weir by default, which breaks the nml check; <span class="in">`glm_weir = FALSE`</span> is needed in the build to keep the outflow file.</span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`wq_init_vals`** are about 1000 times too low (oxygen 0.32 against <span class="in">`oxy_initial`</span> 312.5); the effect fades within about 1.5 years (differences below 5% after 1990), so the 540-day spin-up covers it.</span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Silica:** inputs above an unknown threshold are multiplied by 16.64 on build.</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**No `inflow_param()`**, and <span class="in">`LKE_photich`</span> and <span class="in">`RAD_secchi`</span> are not available as model output for <span class="in">`glm_aed`</span> (naming entries only). Simulated Secchi is not available, so the light stage compares the extinction coefficient to the observed Kd.</span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Configuration switches** (structural nml settings) must be written with <span class="in">`write_configuration()`</span>; <span class="in">`run_aeme_param()`</span> only edits parameters in an existing nml. R scripts must not be edited while a run is reading them.</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Disk:** the alum-on runs write about 6 GB per worker; eight workers filled the drive once. Use six workers and delete <span class="in">`*/runs/work`</span> and forward <span class="in">`build`</span> folders after use.</span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## Known limitations and next steps {#sec-limits}</span></span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**FRP:** surface FRP is about 45% low in the 2007-2022 mean. The model matches most years (observed values are often near detection) but misses episodes such as 2009 and the 2021-22 rebound.</span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Total P rebound** in 2021-22 is not reproduced; an event-driven external load or alum-bound P release is the likely cause.</span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Timing:** month-to-month correlation is about zero for chlorophyll, total P and FRP, and the light and solids timing (Kd r about 0.1) is not captured.</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Alum pH efficiency** (<span class="in">`fpH`</span>) is off. Calibrating <span class="in">`pH_opt`</span> and <span class="in">`sigma_pH`</span> needs a prescribed pH series (the <span class="in">`ph_mode`</span> option in <span class="in">`aed_carbon`</span>).</span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Silica** (200 mmol/m³) is an assumption; a stream measurement would replace it.</span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Choose the final member** (O for anoxia, O2 for chlorophyll and bottom FRP) and rerun the NZESM scenarios and the alum/no-alum comparison with it. The scenario and uncertainty runs in <span class="in">`calibration/scenarios30`</span> and <span class="in">`calibration/uncertainty`</span> were made with the earlier 2b and step 3 members and have not been rerun.</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducing the work {#sec-repro}</span></span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>All stage scripts are in <span class="in">`calibration/step2/`</span>, <span class="in">`calibration/light/`</span>, <span class="in">`calibration/anoxia/`</span> and <span class="in">`calibration/alum/`</span>. The parameter tables of the final members are in <span class="in">`calibration/final/`</span> (<span class="in">`params_step2o_best.csv`</span>, <span class="in">`params_step2o2_best.csv`</span>, plus the light round 2 and 2g members) with a README.</span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a><span class="co"># one stage (example: the alum stage), 80 members x 6 iterations, 6 workers</span></span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a><span class="ex">powershell</span> <span class="at">-File</span> calibration/step2/run_step2alum.ps1</span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a><span class="co"># forward run of a stage's best member (20 years, alum on)</span></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a><span class="va">S2_BASE</span><span class="op">=</span>calibration/step3/aeme_base_2005_alum.rds <span class="va">FWD_STAGE</span><span class="op">=</span>o <span class="va">FWD_ALUM</span><span class="op">=</span>1 <span class="dt">\</span></span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>  <span class="va">FWD_START</span><span class="op">=</span>2005-01-01 <span class="va">FWD_STOP</span><span class="op">=</span>2022-06-29 <span class="ex">Rscript</span> calibration/step2/run_forward.R</span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a><span class="co"># diagnostics</span></span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a><span class="va">ANOX_RUN</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/anoxia/01_bottom_anoxia.R</span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a><span class="va">ALUM_RUN</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/alum/01_alum_fit.R</span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a><span class="va">FWD_STAGES</span><span class="op">=</span>o <span class="ex">Rscript</span> calibration/step2/run_limitation.R</span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-254"><a href="#cb2-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a>None of the new calibration folders (<span class="in">`calibration/`</span>, <span class="in">`R/phyto_limitation_helpers.R`</span>, <span class="in">`R/nutrient_budget_helpers.R`</span>) and none of the new figure folders under <span class="in">`website/images/`</span> has been committed to git yet.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

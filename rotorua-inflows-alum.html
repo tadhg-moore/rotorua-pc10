@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-01">
+
+<title>Lake Rotorua inflows and alum: what the reports say and how the model inflows are built – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./targets.html"> 
+<span class="menu-text">Targets</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./resources.html"> 
+<span class="menu-text">Resources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">GANTT</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-inflows-alum.html">Inflows and Alum (report summaries)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GANTT Chart</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Modelling Updates</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lake Models</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM Config (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latest Run</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Inflows and Alum (report summaries)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Calibration: Next Steps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Output Plots (v4)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Alum Dosing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simplified Alum Module</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sanila Thesis Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview of my Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Tasks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP 6 Processing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Climate-Scenario Workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Meeting Notes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link active" data-scroll-target="#sec-summary"><span class="header-section-number">1</span> Summary</a></li>
+  <li><a href="#sec-reports" id="toc-sec-reports" class="nav-link" data-scroll-target="#sec-reports"><span class="header-section-number">2</span> The reports</a>
+  <ul class="collapse">
+  <li><a href="#sec-hamilton" id="toc-sec-hamilton" class="nav-link" data-scroll-target="#sec-hamilton"><span class="header-section-number">2.1</span> Hamilton et al.&nbsp;(2015), ERI 49</a></li>
+  <li><a href="#sec-eri123" id="toc-sec-eri123" class="nav-link" data-scroll-target="#sec-eri123"><span class="header-section-number">2.2</span> McBride, Abell &amp; Hamilton (2019), ERI 123</a></li>
+  <li><a href="#sec-eri128" id="toc-sec-eri128" class="nav-link" data-scroll-target="#sec-eri128"><span class="header-section-number">2.3</span> McBride, Allan &amp; Hamilton (2019), ERI 128</a></li>
+  <li><a href="#sec-related" id="toc-sec-related" class="nav-link" data-scroll-target="#sec-related"><span class="header-section-number">2.4</span> Related: Tempero (2026), ERI 178, and Sanila (2026)</a></li>
+  </ul></li>
+  <li><a href="#sec-build" id="toc-sec-build" class="nav-link" data-scroll-target="#sec-build"><span class="header-section-number">3</span> How the daily inflow series are created</a>
+  <ul class="collapse">
+  <li><a href="#flow" id="toc-flow" class="nav-link" data-scroll-target="#flow"><span class="header-section-number">3.1</span> Flow</a></li>
+  <li><a href="#concentrations" id="toc-concentrations" class="nav-link" data-scroll-target="#concentrations"><span class="header-section-number">3.2</span> Concentrations</a></li>
+  <li><a href="#load" id="toc-load" class="nav-link" data-scroll-target="#load"><span class="header-section-number">3.3</span> Load</a></li>
+  <li><a href="#conversion-to-model-variables" id="toc-conversion-to-model-variables" class="nav-link" data-scroll-target="#conversion-to-model-variables"><span class="header-section-number">3.4</span> Conversion to model variables</a></li>
+  </ul></li>
+  <li><a href="#sec-alum" id="toc-sec-alum" class="nav-link" data-scroll-target="#sec-alum"><span class="header-section-number">4</span> Alum and the monitoring sites</a>
+  <ul class="collapse">
+  <li><a href="#what-alum-does-to-the-stream-p" id="toc-what-alum-does-to-the-stream-p" class="nav-link" data-scroll-target="#what-alum-does-to-the-stream-p"><span class="header-section-number">4.1</span> What alum does to the stream P</a></li>
+  <li><a href="#utuhina-reconstructing-the-untreated-drp" id="toc-utuhina-reconstructing-the-untreated-drp" class="nav-link" data-scroll-target="#utuhina-reconstructing-the-untreated-drp"><span class="header-section-number">4.2</span> Utuhina: reconstructing the untreated DRP</a></li>
+  <li><a href="#puarenga-estimating-the-treated-drp" id="toc-puarenga-estimating-the-treated-drp" class="nav-link" data-scroll-target="#puarenga-estimating-the-treated-drp"><span class="header-section-number">4.3</span> Puarenga: estimating the treated DRP</a></li>
+  <li><a href="#sec-files" id="toc-sec-files" class="nav-link" data-scroll-target="#sec-files"><span class="header-section-number">4.4</span> The two files compared</a></li>
+  </ul></li>
+  <li><a href="#sec-model" id="toc-sec-model" class="nav-link" data-scroll-target="#sec-model"><span class="header-section-number">5</span> What this means for the model</a>
+  <ul class="collapse">
+  <li><a href="#which-file-goes-with-which-model" id="toc-which-file-goes-with-which-model" class="nav-link" data-scroll-target="#which-file-goes-with-which-model"><span class="header-section-number">5.1</span> Which file goes with which model</a></li>
+  <li><a href="#recommended-handling" id="toc-recommended-handling" class="nav-link" data-scroll-target="#recommended-handling"><span class="header-section-number">5.2</span> Recommended handling</a></li>
+  </ul></li>
+  <li><a href="#sec-open" id="toc-sec-open" class="nav-link" data-scroll-target="#sec-open"><span class="header-section-number">6</span> Open questions</a></li>
+  <li><a href="#sec-repro" id="toc-sec-repro" class="nav-link" data-scroll-target="#sec-repro"><span class="header-section-number">7</span> Reproducing this page</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-inflows-alum.html">Inflows and Alum (report summaries)</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Lake Rotorua inflows and alum: what the reports say and how the model inflows are built</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Summary of ERI 123, ERI 128 and Hamilton et al.&nbsp;(2015), and what they mean for the GLM-AED inflow files</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-summary" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
+<p>The Lake Rotorua inflow files used by the model come from the University of Waikato catchment-load and lake-modelling work for Bay of Plenty Regional Council (BoPRC). This page summarises three of those reports, describes how the daily inflow series are constructed, and explains why the alum-dosed streams need special handling.</p>
+<p><strong>Key points</strong></p>
+<ol type="1">
+<li><strong>The inflows are reconstructed, not measured.</strong> Daily flow comes from a lake water balance plus gauged and synthetic stream flows. Daily concentrations come from linear interpolation of monthly baseflow samples, plus regressions on discharge for stormflow particulate nutrients (ERI 123).</li>
+<li><strong>The two dosed streams are sampled on opposite sides of the dosing point.</strong> Utuhina is monitored <em>downstream</em> of dosing, so its measured DRP is already treated. Puarenga is monitored <em>upstream</em>, so its measured DRP is untreated (ERI 123, Hamilton et al.&nbsp;2015).</li>
+<li><strong>Hamilton et al.&nbsp;(2015, pp.&nbsp;36 to 38) fixed this in opposite directions for the two streams.</strong> For Utuhina they rebuilt the untreated DRP from pre-alum monthly DRP:TP ratios. For Puarenga they estimated the treated DRP from a dose-response fitted to paired up- and downstream samples.</li>
+<li><strong>Whichever scenario is run, one stream must be adjusted.</strong> An alum-explicit lake model needs <em>untreated</em> inflows for both streams. A model with no alum module needs <em>treated</em> inflows for both. Mixing the two double counts alum in one stream.</li>
+<li><strong>Total P hardly changes in the stream; the form of P does.</strong> Alum converts dissolved P to particulate P in the stream while TP stays much the same. Hamilton et al.&nbsp;attribute this to turbulence keeping the adsorbed P in suspension.</li>
+<li><strong>Two new files hold both versions</strong> (<code>rotorua_inflows_populated_noalum.csv</code> and <code>..._withalum.csv</code>). They differ only in DRP and the particulate or sorbed P of the Utuhina, the Puarenga and the ungauged quick-flow inflow. This page compares them (<a href="#sec-files" class="quarto-xref">Section&nbsp;4.4</a>).</li>
+</ol>
+</section>
+<section id="sec-reports" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-reports"><span class="header-section-number">2</span> The reports</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Report</th>
+<th>Authors, date</th>
+<th>Purpose</th>
+<th>Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ERI 49</strong>, <em>Assessing the effects of alum dosing of two inflows to Lake Rotorua against external nutrient load reductions: model simulations for 2001-2012</em></td>
+<td>Hamilton, McBride &amp; Jones, Feb 2015</td>
+<td>Effect of alum on lake water quality compared with external load reductions</td>
+<td>DYRESM-CAEDYM</td>
+</tr>
+<tr class="even">
+<td><strong>ERI 123</strong>, <em>Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017</em></td>
+<td>McBride, Abell &amp; Hamilton, Feb 2019 (PC10 Module 5)</td>
+<td>Daily water balance and nutrient loads by inflow; long-term lake water quality</td>
+<td>Water balance and load calculation</td>
+</tr>
+<tr class="odd">
+<td><strong>ERI 128</strong>, <em>Assessing the effects of nutrient load reductions to Lake Rotorua: model simulations for 2001-2015</em></td>
+<td>McBride, Allan &amp; Hamilton, Feb 2019 (PC10 Module 5)</td>
+<td>36 N and P load scenarios and the in-lake effect of alum</td>
+<td>DYRESM-CAEDYM</td>
+</tr>
+</tbody>
+</table>
+<section id="sec-hamilton" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="sec-hamilton"><span class="header-section-number">2.1</span> Hamilton et al.&nbsp;(2015), ERI 49</h3>
+<p><strong>Question.</strong> Did alum dosing of the Utuhina and Puarenga streams improve the lake beyond what the external load reductions would explain?</p>
+<p><strong>Method.</strong> The previously calibrated and validated DYRESM-CAEDYM model (calibration July 2004 to June 2007, validation July 2001 to June 2004) was run for 2007 to 2012 with the observed inflows. The authors analysed stream and lake monitoring data, built a dose-response for stream DRP (pp.&nbsp;36 to 38), and then ran scenarios with and without alum effects.</p>
+<p><strong>Key findings</strong></p>
+<ul>
+<li><strong>Dosing history.</strong> Utuhina dosing began in 2006. The report gives 2009 for the Puarenga (the later reports and BoPRC records give 2010, see <a href="#sec-open" class="quarto-xref">Section&nbsp;6</a>). Daily doses were very variable; the one-month combined mean reached about 400 kg Al/d, with doses consistently higher from 2011 to 2012.</li>
+<li><strong>Stream effect.</strong> Dosing was highly effective at locking up DRP above threshold doses of about 100 kg Al/d (Utuhina) and 75 kg Al/d (Puarenga), giving very low DRP and low DRP:TP below the dosing point. TP stayed largely unchanged, which the authors attribute to turbulence keeping the adsorbed P in suspension.</li>
+<li><strong>Puarenga paired data.</strong> John McIntosh (BoPRC) sampled above and below the dosing point from July 2011. A dose above 75 kg Al/d typically reduced dissolved P by more than 80%, and at an Al:DRP ratio above 20 most dissolved P became particulate. The observed ratio reached about 90, so free aluminium may have reached the lake.</li>
+<li><strong>In-lake effect.</strong> With the stream effect alone, the model stayed well above the observed trophic state in 2009 to 2012. Matching it needed higher sedimentation of particulate organic matter (flocculation) and a lowered sediment phosphate release (about 50%). The authors estimated that these effects might last 2 to 3 years after dosing.</li>
+<li><strong>Scenarios.</strong> Without any alum effect the simulated TLI was about 0.5 units higher. Meeting the TLI target at the current nitrogen load needed, in the modelling, a 25% cut to catchment P plus alum transferring about half the DRP load to particulate form.</li>
+<li><strong>Caveat.</strong> The alum effects were fixed model parameters, not simulated alum, so year-to-year variation was not captured.</li>
+<li><strong>Puarenga confound.</strong> The Puarenga DRP showed a clear decline from about 2009 with little change in TP. The authors attribute at least part of it to changes at the Rotorua wastewater treatment plant, so the raw upstream series is not free of other influences.</li>
+</ul>
+</section>
+<section id="sec-eri123" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="sec-eri123"><span class="header-section-number">2.2</span> McBride, Abell &amp; Hamilton (2019), ERI 123</h3>
+<p><strong>Question.</strong> What were the daily water and nutrient loads to Lake Rotorua from 1965 to 2017, and how do they compare with the sustainable-load targets (435 t TN/yr and 37 t TP/yr)?</p>
+<p><strong>Method</strong></p>
+<ul>
+<li><strong>Water balance.</strong> Daily balance for July 1964 to June 2017 from the Ōhau Channel outflow, lake level change, evaporation and rainfall (airport rainfall multiplied by 1.19 for the lake surface). The residual is split into ungauged slow flow (30%, groundwater) and quick flow (70%, minor streams).</li>
+<li><strong>Stream flow.</strong> Nine major inflows. Gaps in the gauged records are filled by synthetic models (symbolic regression or LOESS). Hamurana is interpolated from monthly spot gaugings. Geothermal inflow is a constant 0.5 m³/s.</li>
+<li><strong>Concentrations.</strong> Daily DIN and PO4-P are linear interpolations of monthly BoPRC baseflow samples (samples above 120% of baseflow are excluded). Earlier years use the Fish (1975) means for 1967 to 1969 and reference concentrations for about 1900. Total nutrients add a stormflow particulate term from log-log regressions on discharge.</li>
+<li><strong>Other sources.</strong> Geothermal concentrations are volume-weighted spring means (1992 to 1994). Slow and quick flow take average concentrations of the groundwater-fed and quick-response streams. Atmospheric deposition comes from Verburg et al.&nbsp;(2015). Wastewater to 1991 was interpolated from Hoare and council data; after 1991 the land treatment system is captured in the Puarenga data.</li>
+</ul>
+<p><strong>Key findings</strong></p>
+<ul>
+<li><strong>Targets.</strong> Annual N loads have risen steadily from below the target in the 1960s, up to about 300 t N/yr above it in wet years. P loads met the target after the 1991 land treatment system but have exceeded it in medium and wet years recently.</li>
+<li><strong>Stream P.</strong> Concentrations were fairly stable from 1970 to 2010, with increases in several streams since 2010. Hamurana and Awahou (groundwater, high-phosphate ignimbrite) supply the largest share of dissolved P.</li>
+<li><strong>Alum.</strong> The estimated external loads do not explain the improvement in lake P since about 2010, so the authors infer the improvement comes mostly from alum dosing and its in-lake effects, possibly with some exhaustion of the legacy wastewater P in the sediments.</li>
+<li><strong>Sampling sites (p.&nbsp;33).</strong> <em>Utuhina</em> PO4-P is measured downstream of the dosing site, so it reflects the alum. <em>Puarenga</em> is monitored upstream, so the post-dosing PO4-P was estimated by the Hamilton et al.&nbsp;(2015) method.</li>
+</ul>
+</section>
+<section id="sec-eri128" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="sec-eri128"><span class="header-section-number">2.3</span> McBride, Allan &amp; Hamilton (2019), ERI 128</h3>
+<p><strong>Question.</strong> What N and P load reductions are needed to reach the TLI target of 4.2, and how much has alum changed the lake’s internal loading?</p>
+<p><strong>Method.</strong> DYRESM-CAEDYM with an hourly internal step, driven by the daily inflow loads of ERI 123. It was calibrated for July 2001 to June 2004 and validated for July 2005 to June 2007, before alum could confound the fit. The authors ran 36 catchment N and P load combinations over 2001 to 2007, then ran the model through 2001 to 2017 with no alum treatment as a baseline.</p>
+<p><strong>Key findings</strong></p>
+<ul>
+<li><strong>Load reductions.</strong> Cutting both N and P in the catchment could take the TLI from about 4.8 (2001 to 2007) to about 4.3, close to the target, without alum. N or P reductions alone were not enough.</li>
+<li><strong>Alum.</strong> The no-alum baseline greatly overestimated nutrients and chlorophyll after 2006. Reducing modelled sediment release by about 50% (about 16 t P/yr) reproduced the post-2010 lake, so the in-lake effect of alum was similar in size to halving the internal load. Chlorophyll would not fall to post-2010 levels without a 50 to 75% reduction in internal N and P loading.</li>
+<li><strong>Mechanism.</strong> The authors propose that flocculation increases sedimentation of particulates, lowers organic matter in the sediment and reduces anoxia, with direct adsorption of DRP in the water column where the dose exceeds stream DRP.</li>
+</ul>
+</section>
+<section id="sec-related" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="sec-related"><span class="header-section-number">2.4</span> Related: Tempero (2026), ERI 178, and Sanila (2026)</h3>
+<p>These are not inflow reports but constrain the alum fate. ERI 178 (sediment aluminium survey, 2024) found no accumulation of alum-derived aluminium in the main basin (about 5 g Al/kg, as before dosing) and attributes it to nearshore deposition (under 10 m), storm resuspension and export through the Ōhau Channel; 993 t Al had been dosed by the end of 2023. The Sanila thesis (jar tests) gives an Al:P of 0.7:1 in the lake water but about 7:1 operationally in the streams, fast binding (most within 20 minutes), floc settling mostly 20 to 60 m/d, and a pH window of 6 to 8 for efficient binding.</p>
+</section>
+</section>
+<section id="sec-build" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-build"><span class="header-section-number">3</span> How the daily inflow series are created</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  A[Monthly BoPRC stream samples&lt;br/&gt;PO4-P, NH4-N, NO3-N, TP, TN] --&gt; C[Baseflow concentrations:&lt;br/&gt;linear interpolation&lt;br/&gt;flood-flow samples excluded]
+  B[Gauged and synthetic&lt;br/&gt;stream flow + water balance] --&gt; D[Daily flow&lt;br/&gt;9 streams + geothermal&lt;br/&gt;+ ungauged slow and quick]
+  C --&gt; E[Stormflow particulates:&lt;br/&gt;log-log regression on discharge]
+  E --&gt; F[Daily concentrations by form&lt;br/&gt;DRP, DOP, POP, PIP, NH4, NO3, ...]
+  D --&gt; F
+  F --&gt; G{Dosed stream?}
+  G --&gt;|Utuhina: sampled downstream| H[Measured DRP is already treated.&lt;br/&gt;Reconstruct untreated DRP from&lt;br/&gt;pre-alum monthly DRP:TP]
+  G --&gt;|Puarenga: sampled upstream| I[Measured DRP is untreated.&lt;br/&gt;Estimate treated DRP from the&lt;br/&gt;McIntosh dose-response]
+  H --&gt; J[no-alum file / with-alum file]
+  I --&gt; J
+  J --&gt; K[format_dyresm_inflow:&lt;br/&gt;rename to AEME variables]
+  K --&gt; L[calc_alum_inflow:&lt;br/&gt;add ALU_ala from daily dose&lt;br/&gt;and flow]
+  L --&gt; M[AEME / GLM-AED inflow csv files&lt;br/&gt;g/m3 converted to mmol/m3 at build]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="flow" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="flow"><span class="header-section-number">3.1</span> Flow</h3>
+<p>Daily flow for each major stream is the gauged value where it exists and a synthetic model elsewhere (ERI 123). The ungauged residual of the lake water balance is split into slow and quick flow and smoothed with 15-day and 2-day rolling means. The geothermal inflow is constant. The model files hold flow in m³/d.</p>
+</section>
+<section id="concentrations" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="concentrations"><span class="header-section-number">3.2</span> Concentrations</h3>
+<p>Monthly baseflow samples are linearly interpolated to daily. Stormflow samples (flow above 120% of baseflow) are excluded from the interpolation and instead handled with a particulate-nutrient regression on discharge. The resulting annual mean concentrations of the nine major streams are in <a href="#fig-annual" class="quarto-xref">Figure&nbsp;1</a>: P in most streams was fairly stable between 1970 and 2010, with increases after 2010 in several.</p>
+<div id="fig-annual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/annual_stream_P.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Annual mean DRP and TP of the nine major inflows (untreated, no-alum file)."><img src="images/inflows/annual_stream_P.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Annual mean DRP and TP of the nine major inflows (untreated, no-alum file).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="load" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="load"><span class="header-section-number">3.3</span> Load</h3>
+<p>Adding flow and concentration gives the external P load. <a href="#fig-load" class="quarto-xref">Figure&nbsp;2</a> shows the total TP load to the lake in the no-alum file by source group, with the 37 t TP/yr sustainable load, and <a href="#tbl-load" class="quarto-xref">Table&nbsp;1</a> the period means. These include stormflow particulates, so they are not directly comparable with the target (ERI 123).</p>
+<div id="fig-load" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-load-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/total_P_load.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Annual TP load to Lake Rotorua by source group (no-alum file)."><img src="images/inflows/total_P_load.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-load-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Annual TP load to Lake Rotorua by source group (no-alum file).
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div id="tbl-load" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-load-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Mean annual TP load (t P/yr) by period and source group (no-alum file; includes stormflow particulates).
+</figcaption>
+<div aria-describedby="tbl-load-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 23%">
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">period</th>
+<th style="text-align: right;">Geothermal</th>
+<th style="text-align: right;">Groundwater-fed streams</th>
+<th style="text-align: right;">Other streams</th>
+<th style="text-align: right;">Puarenga + Utuhina</th>
+<th style="text-align: right;">Rainfall</th>
+<th style="text-align: right;">Ungauged</th>
+<th style="text-align: right;">WWTP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1965-90</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">13.6</td>
+<td style="text-align: right;">11.2</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">12.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1991-2000</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">11.1</td>
+<td style="text-align: right;">10.6</td>
+<td style="text-align: right;">10.5</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2001-10</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">9.2</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2011-22</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">14.6</td>
+<td style="text-align: right;">13.7</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="conversion-to-model-variables" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="conversion-to-model-variables"><span class="header-section-number">3.4</span> Conversion to model variables</h3>
+<p>The DYRESM-format file is renamed to AEME variable names by <code>format_dyresm_inflow()</code> (DRP to <code>PHS_frp</code>, DOPL to <code>PHS_dop</code>, POPL to <code>PHS_pop</code>, PIP to <code>PHS_pip</code>, and so on). The two dosed streams get an <code>ALU_ala</code> column from the daily alum volume, computed by <code>calc_alum_inflow()</code> with 4.263% Al and a density of 1.323 kg/L and a molar Al:P ratio of 1 (the <code>ratio_al_p</code> target). Phosphorus enters the model file in g/m³ and AEME converts it to mmol/m³ at build, but <code>ALU_ala</code> stays in mmol/m³.</p>
+</section>
+</section>
+<section id="sec-alum" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-alum"><span class="header-section-number">4</span> Alum and the monitoring sites</h2>
+<section id="what-alum-does-to-the-stream-p" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="what-alum-does-to-the-stream-p"><span class="header-section-number">4.1</span> What alum does to the stream P</h3>
+<p>Alum in the stream converts dissolved reactive P to particulate P. <a href="#fig-dosed" class="quarto-xref">Figure&nbsp;3</a> shows the annual DRP of the two dosed streams in the two files, with the aluminium dosed each year. The with-alum file drops at the start of dosing in the Utuhina (2006) and the Puarenga (2010), and the no-alum file does not.</p>
+<div id="fig-dosed" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dosed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/dosed_streams_annual.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Annual mean DRP of the dosed streams in the no-alum and with-alum files (top) and aluminium dosed (bottom)."><img src="images/inflows/dosed_streams_annual.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dosed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Annual mean DRP of the dosed streams in the no-alum and with-alum files (top) and aluminium dosed (bottom).
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-daily" class="quarto-xref">Figure&nbsp;4</a> is the equivalent of Hamilton et al.&nbsp;Fig 19 for July 2011 to July 2013, when the paired Puarenga data were collected.</p>
+<div id="fig-daily" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-daily-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/daily_2011_2013.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Daily DRP in the two files with the Al dose (grey)."><img src="images/inflows/daily_2011_2013.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-daily-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Daily DRP in the two files with the Al dose (grey).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="utuhina-reconstructing-the-untreated-drp" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="utuhina-reconstructing-the-untreated-drp"><span class="header-section-number">4.2</span> Utuhina: reconstructing the untreated DRP</h3>
+<p>Hamilton et al.&nbsp;(p.&nbsp;36) calculated the mean monthly DRP:TP for 2001 to 2006 (pre-alum) and applied it to the TP measured after 2006 to estimate the DRP without alum. <a href="#fig-utuhina" class="quarto-xref">Figure&nbsp;5</a> compares the monthly DRP:TP of the pre-alum record, the measured post-alum record and the reconstruction in the no-alum file. The mean pre-alum ratio is 0.70 (monthly medians 0.72 to 0.81); the measured post-alum ratio falls to 0.37; the no-alum file’s reconstruction is 0.64 (monthly medians 0.62 to 0.67), a little <em>below</em> the pre-alum ratio. A strict application of Hamilton’s method (pre-alum monthly ratio times the measured TP) gives a mean untreated DRP of 0.051 g/m³ for mid-2006 to 2012, against 0.044 in the file, so the file’s untreated DRP is about 14% lower. Using Hamilton’s value, the stream removal would be about 0.52 instead of 0.45 for that period.</p>
+<div id="fig-utuhina" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/utuhina_drp_tp.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Median DRP:TP by month for the Utuhina, pre-alum and post-alum, measured and reconstructed."><img src="images/inflows/utuhina_drp_tp.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Median DRP:TP by month for the Utuhina, pre-alum and post-alum, measured and reconstructed.
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div id="tbl-utuhina" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Utuhina median DRP:TP by month.
+</figcaption>
+<div aria-describedby="tbl-utuhina-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 21%">
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mo</th>
+<th style="text-align: right;">measured (with-alum file)_post-alum</th>
+<th style="text-align: right;">measured (with-alum file)_pre-alum</th>
+<th style="text-align: right;">reconstructed untreated (no-alum file)_post-alum</th>
+<th style="text-align: right;">reconstructed untreated (no-alum file)_pre-alum</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.290</td>
+<td style="text-align: right;">0.765</td>
+<td style="text-align: right;">0.672</td>
+<td style="text-align: right;">0.765</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.233</td>
+<td style="text-align: right;">0.717</td>
+<td style="text-align: right;">0.671</td>
+<td style="text-align: right;">0.717</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.236</td>
+<td style="text-align: right;">0.730</td>
+<td style="text-align: right;">0.671</td>
+<td style="text-align: right;">0.730</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.469</td>
+<td style="text-align: right;">0.748</td>
+<td style="text-align: right;">0.671</td>
+<td style="text-align: right;">0.748</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.220</td>
+<td style="text-align: right;">0.720</td>
+<td style="text-align: right;">0.641</td>
+<td style="text-align: right;">0.720</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.322</td>
+<td style="text-align: right;">0.754</td>
+<td style="text-align: right;">0.627</td>
+<td style="text-align: right;">0.754</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.241</td>
+<td style="text-align: right;">0.751</td>
+<td style="text-align: right;">0.622</td>
+<td style="text-align: right;">0.751</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.205</td>
+<td style="text-align: right;">0.749</td>
+<td style="text-align: right;">0.644</td>
+<td style="text-align: right;">0.749</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.265</td>
+<td style="text-align: right;">0.799</td>
+<td style="text-align: right;">0.641</td>
+<td style="text-align: right;">0.799</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.252</td>
+<td style="text-align: right;">0.807</td>
+<td style="text-align: right;">0.661</td>
+<td style="text-align: right;">0.807</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.319</td>
+<td style="text-align: right;">0.746</td>
+<td style="text-align: right;">0.668</td>
+<td style="text-align: right;">0.746</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.375</td>
+<td style="text-align: right;">0.761</td>
+<td style="text-align: right;">0.673</td>
+<td style="text-align: right;">0.761</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="puarenga-estimating-the-treated-drp" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="puarenga-estimating-the-treated-drp"><span class="header-section-number">4.3</span> Puarenga: estimating the treated DRP</h3>
+<p>For the upstream-sampled Puarenga, the treated DRP comes from a dose-response fitted to McIntosh’s paired samples (Hamilton et al., Fig 20). <a href="#fig-removal" class="quarto-xref">Figure&nbsp;6</a> shows the removal fraction implied by the with-alum file against the Al dose and against the Al:DRP ratio. It matches the report: removal is about 65% at 75 to 100 kg Al/d, about 80% above 100 kg Al/d, and rises with Al:DRP towards a maximum. The Utuhina is much flatter, at about 40 to 50% whatever the dose.</p>
+<div id="fig-removal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-removal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/removal_vs_dose.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: DRP removal fraction in the dosed streams (1 minus with-alum DRP over no-alum DRP) against Al dose and Al:DRP. Red: smooth and exponential fit. Dashed: 75 kg Al/d and Al:DRP of 20."><img src="images/inflows/removal_vs_dose.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-removal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: DRP removal fraction in the dosed streams (1 minus with-alum DRP over no-alum DRP) against Al dose and Al:DRP. Red: smooth and exponential fit. Dashed: 75 kg Al/d and Al:DRP of 20.
+</figcaption>
+</figure>
+</div>
+<p>The Puarenga with-alum series follows an almost straight ramp from zero removal up to a 90% cap at an Al:DRP of about 23 (the tight line in the lower left panel of <a href="#fig-removal" class="quarto-xref">Figure&nbsp;6</a>). It is therefore a dose-response rule applied to the daily dose, not a smoothed measurement, and the 90% cap is part of the rule. An exponential saturation, <code>f = fmax (1 - exp(-R / R0))</code> with <code>R</code> the Al:DRP ratio, approximates both streams (<a href="#tbl-fit" class="quarto-xref">Table&nbsp;3</a>). The Puarenga has a high maximum and a clear dose dependence; the Utuhina saturates at about 0.43 immediately (<code>R0</code> hits its lower bound).</p>
+<div class="cell">
+<div id="tbl-fit" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Fitted in-stream DRP removal, dosed days from 2007 (Al:DRP uses the untreated DRP).
+</figcaption>
+<div aria-describedby="tbl-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stream</th>
+<th style="text-align: right;">fmax</th>
+<th style="text-align: right;">R0 (mol/mol)</th>
+<th style="text-align: right;">Dosed days</th>
+<th style="text-align: right;">Mean removal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: right;">0.967</td>
+<td style="text-align: right;">14.052</td>
+<td style="text-align: right;">3443</td>
+<td style="text-align: right;">0.753</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: right;">0.426</td>
+<td style="text-align: right;">0.500</td>
+<td style="text-align: right;">4981</td>
+<td style="text-align: right;">0.425</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-files" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="sec-files"><span class="header-section-number">4.4</span> The two files compared</h3>
+<p>Only DRP and the particulate or sorbed P forms differ between the files (flow, temperature, N, solids and carbon are identical; the files are also identical before 2006). <a href="#tbl-diff" class="quarto-xref">Table&nbsp;4</a> gives the change from no-alum to with-alum for 2000 to 2022.</p>
+<div class="cell">
+<div id="tbl-diff" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Change in total load from the no-alum to the with-alum file, 2000 to 2022 (%).
+</figcaption>
+<div aria-describedby="tbl-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Inflow</th>
+<th style="text-align: right;">DRP</th>
+<th style="text-align: right;">PIP</th>
+<th style="text-align: right;">TP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: right;">-30.3</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ungauged-Quick</td>
+<td style="text-align: right;">-6.8</td>
+<td style="text-align: right;">13.7</td>
+<td style="text-align: right;">-0.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: right;">-29.9</td>
+<td style="text-align: right;">48.5</td>
+<td style="text-align: right;">-0.6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><a href="#fig-forms" class="quarto-xref">Figure&nbsp;7</a> shows the forms of P delivered by the two dosed streams. In the Utuhina, the removed DRP reappears as POP and PIP, so TP is conserved (the speciated forms sum to TP). <strong>In the Puarenga with-alum file the removed DRP is not assigned to any other form</strong>: the DRP is reduced but PIP and POP are unchanged, so the forms no longer sum to TP (by about 0.03 g/m³, or roughly 1.7 t P/yr in 2011 to 2017). A model driven by the speciated columns would lose that P, so the with-alum Puarenga series should be checked with its author before use.</p>
+<div id="fig-forms" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-forms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/inflows/dosed_P_forms.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: P forms delivered by the Utuhina and Puarenga with and without alum."><img src="images/inflows/dosed_P_forms.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-forms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: P forms delivered by the Utuhina and Puarenga with and without alum.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-model" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-model"><span class="header-section-number">5</span> What this means for the model</h2>
+<section id="which-file-goes-with-which-model" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="which-file-goes-with-which-model"><span class="header-section-number">5.1</span> Which file goes with which model</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model setup</th>
+<th>Utuhina</th>
+<th>Puarenga</th>
+<th>Alum module</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Alum-explicit lake model</strong> (the dose drives everything)</td>
+<td>Untreated: no-alum file (reconstructed)</td>
+<td>Untreated: raw upstream = no-alum file</td>
+<td>On, with an in-stream reaction step</td>
+</tr>
+<tr class="even">
+<td><strong>No alum module</strong> (observed inflows reproduce the effect)</td>
+<td>Treated: measured = with-alum file</td>
+<td>Treated: estimated = with-alum file (once its mass is closed)</td>
+<td>Off</td>
+</tr>
+<tr class="odd">
+<td><em>Used so far in the GLM-AED calibration</em></td>
+<td><em>Treated (with-alum values)</em></td>
+<td><em>Untreated (raw)</em></td>
+<td><em>On</em></td>
+</tr>
+</tbody>
+</table>
+<p>The last row is the inconsistent case: the Utuhina stream removal was in the inflow data <strong>and</strong> the alum module acted on the same P in the lake, while the Puarenga had only the module. The calibrated alum efficiency may therefore have absorbed part of the Utuhina stream effect (a first test found the effect on lake TP small, within about 3%; see <a href="./rotorua-alum-next-steps.html">the next-steps page</a>), and the scenario runs labelled “no alum” still contained the Utuhina stream treatment (about 30% less DRP).</p>
+</section>
+<section id="recommended-handling" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="recommended-handling"><span class="header-section-number">5.2</span> Recommended handling</h3>
+<ol type="1">
+<li><strong>Use the no-alum file for all streams</strong> with the alum module on, so the dose is the only driver and the with/without alum scenarios are clean.</li>
+<li><strong>Add an in-stream reaction step</strong> before the lake: the Puarenga (about 300 m) and Utuhina (about 700 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<code>ALU_alp</code>) and reduce <code>ALU_ala</code> by the same amount. Use <code>fmax</code> and <code>R0</code> from <a href="#tbl-fit" class="quarto-xref">Table&nbsp;3</a>, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</li>
+<li><strong>Treat the in-lake effects separately.</strong> Hamilton et al.&nbsp;and ERI 128 both needed an additional in-lake effect (about 50% less sediment P release, more flocculation). The module’s settled-alum uptake and the sediment P flux parameters should be checked against that, once the inflows are consistent.</li>
+<li><strong>Keep the free-aluminium point in view.</strong> At Al:DRP well above 20 most of the dosed Al is not used in the stream and reaches the lake; this excess is what the lake-side module acts on.</li>
+</ol>
+</section>
+</section>
+<section id="sec-open" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-open"><span class="header-section-number">6</span> Open questions</h2>
+<ul>
+<li><strong>Dosing start dates differ between sources.</strong> Utuhina is 2006 in all of them. Puarenga is 2009 (Hamilton et al.&nbsp;2015), 2010 (ERI 178, ERI 128 intro and the BoPRC dose record used in the model); two other passages swap the streams. The model uses the dose record.</li>
+<li><strong>Provenance of the two files.</strong> The method that made the with-alum Puarenga series (the cap of about 90% removal, the unassigned DRP), and the untreated Utuhina reconstruction (a DRP:TP about 14% below what Hamilton’s pre-alum monthly ratios give), should be confirmed with whoever produced them.</li>
+<li><strong>Puarenga DRP before alum.</strong> Hamilton et al.&nbsp;link part of the post-2009 DRP decline to wastewater treatment changes, so the upstream series is not purely untreated stream P.</li>
+<li><strong>Dose dependence in the Utuhina.</strong> Hamilton et al.&nbsp;show DRP:TP falling with dose below the Utuhina sampling site (their Fig 17); the file’s removal is nearly flat. Monthly spot samples against a variable daily dose make this hard to resolve.</li>
+<li><strong>Timing.</strong> Monthly samples are matched to a daily dose, so short high-dose events are not captured.</li>
+</ul>
+</section>
+<section id="sec-repro" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-repro"><span class="header-section-number">7</span> Reproducing this page</h2>
+<p>The figures and tables are made by <code>calibration/alum/20_inflow_doc_figs.R</code> from the two inflow files in <code>data/raw/flows/</code> and the step 3 base model (for the dose). The page itself reads only the small summaries in <code>website/data/inflows/</code>. The report text extracts used for this summary are in <code>calibration/alum/ref/</code>.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Lake Rotorua inflows and alum: what the reports say and how the model inflows are built"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Summary of ERI 123, ERI 128 and Hamilton et al. (2015), and what they mean for the GLM-AED inflow files"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>The Lake Rotorua inflow files used by the model come from the University of Waikato catchment-load and lake-modelling work for Bay of Plenty Regional Council (BoPRC). This page summarises three of those reports, describes how the daily inflow series are constructed, and explains why the alum-dosed streams need special handling.</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>**Key points**</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**The inflows are reconstructed, not measured.** Daily flow comes from a lake water balance plus gauged and synthetic stream flows. Daily concentrations come from linear interpolation of monthly baseflow samples, plus regressions on discharge for stormflow particulate nutrients (ERI 123).</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**The two dosed streams are sampled on opposite sides of the dosing point.** Utuhina is monitored *downstream* of dosing, so its measured DRP is already treated. Puarenga is monitored *upstream*, so its measured DRP is untreated (ERI 123, Hamilton et al. 2015).</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Hamilton et al. (2015, pp. 36 to 38) fixed this in opposite directions for the two streams.** For Utuhina they rebuilt the untreated DRP from pre-alum monthly DRP:TP ratios. For Puarenga they estimated the treated DRP from a dose-response fitted to paired up- and downstream samples.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Whichever scenario is run, one stream must be adjusted.** An alum-explicit lake model needs *untreated* inflows for both streams. A model with no alum module needs *treated* inflows for both. Mixing the two double counts alum in one stream.</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Total P hardly changes in the stream; the form of P does.** Alum converts dissolved P to particulate P in the stream while TP stays much the same. Hamilton et al. attribute this to turbulence keeping the adsorbed P in suspension.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Two new files hold both versions** (<span class="in">`rotorua_inflows_populated_noalum.csv`</span> and <span class="in">`..._withalum.csv`</span>). They differ only in DRP and the particulate or sorbed P of the Utuhina, the Puarenga and the ungauged quick-flow inflow. This page compares them (@sec-files).</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## The reports {#sec-reports}</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Report <span class="pp">|</span> Authors, date <span class="pp">|</span> Purpose <span class="pp">|</span> Model <span class="pp">|</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **ERI 49**, *Assessing the effects of alum dosing of two inflows to Lake Rotorua against external nutrient load reductions: model simulations for 2001-2012* <span class="pp">|</span> Hamilton, McBride &amp; Jones, Feb 2015 <span class="pp">|</span> Effect of alum on lake water quality compared with external load reductions <span class="pp">|</span> DYRESM-CAEDYM <span class="pp">|</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **ERI 123**, *Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017* <span class="pp">|</span> McBride, Abell &amp; Hamilton, Feb 2019 (PC10 Module 5) <span class="pp">|</span> Daily water balance and nutrient loads by inflow; long-term lake water quality <span class="pp">|</span> Water balance and load calculation <span class="pp">|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **ERI 128**, *Assessing the effects of nutrient load reductions to Lake Rotorua: model simulations for 2001-2015* <span class="pp">|</span> McBride, Allan &amp; Hamilton, Feb 2019 (PC10 Module 5) <span class="pp">|</span> 36 N and P load scenarios and the in-lake effect of alum <span class="pp">|</span> DYRESM-CAEDYM <span class="pp">|</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### Hamilton et al. (2015), ERI 49 {#sec-hamilton}</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>**Question.** Did alum dosing of the Utuhina and Puarenga streams improve the lake beyond what the external load reductions would explain?</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>**Method.** The previously calibrated and validated DYRESM-CAEDYM model (calibration July 2004 to June 2007, validation July 2001 to June 2004) was run for 2007 to 2012 with the observed inflows. The authors analysed stream and lake monitoring data, built a dose-response for stream DRP (pp. 36 to 38), and then ran scenarios with and without alum effects.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>**Key findings**</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dosing history.** Utuhina dosing began in 2006. The report gives 2009 for the Puarenga (the later reports and BoPRC records give 2010, see @sec-open). Daily doses were very variable; the one-month combined mean reached about 400 kg Al/d, with doses consistently higher from 2011 to 2012.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Stream effect.** Dosing was highly effective at locking up DRP above threshold doses of about 100 kg Al/d (Utuhina) and 75 kg Al/d (Puarenga), giving very low DRP and low DRP:TP below the dosing point. TP stayed largely unchanged, which the authors attribute to turbulence keeping the adsorbed P in suspension.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Puarenga paired data.** John McIntosh (BoPRC) sampled above and below the dosing point from July 2011. A dose above 75 kg Al/d typically reduced dissolved P by more than 80%, and at an Al:DRP ratio above 20 most dissolved P became particulate. The observed ratio reached about 90, so free aluminium may have reached the lake.</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**In-lake effect.** With the stream effect alone, the model stayed well above the observed trophic state in 2009 to 2012. Matching it needed higher sedimentation of particulate organic matter (flocculation) and a lowered sediment phosphate release (about 50%). The authors estimated that these effects might last 2 to 3 years after dosing.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Scenarios.** Without any alum effect the simulated TLI was about 0.5 units higher. Meeting the TLI target at the current nitrogen load needed, in the modelling, a 25% cut to catchment P plus alum transferring about half the DRP load to particulate form.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Caveat.** The alum effects were fixed model parameters, not simulated alum, so year-to-year variation was not captured.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Puarenga confound.** The Puarenga DRP showed a clear decline from about 2009 with little change in TP. The authors attribute at least part of it to changes at the Rotorua wastewater treatment plant, so the raw upstream series is not free of other influences.</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### McBride, Abell &amp; Hamilton (2019), ERI 123 {#sec-eri123}</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>**Question.** What were the daily water and nutrient loads to Lake Rotorua from 1965 to 2017, and how do they compare with the sustainable-load targets (435 t TN/yr and 37 t TP/yr)?</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>**Method**</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Water balance.** Daily balance for July 1964 to June 2017 from the Ōhau Channel outflow, lake level change, evaporation and rainfall (airport rainfall multiplied by 1.19 for the lake surface). The residual is split into ungauged slow flow (30%, groundwater) and quick flow (70%, minor streams).</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Stream flow.** Nine major inflows. Gaps in the gauged records are filled by synthetic models (symbolic regression or LOESS). Hamurana is interpolated from monthly spot gaugings. Geothermal inflow is a constant 0.5 m³/s.</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Concentrations.** Daily DIN and PO4-P are linear interpolations of monthly BoPRC baseflow samples (samples above 120% of baseflow are excluded). Earlier years use the Fish (1975) means for 1967 to 1969 and reference concentrations for about 1900. Total nutrients add a stormflow particulate term from log-log regressions on discharge.</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Other sources.** Geothermal concentrations are volume-weighted spring means (1992 to 1994). Slow and quick flow take average concentrations of the groundwater-fed and quick-response streams. Atmospheric deposition comes from Verburg et al. (2015). Wastewater to 1991 was interpolated from Hoare and council data; after 1991 the land treatment system is captured in the Puarenga data.</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>**Key findings**</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Targets.** Annual N loads have risen steadily from below the target in the 1960s, up to about 300 t N/yr above it in wet years. P loads met the target after the 1991 land treatment system but have exceeded it in medium and wet years recently.</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Stream P.** Concentrations were fairly stable from 1970 to 2010, with increases in several streams since 2010. Hamurana and Awahou (groundwater, high-phosphate ignimbrite) supply the largest share of dissolved P.</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Alum.** The estimated external loads do not explain the improvement in lake P since about 2010, so the authors infer the improvement comes mostly from alum dosing and its in-lake effects, possibly with some exhaustion of the legacy wastewater P in the sediments.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sampling sites (p. 33).** *Utuhina* PO4-P is measured downstream of the dosing site, so it reflects the alum. *Puarenga* is monitored upstream, so the post-dosing PO4-P was estimated by the Hamilton et al. (2015) method.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="fu">### McBride, Allan &amp; Hamilton (2019), ERI 128 {#sec-eri128}</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>**Question.** What N and P load reductions are needed to reach the TLI target of 4.2, and how much has alum changed the lake's internal loading?</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>**Method.** DYRESM-CAEDYM with an hourly internal step, driven by the daily inflow loads of ERI 123. It was calibrated for July 2001 to June 2004 and validated for July 2005 to June 2007, before alum could confound the fit. The authors ran 36 catchment N and P load combinations over 2001 to 2007, then ran the model through 2001 to 2017 with no alum treatment as a baseline.</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>**Key findings**</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Load reductions.** Cutting both N and P in the catchment could take the TLI from about 4.8 (2001 to 2007) to about 4.3, close to the target, without alum. N or P reductions alone were not enough.</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Alum.** The no-alum baseline greatly overestimated nutrients and chlorophyll after 2006. Reducing modelled sediment release by about 50% (about 16 t P/yr) reproduced the post-2010 lake, so the in-lake effect of alum was similar in size to halving the internal load. Chlorophyll would not fall to post-2010 levels without a 50 to 75% reduction in internal N and P loading.</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Mechanism.** The authors propose that flocculation increases sedimentation of particulates, lowers organic matter in the sediment and reduces anoxia, with direct adsorption of DRP in the water column where the dose exceeds stream DRP.</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="fu">### Related: Tempero (2026), ERI 178, and Sanila (2026) {#sec-related}</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>These are not inflow reports but constrain the alum fate. ERI 178 (sediment aluminium survey, 2024) found no accumulation of alum-derived aluminium in the main basin (about 5 g Al/kg, as before dosing) and attributes it to nearshore deposition (under 10 m), storm resuspension and export through the Ōhau Channel; 993 t Al had been dosed by the end of 2023. The Sanila thesis (jar tests) gives an Al:P of 0.7:1 in the lake water but about 7:1 operationally in the streams, fast binding (most within 20 minutes), floc settling mostly 20 to 60 m/d, and a pH window of 6 to 8 for efficient binding.</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## How the daily inflow series are created {#sec-build}</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>  A[Monthly BoPRC stream samples&lt;br/&gt;PO4-P, NH4-N, NO3-N, TP, TN] --&gt; C[Baseflow concentrations:&lt;br/&gt;linear interpolation&lt;br/&gt;flood-flow samples excluded]</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>  B[Gauged <span class="ot">and</span> synthetic&lt;br/&gt;stream flow + water balance] --&gt; D[Daily flow&lt;br/&gt;<span class="dv">9</span> streams + geothermal&lt;br/&gt;+ ungauged slow <span class="ot">and</span> quick]</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>  C --&gt; E[Stormflow particulates:&lt;br/&gt;<span class="fu">log</span>-<span class="fu">log</span> regression on discharge]</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>  E --&gt; F[Daily concentrations by form&lt;br/&gt;DRP, DOP, POP, PIP, NH4, NO3, ...]</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>  D --&gt; F</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>  F --&gt; G{Dosed stream?}</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  G --&gt;|Utuhina: sampled downstream| H[Measured DRP is already treated.&lt;br/&gt;Reconstruct untreated DRP from&lt;br/&gt;pre-alum monthly DRP:TP]</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>  G --&gt;|Puarenga: sampled upstream| I[Measured DRP is untreated.&lt;br/&gt;Estimate treated DRP from the&lt;br/&gt;McIntosh dose-response]</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>  H --&gt; J[<span class="fu">no</span>-alum file / with-alum file]</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>  I --&gt; J</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>  J --&gt; K[format_dyresm_inflow:&lt;br/&gt;<span class="fu">rename</span> to AEME variables]</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>  K --&gt; L[calc_alum_inflow:&lt;br/&gt;add ALU_ala from daily dose&lt;br/&gt;<span class="ot">and</span> flow]</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>  L --&gt; M[AEME / GLM-AED inflow csv files&lt;br/&gt;g/m3 converted to mmol/m3 at build]</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="fu">### Flow</span></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>Daily flow for each major stream is the gauged value where it exists and a synthetic model elsewhere (ERI 123). The ungauged residual of the lake water balance is split into slow and quick flow and smoothed with 15-day and 2-day rolling means. The geothermal inflow is constant. The model files hold flow in m³/d.</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="fu">### Concentrations</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>Monthly baseflow samples are linearly interpolated to daily. Stormflow samples (flow above 120% of baseflow) are excluded from the interpolation and instead handled with a particulate-nutrient regression on discharge. The resulting annual mean concentrations of the nine major streams are in @fig-annual: P in most streams was fairly stable between 1970 and 2010, with increases after 2010 in several.</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="al">![Annual mean DRP and TP of the nine major inflows (untreated, no-alum file).](images/inflows/annual_stream_P.png)</span>{#fig-annual}</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="fu">### Load</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>Adding flow and concentration gives the external P load. @fig-load shows the total TP load to the lake in the no-alum file by source group, with the 37 t TP/yr sustainable load, and @tbl-load the period means. These include stormflow particulates, so they are not directly comparable with the target (ERI 123).</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="al">![Annual TP load to Lake Rotorua by source group (no-alum file).](images/inflows/total_P_load.png)</span>{#fig-load}</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-load</span></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean annual TP load (t P/yr) by period and source group (no-alum file; includes stormflow particulates)."</span></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">read.csv</span>(<span class="st">"data/inflows/tp_load_by_period.csv"</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="fu">### Conversion to model variables</span></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>The DYRESM-format file is renamed to AEME variable names by <span class="in">`format_dyresm_inflow()`</span> (DRP to <span class="in">`PHS_frp`</span>, DOPL to <span class="in">`PHS_dop`</span>, POPL to <span class="in">`PHS_pop`</span>, PIP to <span class="in">`PHS_pip`</span>, and so on). The two dosed streams get an <span class="in">`ALU_ala`</span> column from the daily alum volume, computed by <span class="in">`calc_alum_inflow()`</span> with 4.263% Al and a density of 1.323 kg/L and a molar Al:P ratio of 1 (the <span class="in">`ratio_al_p`</span> target). Phosphorus enters the model file in g/m³ and AEME converts it to mmol/m³ at build, but <span class="in">`ALU_ala`</span> stays in mmol/m³.</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alum and the monitoring sites {#sec-alum}</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### What alum does to the stream P</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>Alum in the stream converts dissolved reactive P to particulate P. @fig-dosed shows the annual DRP of the two dosed streams in the two files, with the aluminium dosed each year. The with-alum file drops at the start of dosing in the Utuhina (2006) and the Puarenga (2010), and the no-alum file does not.</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="al">![Annual mean DRP of the dosed streams in the no-alum and with-alum files (top) and aluminium dosed (bottom).](images/inflows/dosed_streams_annual.png)</span>{#fig-dosed}</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>@fig-daily is the equivalent of Hamilton et al. Fig 19 for July 2011 to July 2013, when the paired Puarenga data were collected.</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="al">![Daily DRP in the two files with the Al dose (grey).](images/inflows/daily_2011_2013.png)</span>{#fig-daily}</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="fu">### Utuhina: reconstructing the untreated DRP</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>Hamilton et al. (p. 36) calculated the mean monthly DRP:TP for 2001 to 2006 (pre-alum) and applied it to the TP measured after 2006 to estimate the DRP without alum. @fig-utuhina compares the monthly DRP:TP of the pre-alum record, the measured post-alum record and the reconstruction in the no-alum file. The mean pre-alum ratio is 0.70 (monthly medians 0.72 to 0.81); the measured post-alum ratio falls to 0.37; the no-alum file's reconstruction is 0.64 (monthly medians 0.62 to 0.67), a little *below* the pre-alum ratio. A strict application of Hamilton's method (pre-alum monthly ratio times the measured TP) gives a mean untreated DRP of 0.051 g/m³ for mid-2006 to 2012, against 0.044 in the file, so the file's untreated DRP is about 14% lower. Using Hamilton's value, the stream removal would be about 0.52 instead of 0.45 for that period.</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="al">![Median DRP:TP by month for the Utuhina, pre-alum and post-alum, measured and reconstructed.](images/inflows/utuhina_drp_tp.png)</span>{#fig-utuhina}</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-utuhina</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Utuhina median DRP:TP by month."</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">read.csv</span>(<span class="st">"data/inflows/utuhina_drp_tp_monthly.csv"</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">### Puarenga: estimating the treated DRP</span></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>For the upstream-sampled Puarenga, the treated DRP comes from a dose-response fitted to McIntosh's paired samples (Hamilton et al., Fig 20). @fig-removal shows the removal fraction implied by the with-alum file against the Al dose and against the Al:DRP ratio. It matches the report: removal is about 65% at 75 to 100 kg Al/d, about 80% above 100 kg Al/d, and rises with Al:DRP towards a maximum. The Utuhina is much flatter, at about 40 to 50% whatever the dose.</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="al">![DRP removal fraction in the dosed streams (1 minus with-alum DRP over no-alum DRP) against Al dose and Al:DRP. Red: smooth and exponential fit. Dashed: 75 kg Al/d and Al:DRP of 20.](images/inflows/removal_vs_dose.png)</span>{#fig-removal}</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>The Puarenga with-alum series follows an almost straight ramp from zero removal up to a 90% cap at an Al:DRP of about 23 (the tight line in the lower left panel of @fig-removal). It is therefore a dose-response rule applied to the daily dose, not a smoothed measurement, and the 90% cap is part of the rule. An exponential saturation, <span class="in">`f = fmax (1 - exp(-R / R0))`</span> with <span class="in">`R`</span> the Al:DRP ratio, approximates both streams (@tbl-fit). The Puarenga has a high maximum and a clear dose dependence; the Utuhina saturates at about 0.43 immediately (<span class="in">`R0`</span> hits its lower bound).</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-fit</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Fitted in-stream DRP removal, dosed days from 2007 (Al:DRP uses the untreated DRP)."</span></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">read.csv</span>(<span class="st">"data/inflows/stream_removal_fit.csv"</span>), <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Stream"</span>, <span class="st">"fmax"</span>, <span class="st">"R0 (mol/mol)"</span>, <span class="st">"Dosed days"</span>, <span class="st">"Mean removal"</span>))</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="fu">### The two files compared {#sec-files}</span></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>Only DRP and the particulate or sorbed P forms differ between the files (flow, temperature, N, solids and carbon are identical; the files are also identical before 2006). @tbl-diff gives the change from no-alum to with-alum for 2000 to 2022.</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-diff</span></span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Change in total load from the no-alum to the with-alum file, 2000 to 2022 (%)."</span></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">read.csv</span>(<span class="st">"data/inflows/files_difference.csv"</span>), <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Inflow"</span>, <span class="st">"DRP"</span>, <span class="st">"PIP"</span>, <span class="st">"TP"</span>))</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>@fig-forms shows the forms of P delivered by the two dosed streams. In the Utuhina, the removed DRP reappears as POP and PIP, so TP is conserved (the speciated forms sum to TP). **In the Puarenga with-alum file the removed DRP is not assigned to any other form**: the DRP is reduced but PIP and POP are unchanged, so the forms no longer sum to TP (by about 0.03 g/m³, or roughly 1.7 t P/yr in 2011 to 2017). A model driven by the speciated columns would lose that P, so the with-alum Puarenga series should be checked with its author before use.</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="al">![P forms delivered by the Utuhina and Puarenga with and without alum.](images/inflows/dosed_P_forms.png)</span>{#fig-forms}</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this means for the model {#sec-model}</span></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="fu">### Which file goes with which model</span></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model setup <span class="pp">|</span> Utuhina <span class="pp">|</span> Puarenga <span class="pp">|</span> Alum module <span class="pp">|</span></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Alum-explicit lake model** (the dose drives everything) <span class="pp">|</span> Untreated: no-alum file (reconstructed) <span class="pp">|</span> Untreated: raw upstream = no-alum file <span class="pp">|</span> On, with an in-stream reaction step <span class="pp">|</span></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **No alum module** (observed inflows reproduce the effect) <span class="pp">|</span> Treated: measured = with-alum file <span class="pp">|</span> Treated: estimated = with-alum file (once its mass is closed) <span class="pp">|</span> Off <span class="pp">|</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> *Used so far in the GLM-AED calibration* | *Treated (with-alum values)* | *Untreated (raw)* | *On* <span class="pp">|</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>The last row is the inconsistent case: the Utuhina stream removal was in the inflow data **and** the alum module acted on the same P in the lake, while the Puarenga had only the module. The calibrated alum efficiency may therefore have absorbed part of the Utuhina stream effect (a first test found the effect on lake TP small, within about 3%; see <span class="co">[</span><span class="ot">the next-steps page</span><span class="co">](rotorua-alum-next-steps.qmd)</span>), and the scenario runs labelled "no alum" still contained the Utuhina stream treatment (about 30% less DRP).</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="fu">### Recommended handling</span></span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use the no-alum file for all streams** with the alum module on, so the dose is the only driver and the with/without alum scenarios are clean.</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Add an in-stream reaction step** before the lake: the Puarenga (about 300 m) and Utuhina (about 700 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<span class="in">`ALU_alp`</span>) and reduce <span class="in">`ALU_ala`</span> by the same amount. Use <span class="in">`fmax`</span> and <span class="in">`R0`</span> from @tbl-fit, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Treat the in-lake effects separately.** Hamilton et al. and ERI 128 both needed an additional in-lake effect (about 50% less sediment P release, more flocculation). The module's settled-alum uptake and the sediment P flux parameters should be checked against that, once the inflows are consistent.</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Keep the free-aluminium point in view.** At Al:DRP well above 20 most of the dosed Al is not used in the stream and reaches the lake; this excess is what the lake-side module acts on.</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Open questions {#sec-open}</span></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dosing start dates differ between sources.** Utuhina is 2006 in all of them. Puarenga is 2009 (Hamilton et al. 2015), 2010 (ERI 178, ERI 128 intro and the BoPRC dose record used in the model); two other passages swap the streams. The model uses the dose record.</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Provenance of the two files.** The method that made the with-alum Puarenga series (the cap of about 90% removal, the unassigned DRP), and the untreated Utuhina reconstruction (a DRP:TP about 14% below what Hamilton's pre-alum monthly ratios give), should be confirmed with whoever produced them.</span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Puarenga DRP before alum.** Hamilton et al. link part of the post-2009 DRP decline to wastewater treatment changes, so the upstream series is not purely untreated stream P.</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dose dependence in the Utuhina.** Hamilton et al. show DRP:TP falling with dose below the Utuhina sampling site (their Fig 17); the file's removal is nearly flat. Monthly spot samples against a variable daily dose make this hard to resolve.</span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Timing.** Monthly samples are matched to a daily dose, so short high-dose events are not captured.</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducing this page {#sec-repro}</span></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>The figures and tables are made by <span class="in">`calibration/alum/20_inflow_doc_figs.R`</span> from the two inflow files in <span class="in">`data/raw/flows/`</span> and the step 3 base model (for the dose). The page itself reads only the small summaries in <span class="in">`website/data/inflows/`</span>. The report text extracts used for this summary are in <span class="in">`calibration/alum/ref/`</span>.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

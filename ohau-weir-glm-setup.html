@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.10.20">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-10-20">
+<meta name="dcterms.date" content="2026-11-01">
 
 <title>Ōhau Channel Weir and GLM Outflow Setup – Rotorua Lake Modelling</title>
 <style>
@@ -80,10 +80,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3b79382dac7a3151da62fb1e9f672ee1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -283,6 +283,30 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows and Alum (report summaries)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Calibration: Next Steps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./light-data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Light Data (Kw)</span></a>
   </div>
@@ -315,6 +339,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -440,6 +470,12 @@ window.Quarto = {
  <span class="menu-text">Extreme &amp; Storm Events</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -515,7 +551,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">20 October 2026</p>
+      <p class="date">01 November 2026</p>
     </div>
   </div>
   
@@ -652,7 +688,7 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Records with both level and flow</td>
-<td style="text-align: left;">1,669,242</td>
+<td style="text-align: left;">1,675,579</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Start</td>
@@ -660,7 +696,7 @@ Note
 </tr>
 <tr class="odd">
 <td style="text-align: left;">End</td>
-<td style="text-align: left;">2026-09-24</td>
+<td style="text-align: left;">2026-10-16</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Level range (m)</td>
@@ -869,7 +905,7 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 <tr class="odd">
 <td style="text-align: left;">Crest elevation</td>
 <td style="text-align: left;">morphometry/crest_elev</td>
-<td style="text-align: right;">279.1469</td>
+<td style="text-align: right;">279.1466</td>
 <td style="text-align: left;">Fitted</td>
 </tr>
 <tr class="even">
@@ -881,7 +917,7 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 <tr class="odd">
 <td style="text-align: left;">Crest factor</td>
 <td style="text-align: left;">outflow/crest_factor</td>
-<td style="text-align: right;">0.3623</td>
+<td style="text-align: right;">0.3621</td>
 <td style="text-align: left;">Fitted (closed form)</td>
 </tr>
 <tr class="even">
@@ -933,7 +969,7 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">RMSE (m³/s)</td>
-<td style="text-align: right;">1.791</td>
+<td style="text-align: right;">1.788</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Bias, mean(obs − est) (m³/s)</td>
@@ -973,7 +1009,7 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 </div>
 </div>
 </div>
-<p>The crest factor does not move the drawn crest. It scales flow. Note the GLM equation uses <span class="math inline">\(\tfrac{2}{3}\sqrt{2g} = 2.953\)</span> as its base coefficient, whereas the physical curves use <span class="math inline">\(1.705\,C_d\)</span> = 0.963. Per metre of crest width at the same head, the fitted GLM coefficient is <span class="math inline">\(2.953 \times 0.362 = 1.07\)</span>, of similar magnitude to the physical 0.963. The GLM crest sits lower than the upper crest, so it compensates for the physical weir’s higher crest with a slightly higher unit coefficient over the full 26 m.</p>
+<p>The crest factor does not move the drawn crest. It scales flow. Note the GLM equation uses <span class="math inline">\(\tfrac{2}{3}\sqrt{2g} = 2.953\)</span> as its base coefficient, whereas the physical curves use <span class="math inline">\(1.705\,C_d\)</span> = 0.963. Per metre of crest width at the same head, the fitted GLM coefficient is <span class="math inline">\(2.953 \times 0.362 = 1.069\)</span>, of similar magnitude to the physical 0.963. The GLM crest sits lower than the upper crest, so it compensates for the physical weir’s higher crest with a slightly higher unit coefficient over the full 26 m.</p>
 </section>
 <section id="rating-comparison-physical-vs-glm" class="level3">
 <h3 class="anchored" data-anchor-id="rating-comparison-physical-vs-glm">Rating comparison: physical vs GLM</h3>
@@ -1017,9 +1053,9 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">morphometry/crest_elev</td>
-<td style="text-align: right;">279.1469</td>
-<td style="text-align: right;">278.9469</td>
-<td style="text-align: right;">279.3469</td>
+<td style="text-align: right;">279.1466</td>
+<td style="text-align: right;">278.9466</td>
+<td style="text-align: right;">279.3466</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">outflow/crest_width</td>
@@ -1029,9 +1065,9 @@ f_c(z_c) = \frac{\sum q_i Q_i}{\sum q_i^2}
 </tr>
 <tr class="odd">
 <td style="text-align: left;">outflow/crest_factor</td>
-<td style="text-align: right;">0.3623</td>
-<td style="text-align: right;">0.2623</td>
-<td style="text-align: right;">0.5623</td>
+<td style="text-align: right;">0.3621</td>
+<td style="text-align: right;">0.2621</td>
+<td style="text-align: right;">0.5621</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">outflow/num_outlet</td>
