@@ -1,0 +1,7 @@
+run,stream,dosed_days,Al_t,P_bound_t,ratio_molmol,frac_FRP_removed,days_at_cap,Al_share_on_capped_days,ratio_molmol_uncapped
+Q50 (previous),Utuhina,5173,393.8,16.74,27,0.4491,0,0,27
+Q50 (previous),Puarenga,3442,463.4,16.02,33.21,0.7311,0.5886,0.7058,25.56
+H1,Utuhina,5173,393.8,33.42,13.53,0.8966,0.9959,0.9998,1
+H1,Puarenga,3442,463.4,19.67,27.05,0.8974,0.9974,0.9999,1
+H1b,Utuhina,5173,393.8,16.74,27,0.4491,0,0,27
+H1b,Puarenga,3442,463.4,19.67,27.05,0.8974,0.9974,0.9999,1
