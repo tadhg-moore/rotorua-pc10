@@ -1,0 +1,13 @@
+run,var,years,overlap,obs_in_ens_range
+No alum,TLI3,17,0.588,0.529
+No alum,TLI4,17,0.588,0.471
+No alum,TLc,17,1,0.882
+No alum,TLn,17,0.941,0.941
+No alum,TLp,17,0.412,0.353
+No alum,TLse,17,0.647,0.353
+With observed alum,TLI3,17,0.824,0.647
+With observed alum,TLI4,17,0.824,0.588
+With observed alum,TLc,17,0.941,0.588
+With observed alum,TLn,17,1,1
+With observed alum,TLp,17,0.765,0.647
+With observed alum,TLse,17,0.706,0.176

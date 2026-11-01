@@ -1,0 +1,25 @@
+run,basis,var,years,bias,bias_lo,bias_hi,r,r_lo,r_hi
+With observed alum,sampled,TLI3,17,-0.26,-0.283,-0.224,0.394,0.28,0.479
+With observed alum,sampled,TLI4,17,-0.185,-0.204,-0.158,0.356,0.251,0.438
+With observed alum,sampled,TLp,17,-0.359,-0.401,-0.3,0.298,0.163,0.426
+With observed alum,sampled,TLc,17,-0.386,-0.445,-0.311,0.34,0.165,0.448
+With observed alum,sampled,TLn,17,0.00147,-0.0244,0.0323,0.209,0.0827,0.313
+With observed alum,sampled,TLse,17,0.0374,0.00742,0.0621,-0.445,-0.532,-0.27
+With observed alum,full,TLI3,17,-0.261,-0.284,-0.225,0.394,0.28,0.479
+With observed alum,full,TLI4,17,-0.188,-0.207,-0.162,0.359,0.252,0.441
+With observed alum,full,TLp,17,-0.361,-0.403,-0.302,0.314,0.177,0.439
+With observed alum,full,TLc,17,-0.391,-0.449,-0.316,0.33,0.149,0.441
+With observed alum,full,TLn,17,0.00371,-0.0221,0.0346,0.191,0.0606,0.304
+With observed alum,full,TLse,17,0.029,-0.00101,0.0537,-0.406,-0.501,-0.228
+No alum,sampled,TLI3,17,0.367,0.344,0.403,-0.458,-0.516,-0.372
+No alum,sampled,TLI4,17,0.29,0.271,0.317,-0.495,-0.548,-0.414
+No alum,sampled,TLp,17,0.876,0.834,0.935,-0.795,-0.828,-0.698
+No alum,sampled,TLc,17,-0.102,-0.16,-0.027,-0.122,-0.246,0.0331
+No alum,sampled,TLn,17,0.36,0.334,0.39,-0.432,-0.513,-0.299
+No alum,sampled,TLse,17,0.0561,0.0261,0.0807,-0.576,-0.657,-0.391
+No alum,full,TLI3,17,0.367,0.344,0.403,-0.488,-0.544,-0.404
+No alum,full,TLI4,17,0.287,0.268,0.314,-0.52,-0.573,-0.44
+No alum,full,TLp,17,0.875,0.833,0.934,-0.787,-0.822,-0.688
+No alum,full,TLc,17,-0.108,-0.166,-0.0328,-0.176,-0.282,-0.0208
+No alum,full,TLn,17,0.367,0.341,0.398,-0.44,-0.526,-0.3
+No alum,full,TLse,17,0.0458,0.0158,0.0704,-0.597,-0.664,-0.412

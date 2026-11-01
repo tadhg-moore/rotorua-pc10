@@ -1,0 +1,17 @@
+var,period,run,n,bias_pct,rmse,r,bias_min,bias_max
+DObot,Before dosing (2005 to mid-2006),No alum,115,-5.17,1.36,0.91,-14,2.35
+DObot,Before dosing (2005 to mid-2006),With observed alum,115,-5.17,1.36,0.91,-14,2.35
+DObot,After dosing (mid-2006 to 2022),No alum,6590,-3.24,1.26,0.881,-9.11,3.26
+DObot,After dosing (mid-2006 to 2022),With observed alum,6590,-3.07,1.26,0.881,-8.89,2.74
+FRP,Before dosing (2005 to mid-2006),No alum,11,66.4,0.0134,-0.371,-60.8,173
+FRP,Before dosing (2005 to mid-2006),With observed alum,11,66.4,0.0134,-0.371,-60.8,173
+FRP,After dosing (mid-2006 to 2022),No alum,65,391,0.0218,-0.433,49.4,869
+FRP,After dosing (mid-2006 to 2022),With observed alum,65,-21.3,0.00561,0.0742,-78.4,41.5
+TP,Before dosing (2005 to mid-2006),No alum,30,-11,0.013,0.239,-34.2,9.91
+TP,Before dosing (2005 to mid-2006),With observed alum,30,-11,0.013,0.239,-34.2,9.91
+TP,After dosing (mid-2006 to 2022),No alum,362,118,0.0302,-0.53,65.1,166
+TP,After dosing (mid-2006 to 2022),With observed alum,362,-18.7,0.0114,0.092,-35.5,5.72
+chl,Before dosing (2005 to mid-2006),No alum,101,13.2,8.59,0.155,-44.9,132
+chl,Before dosing (2005 to mid-2006),With observed alum,101,13.2,8.59,0.155,-44.9,132
+chl,After dosing (mid-2006 to 2022),No alum,1180,27.3,10.9,-0.0115,-48.9,152
+chl,After dosing (mid-2006 to 2022),With observed alum,1180,-10.3,7.23,0.0937,-49.4,40.1
