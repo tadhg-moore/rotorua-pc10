@@ -22,7 +22,7 @@ The alum calibration so far treated the reaction between alum and stream phospho
 - **The thesis finding.** Alum reduced DRP in all waters, and the Al:P molar ratios ranged from 0.7:1 to 15.1:1. Where DRP stayed measurable after treatment, the ratio was near 1:1 (Lake Rotorua 0.7:1, Puarenga Stream 0.98:1). Where DRP fell below detection, the dose was in surplus and a minimum effective dose could not be determined.
 - **What that means for the comparison.** Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the next-steps page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.
 - **The design.** Three stream-step hypotheses on the same lake: the previous rule (H0), the thesis stoichiometry in both streams (H1), and the thesis in the Puarenga with the measured Utuhina removal kept (H1b). A calibrated efficiency (H2) follows if H1 does not settle it (@sec-design).
-- **First result.** H1 and H1b have been run on the best member of the joint stage (@sec-h1).
+- **First results.** H1 and H1b have been run on the best member of the joint stage (@sec-h1). The stream rule was then fitted to the Utuhina data (@sec-fit): removal is a plateau near 43% and the efficiency ε is not identified, so the thesis value is neither confirmed nor excluded. The thesis lake stoichiometry is applied by scaling the input in R, not by a new module parameter (@sec-stoich).
 
 ## What was used before {#sec-previous}
 
@@ -81,7 +81,7 @@ H1b is there because H1 contradicts a measurement for the Utuhina (@sec-h1). Pri
 
 ### Lake side, the same for all runs {#sec-lake}
 
-- **Stoichiometry.** The module has no stoichiometry parameter: capacity is used one for one (`aed_alum.F90`). The thesis lake ratio of 0.7:1 (1.4 mol P per mol Al) would need a new parameter. It is not part of H1, which only changes the stream step.
+- **Stoichiometry, set in R.** The module uses capacity one for one with P (`aed_alum.F90`), and no parameter is added. The thesis lake ratio of 0.7:1 means 1 mol of Al binds β = 1/0.7 = 1.43 mol P, so the input is scaled instead (@sec-stoich): `ALU_ala` and `ALU_alp` become P-binding capacity, β times the Al dose, and aluminium is the capacity divided by β wherever it is reported. H1 and H1b keep β = 1.
 - **Rates.** Refit `w_ala` (thesis 0.3 to 1.5 m/d), `K_P` (about 0.3), `k_w`, `k_s`, `k_age_w`, `k_age_s`, `k_bur`, `k_res` as in stage `p4`, from the member of the joint stage. The sensitivity screen found the alum parameters carry 6.5% of the objective, and `k_age_w` is the first driver of the alum in the water.
 
 ### Targets {#sec-targets}
@@ -157,11 +157,67 @@ The fit does not distinguish the rules. H1b is within 0.2 percentage points of t
 
 This is one member with its parameters unchanged, not a calibration. The lake alum parameters (`k_w`, `K_P`, `w_ala`, ageing and burial) were fitted under the previous rule and the lake already compensates for the difference, so a refit is the proper test of whether the thesis stoichiometry changes the lake parameters.
 
+## Step 1: the stream rule against the stream observations {#sec-fit}
+
+This step fits the rule `f = min(f_max, ε R)` to the stream data alone, with no lake model (`calibration/alum/62_stream_fit.R`). `R` is the dose over the untreated DRP, in mol Al per mol P, and ε is the mol of P bound per mol of Al.
+
+**The data.** The Utuhina inflow was sampled downstream of the dosing point, so on dosed days the removal is `f_obs = 1 − DRP(measured) / DRP(untreated)`, taking the untreated DRP from the reconstructed no-alum series (Hamilton et al. 2015, p. 36). Both series are daily, interpolated from monthly samples, so the 4,980 dosed days of 2007 to 2022-06 are not independent. The intervals below come from a bootstrap over the 178 calendar months.
+
+For the Puarenga there is nothing to fit. The McIntosh spot samples (Hamilton et al. 2015, Fig 20) are not in the repository, and the Puarenga treated DRP in the with-alum file is built from the ramp: its removal by dose-ratio bin follows `0.9·min(1, R/23)` (@tbl-fit-byR), so fitting it would only return the ramp. The report text constrains the Puarenga only from below: more than 80% reduction at a mass ratio Al:PO₄-P of about 20 (R = 23 mol/mol) needs ε ≥ 0.8/23 = 0.035, and the ramp (0.9/23 = 0.039) sits at that bound. The thesis value of about 1 is 25 times higher, and the data in hand cannot choose between them.
+
+```{r}
+#| label: tbl-fit-byR
+#| tbl-cap: "Fraction of the DRP removed by dose ratio R on the dosed days (2007 to 2022-06). Utuhina: measured downstream against the reconstructed untreated DRP. Puarenga: the with-alum inflow file, which is built from the ramp, so it is not an observation. 'sd' is the day-to-day standard deviation."
+b <- read_csv("data/h1/stream_fit_byR.csv", show_col_types = FALSE)
+kable(data.frame(Stream = b$stream, `R (mol/mol)` = chartr(",", "-", gsub("[][()]", "", as.character(b$Rbin))), Days = b$days, `Mean R` = sprintf("%.1f", b$R_mean), `Al (kg/d)` = sprintf("%.0f", b$al_kgd_mean), `Removed` = sprintf("%.0f%%", 100 * b$f_obs), sd = sprintf("%.2f", b$f_sd), check.names = FALSE))
+```
+
+```{r}
+#| label: tbl-fit-utuhina
+#| tbl-cap: "Rules fitted to the Utuhina removal (least squares on the daily fraction), with 5 to 95% intervals from a bootstrap over months, and the previous and H1 rules for comparison. RMSE is in fraction of the DRP removed; bias is the mean of the rule minus the observed removal."
+u <- read_csv("data/h1/stream_fit_utuhina.csv", show_col_types = FALSE)
+nm <- c(flat = "Fitted: flat", linear_cap = "Fitted: min(f_max, ε R)", saturating = "Fitted: saturating")
+ci <- function(x, lo, hi) ifelse(is.na(x), "", sprintf("%.2f (%.2f to %.2f)", x, lo, hi))
+kable(data.frame(Rule = ifelse(u$rule %in% names(nm), nm[u$rule], u$rule), ε = ci(u$eps, u$eps_lo, u$eps_hi), `f_max` = ci(u$f_max, u$fmax_lo, u$fmax_hi), RMSE = sprintf("%.3f", u$rmse), Bias = sprintf("%+.3f", u$mean_bias), check.names = FALSE))
+```
+
+```{r}
+#| label: fig-fit
+#| fig-cap: "Utuhina removal against dose ratio, with the fitted and previous rules."
+#| out-width: "80%"
+knitr::include_graphics("images/h1/stream_fit.png")
+```
+
+**What the Utuhina data say**
+
+- **The removal is a plateau near 43%, not a function of the dose.** The fitted `f_max` is 0.42 (0.40 to 0.45), and the flat rule fits as well as the two-parameter rules (RMSE 0.200 for all three). The previous flat 0.45 is inside the interval and is as good (RMSE 0.202). The previous ramp is worse (0.266) and H1 much worse (0.514), because both over-remove at low and moderate doses.
+- **ε is not identified.** Its interval runs from 0.14 to 2.1, so the Utuhina data are consistent with the thesis value (1) and with values 5 times lower. The plateau is reached at the lowest doses (a mean of 25 to 45 kg Al/d at R between 1 and 5 already gives 43 to 49%), so the dose never limits the removal, and the data cannot show what limits it.
+- **The removal rises only slightly at high doses**: 55% at R of 23 to 50 and 65% above 50, from 480 days. This is the only sign of a dose response.
+- **Something other than capacity limits the Utuhina removal.** A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 700 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.
+
+## Lake stoichiometry set in R {#sec-stoich}
+
+The module binds one mol of P per mol of capacity, and nothing is added to it. The thesis lake ratio (0.7 mol Al per mol P) is applied in R by scaling the input (`calibration/alum/63_stoich_base.R`): the dose delivered to the module is β = 1/0.7 = 1.43 times the Al dose, so `ALU_ala` and `ALU_alp` are in mmol of P-binding capacity per m³, not mmol of Al. The stream step is applied to this capacity (`B = min(f_max · FRP, capacity)`), and the Al reported anywhere is the capacity divided by β. The run below uses the Puarenga with the thesis rule (cap 0.9) and the Utuhina with its measured 0.45 (H1b), on member 46.
+
+This changes the model, as intended: each mol of capacity consumed now stands for 1/β mol of Al, so the same Al binds 1.43 times more P. It is not independent of the lake rates, though. Capacity is lost mostly by ageing and settling (57% and 28% of the water column losses in member 46), so a larger β raises P uptake by much less than β, and β trades off with `k_w` and `k_age_w`, which set how much capacity binds P before it ages out. In a refit β is therefore fixed (at 1 or 1.43) and the rates are fitted, not both.
+
+```{r}
+#| label: tbl-h1-beta
+#| tbl-cap: "Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P (β = 1.43) and the lake rates unchanged, against the previous setup and H1b. Al is the capacity divided by β."
+h <- read_csv("data/h1/h1_compare.csv", show_col_types = FALSE) |> filter(run %in% c("Previous (ramp)", "H1b (thesis, Puarenga)", "H1b + 0.7:1 lake (beta 1.43)"))
+f <- read_csv("data/h1/h1_fit.csv", show_col_types = FALSE) |> filter(run %in% h$run) |> select(run, variable, bias_pct) |> tidyr::pivot_wider(names_from = variable, values_from = bias_pct)
+h <- left_join(h, f, by = "run")
+kable(data.frame(Run = h$run, `Total P bound (t P/yr)` = sprintf("%.1f", h$P_bound_total_t_yr), `Al:P lake` = sprintf("%.1f", h$AlP_lake), `Al:P whole` = sprintf("%.2f", h$AlP_whole), `Export (t P/yr)` = sprintf("%.1f", h$export_2011_21_t_yr), `TP bias` = sprintf("%.0f%%", h$PHS_tp), `FRP bias` = sprintf("%.0f%%", h$PHS_frp), check.names = FALSE))
+```
+
+With the rates unchanged, β = 1.43 raises the P bound from 12.6 to 14.1 t P/yr (+12%, not +43%), lowers the export from 10.5 to 9.1 t P/yr, and pushes the surface bias to -21% for TP and -48% for FRP, against -8% and -21% before. The whole-system ratio falls to 4.2 mol Al per mol P and the lake ratio to 4.9. The fit is worse because the lake rates were fitted with one-for-one binding, so the lake now removes too much P. A refit of `k_w`, `K_P` and the ageing rates under β = 1.43 is needed before the fit can be compared, and it is the test of whether the data prefer the thesis value.
+
+
 ## Next steps {#sec-next}
 
-1. **H2 on the stream data first.** Fit ε and `f_max` per stream to the stream observations alone (the measured Utuhina downstream DRP and the McIntosh paired Puarenga samples, digitised from Hamilton et al. 2015 Fig 20), before the lake. This is cheap and needs no model run. If the Utuhina reach gives ε well below 1, the jar-test efficiency does not hold in the stream.
-2. **Refit the lake alum parameters** with the chosen stream rule, as in stage `p4`, and compare the parameter values and their spread with the previous fit. The comparison to make is whether `k_w`, `K_P` and the ageing rates move towards the thesis priors.
-3. **Add a stoichiometry parameter** to `aed_alum.F90` if the lake is to use the thesis 0.7:1 (1.4 mol P per mol Al). At present capacity is used one for one.
+1. **Puarenga data.** The Puarenga rule is the open question: the ramp (ε 0.04) and the thesis (ε about 1) both fit what is available. The McIntosh paired up- and downstream spot samples (2011 to 2013, Hamilton et al. 2015 Fig 20) or the BoPRC upstream and downstream monitoring would fit ε and `f_max` directly. They are not in the repository.
+2. **Utuhina.** Use the plateau (0.43, interval 0.40 to 0.45) as the removal rule, which is the previous 0.45 within error. Decide whether the plateau is a contact-time limit or an artefact of the reconstructed untreated DRP (the pre-dosing DRP:TP ratio).
+3. **Refit the lake alum parameters** with H1b and β fixed at 1 and then at 1.43, as in stage `p4`, and compare the objective, the rates and their spread. β = 1.43 with the previous rates fits worse (@tbl-h1-beta).
 4. **Report the surplus share** with every ratio, so that the comparison with the thesis uses only the unsaturated days.
 
-The code is in `calibration/alum/60_h1_base.R` (builds the H1 and H1b inflows from the previous base), `calibration/alum/61_h1_compare.R` (the comparison) and `calibration/historical/run_hist.R` (the member run, with `HIST_BASE` set to the new base).
+The code is in `calibration/alum/60_h1_base.R` (H1 and H1b inflows), `61_h1_compare.R` (comparison), `62_stream_fit.R` (step 1), `63_stoich_base.R` (lake stoichiometry in R) and `calibration/historical/run_hist.R` (the member run, with `HIST_BASE` set to the new base).

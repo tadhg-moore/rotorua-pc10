@@ -8,3 +8,6 @@ Previous (ramp),PHY_tchla,1211,-5.429,8.516,0.03819
 "H1b (thesis, Puarenga)",PHS_tp,369,-7.67,0.01073,0.3432
 "H1b (thesis, Puarenga)",PHS_frp,69,-21.26,0.006434,0.1359
 "H1b (thesis, Puarenga)",PHY_tchla,1211,-5.523,8.504,0.03989
+H1b + 0.7:1 lake (beta 1.43),PHS_tp,369,-20.62,0.01136,0.3665
+H1b + 0.7:1 lake (beta 1.43),PHS_frp,69,-47.92,0.005982,0.2281
+H1b + 0.7:1 lake (beta 1.43),PHY_tchla,1211,-13.64,8.046,0.06926

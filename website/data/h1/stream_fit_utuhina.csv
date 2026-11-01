@@ -1,0 +1,7 @@
+rule,eps,eps_lo,eps_hi,f_max,fmax_lo,fmax_hi,rmse,n_par,mean_bias
+flat,NA,NA,NA,0.4247,0.4016,0.4477,0.2002,1,-2.759e-16
+linear_cap,0.7087,0.1436,2.122,0.4254,0.403,0.4489,0.1998,2,-7.408e-5
+saturating,1.005,0.06955,3,0.4256,0.4042,0.5459,0.1998,2,-6.077e-5
+previous: flat 0.45,NA,NA,NA,NA,NA,NA,0.2017,0,0.02527
+"previous: ramp 0.9 min(1, R/23)",NA,NA,NA,NA,NA,NA,0.266,0,0.05662
+"H1: min(0.9, 1 R)",NA,NA,NA,NA,NA,NA,0.5142,0,0.4731
