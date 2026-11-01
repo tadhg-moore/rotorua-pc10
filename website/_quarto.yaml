@@ -3,6 +3,7 @@ project:
   resources:
     - assets/
     - www/
+    - downloads/
   render:
     - "*.qmd"
     - "!rotorua-glm-config.qmd"
@@ -53,6 +54,14 @@ website:
             text: "Ōhau Weir & GLM Outflow"
           - href: rotorua-inflows.qmd
             text: "Inflows"
+          - href: rotorua-inflows-alum.qmd
+            text: "Inflows and Alum (report summaries)"
+          - href: rotorua-alum-next-steps.qmd
+            text: "Alum Calibration: Next Steps"
+          - href: rotorua-alum-stream-calibration.qmd
+            text: "Alum Stream Step: Thesis Calibration Design"
+          - href: ohau-channel-water-quality.qmd
+            text: "Ōhau Channel Water Quality"
           - href: light-data.qmd
             text: "Light Data (Kw)"
           - href: plot-rotorua.qmd
@@ -65,6 +74,8 @@ website:
             text: "CSPS Metrics & Targets"
           - href: calibration-step1-physics-oxygen.qmd
             text: "Calibration Step 1: Physics and Oxygen"
+          - href: rotorua-calibration-report.qmd
+            text: "Calibration Report (nutrients, light, alum, anoxia)"
           - href: sensitivity-csps.qmd
             text: "CSPS Sensitivity Analysis"
           - href: climate-impact-strategy.qmd
@@ -96,6 +107,8 @@ website:
             text: "Met Source Comparison"
           - href: climate-extreme-events.qmd
             text: "Extreme & Storm Events"
+          - href: utuhina-flow.qmd
+            text: "Utuhina Stream Flow"
       - section: "Notes"
         contents:
           - href: notes.qmd
