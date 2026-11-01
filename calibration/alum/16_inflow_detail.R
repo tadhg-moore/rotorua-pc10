@@ -1,0 +1,18 @@
+suppressMessages({library(dplyr); library(tidyr); library(readr)})
+w <- read_csv("data/raw/flows/rotorua_inflows_populated_withalum.csv", show_col_types = FALSE); n <- read_csv("data/raw/flows/rotorua_inflows_populated_noalum.csv", show_col_types = FALSE)
+J <- inner_join(w, n, by = c("Date", "InfNum"), suffix = c("_w", "_n")); J$Inflow <- J$Inflow_w; J$yr <- as.integer(format(J$Date, "%Y"))
+rel <- function(a, b) round(100 * (sum(a, na.rm = TRUE) - sum(b, na.rm = TRUE)) / sum(b, na.rm = TRUE), 1)
+cat("2000-2022 total change with vs no alum (%), by stream:\n")
+print(J |> filter(yr >= 2000, yr <= 2022) |> group_by(Inflow) |> summarise(VOL = rel(VOL_w, VOL_n), TEMP = rel(TEMPTURE_w, TEMPTURE_n), DRP = rel(DRP_w, DRP_n), PIP = rel(PIP_w, PIP_n), TP = rel(TP_w, TP_n), NH4 = rel(NH4_w, NH4_n), NO3 = rel(NO3_w, NO3_n), TSS = rel(TSS_w, TSS_n), DOC = rel(DOCL_w, DOCL_n), .groups = "drop") |> as.data.frame())
+cat("\nDo flows differ in dosed streams in dosing years? (max |VOL_w - VOL_n| / VOL_n)\n")
+print(J |> filter(Inflow %in% c("Utuhina", "Puarenga"), yr >= 2011, yr <= 2018) |> group_by(Inflow) |> summarise(max_rel = max(abs(VOL_w - VOL_n) / VOL_n, na.rm = TRUE), frac_rows = mean(abs(VOL_w - VOL_n) > 1e-6), .groups = "drop") |> as.data.frame())
+# stream removal vs daily dose (Al in mmol per m3 of flow) and flow; DRP reduction fraction = 1 - DRP_w/DRP_n
+src <- readRDS("calibration/step3/aeme_base_2005_alum.rds"); inf <- AEME::inflows(src)$data
+D <- bind_rows(lapply(c("Utuhina", "Puarenga"), \(s) { x <- inf[[s]]; x$Date <- as.Date(x$Date); x$Inflow <- s; x[, c("Date", "Inflow", "ALU_ala")] }))
+R <- J |> filter(Inflow %in% c("Utuhina", "Puarenga"), yr >= 2007, DRP_n > 0.005) |> inner_join(D, by = c("Date", "Inflow")) |> mutate(f = 1 - DRP_w / DRP_n, dosed = ALU_ala > 0, q = VOL_w / 86400)
+cat("\nDaily DRP removal fraction f = 1 - DRP_with/DRP_noalum:\n")
+print(R |> group_by(Inflow, dosed) |> summarise(n = n(), mean_f = round(mean(f), 2), median_f = round(median(f), 2), p10 = round(quantile(f, .1), 2), p90 = round(quantile(f, .9), 2), .groups = "drop") |> as.data.frame())
+R2 <- R |> filter(dosed) |> mutate(dose_ratio = ALU_ala / (DRP_n * 1000 / 30.97)) |> mutate(bin = cut(dose_ratio, c(0, 5, 10, 20, 40, 80, Inf)))
+cat("\nremoval fraction by Al:DRP molar dose ratio (capacity / untreated DRP):\n")
+print(R2 |> group_by(Inflow, bin) |> summarise(n = n(), f = round(mean(f), 2), .groups = "drop") |> pivot_wider(names_from = Inflow, values_from = c(n, f)) |> as.data.frame())
+cat("\nflow tercile effect on f (dosed days):\n"); print(R2 |> group_by(Inflow) |> mutate(qt = ntile(q, 3)) |> group_by(Inflow, qt) |> summarise(q_med = round(median(q), 2), f = round(mean(f), 2), .groups = "drop") |> as.data.frame())

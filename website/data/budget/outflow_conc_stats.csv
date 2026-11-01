@@ -1,0 +1,37 @@
+variable,src,n,obs_median,sim_median,bias_pct,r,rmse,period
+DRP,Mass-balance outflow,67,0.005,0.00609,38.8,0.0643,0.00943,2005 to 2010
+DRP,Top 5 m layer,67,0.005,0.00622,39,0.0653,0.00943,2005 to 2010
+DRP,Mass-balance outflow,135,0.003,0.00183,-26.1,-0.0638,0.00464,2011 to 2022
+DRP,Top 5 m layer,135,0.003,0.00183,-25.6,-0.062,0.00464,2011 to 2022
+DRP,Mass-balance outflow,202,0.003,0.00208,2.16,0.133,0.00662,All
+DRP,Top 5 m layer,202,0.003,0.00211,2.52,0.134,0.00662,All
+NH4-N,Mass-balance outflow,66,0.011,0.0373,89.8,-0.233,0.0356,2005 to 2010
+NH4-N,Top 5 m layer,66,0.011,0.0372,89.8,-0.233,0.0356,2005 to 2010
+NH4-N,Mass-balance outflow,136,0.0146,0.0278,34.3,0.0861,0.0268,2011 to 2022
+NH4-N,Top 5 m layer,136,0.0146,0.0278,34.3,0.0862,0.0268,2011 to 2022
+NH4-N,Mass-balance outflow,202,0.013,0.0307,50.9,-0.0379,0.0299,All
+NH4-N,Top 5 m layer,202,0.013,0.0307,51,-0.0376,0.0299,All
+NNN,Mass-balance outflow,68,0.0275,0.0827,21.8,0.171,0.134,2005 to 2010
+NNN,Top 5 m layer,68,0.0275,0.0836,22.5,0.173,0.134,2005 to 2010
+NNN,Mass-balance outflow,135,0.057,0.0702,-20.4,0.49,0.0758,2011 to 2022
+NNN,Top 5 m layer,135,0.057,0.0711,-19.9,0.496,0.0755,2011 to 2022
+NNN,Mass-balance outflow,203,0.035,0.0743,-9.17,0.324,0.0994,All
+NNN,Top 5 m layer,203,0.035,0.0743,-8.65,0.328,0.0992,All
+TN,Mass-balance outflow,14,0.385,0.407,1.56,0.348,0.106,2005 to 2010
+TN,Top 5 m layer,14,0.385,0.406,1.43,0.353,0.106,2005 to 2010
+TN,Mass-balance outflow,135,0.322,0.381,16.7,0.259,0.134,2011 to 2022
+TN,Top 5 m layer,135,0.322,0.381,16.5,0.257,0.134,2011 to 2022
+TN,Mass-balance outflow,149,0.323,0.382,15.1,0.26,0.132,All
+TN,Top 5 m layer,149,0.323,0.381,14.9,0.258,0.132,All
+TP,Mass-balance outflow,71,0.038,0.0245,-30.1,0.175,0.02,2005 to 2010
+TP,Top 5 m layer,71,0.038,0.0245,-30.2,0.175,0.02,2005 to 2010
+TP,Mass-balance outflow,135,0.0238,0.017,-27.4,0.0775,0.0152,2011 to 2022
+TP,Top 5 m layer,135,0.0238,0.0169,-27.6,0.0775,0.0152,2011 to 2022
+TP,Mass-balance outflow,206,0.0261,0.0207,-28.6,0.334,0.017,All
+TP,Top 5 m layer,206,0.0261,0.0207,-28.8,0.334,0.017,All
+Water Temp,Mass-balance outflow,68,15.7,15.1,-0.882,0.949,1.52,2005 to 2010
+Water Temp,Top 5 m layer,68,15.7,14.7,-1.34,0.947,1.56,2005 to 2010
+Water Temp,Mass-balance outflow,133,15.4,15.7,3.11,0.954,1.63,2011 to 2022
+Water Temp,Top 5 m layer,133,15.4,15.7,2.65,0.951,1.62,2011 to 2022
+Water Temp,Mass-balance outflow,201,15.4,15.6,1.76,0.95,1.59,All
+Water Temp,Top 5 m layer,201,15.4,15.6,1.3,0.948,1.6,All

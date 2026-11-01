@@ -1,0 +1,19 @@
+quantity,value_mmol,unit,t_total,t_per_yr
+Al applied to the dosed streams,31770000000,Al,857.2,51.99
+Al used in the stream step (bound P),1058000000,Al,28.54,1.731
+Al delivered to the lake as free capacity (ALU_ala),30710000000,Al,828.5,50.25
+Al delivered to the lake as bound P (ALU_alp),1058000000,Al,28.53,1.731
+P bound in the stream step,1058000000,P,32.76,1.987
+P bound in the water column,5439000000,P,168.5,10.22
+P bound in settled alum (benthic uptake),119500000,P,3.702,0.2245
+P bound in total by alum,6616000000,P,204.9,12.43
+"Capacity lost to ageing, water column",21720000000,Al,586,35.54
+"Capacity lost to ageing, benthic",3325000000,Al,89.71,5.441
+Settling flux of capacity (ala),10800000000,Al,291.3,17.67
+Settling flux of bound P (alp),13160000000,P,407.7,24.73
+Resuspension of bound P,1081000000,P,33.5,2.032
+Resuspension of capacity,598900000,Al,16.16,0.98
+Burial of bound P,12180000000,P,377.4,22.89
+Burial of capacity (Al total),18930000000,Al,510.7,30.98
+Bound P out through the outlet,119100000,P,3.688,0.2237
+Capacity out through the outlet,317900000,Al,8.577,0.5202

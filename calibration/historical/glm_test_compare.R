@@ -1,0 +1,11 @@
+# Compares the short test run (member 46, 2015 to 2016) before and after reinstalling AEME dev and GLM-AED.
+suppressMessages(library(dplyr)); a <- readRDS("calibration/historical/out_glmtest_before/member_46.rds"); b <- readRDS("calibration/historical/out_glmtest_after/member_46.rds")
+cat("params identical:", isTRUE(all.equal(a$params, b$params)), "| phi", a$phi, b$phi, "\n")
+da <- a$daily; db <- b$daily; cat("daily dims before/after:", dim(da), "/", dim(db), "\n"); cat("columns only before:", setdiff(names(da), names(db)), "| only after:", setdiff(names(db), names(da)), "\n")
+nm <- intersect(names(da), names(db)); nm <- setdiff(nm, "Date"); j <- inner_join(da, db, by = "Date", suffix = c("_a", "_b")); cat("dates", nrow(da), nrow(db), nrow(j), "\n")
+st <- bind_rows(lapply(nm, \(v) { x <- j[[paste0(v, "_a")]]; y <- j[[paste0(v, "_b")]]; ok <- is.finite(x) & is.finite(y); d <- y[ok] - x[ok]; tibble(var = v, n = sum(ok), max_abs_diff = if (any(ok)) max(abs(d)) else NA, mean_abs_diff = if (any(ok)) mean(abs(d)) else NA, scale = if (any(ok)) mean(abs(x[ok])) else NA, rel = if (any(ok)) mean(abs(d)) / max(mean(abs(x[ok])), 1e-12) else NA, na_a = sum(!is.finite(x)), na_b = sum(!is.finite(y))) }))
+cat("variables:", nrow(st), "| identical (max diff 0):", sum(st$max_abs_diff == 0, na.rm = TRUE), "| max rel diff:", signif(max(st$rel, na.rm = TRUE), 3), "| NA count changed:", sum(st$na_a != st$na_b), "\n")
+cat("\nLargest relative differences:\n"); print(as.data.frame(st |> arrange(desc(rel)) |> slice_head(n = 12) |> mutate(across(where(is.numeric), \(x) signif(x, 3)))), row.names = FALSE)
+key <- c("temp_surf", "temp_bot", "OXY_oxy_surf", "OXY_oxy_bot", "TOT_tp_surf", "TOT_tn_surf", "PHS_frp_surf", "NIT_amm_surf", "NIT_nit_surf", "PHY_tchla_surf", "extc_surf", "Vol", "ALU_ala_surf")
+cat("\nKey variables:\n"); print(as.data.frame(st |> filter(var %in% key) |> mutate(across(where(is.numeric), \(x) signif(x, 3)))), row.names = FALSE)
+cat("\nObs/sim pairs (csps_pair), sim differences:\n"); for (v in names(a$P)) { x <- a$P[[v]]; y <- b$P[[v]]; if (nrow(x) == nrow(y)) { d <- y$sim - x$sim; cat(sprintf("%-10s n=%d max|diff|=%.4g mean|diff|=%.4g mean sim=%.4g\n", v, nrow(x), max(abs(d), na.rm = TRUE), mean(abs(d), na.rm = TRUE), mean(x$sim, na.rm = TRUE))) } else cat(v, "different rows", nrow(x), nrow(y), "\n") }

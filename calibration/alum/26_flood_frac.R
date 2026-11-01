@@ -1,0 +1,6 @@
+suppressMessages({library(dplyr); library(readr)})
+n <- read_csv("data/raw/flows/rotorua_inflows_populated_noalum.csv", show_col_types = FALSE); n$Date <- as.Date(n$Date); n$yr <- as.integer(format(n$Date, "%Y"))
+x <- n |> filter(yr >= 2005, yr <= 2021, Inflow != "Rainfall") |> mutate(PP = (POPL + PIP) * VOL / 1e6)
+cat("share of days flagged isFlood and share of particulate P (POP+PIP) load on flood days, 2005-2021, by inflow:\n")
+print(as.data.frame(x |> group_by(Inflow) |> summarise(flood_days_pct = round(100 * mean(isFlood == 1), 1), PP_t_yr = round(sum(PP) / 17, 1), PP_flood_pct = round(100 * sum(PP[isFlood == 1]) / sum(PP)), .groups = "drop")))
+cat("\nall inflows: PP load on flood days =", round(100 * sum(x$PP[x$isFlood == 1]) / sum(x$PP)), "% of the total particulate P\n")

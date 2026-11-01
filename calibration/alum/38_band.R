@@ -1,0 +1,5 @@
+x <- readRDS("calibration/step2j/runs/step2_ies.rds"); H <- x$hist; n <- length(H)
+w <- function(i) apply(H[[i]]$U[H[[i]]$ok, , drop = FALSE], 2, function(u) diff(quantile(u, c(.1, .9))))
+r <- w(n) / w(1); cat("band width ratio final/prior: min", round(min(r), 2), "median", round(median(r), 2), "max", round(max(r), 2), "\n")
+cat("parameters with ratio > 0.8:", sum(r > 0.8), "of", length(r), "; > 0.9:", sum(r > 0.9), "; < 0.6:", sum(r < 0.6), "\n")
+v <- x$tab[x$vary, ]; print(data.frame(name = paste(v$name, ifelse(is.na(v$group), v$index, v$group)), ratio = round(r, 2))[order(r), ][1:10, ], row.names = FALSE)

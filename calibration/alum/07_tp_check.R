@@ -1,0 +1,5 @@
+suppressMessages(library(dplyr))
+P <- readRDS("calibration/posterior/alum_ensemble_pairs.rds")
+x <- bind_rows(lapply(c(1, 10, 20), \(m) P[[m]]$PHS_tp |> mutate(member = m))) |> filter(depth <= 5)
+cat("surface TP obs vs sim, by period (g/m3 x1000 mmol/m3? check units)\n")
+print(x |> mutate(per = cut(yr, c(2004, 2008, 2012, 2016, 2019, 2022))) |> group_by(per, member) |> summarise(n = n(), obs = mean(obs, na.rm = TRUE), sim = mean(sim, na.rm = TRUE), .groups = "drop"))

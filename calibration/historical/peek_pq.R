@@ -1,0 +1,1 @@
+.libPaths(c(.libPaths(), "C:/Users/mooret/AppData/Local/R/win-library/4.5")); d <- readRDS("calibration/historical/out_test_tli/member_46.rds")$daily; cat("daily columns:", ncol(d), "rows", nrow(d), "\n"); print(grep("extc|^Vol|TOT_tp|lake", names(d), value = TRUE)[1:20]); print(summary(d$extc_surf)); print(summary(d$TOT_tp_lake * 30.974 / 1000)); print(summary(d$Vol))

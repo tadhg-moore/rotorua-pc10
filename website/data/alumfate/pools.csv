@@ -1,0 +1,5 @@
+pool,end_mmol,max_mmol,mean_mmol,end_t,mean_t
+Water column capacity (ala),12570000,55160000,9292000,0.3391,0.2507
+Water column bound P (alp),13600000,46540000,10960000,0.4213,0.3396
+Settled capacity (ben_ala),7310000,50340000,8712000,0.1972,0.235
+Settled bound P (ben_alp),15890000,47820000,15730000,0.4923,0.4873
