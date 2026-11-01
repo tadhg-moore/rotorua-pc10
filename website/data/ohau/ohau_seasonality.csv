@@ -1,8 +1,0 @@
-variable,peak_month,peak,low_month,low,ratio_peak_low
-TP,May,0.0327,Dec,0.0205,1.6
-DRP,Apr,0.005,Dec,0.0025,2
-TN,Jun,0.405,Dec,0.277,1.46
-NH4-N,Jun,0.0217,Jan,0.009,2.42
-NNN,Aug,0.12,Jan,0.011,10.9
-TSS,Sep,7.7,Feb,3.2,2.41
-Water Temp,Feb,20.6,Jul,10.1,2.03

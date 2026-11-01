@@ -1,3 +1,0 @@
-run,n,obs_mean_m3s,sim_mean_m3s,bias_pct,r,nse
-No alum,4260,17,16.9,-0.609,0.969,0.928
-With observed alum,4260,17,16.9,-0.594,0.969,0.928

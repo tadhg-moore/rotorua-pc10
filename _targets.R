@@ -117,6 +117,23 @@ list(
     cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
+  # Report figures/tables made by the local-only calibration, PEST and ensemble
+  # runs (calibration/07_export_report_data.R etc.). Too large to keep in git,
+  # so they live on OneDrive (push with website/scripts/push_assets.R).
+  tar_target(
+    website_assets_images_dir,
+    sync_onedrive_folder("rotorua-pc10/website_assets/images", here::here("website", "images")),
+    format = "file",
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
+  tar_target(
+    website_assets_data_dir,
+    sync_onedrive_folder("rotorua-pc10/website_assets/data", here::here("website", "data")),
+    format = "file",
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
   tar_target(
     aeme_onedrive_r_dir,
     sync_onedrive_folder("rotorua-pc10/R", here::here("website", "R")),

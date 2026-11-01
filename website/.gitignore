@@ -13,3 +13,8 @@ www/plots/
 www/data_inventory.html
 token_encrypted.txt
 notes-sh.qmd
+
+# Report assets from local-only runs: stored on OneDrive (rotorua-pc10/website_assets),
+# synced by the website_assets_* targets in _targets.R. Push with scripts/push_assets.R.
+images/
+data/

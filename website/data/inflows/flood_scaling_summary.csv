@@ -1,4 +1,0 @@
-run,wet_year_error,other_year_error,annual_rmse,year_correlation,FRP_bias_pct,chl_bias_pct,anoxic_days
-V1 (flood particulate P x1),0.013,-0.0036,0.0089,0.06,-49.6,15.8,268
-F50 (x0.5),0.0081,-0.005,0.0078,0.22,-62,13.9,245
-F0 (x0),0.004,-0.0062,0.0077,0.44,-68.7,11.9,259
