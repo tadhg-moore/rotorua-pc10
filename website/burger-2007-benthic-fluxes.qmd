@@ -1,0 +1,233 @@
+---
+title: "Benthic Nutrient Fluxes in Lake Rotorua (Burger et al. 2007)"
+format: html
+editor: visual
+warning: false
+message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+fl <- read.csv("data/burger2007_chamber_fluxes.csv")
+bw <- read.csv("data/burger2007_bottom_water.csv")
+
+# unit conversion to AED units (mmol m-2 d-1)
+fl <- fl |>
+  mutate(
+    srp_mmol  = srp_mg_m2_d / 30.974,
+    nh4_1_mmol = nh4_phase1_mg_m2_d / 14.007,
+    nh4_2_mmol = nh4_phase2_mg_m2_d / 14.007,
+    sod_mmol  = sod_g_m2_d * 1000 / 31.998
+  )
+```
+
+**Reference:** Burger, D.F., Hamilton, D.P., Pilditch, C.A. & Gibbs, M.M. (2007). Benthic nutrient fluxes in a eutrophic, polymictic lake. *Hydrobiologia* 584: 13–25. [doi:10.1007/s10750-007-0582-0](https://doi.org/10.1007/s10750-007-0582-0)
+
+This page summarises the paper and tabulates its chamber data so the fluxes can be used to characterise, and later constrain, the sediment-release terms in the Lake Rotorua GLM-AED model. Data are in [`data/burger2007_chamber_fluxes.csv`](data/burger2007_chamber_fluxes.csv) and [`data/burger2007_bottom_water.csv`](data/burger2007_bottom_water.csv), transcribed from Tables 1 and 2 of the paper.
+
+# Summary
+
+## Aim and approach
+
+The authors measured sediment release of soluble reactive phosphorus (SRP) and ammonium (NH~4~), and sediment oxygen demand (SOD), using **in situ benthic chambers** at three sites in Lake Rotorua. They then compared internal (sediment) loads with the external catchment load.
+
+-   **Lake:** 79.8 km², mean depth 10.5 m, polymictic, eutrophic. Annual mean TP 0.055 mg L⁻¹, TN 0.814 mg L⁻¹. Catchment 425 km² (48% agriculture, 23% plantation forestry). Wastewater was discharged to the lake until 1991 (about 35 t TP and 150 t TN per year).
+-   **Sites:** Site 1 (7 m, well mixed and oxygenated), Site 2 (14 m, periodically stratified) and Site 3 (20 m, periodically stratified and anoxic).
+-   **Timing:** four deployments: 10 Feb 2003, 13 Aug 2003, 4/10 Nov 2003 and 27 Jan 2004.
+-   **Chambers:**
+    -   Acrylic and PVC cylinders of about 0.11 m² and 17–18 L, pushed 80 mm into the sediment by divers.
+    -   Duplicate light and dark chambers at Sites 1 and 2. Only light chambers at Site 3, where light was below 1% of surface PAR.
+    -   Pumped for 5 s per minute. Sampled about four times a day for 2 days.
+    -   Fluxes come from linear regression of concentration against time, corrected for dilution, with control bottles subtracted.
+    -   The 48 h deployment was long enough to make the chambers anoxic at Sites 2 and 3 in summer, which mimics natural stratification events.
+
+## Key findings
+
+1.  **SRP release was large and mostly independent of oxygen.** Rates were 2.1–85.6 mg P m⁻² d⁻¹, and concentrations rose linearly in the chambers (mean R² = 0.93) regardless of chamber DO. This is above the 7–50 mg m⁻² d⁻¹ typical of other eutrophic lakes. The authors link it to high organic matter deposition and microbial P cycling at the sediment surface, rather than to Fe-P redox release alone.
+2.  **NH~4~ release had two phases.**
+    -   A very high initial rate over 0–12 h of up to about 2,200 mg N m⁻² d⁻¹.
+    -   A lower secondary rate over 12–48 h of up to about 270 mg N m⁻² d⁻¹ (maximum 283 in the dark chambers).
+    -   The authors suggest the initial burst may partly be a chamber or porewater disturbance artefact, and that the secondary rate better represents natural organic matter degradation under low DO.
+3.  **Release peaks in summer and in deep water.** The pattern held for SRP, NH~4~ and SOD. August (winter, about 10 °C) rates were the lowest, and Site 3 (20 m) had the highest SRP and NH~4~ release. Site 3 SRP (mean 44.3 mg m⁻² d⁻¹) was significantly higher than Sites 2 (9.3) and 1 (7.7) in all periods except August. Temperature and the organic matter supply rate (sedimentation) are the proposed drivers.
+4.  **Light and dark chambers differed little at Site 1.** Site 2 dark chambers had higher initial NH~4~ release and, in Feb 2003, about three times higher SRP release (29.4 vs 9.0 mg m⁻² d⁻¹), so benthic primary production appears to matter little for fluxes.
+5.  **The chamber rates agree with whole-lake estimates.** For the 19-day stratification event starting 1 Feb 2003:
+    -   SRP release from chambers, interpolated by depth below the thermocline, was 17.4 mg m⁻² d⁻¹. The independent hypolimnetic mass balance gave 13.8.
+    -   NH~4~ release from the chambers' secondary rate was 131 mg m⁻² d⁻¹. The hypolimnion accumulation gave 63.9, so the chambers over-estimate NH~4~ by about 2× (they miss nitrification and benthic uptake).
+6.  **Internal load exceeds external load.** Mean sediment SRP and NH~4~ release were **at least three times the mean daily external load**. At Site 3, SRP release exceeded the TP sedimentation rate. The authors expect high release to continue because of the large legacy sediment nutrient pool, and say only a severe reduction in external load would "break" the depositional cycle.
+
+## Caveats stated or implied
+
+-   Only **SRP and NH~4~** were measured. Dissolved organic P and N, porewater release by resuspension (important in the shallows), and water-column denitrification are not included.
+-   NO~3~ fluxes were not calculated because chamber concentrations were below 5% of NH~4~ and often below detection.
+-   The sample size is small (n = 2 chambers per site and period, 4 in Jan 2004 at Site 3), and Site 3 has no dark chambers.
+-   The text says TP sedimentation was 0.5–2.7 **g** m⁻² d⁻¹. That is inconsistent with the 13–29 mg m⁻² d⁻¹ shown in Fig. 6, so it is probably a units slip in the paper.
+
+# Data
+
+## Bottom-water conditions at the start of each incubation (Table 1)
+
+```{r}
+#| label: tbl-bottom-water
+bw |>
+  select(Site = site, `Depth (m)` = depth_m, Date = date,
+         `NH4 (mg/L)` = nh4_mg_L, `SRP (mg/L)` = srp_mg_L,
+         `NO3 (mg/L)` = no3_mg_L, `DO (mg/L)` = do_mg_L,
+         `T (°C)` = temp_C, `PAR (µmol/m²/s)` = par_umol_m2_s) |>
+  kable()
+```
+
+## Chamber fluxes (Table 2)
+
+NH4-1 is the 0–12 h rate and NH4-2 is the 12–48 h rate. Site 3 has light chambers only.
+
+```{r}
+#| label: tbl-fluxes
+fl |>
+  select(Site = site, Date = date, Chamber = chamber, n,
+         `NH4-1 (mg N/m²/d)` = nh4_phase1_mg_m2_d,
+         `NH4-2 (mg N/m²/d)` = nh4_phase2_mg_m2_d,
+         `SRP (mg P/m²/d)` = srp_mg_m2_d,
+         `SOD (g O2/m²/d)` = sod_g_m2_d) |>
+  kable()
+```
+
+## Site means (light chambers, all four periods)
+
+These reproduce the means quoted in the paper (e.g. SRP 7.7 / 9.3 / 44.3 and NH~4~-2 92 / 62 / 136 mg m⁻² d⁻¹ at Sites 1 / 2 / 3).
+
+```{r}
+#| label: tbl-site-means
+site_means <- fl |>
+  filter(chamber == "light") |>
+  group_by(Site = site, `Depth (m)` = depth_m) |>
+  summarise(
+    `SRP (mg P/m²/d)`    = mean(srp_mg_m2_d),
+    `NH4-1 (mg N/m²/d)`  = mean(nh4_phase1_mg_m2_d),
+    `NH4-2 (mg N/m²/d)`  = mean(nh4_phase2_mg_m2_d),
+    `SOD (g O2/m²/d)`    = mean(sod_g_m2_d),
+    .groups = "drop"
+  )
+kable(site_means, digits = 1)
+```
+
+## Seasonal means (light chambers, all sites)
+
+```{r}
+#| label: tbl-season
+fl |>
+  filter(chamber == "light") |>
+  left_join(bw |> select(site, date, temp_C), by = c("site", "date")) |>
+  group_by(Period = period) |>
+  summarise(
+    `Bottom T (°C)`      = mean(temp_C),
+    `SRP (mg P/m²/d)`    = mean(srp_mg_m2_d),
+    `NH4-2 (mg N/m²/d)`  = mean(nh4_phase2_mg_m2_d),
+    `SOD (g O2/m²/d)`    = mean(sod_g_m2_d)
+  ) |>
+  arrange(match(Period, c("Feb 2003", "Aug 2003", "Nov 2003", "Jan 2004"))) |>
+  kable(digits = 1)
+```
+
+```{r}
+#| label: fig-fluxes
+#| fig-cap: "Light-chamber fluxes by site and period (after Burger et al. 2007, Fig. 4)."
+#| fig-height: 6
+fl |>
+  filter(chamber == "light") |>
+  select(site, period, SRP = srp_mg_m2_d,
+         `NH4 (12-48 h)` = nh4_phase2_mg_m2_d,
+         `SOD (g O2)` = sod_g_m2_d) |>
+  pivot_longer(-c(site, period)) |>
+  mutate(period = factor(period, c("Feb 2003", "Aug 2003", "Nov 2003", "Jan 2004")),
+         site = factor(site, labels = c("S1 (7 m)", "S2 (14 m)", "S3 (20 m)"))) |>
+  ggplot(aes(period, value, fill = site)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~name, scales = "free_y", ncol = 1) +
+  labs(x = NULL, y = "mg m-2 d-1 (SOD: g m-2 d-1)", fill = NULL) +
+  theme_bw()
+```
+
+## Whole-lake nutrient budget (Fig. 6)
+
+The numbers below were read from the text layer of Fig. 6, and the assignment of values to arrows is **inferred from the figure layout** and consistent with the text. Check against the original figure before relying on them. All values are areal rates in mg m⁻² d⁻¹.
+
+| Term | P (TP; release = SRP) | N (TN; release = NH~4~ secondary) |
+|------------------------|---------------------|-----------------------------|
+| External inflow | 1.2 | 18.5 |
+| Outflow | 0.6 | 8.2 |
+| Sedimentation: 7 m / 14 m / 20 m | 13 / 16 / 29 | 58 / 100 / 141 |
+| Sediment release: 7 m / 14 m / 20 m | 8 / 9 / 44 | 92 / 62 / 136 |
+
+# Characterising sediment fluxes for Lake Rotorua
+
+## Recommended flux ranges
+
+-   **SRP:** 2–14 mg P m⁻² d⁻¹ in the shallow and mid-depth regions (Sites 1–2) and about 6–86 mg P m⁻² d⁻¹ at 20 m. Winter (about 10 °C) is the low end and summer stratification the high end. About 17 mg m⁻² d⁻¹ is a reasonable mean beneath the thermocline in summer, based on the paper's own validation.
+-   **NH~4~:** use the secondary (12–48 h) rate, 33–283 mg N m⁻² d⁻¹, which the authors argue is more representative. The initial burst (up to 2,213) should not be used directly. Even the secondary rate over-estimates the hypolimnion mass balance by about 2×, so treat it as an upper bound.
+-   **SOD:** 0.3–4.0 g O~2~ m⁻² d⁻¹, with lake-wide means of about 0.9 / 1.5 / 1.9 g m⁻² d⁻¹ at 7 / 14 / 20 m.
+
+## Conversion to model units
+
+AED expects fluxes in mmol m⁻² d⁻¹. The conversions use 30.974 g mol⁻¹ for P, 14.007 for N and 31.998 for O~2~.
+
+```{r}
+#| label: tbl-aed-units
+site_means_mmol <- fl |>
+  filter(chamber == "light") |>
+  group_by(Site = site, `Depth (m)` = depth_m) |>
+  summarise(
+    `Fsed_frp (mmol P/m²/d)` = mean(srp_mmol),
+    `Fsed_amm (mmol N/m²/d, NH4-2)` = mean(nh4_2_mmol),
+    `Fsed_oxy (mmol O2/m²/d, as demand)` = mean(sod_mmol),
+    .groups = "drop"
+  )
+kable(site_means_mmol, digits = 2)
+```
+
+## Comparison with the current model settings
+
+The current [`aed.nml`](../LID11133_rotorua/glm_aed/aed/aed.nml) sets `fsed_amm = 6.654, 2.408, 0.616`, `fsed_frp = 0.0602, 0.0657, 0.0254` and `fsed_oxy = -30.1, -30.1, -23.33` mmol m⁻² d⁻¹. I have not checked which sediment zone each entry maps to.
+
+-   **`fsed_oxy`** is in the same range as the chamber SOD (about 27 / 47 / 60 mmol O~2~ m⁻² d⁻¹ at 7 / 14 / 20 m). Chamber SOD is somewhat larger at depth.
+-   **`fsed_amm`** is within the chamber range for the first zone (6.65 against 6.6 mmol N m⁻² d⁻¹ at Site 1), but the other two zones (2.4 and 0.6) are well below the secondary chamber rates (about 4.4 at 14 m and 9.7 at 20 m).
+-   **`fsed_frp`** is much lower than the chamber SRP rates (0.25 / 0.30 / 1.43 mmol P m⁻² d⁻¹ at 7 / 14 / 20 m). The model values are about 4–50 times smaller.
+
+Whether that gap is a calibration artefact or a real model–observation mismatch depends on how the model treats other P sources. These include phytoplankton and POP settling and mineralisation, and the alum-bound P pool in the [alum module](aed-alum-module.qmd). In AED the sediment fluxes also scale with temperature (`theta_sed_frp`, `theta_sed_amm`) and with a DO half-saturation (`ksed_frp`, `ksed_amm`). The paper's finding that SRP release was largely independent of DO argues against making the P flux strongly oxygen-dependent.
+
+## Indicative temperature dependence
+
+Aug-to-Jan ratios of light-chamber release over the bottom-water temperature range give an indicative Arrhenius θ. The estimate is confounded with seasonal changes in organic matter supply, so use it only as a sense check.
+
+```{r}
+#| label: tbl-theta
+fl |>
+  filter(chamber == "light", period %in% c("Aug 2003", "Jan 2004")) |>
+  left_join(bw |> select(site, date, temp_C), by = c("site", "date")) |>
+  select(site, period, temp_C, srp_mg_m2_d, nh4_phase2_mg_m2_d) |>
+  pivot_wider(names_from = period,
+              values_from = c(temp_C, srp_mg_m2_d, nh4_phase2_mg_m2_d)) |>
+  mutate(
+    dT = `temp_C_Jan 2004` - `temp_C_Aug 2003`,
+    `theta SRP` = (`srp_mg_m2_d_Jan 2004` / `srp_mg_m2_d_Aug 2003`)^(1 / dT),
+    `theta NH4-2` = (`nh4_phase2_mg_m2_d_Jan 2004` / `nh4_phase2_mg_m2_d_Aug 2003`)^(1 / dT)
+  ) |>
+  select(Site = site, `dT (°C)` = dT, `theta SRP`, `theta NH4-2`) |>
+  kable(digits = 2)
+```
+
+The implied θ is about 1.12–1.17 for SRP and 1.08–1.12 for NH~4~. The SRP values are higher than the model setting (`theta_sed_frp = 1.06`), while NH~4~ is close to `theta_sed_amm = 1.08`. The authors suggest temperature and organic matter supply act together on seasonal release, so the SRP θ is likely inflated by the seasonal sedimentation cycle.
+
+# Implications for the model
+
+1.  **Treat sediment release as a major term.** Internal loading is at least 3× the external load according to the paper, so calibration should not assume external load dominates.
+2.  **Spatial structure matters.** Release at 20 m is 5–6× that at 7–14 m for SRP, so the zone-specific `Fsed_*` values should increase with depth.
+3.  **Season and temperature should be represented.** Winter release was about 10× lower than summer at Site 3.
+4.  **A weak oxygen dependence for P** is supported by the chambers. This is a different result from the usual anoxic-release assumption, but it applies to 48 h incubations only.
+5.  **Use as calibration targets.** The 2003–2004 period overlaps the buoy and chemistry record, so the 17 mg P m⁻² d⁻¹ (hypolimnetic, Feb 2003) and 64 mg N m⁻² d⁻¹ mass-balance values are useful independent checks on simulated hypolimnetic accumulation during stratification.
