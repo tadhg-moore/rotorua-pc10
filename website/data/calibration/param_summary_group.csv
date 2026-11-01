@@ -1,0 +1,5 @@
+group,n,median_shrink,n_shrink_gt_30,n_best_at_bound,n_moved_gt_025
+Nitrogen,13,0.106,1,1,0
+Oxygen and organic matter,9,0.119,2,1,0
+Phytoplankton P kinetics,12,0.129,2,0,1
+Sediment P release,6,0.092,0,1,0

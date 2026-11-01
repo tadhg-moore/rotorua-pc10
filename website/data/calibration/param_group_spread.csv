@@ -1,0 +1,29 @@
+iter,theme,rel_spread,group
+0,nitrogen,1,Nitrogen
+0,oxygen,1,Oxygen and organic matter
+0,phosphorus,1,Sediment P release
+0,phyto,1,Phytoplankton P kinetics
+1,nitrogen,0.947,Nitrogen
+1,oxygen,0.936,Oxygen and organic matter
+1,phosphorus,0.961,Sediment P release
+1,phyto,0.953,Phytoplankton P kinetics
+2,nitrogen,0.935,Nitrogen
+2,oxygen,0.916,Oxygen and organic matter
+2,phosphorus,0.949,Sediment P release
+2,phyto,0.92,Phytoplankton P kinetics
+3,nitrogen,0.909,Nitrogen
+3,oxygen,0.894,Oxygen and organic matter
+3,phosphorus,0.937,Sediment P release
+3,phyto,0.902,Phytoplankton P kinetics
+4,nitrogen,0.898,Nitrogen
+4,oxygen,0.891,Oxygen and organic matter
+4,phosphorus,0.934,Sediment P release
+4,phyto,0.892,Phytoplankton P kinetics
+5,nitrogen,0.896,Nitrogen
+5,oxygen,0.885,Oxygen and organic matter
+5,phosphorus,0.926,Sediment P release
+5,phyto,0.88,Phytoplankton P kinetics
+6,nitrogen,0.894,Nitrogen
+6,oxygen,0.881,Oxygen and organic matter
+6,phosphorus,0.908,Sediment P release
+6,phyto,0.871,Phytoplankton P kinetics
