@@ -3,23 +3,96 @@ title: "GANTT Chart"
 format: html
 ---
 
-Below is the GANTT chart outlining the key deliverables and timeline for the Rotorua Lake Modelling – PC10 project:
+GANTT chart of the work undertaken on the Rotorua Lake Modelling – PC10 project, from the initial data request (Nov 2025) to the current calibration and alum work (Nov 2026). Start and end dates for lake-model tasks are approximate and taken from the meeting notes and the dates pages were first added to the repository. Milestones (diamonds) are listed with links to the relevant pages in the [table below](#milestones).
 
 ```{mermaid}
+%%{init: {'gantt': {'axisFormat': '%b %y', 'tickInterval': '1month', 'topAxis': true}}}%%
 gantt
-    title Rotorua Lake Modelling – PC10 Deliverables
+    title Rotorua Lake Modelling – PC10 Timeline
     dateFormat  YYYY-MM-DD
-    axisFormat  %b %Y
-    section Catchment Pilot
-    SWAT-MODFLOW pilot (3 catchments) :a1, 2025-11-26, 90d
+    axisFormat  %b %y
+    todayMarker on
 
-    section Lake Model Upgrade
-    CMIP6 Data Processing            :b1, 2025-11-07, 30d
-    GLM-AED model upgrade            :b2, 2025-11-24, 50d
-    GLM-AED model calibration        :b3, 2025-12-08, 50d
+    section Project & Meetings
+    Kick-off meeting                       :milestone, m1, 2025-11-10, 0d
+    SWAT update meeting                    :milestone, m2, 2026-02-02, 0d
+    Met ERA5 bias-correction meeting       :milestone, m3, 2026-04-21, 0d
+    BoP PC10 meeting                       :milestone, m4, 2026-04-28, 0d
+    Alum module design (Hipsey, Kurucz)    :milestone, m5, 2026-06-17, 0d
+    Alum module meeting                    :milestone, m6, 2026-07-29, 0d
+    GLM v4 / MH meeting                    :milestone, m7, 2026-08-12, 0d
+    Calibration strategy meeting (DO)      :milestone, m8, 2026-08-11, 0d
+    Progress meeting (AB)                  :milestone, m9, 2026-09-29, 0d
+    Draft reports due (BoPRC)              :crit, d1, 2026-09-30, 2026-12-15
+    Final reports to council               :milestone, m10, 2027-03-31, 0d
+
+    section Catchment Pilot
+    SWAT-MODFLOW pilot (3 catchments)      :a1, 2025-11-26, 90d
+
+    section Data & Inputs
+    Data request to BoPRC                  :e1, 2025-11-10, 2025-12-15
+    Data inputs compiled                   :e2, 2025-12-01, 2026-02-28
+    CMIP6 data processing                  :e3, 2025-11-17, 2026-01-15
+    Hypsograph & light (Kw) data           :e4, 2026-08-15, 2026-09-20
+    Met source comparison (buoy/airport/ERA5) :e5, 2026-04-21, 2026-09-21
+    Inflows (flow & nutrient) build        :e6, 2026-08-20, 2026-09-30
+    Ōhau Channel outflow & water quality   :e7, 2026-10-01, 2026-11-02
+
+    section Lake Model – Build
+    Interim base model (LERNZmp)           :l1, 2025-11-17, 2026-02-15
+    GLM-AED set-up (v3)                    :l2, 2026-02-16, 2026-05-26
+    GLM v4 compile & Windows testing       :l3, 2026-06-17, 2026-08-12
+    GLM v4 AED configuration               :l4, 2026-08-12, 2026-09-16
+    Sediment heat & spin-up tests          :l5, 2026-09-01, 2026-10-15
+
+    section Lake Model – Calibration
+    Sensitivity analysis & calibration plan :k1, 2026-09-15, 2026-10-04
+    PEST++ workflow & dashboard            :k2, 2026-10-02, 2026-10-04
+    CSPS metrics & targets                 :k3, 2026-10-01, 2026-10-19
+    Step 1 – physics & oxygen              :k4, 2026-10-05, 2026-10-19
+    Staged BGC calibration                 :k5, 2026-10-15, 2026-11-02
+    Morris sensitivity (CSPS)              :k6, 2026-10-19, 2026-11-02
+    Calibration report                     :k7, 2026-10-25, 2026-11-02
+
+    section Alum Module
+    Alum module design & template          :u1, 2026-05-14, 2026-07-29
+    Simplified alum–P module               :u2, 2026-02-16, 2026-06-17
+    aed_alum stress tests                  :u3, 2026-09-15, 2026-10-15
+    Alum inflows & stream reaction         :u4, 2026-10-19, 2026-11-02
+    Alum scenarios                         :u5, 2026-10-19, 2026-11-15
 
     section Scenario Testing
-    Initial climate scenarios        :c1, 2026-01-01, 30d
-    Preliminary advice re Rotoiti    :c2, 2026-03-01, 45d
+    Climate-scenario workflow & extremes   :c1, 2026-09-18, 2026-10-19
+    Climate impact strategy (draft)        :c2, 2026-10-19, 2026-11-02
+    Initial climate scenarios              :c3, 2026-11-15, 2027-01-15
+    Alum + climate scenario runs           :c4, 2026-12-01, 2027-02-15
+    Preliminary advice re Rotoiti          :c5, 2027-02-01, 2027-03-15
 ```
 
+## Milestones {#milestones}
+
+| Date | Milestone | Detail | Page |
+|------|-----------|--------|------|
+| 10 Nov 2025 | Project kick-off | Data request list, interim base model (LERNZmp), met data approach agreed | [Meeting notes](notes.qmd#meeting-notes), [Data request](data-request.qmd) |
+| Nov 2025 | CMIP6 processing started | Climate projection data download and processing | [CMIP6 processing](cmip6-processing.qmd), [Visualise CMIP6](cmip6-visualisation.qmd) |
+| 2 Feb 2026 | SWAT and lake-model update | SWAT deadline end of March; plan to move to AED sediment model | [Meeting notes](notes.qmd) |
+| Feb 2026 | Simplified alum–P module drafted | Alum–phosphorus module for GLM-AED | [Simplified alum module](aed-alum-module.qmd) |
+| 21 Apr 2026 | Met ERA5 bias-correction discussion | Soil data check with BoP; ERA5 bias correction | [Meeting notes](notes.qmd), [Met source comparison](met-source-comparison.qmd) |
+| 28 Apr 2026 | BoP PC10 meeting | Terms of reference, peer reviewer, milestones and delivery dates | [Meeting notes](notes.qmd) |
+| May 2026 | Proposed alum model for AED | Design of the alum model | [Alum model](alum-model.qmd) |
+| 17 Jun 2026 | Alum module design meeting (MH, KK) | pH, carbon, alum ageing, resuspension decisions; GLM v4 Windows testing | [Meeting notes](notes.qmd) |
+| 29 Jul 2026 | GLM-AED alum module meeting | libaed-dev alum module, compile and test tasks | [Meeting notes](notes.qmd) |
+| 11 Aug 2026 | Calibration strategy meeting (DO) | Calibration/validation periods, benchmarks (TLI, anoxia, phytoplankton, outflow) | [Meeting notes](notes.qmd), [Modelling updates](modelling-updates.qmd) |
+| 12 Aug 2026 | GLM v4 ready (MH) | Clean v4 release; alum added to inflows | [Meeting notes](notes.qmd), [GLM config (v4)](rotorua-glm-config_v4.qmd) |
+| 16 Sep 2026 | GLM v4 configured and running | Configuration, inflows and output plots | [GLM config (v4)](rotorua-glm-config_v4.qmd), [Inflows](rotorua-inflows.qmd), [Output plots](plot-rotorua.qmd) |
+| 29 Sep 2026 | Progress meeting (AB) | Next steps: physics, AED sediment, alum inflows | [Meeting notes](notes.qmd) |
+| Sep 2026 | Climate-scenario workflow | Met workflow, extreme and storm events | [Climate-scenario workflow](climate-scenario-workflow.qmd), [Extreme events](climate-extreme-events.qmd) |
+| Sep 2026 | Calibration & sensitivity plan | SA and staged calibration plan | [Calibration & SA plan](aed_calibration_sa_plan.qmd) |
+| 4 Oct 2026 | PEST workflow complete | Calibration-to-dashboard workflow | [PEST workflow summary](pest_workflow_summary_2026-10.qmd) |
+| 15 Oct 2026 | Alum stress tests and Ōhau weir set-up | aed_alum stress tests; weir and GLM outflow | [Alum stress tests](glm-aed-alum-stress-tests.qmd), [Ōhau weir](ohau-weir-glm-setup.qmd) |
+| 19 Oct 2026 | Calibration step 1 and CSPS metrics | Physics and oxygen calibrated; evaluation framework | [Step 1](calibration-step1-physics-oxygen.qmd), [CSPS metrics](csps-metrics.qmd), [Staged calibration](rotorua-calibration-staged.qmd) |
+| 19 Oct 2026 | Alum scenarios and climate strategy | Scenario design | [Alum scenarios](rotorua-alum-scenarios.qmd), [Climate impact strategy](climate-impact-strategy.qmd) |
+| 2 Nov 2026 | Calibration report and alum inflows | Nutrients, light, alum, anoxia; stream reaction design | [Calibration report](rotorua-calibration-report.qmd), [Inflows and alum](rotorua-inflows-alum.qmd), [Alum stream calibration](rotorua-alum-stream-calibration.qmd), [Sensitivity](sensitivity-csps.qmd) |
+| 30 Sep – 15 Dec 2026 | Draft reports due | Draft reports to BoPRC | [Meeting notes](notes.qmd) |
+| Jan 2027 | Final draft to council | Per BoP PC10 meeting | [Meeting notes](notes.qmd) |
+| Mar 2027 | Review complete | Report to council and summary report | [Meeting notes](notes.qmd) |
