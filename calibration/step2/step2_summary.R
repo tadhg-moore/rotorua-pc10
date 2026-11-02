@@ -1,0 +1,11 @@
+setwd("C:/Users/mooret/Git/rotorua-pc10")
+ies <- readRDS("calibration/step2/runs/step2_ies.rds"); best <- readRDS("calibration/step2/runs/step2_best.rds")
+tab <- ies$tab; vary <- ies$vary; h <- ies$hist
+cat("phi by iteration (median cal / best cal / median val):\n")
+print(round(t(sapply(h, function(x) c(median(x$phi, na.rm = TRUE), min(x$phi, na.rm = TRUE), median(rowMeans(x$Yval^2), na.rm = TRUE)))), 2))
+r <- cbind(start_cal = best$baseline_Ycal, best_cal = best$best_Ycal, start_val = best$baseline_Yval, best_val = best$best_Yval)
+cat(sprintf("\nphi: start cal %.2f val %.2f | best cal %.2f val %.2f\n", mean(r[,1]^2), mean(r[,3]^2), mean(r[,2]^2), mean(r[,4]^2)))
+print(round(r, 2))
+fin <- h[[length(h)]]$U; sdu <- apply(fin, 2, sd)
+p <- data.frame(name = tab$name[vary], group = tab$group[vary], idx = tab$index[vary], start = signif(tab$value[vary], 3), best = signif(best$best$value[vary], 3), min = signif(tab$min[vary], 3), max = signif(tab$max[vary], 3), pos = round(best$U_best, 2), sd_ratio = round(sdu / 0.289, 2))
+print(p, row.names = FALSE)

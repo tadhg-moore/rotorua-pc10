@@ -213,11 +213,59 @@ kable(data.frame(Run = h$run, `Total P bound (t P/yr)` = sprintf("%.1f", h$P_bou
 With the rates unchanged, β = 1.43 raises the P bound from 12.6 to 14.1 t P/yr (+12%, not +43%), lowers the export from 10.5 to 9.1 t P/yr, and pushes the surface bias to -21% for TP and -48% for FRP, against -8% and -21% before. The whole-system ratio falls to 4.2 mol Al per mol P and the lake ratio to 4.9. The fit is worse because the lake rates were fitted with one-for-one binding, so the lake now removes too much P. A refit of `k_w`, `K_P` and the ageing rates under β = 1.43 is needed before the fit can be compared, and it is the test of whether the data prefer the thesis value.
 
 
+## Lake refits under each rule {#sec-refit}
+
+The lake parameters were refitted three times, each with the joint-stage objective (calibration window 2006-06 to 2018-06, validation 2018-07 to 2022-06), 48 members, 4 iterations, started from the stage `j` best member (`calibration/step2/run_step2h1.ps1`, `run_step2h1_chain.ps1`). Fourteen parameters were free: the eight alum parameters and six sediment P parameters (`fsed_frp` by zone, `ksed_frp`, `theta_sed_frp`). H0 is the previous stream rule, so it separates the effect of the stream rule from the effect of refitting. The aluminium target is divided by β, so it compares Al and not capacity. The script is `calibration/alum/64_refit_compare.R`.
+
+```{r}
+#| label: tbl-refit
+#| tbl-cap: "Objective (mean squared scaled residual; lower is better) of the start member and of the final ensemble in the calibration and validation windows."
+s <- read_csv("data/h1/refit_summary.csv", show_col_types = FALSE)
+kable(data.frame(Run = s$run, `Start, cal` = sprintf("%.3f", s$phi_start_cal), `Best, cal` = sprintf("%.3f", s$phi_best_cal), `Median, cal` = sprintf("%.3f", s$phi_med_cal), `Start, val` = sprintf("%.2f", s$phi_start_val), `Best, val` = sprintf("%.2f", s$phi_best_val), `Median, val` = sprintf("%.2f", s$phi_med_val), check.names = FALSE))
+```
+
+```{r}
+#| label: tbl-refit-params
+#| tbl-cap: "Alum parameters: start value (stage `j`), best member and final ensemble median with its 10 to 90% range, for each refit. Rates are per day."
+p <- read_csv("data/h1/refit_params.csv", show_col_types = FALSE) |> filter(param %in% c("w_ala", "k_w", "K_P", "k_s", "k_age_w", "k_age_s", "k_bur", "k_res"))
+fm <- \(x) formatC(x, digits = 2, format = "g")
+kable(data.frame(Parameter = p$param, Run = p$run, Start = fm(p$start), Best = fm(p$best), Median = fm(p$med), `10 to 90%` = paste(fm(p$p10), "to", fm(p$p90)), `Spread (share of log range)` = sprintf("%.0f%%", 100 * p$frac_range_p10_p90), check.names = FALSE))
+```
+
+- **The three refits fit equally well.** The best member reaches 0.560 (H0), 0.562 (H1b) and 0.586 (β = 1.43) in the calibration window, from 0.73, 0.73 and 0.66 at the start. Validation is 2.72, 3.00 and 2.68, with the starting member at 2.9, 2.9 and 2.6, so the validation fit does not improve in any run. The data do not choose between the previous stream rule and the thesis rule, or between β = 1 and 1.43, on this objective.
+- **The rates are not identified.** The 10 to 90% range of every alum rate covers 57 to 82% of its allowed log range, so the final ensemble is close to the prior. Best members differ by a factor of seven with similar fit (`k_w` 2.6, 0.38 and 1.4 per day for H0, H1b and β = 1.43). The ensemble medians differ much less, within a factor of 1.5 for most rates.
+- **β trades off with the rates in the expected direction, but within the spread.** With β = 1.43 the median `k_w` is 1.2 per day against 1.7 to 1.8, `w_ala` is 1.2 against 1.0 and `k_age_w` is 0.18 against 0.15. This is less binding in the water column and slightly more ageing and settling, as in the discussion above, but each shift is smaller than the ensemble range.
+- **The ratios, surplus share and export of the best members are in the next section** (@sec-refit-members).
+
+### Best member of each refit {#sec-refit-members}
+
+The lowest-objective member of each refit was run over 2005 to 2022 with its own stream base (`calibration/historical/launch_refit_members.ps1`; ratios and fit from `calibration/alum/65_refit_members.R`). Member 46 from the first part of this page is the reference: its run folder was removed, so its ratios and fit are those in the tables above and are not recomputed here.
+
+```{r}
+#| label: tbl-refit-members
+#| tbl-cap: "Best member of each refit: P bound by alum (t P/yr, 2006 to 2022-06), Al:P ratios (mol Al per mol P bound), the share of dosed Puarenga days on which the stream step is at its 90% cap, the Al:P on the other days, and the modelled P export 2011 to 2021."
+r <- read_csv("data/h1/refit_members.csv", show_col_types = FALSE)
+kable(data.frame(Run = r$run, `Stream` = sprintf("%.1f", r$P_bound_stream_t_yr), `Lake water` = sprintf("%.1f", r$P_bound_lake_water_t_yr), `Bed` = sprintf("%.1f", r$P_bound_lake_bed_t_yr), `Total` = sprintf("%.1f", r$P_bound_total_t_yr), `Al:P lake` = sprintf("%.1f", r$AlP_lake), `Al:P whole` = sprintf("%.1f", r$AlP_whole), `Puarenga at cap (%)` = sprintf("%.0f", r$Puarenga_at_cap_pct), `Al:P below cap` = sprintf("%.2f", r$Puarenga_AlP_below_cap), `Export (t P/yr)` = sprintf("%.1f", r$export_2011_21_t_yr), check.names = FALSE))
+```
+
+```{r}
+#| label: tbl-refit-fit
+#| tbl-cap: "Fit of the surface (0 to 5 m) samples, 2006 to 2022-06, for the best member of each refit: bias of the mean (simulated minus observed, in per cent). Member 46 with H1b (same period, before the refit) had TP -8%, FRP -21% and chlorophyll -5%."
+q <- read_csv("data/h1/refit_fit.csv", show_col_types = FALSE) |> select(run, variable, bias_pct) |> tidyr::pivot_wider(names_from = variable, values_from = bias_pct)
+kable(data.frame(Run = q$run, `TP bias` = sprintf("%.0f%%", q$PHS_tp), `FRP bias` = sprintf("%.0f%%", q$PHS_frp), `Chlorophyll bias` = sprintf("%.0f%%", q$PHY_tchla), check.names = FALSE))
+```
+
+- **The refits bind more P than member 46.** The total is 19.8 (H0), 22.0 (H1b) and 15.5 (β = 1.43) t P/yr, against 12.4 to 14.1 for member 46. Most of it is in the lake water (16.5, 16.8, 12.9 t P/yr) and the bed term is small (0.4 to 3.0). The whole-system Al:P is 3.0, 2.7 and 3.9 mol/mol (4.8 for member 46), and the lake ratio is 3.2, 2.9 and 4.4. Using β = 1.43 gives the highest ratios because it also lowers the P bound (15.5 t P/yr).
+- **No ratio reaches the thesis jar-test value (0.7:1 in the lake) or the field value (about 7:1) as a clean match.** The lake ratios of 2.9 to 4.4 sit between them, closer to the jar-test end than the 5.5 of member 46, but the rates that set them are not identified (@tbl-refit-params).
+- **Surplus share.** With the thesis rule the Puarenga stream step is at its cap on 99.7% (H1b) and 99.8% (β = 1.43) of dosed days, so the surplus-alum days are almost all the days; the ramp (H0) is at its cap on 60%. On the few days below the cap the ratio is 1.15 (H1b) and 0.80 (β = 1.43, which is 1/β = 0.7 plus a little), which is the thesis value by construction: it is set by ε, not tested by the data. The ramp gives 29 on its uncapped days, which is the low-dose end where the ramp removes little.
+- **The lower objective was bought with a worse mean fit of TP and FRP.** All three best members have surface TP 18 to 26% low and FRP 43 to 51% low, against -8% and -21% for member 46 with H1b. The terms that improved are the wet-year TP, the annual and year-to-year TN terms and the thermocline terms; the TP bias term went from +0.1 to about -1 on the objective scale in H0 and H1b (from -0.7 to -0.6 in the β = 1.43 refit, whose start was already low). The β = 1.43 member is the least biased (TP -18%, FRP -43%, chlorophyll -12%), but all three would need a check against the TP and FRP targets before use. This is an objective-weighting issue, not a stream-rule effect, since H0 shows it too.
+- **Export** is 8.6 (H0), 8.0 (H1b) and 9.3 (β = 1.43) t P/yr, against 10.6 for member 46. The reduction from alum needs the no-alum partner of each refit member, which has not been run, so no export reduction is reported here.
+
 ## Next steps {#sec-next}
 
 1. **Puarenga data.** The Puarenga rule is the open question: the ramp (ε 0.04) and the thesis (ε about 1) both fit what is available. The McIntosh paired up- and downstream spot samples (2011 to 2013, Hamilton et al. 2015 Fig 20) or the BoPRC upstream and downstream monitoring would fit ε and `f_max` directly. They are not in the repository.
 2. **Utuhina.** Use the plateau (0.43, interval 0.40 to 0.45) as the removal rule, which is the previous 0.45 within error. Decide whether the plateau is a contact-time limit or an artefact of the reconstructed untreated DRP (the pre-dosing DRP:TP ratio).
-3. **Refit the lake alum parameters** with H1b and β fixed at 1 and then at 1.43, as in stage `p4`, and compare the objective, the rates and their spread. β = 1.43 with the previous rates fits worse (@tbl-h1-beta).
+3. **Lake refits are done** (@sec-refit, @sec-refit-members): the three fit equally well on the objective, the rates are not identified, and the lower objective came with a worse mean TP and FRP fit. Next: re-weight the TP and FRP bias terms and refit, and run the no-alum partners to report the export reduction.
 4. **Report the surplus share** with every ratio, so that the comparison with the thesis uses only the unsaturated days.
 
 The code is in `calibration/alum/60_h1_base.R` (H1 and H1b inflows), `61_h1_compare.R` (comparison), `62_stream_fit.R` (step 1), `63_stoich_base.R` (lake stoichiometry in R) and `calibration/historical/run_hist.R` (the member run, with `HIST_BASE` set to the new base).

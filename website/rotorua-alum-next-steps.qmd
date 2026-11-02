@@ -872,6 +872,51 @@ knitr::kable(tb)
 
 **To close it:** add diagnostics for deposition, ageing, burial and resuspension (fluxes in mmol per m² per day) to `aed_alum.F90` (`libaed-dev`), rebuild GLM and rerun the best member. That gives a closed alum and P budget for the lake and settles the three explanations above.
 
+### Phytoplankton succession in the best member {#sec-succession}
+
+Surface (0 to 5 m) biomass of the three groups from the best member (stage `j` member 46, alum on, 2006 to 2022; `calibration/historical/phyto_succession.R`, data in `data/phyto/`). Biomass is in mmol C/m³. These are model outputs only: there are no group-level observations in the calibration, which uses total chlorophyll-a.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-succession-ts
+#| fig-cap: "Monthly mean surface biomass by phytoplankton group, best member."
+knitr::include_graphics("images/phyto/succession_timeseries.png")
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-succession-seasonal
+#| fig-cap: "Mean annual cycle (July to June, 2006 to 2022) of surface biomass by group, as an amount (left) and as a share of the total (right)."
+knitr::include_graphics("images/phyto/succession_seasonal.png")
+```
+
+- **Diatoms carry the cool season, cyanobacteria the summer.** Diatoms are 95 to 99% of the biomass from July to November (about 22 to 27 mmol C/m³) and stay near 16 to 20 mmol C/m³ all year. Cyanobacteria only matter from December: they are 63 to 72% of the biomass in January to March and peak in February and March (about 41 mmol C/m³ on average), then decline through April and May.
+- **The summer peak varies between years.** Cyanobacteria add from near zero to over 80 mmol C/m³ in the strongest summers (2008 to 2009, 2018 to 2019); in the weakest about 15 to 20 mmol C/m³. The diatom base changes much less.
+- **Green algae are absent.** Their surface biomass sits at the 0.03 mmol C/m³ floor in every month (below 0.2% of the total), so the model has two functioning groups, not three. The green-algae growth factors in @fig-limitation are the lowest of the three groups (nitrogen and phosphorus fall to 0.15 to 0.3 in autumn), which is why they never grow; whether green algae are really this rare in the lake is not tested by the calibration.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-succession-annual
+#| fig-cap: "Share of each group in the mean surface biomass of each year (July to June)."
+knitr::include_graphics("images/phyto/succession_annual.png")
+```
+
+The cyanobacteria share of the annual mean ranges from 6% to 58% between years.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-limitation
+#| fig-cap: "Mean annual cycle of the surface growth factors by group (1 means no limitation): light, nitrogen, phosphorus and temperature."
+knitr::include_graphics("images/phyto/limitation_seasonal.png")
+```
+
+- **Cyanobacteria are limited by light and temperature in winter and by phosphorus in summer.** Nitrogen does not limit them at all (the group can fix N), and the phosphorus factor falls from 1 to about 0.64 in February and March, when the surface FRP is lowest.
+- **Diatoms are limited by temperature and light throughout** (factors 0.3 to 0.75) and barely by nutrients (above 0.95), so their biomass is set by physics and by losses and not by P supply.
+
 ### Housekeeping
 
 The run and build folders of stages `q` to `p4` were deleted after the best members and ensembles were saved (about 90 GB). Each stage keeps `step2_best.rds` (best member), `step2_ies.rds` (ensemble history and parameter table) and `step2_table.rds`. The evaluation runs keep `result_*.rds` and `base_*.rds` in `calibration/alum/stream`. The run folders are rebuilt by `step2_build` when a stage is rerun.
