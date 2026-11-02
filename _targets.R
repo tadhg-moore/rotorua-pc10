@@ -59,7 +59,8 @@ tar_source(
     here::here("R", "read_bop_lab_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
-    here::here("R", "read_chem_data.R")
+    here::here("R", "read_chem_data.R"),
+    here::here("R", "read_electro_fishing.R")
   )
 )
 # Set target options
@@ -296,7 +297,14 @@ list(
   tar_target(
     pc10_climate_met, pc10_climate_to_aeme_met(pc10_climate_data)
   ),
-  
+  # Utuhina electrofishing data
+  tar_target(
+    electro_fishing_file, file.path(data_raw_dir, "electro_fishing",
+                                    "Historic Utuhina electrofishing dates and CPUE.xlsx")
+  ),
+  tar_target(
+    electro_fishing, read_electro_fishing(electro_fishing_file)
+  ),
   # Met service data
   tar_target(
     airport_met_service_file, file.path(data_raw_dir, "met_service",
