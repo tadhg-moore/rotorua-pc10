@@ -7,6 +7,12 @@ message: false
 ---
 
 ```{r}
+#| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
+```{r}
 #| label: setup
 #| include: false
 #| echo: false
@@ -118,7 +124,7 @@ Each `scenario_hourly_met` branch's 20-30 annual values are then averaged into o
 #| fig-height: 8.5
 #| out-width: 100%
 
-knitr::include_graphics("www/plots/extreme_indices_summary.png")
+include_img("www/plots/extreme_indices_summary.png")
 ```
 
 ```{r}

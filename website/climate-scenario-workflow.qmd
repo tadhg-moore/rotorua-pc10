@@ -7,6 +7,12 @@ message: false
 ---
 
 ```{r}
+#| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
+```{r}
 #| label: setup
 #| include: false
 #| echo: false
@@ -58,7 +64,7 @@ The skill table above summarises cross-validated numeric performance; the figure
 #| echo: false
 #| out-width: 100%
 
-knitr::include_graphics("www/plots/era5_bc_timeseries_wind.png")
+include_img("www/plots/era5_bc_timeseries_wind.png")
 ```
 
 ```{r}
@@ -66,7 +72,7 @@ knitr::include_graphics("www/plots/era5_bc_timeseries_wind.png")
 #| echo: false
 #| out-width: 80%
 
-knitr::include_graphics("www/plots/era5_bc_distribution_wind.png")
+include_img("www/plots/era5_bc_distribution_wind.png")
 ```
 
 Wind speed is expected to be the cleaner case: the corrected series should track the buoy's day-to-day variability more closely than raw ERA5 does, and the corrected distribution should sit closer to the buoy's than the raw distribution -- check the two plots above confirm that once rendered from a build that includes the `rotorua_buoy_met_data` knots-to-m/s fix above.
@@ -76,7 +82,7 @@ Wind speed is expected to be the cleaner case: the corrected series should track
 #| echo: false
 #| out-width: 100%
 
-knitr::include_graphics("www/plots/era5_bc_timeseries_rain.png")
+include_img("www/plots/era5_bc_timeseries_rain.png")
 ```
 
 ```{r}
@@ -84,7 +90,7 @@ knitr::include_graphics("www/plots/era5_bc_timeseries_rain.png")
 #| echo: false
 #| out-width: 80%
 
-knitr::include_graphics("www/plots/era5_bc_distribution_rain.png")
+include_img("www/plots/era5_bc_distribution_rain.png")
 ```
 
 Rainfall is the variable to check most carefully here, given the buoy unit issue above: if these plots were last rendered from a build of `era5_bias_correction`/`era5_corrected_hourly` that predates the `rotorua_buoy_met_data` unit fix, expect the corrected distribution's upper tail to sit well beyond both the raw ERA5 and the buoy's own post-fix distribution, and the time series to show the correction pulling rainfall up hardest during the pre-October-2023 window. A rebuild after the fix should bring the corrected distribution back in line with raw ERA5 and the long-record rainfall data -- re-render this page after `tar_make()` and check these two plots specifically before trusting `MET_pprain` downstream.
@@ -187,7 +193,7 @@ It follows the same bias-correct → delta-change → disaggregate chain, with t
 #| out-width: 100%
 #| eval: !expr file.exists("www/plots/gcm_transient_deltas.png")
 
-knitr::include_graphics("www/plots/gcm_transient_deltas.png")
+include_img("www/plots/gcm_transient_deltas.png")
 ```
 
 ```{r}
