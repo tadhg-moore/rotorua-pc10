@@ -15,6 +15,12 @@ execute:
   message: false
 ---
 
+```{r}
+#| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
 ## Summary {#sec-summary}
 
 The GLM-AED model has been calibrated with an alum setup that mixes treated and untreated inflow phosphorus (P) and leaves the stream reaction out. This page sets out what to change and in what order. It builds on [the inflow and alum report summaries](rotorua-inflows-alum.qmd), which describe the reports and the inflow files.
@@ -196,7 +202,7 @@ knitr::kable(read.csv("data/inflows/run_summary.csv"), col.names = c("Run", "TP 
 #| echo: false
 #| label: fig-score
 #| fig-cap: "Surface (0 to 5 m) fit and bottom anoxia for the best member of each stage, in the order the stages were run. Dashed lines mark a perfect fit."
-knitr::include_graphics("images/calibration/scorecard.png")
+include_img("images/calibration/scorecard.png")
 ```
 
 ```{r}
@@ -204,7 +210,7 @@ knitr::include_graphics("images/calibration/scorecard.png")
 #| echo: false
 #| label: fig-phi
 #| fig-cap: "Objective by iteration for each stage (best member and ensemble median; free y-axis, so levels are not comparable across stages). Most stages gain little after the first or second iteration; stage `s` gains most because its prior ensemble was wide."
-knitr::include_graphics("images/calibration/objective_trajectories.png")
+include_img("images/calibration/objective_trajectories.png")
 ```
 
 ### Efficiency sensitivity (old inflows) {#sec-eff}
@@ -282,7 +288,7 @@ Four further stages followed, all on the V1 inflows (no-alum files, in-stream bo
 #| echo: false
 #| label: fig-annual-stage
 #| fig-cap: "Annual mean surface TP by year for the stage `o` start member, the particulate stages and the flood × 0.5 refits, against the observations (grey: wet years)."
-knitr::include_graphics("images/calibration/annual_tp_by_stage.png")
+include_img("images/calibration/annual_tp_by_stage.png")
 ```
 
 **Why these stages were designed this way.** @fig-annual-stage shows the problem that drove them: in the wet years (2011, 2012, 2017, 2018) the model's annual TP is well above the observations, while in dry years it is slightly low, and the observations fall in wet years. Lake processes alone (`q`, `q2`, `r`, `p2`) reduced the overshoot but pushed the dry years lower. Halving the flood-day particulate P in the inflows (`p3`, `p4`) is an input correction that lets the lake parameters fit the dry years while the storm load is damped, which is why the refits were repeated on that base.
@@ -311,7 +317,7 @@ The alum, sediment P, particulate and oxygen parameters are held at the `p4` and
 #| echo: false
 #| label: fig-seasonal
 #| fig-cap: "Mean annual cycle of surface FRP and chlorophyll-a, 2006 to 2021, for `p4` and `s` against the observations."
-knitr::include_graphics("images/calibration/seasonal_frp_chl.png")
+include_img("images/calibration/seasonal_frp_chl.png")
 ```
 
 ```{r}
@@ -319,7 +325,7 @@ knitr::include_graphics("images/calibration/seasonal_frp_chl.png")
 #| echo: false
 #| label: fig-pos
 #| fig-cap: "Position of the start member (arrow tail) and best member (point) inside each parameter's allowed range, for stages `s` and `o3`. Red points sit at a bound."
-knitr::include_graphics("images/calibration/parameter_positions.png")
+include_img("images/calibration/parameter_positions.png")
 ```
 
 In @fig-seasonal stage `s` lifts summer FRP back to the observed level (January) and lowers the summer chlorophyll peak, but it still leaves FRP near zero in March to April, over-predicts FRP from August to December (0.005 to 0.008 g/m³ against 0.0025 to 0.004), and under-predicts chlorophyll from June to December. The remaining seasonal errors are one reason for the joint stage (@sec-joint).
@@ -337,7 +343,7 @@ Because the stage `o` oxygen parameters were fitted under the earlier, less prod
 #| echo: false
 #| label: fig-anox-stage
 #| fig-cap: "Days per year with bottom DO (mean of the 17 m and deeper samples) below 2 g/m³, on the sampled days, for the observations and the `p4`, `s` and `o3` members."
-knitr::include_graphics("images/calibration/anoxic_days_stages.png")
+include_img("images/calibration/anoxic_days_stages.png")
 ```
 
 @fig-anox-stage shows that the anoxia count hides a timing problem. The observations have most low-oxygen days in 2008 to 2010 (27, 34 and 42 days) and in 2015 (31); the model misses 2008 and 2009 (about 9 and 8 to 16 days) and overshoots 2017 (37 days against 18) and 2018 to 2019. Stage `s` also creates a spurious anoxic year in 2013 (29 days against 4), which `o3` removes. Since the early years are under-predicted and the late years over-predicted, a single sediment oxygen demand per zone cannot fix it: the oxygen demand and the production supply have to be adjusted together.
@@ -353,7 +359,7 @@ The 20 lowest-objective members of the final `o3` ensemble were run over 2005 to
 ```{r}
 #| eval: true
 #| echo: false
-knitr::include_graphics("images/historical/envelopes.png")
+include_img("images/historical/envelopes.png")
 ```
 
 Monthly means of the daily surface (0 to 5 m) and bottom values; the dark band is the interquartile range, the light band the full ensemble, and the points are the observations.
@@ -378,7 +384,7 @@ knitr::kable(s, digits = 3)
 #| echo: false
 #| label: fig-hist-anox
 #| fig-cap: "Days per year with bottom DO below 2 g/m³: the `o3` ensemble (band: min to max, line: median, all model days) and the observed days (bars, sampled days only, so they are lower bounds)."
-knitr::include_graphics("images/historical/anoxia_by_year.png")
+include_img("images/historical/anoxia_by_year.png")
 ```
 
 ### Joint stage (`j`) {#sec-joint}
@@ -422,7 +428,7 @@ knitr::kable(sc, digits = 3)
 #| echo: false
 #| label: fig-j-converge
 #| fig-cap: "Ensemble position of each of the 40 parameters by iteration (median and 10 to 90% band, in range units, coloured by group). Iteration 0 is the prior ensemble."
-knitr::include_graphics("images/calibration/joint_convergence.png")
+include_img("images/calibration/joint_convergence.png")
 ```
 
 **Convergence** (@fig-j-converge, @fig-j-shrink). Most parameters barely narrow: the 10 to 90% band of 33 of the 40 parameters is still more than 80% of the prior width after six updates (median 86%), so they are not identified by this set of targets. The parameters that converge are the ones the targets act on directly: cyano `R_resp` (81% reduction in spread, moving to the upper half of its range), diatom `R_resp` (52%, moving down), the zone 1 sediment oxygen demand (54%), `rdom_minerl` (40%), `rdenit` (32%) and diatom `X_pmax` (28%). The sediment P release and most of the nitrogen parameters stay close to the prior.
@@ -432,7 +438,7 @@ knitr::include_graphics("images/calibration/joint_convergence.png")
 #| echo: false
 #| label: fig-j-shrink
 #| fig-cap: "Reduction in ensemble spread from the prior to the final iteration, by parameter."
-knitr::include_graphics("images/calibration/joint_shrinkage.png")
+include_img("images/calibration/joint_shrinkage.png")
 ```
 
 ```{r}
@@ -440,7 +446,7 @@ knitr::include_graphics("images/calibration/joint_shrinkage.png")
 #| echo: false
 #| label: fig-j-pull
 #| fig-cap: "How each target pulls each parameter. For every target, the change in its residual per unit of each parameter is estimated by regression over the first four iterations (about 400 members); the colour is the downhill direction for that target's squared residual at the start member, scaled within each target (blue: asks for a higher parameter value; red: a lower value). Blank cells have no identified link."
-knitr::include_graphics("images/calibration/joint_target_pull.png")
+include_img("images/calibration/joint_target_pull.png")
 ```
 
 **How the targets pulled the parameters** (@fig-j-pull). The links that are identified are few and physically sensible:
@@ -456,7 +462,7 @@ knitr::include_graphics("images/calibration/joint_target_pull.png")
 #| echo: false
 #| label: fig-j-change
 #| fig-cap: "Scaled residual of every target in the calibration window for the start (`o3`) member and the best joint member (0 is a perfect fit; each unit is the target's tolerance). The nitrogen terms move from slightly low to above the observations, while FRP, chlorophyll and the oxygen bias terms improve."
-knitr::include_graphics("images/calibration/joint_target_change.png")
+include_img("images/calibration/joint_target_change.png")
 ```
 
 **What this means for the next step.** The joint stage keeps the phosphorus and chlorophyll fit and improves oxygen a little, but it cannot be read as a tightly constrained posterior: most parameters remain close to the prior, and the nitrogen targets compete with the phosphorus and chlorophyll targets through cyano `R_resp`. The ensemble from the final iteration is a fair description of that uncertainty, so the historical and scenario ensembles use it directly.
@@ -470,7 +476,7 @@ The 20 lowest-objective members of the final `j` ensemble were run over 2005 to 
 #| echo: false
 #| label: fig-hist-j
 #| fig-cap: "Joint ensemble (20 members) against the observations: monthly means of surface TP, FRP, chlorophyll-a and bottom DO (dark band: interquartile range; light band: full ensemble; points: observations)."
-knitr::include_graphics("images/historical/envelopes_j.png")
+include_img("images/historical/envelopes_j.png")
 ```
 
 ```{r}
@@ -509,7 +515,7 @@ knitr::kable(data.frame(Variable = s$metric, `With alum` = fm(s$with), `No alum`
 #| echo: false
 #| label: fig-alum-annual
 #| fig-cap: "Annual surface TP, FRP, chlorophyll-a and anoxic days with the observed alum dosing and with no alum (joint ensemble, median and range across members), against the observations."
-knitr::include_graphics("images/historical/alum_impact_annual.png")
+include_img("images/historical/alum_impact_annual.png")
 ```
 
 - **Phosphorus.** Alum lowers surface TP by 59% on average (members 46% to 69%) and surface FRP by 81% (69% to 88%). Without alum the model TP stays at 0.04 to 0.06 g/m³, near the observed 2005 and 2006 values (before dosing took effect) and well above the observed values from 2007, so the model needs the alum to reproduce the observed TP. The relative effect is 37% in 2005 to 2010, 70% in 2011 to 2016 and 65% in 2017 to 2022.
@@ -522,7 +528,7 @@ knitr::include_graphics("images/historical/alum_impact_annual.png")
 #| echo: false
 #| label: fig-alum-pct
 #| fig-cap: "Alum effect as a percentage of the no-alum value, by year (median and range across members)."
-knitr::include_graphics("images/historical/alum_impact_pct.png")
+include_img("images/historical/alum_impact_pct.png")
 ```
 
 **Time series and observed against modelled.** @fig-alum-ts shows the monthly ensemble with and without alum against the observations, and @fig-alum-scatter and the table compare the observations with the ensemble-mean simulation at each sampling date before dosing (to 14 June 2006, identical in the two runs) and after it.
@@ -533,7 +539,7 @@ knitr::include_graphics("images/historical/alum_impact_pct.png")
 #| label: fig-alum-ts
 #| fig-cap: "Monthly surface TP, FRP, chlorophyll-a and bottom DO from the 50 joint-ensemble members with the observed alum dosing (blue) and with no alum (red), against the observed monthly means (points). Dashed lines: start of dosing in the Utuhina (June 2006) and the Puarenga (January 2010)."
 #| fig-height: 9
-knitr::include_graphics("images/historical/alum_timeseries.png")
+include_img("images/historical/alum_timeseries.png")
 ```
 
 ```{r}
@@ -542,7 +548,7 @@ knitr::include_graphics("images/historical/alum_timeseries.png")
 #| label: fig-alum-scatter
 #| fig-cap: "Observed against modelled (ensemble mean at each observation) before and after dosing began, with and without alum. Grey line: 1:1."
 #| fig-height: 10
-knitr::include_graphics("images/historical/alum_obs_vs_sim.png")
+include_img("images/historical/alum_obs_vs_sim.png")
 ```
 
 ```{r}
@@ -567,7 +573,7 @@ knitr::kable(data.frame(Variable = nm[s$var], Period = sub(" \\(.*", "", s$perio
 #| label: fig-tli-annual
 #| fig-cap: "Annual TLI components, TLI3 and TLI4 from the 50 joint-ensemble members with the observed alum dosing (blue) and with no alum (red; median, interquartile and full range), and from the observations (black)."
 #| fig-height: 9
-knitr::include_graphics("images/historical/tli_annual.png")
+include_img("images/historical/tli_annual.png")
 ```
 
 ```{r}
@@ -584,7 +590,7 @@ knitr::kable(data.frame(Period = t$period, Source = t$src, TLc = sprintf("%.2f",
 #| label: fig-tli-divergence
 #| fig-cap: "How far the two scenarios diverge: TLI with alum minus TLI without alum for each component, TLI3 and TLI4, by year (median, interquartile range and full range across members). The two runs are identical before the first dose (2006)."
 #| fig-height: 8
-knitr::include_graphics("images/historical/tli_divergence.png")
+include_img("images/historical/tli_divergence.png")
 ```
 
 ```{r}
@@ -612,7 +618,7 @@ knitr::kable(data.frame(Period = d$period, TLc = f("TLc"), TLn = f("TLn"), TLp =
 #| label: fig-tli-unc
 #| fig-cap: "The same comparison as the TLI figure above, with the model sampled on the dates each variable was observed and the observations drawn with their 90% bootstrap interval over sampling dates."
 #| out-width: "100%"
-knitr::include_graphics("images/historical/tli_annual_unc.png")
+include_img("images/historical/tli_annual_unc.png")
 ```
 
 ```{r}
@@ -621,7 +627,7 @@ knitr::include_graphics("images/historical/tli_annual_unc.png")
 #| label: fig-tli-sampling
 #| fig-cap: "Sampling error of the model's annual TLI: the model sampled on the observation dates minus its full-year mean, by year and member."
 #| out-width: "85%"
-knitr::include_graphics("images/historical/tli_sampling_error.png")
+include_img("images/historical/tli_sampling_error.png")
 ```
 
 ```{r}
@@ -654,7 +660,7 @@ knitr::kable(data.frame(Run = k$run, Index = k$var, Bias = sprintf("%.2f (%.2f t
 #| echo: false
 #| label: fig-alum-retention
 #| fig-cap: "P retained in the lake because of alum (t P per year; median and range across members). Dashed line: the roughly 16 t P/yr of Hamilton et al. (2015) and ERI 128. 2022 is a part year."
-knitr::include_graphics("images/historical/alum_p_retention.png")
+include_img("images/historical/alum_p_retention.png")
 ```
 
 - **Retention.** The mean over 2006 to 2022 is 15 t P/yr (members 9 to 23), which agrees with the 16 t P/yr of the reports. Retention peaks in the wet years (28 t in 2011 and 29 t in 2017, medians), when the load is highest, and the median falls in 2019 to 2022 (to 2 t in the part year 2022), with a long upper tail of members. I have not examined why.
@@ -668,7 +674,7 @@ knitr::include_graphics("images/historical/alum_p_retention.png")
 #| echo: false
 #| label: fig-alum-conv
 #| fig-cap: "Mean alum effect against the number of ensemble members (members ranked by objective): line is the mean of the first n members, band is the 95% bootstrap interval of the mean for n members."
-knitr::include_graphics("images/historical/alum_impact_convergence.png")
+include_img("images/historical/alum_impact_convergence.png")
 ```
 
 ### Nutrient budgets and the outflow, alum on and off {#sec-budget-pair}
@@ -682,7 +688,7 @@ This section uses the best member of the joint stage (member 46) alone, run for 
 #| fig-cap: "Phosphorus and nitrogen budgets (mean kg per year, 2005 to 2022) of the best member."
 #| fig-subcap: ["Phosphorus, with observed alum", "Phosphorus, no alum", "Nitrogen, with observed alum", "Nitrogen, no alum"]
 #| layout-ncol: 2
-knitr::include_graphics(c("images/budget/glm_budget_P.png", "images/budget/glm_budget_P_noalum.png", "images/budget/glm_budget_N.png", "images/budget/glm_budget_N_noalum.png"))
+include_img(c("images/budget/glm_budget_P.png", "images/budget/glm_budget_P_noalum.png", "images/budget/glm_budget_N.png", "images/budget/glm_budget_N_noalum.png"))
 ```
 
 ```{r}
@@ -691,7 +697,7 @@ knitr::include_graphics(c("images/budget/glm_budget_P.png", "images/budget/glm_b
 #| label: fig-budget-pair-closure
 #| fig-cap: "Boundary terms of the whole-lake P and N budgets with and without alum."
 #| out-width: "90%"
-knitr::include_graphics("images/budget/budget_pair_closure.png")
+include_img("images/budget/budget_pair_closure.png")
 ```
 
 ```{r}
@@ -709,7 +715,7 @@ knitr::kable(data.frame(Element = b$element, Term = b$term, `With alum` = sprint
 #| label: fig-budget-pair-fluxes
 #| fig-cap: "Internal process fluxes of the P and N budgets with and without alum (absolute size)."
 #| out-width: "90%"
-knitr::include_graphics("images/budget/budget_pair_fluxes.png")
+include_img("images/budget/budget_pair_fluxes.png")
 ```
 
 - **Alum cuts the P leaving the lake by 61%.** The mean P export is 9.7 t P/yr with alum and 24.6 t P/yr without. Inflow is 29.1 against 31.0 t P/yr: the 1.9 t difference is the P that the in-stream reaction turns into alum-bound P (`ALU_alp`), which the P budget does not count as an inflow. The N export falls by 42% (157 against 269 t N/yr).
@@ -722,7 +728,7 @@ knitr::include_graphics("images/budget/budget_pair_fluxes.png")
 #| label: fig-outflow-pair-conc
 #| fig-cap: "Flow-weighted outflow concentration from the GLM mass balance, with and without alum (lines), and the Ōhau Channel lab samples (points). Dashed lines: dosing starts."
 #| out-width: "85%"
-knitr::include_graphics("images/budget/outflow_pair_conc.png")
+include_img("images/budget/outflow_pair_conc.png")
 ```
 
 ```{r}
@@ -740,7 +746,7 @@ knitr::kable(data.frame(Variable = a$variable, Period = a$period, n = a$n, `Obse
 #| label: fig-outflow-pair-loads
 #| fig-cap: "Annual TP and TN export through the outlet, 2011 to 2021: the model with and without alum, and a rough observed estimate (the lab samples times the same-day measured flow, scaled to a year)."
 #| out-width: "85%"
-knitr::include_graphics("images/budget/outflow_pair_loads.png")
+include_img("images/budget/outflow_pair_loads.png")
 ```
 
 ```{r}
@@ -788,7 +794,7 @@ knitr::kable(data.frame(Stream = s$stream, `Dosed days` = s$days, `Al applied (t
 #| echo: false
 #| label: fig-fate-ratio-R
 #| fig-cap: "Al applied per P removed in the stream step against the dose ratio of the day (mol Al per mol inflow DRP), by stream: the stream rule (dashed) and the observed removal of the inflow files (solid). Dotted lines: the jar-test and field ratios of the Sanila thesis."
-knitr::include_graphics("images/alumfate/stream_ratio_by_R.png")
+include_img("images/alumfate/stream_ratio_by_R.png")
 ```
 
 ```{r}
@@ -796,7 +802,7 @@ knitr::include_graphics("images/alumfate/stream_ratio_by_R.png")
 #| echo: false
 #| label: fig-fate-stream-annual
 #| fig-cap: "Alum applied (t Al/yr) and P bound in the stream step (t P/yr) by calendar year and stream. Years with few dosed days (the Puarenga in 2019, none dosed; 2020, 39 days; the Utuhina in 2012, 119 days) are partial."
-knitr::include_graphics("images/alumfate/stream_annual.png")
+include_img("images/alumfate/stream_annual.png")
 ```
 
 #### The lake: ratio and where the alum goes {#sec-alum-fate-lake}
@@ -848,7 +854,7 @@ The module does not output its ageing, settling, burial and resuspension fluxes.
 #| fig-cap: "Fate of the alum (member 46, 2006 to 2022-06, mean per year)."
 #| fig-subcap: ["Aluminium (t Al/yr)", "Phosphorus bound by alum (t P/yr)"]
 #| layout-ncol: 1
-knitr::include_graphics(c("images/alumfate/fate_diagram_Al.png", "images/alumfate/fate_diagram_P.png"))
+include_img(c("images/alumfate/fate_diagram_Al.png", "images/alumfate/fate_diagram_P.png"))
 ```
 
 ```{r}
@@ -881,7 +887,7 @@ Surface (0 to 5 m) biomass of the three groups from the best member (stage `j` m
 #| echo: false
 #| label: fig-succession-ts
 #| fig-cap: "Monthly mean surface biomass by phytoplankton group, best member."
-knitr::include_graphics("images/phyto/succession_timeseries.png")
+include_img("images/phyto/succession_timeseries.png")
 ```
 
 ```{r}
@@ -889,7 +895,7 @@ knitr::include_graphics("images/phyto/succession_timeseries.png")
 #| echo: false
 #| label: fig-succession-seasonal
 #| fig-cap: "Mean annual cycle (July to June, 2006 to 2022) of surface biomass by group, as an amount (left) and as a share of the total (right)."
-knitr::include_graphics("images/phyto/succession_seasonal.png")
+include_img("images/phyto/succession_seasonal.png")
 ```
 
 - **Diatoms carry the cool season, cyanobacteria the summer.** Diatoms are 95 to 99% of the biomass from July to November (about 22 to 27 mmol C/m³) and stay near 16 to 20 mmol C/m³ all year. Cyanobacteria only matter from December: they are 63 to 72% of the biomass in January to March and peak in February and March (about 41 mmol C/m³ on average), then decline through April and May.
@@ -901,7 +907,7 @@ knitr::include_graphics("images/phyto/succession_seasonal.png")
 #| echo: false
 #| label: fig-succession-annual
 #| fig-cap: "Share of each group in the mean surface biomass of each year (July to June)."
-knitr::include_graphics("images/phyto/succession_annual.png")
+include_img("images/phyto/succession_annual.png")
 ```
 
 The cyanobacteria share of the annual mean ranges from 6% to 58% between years.
@@ -911,7 +917,7 @@ The cyanobacteria share of the annual mean ranges from 6% to 58% between years.
 #| echo: false
 #| label: fig-limitation
 #| fig-cap: "Mean annual cycle of the surface growth factors by group (1 means no limitation): light, nitrogen, phosphorus and temperature."
-knitr::include_graphics("images/phyto/limitation_seasonal.png")
+include_img("images/phyto/limitation_seasonal.png")
 ```
 
 - **Cyanobacteria are limited by light and temperature in winter and by phosphorus in summer.** Nitrogen does not limit them at all (the group can fix N), and the phosphorus factor falls from 1 to about 0.64 in February and March, when the surface FRP is lowest.
@@ -949,7 +955,7 @@ knitr::kable(data.frame(Group = s$group, Parameters = s$n, `Median spread reduct
 #| echo: false
 #| label: fig-group-conv
 #| fig-cap: "Convergence of the joint stage. Left: ensemble spread by group (median over the group's parameters of the ensemble standard deviation relative to the prior). Right: the calibration-window objective by iteration (log axis): best member and ensemble median with the interquartile band."
-knitr::include_graphics("images/calibration/group_convergence.png")
+include_img("images/calibration/group_convergence.png")
 ```
 
 - **The objective converges, the parameters do not.** The ensemble median objective fell from 8.8 to 1.0 and the interquartile range from 2.2 to 2700 down to 0.93 to 1.15 (@fig-group-conv), so by the last iteration the middle half of the ensemble scores within about 10 to 15% of the median. The spread of the parameters fell only to 87% (phytoplankton), 88% (oxygen), 89% (nitrogen) and 91% (sediment P) of the prior. The 40 parameters are therefore largely not identified by the targets, and the ensemble is better read as an uncertainty description than as a set of estimates.
@@ -989,7 +995,7 @@ param_table("Phytoplankton P kinetics")
 #| echo: false
 #| label: fig-param-phyto
 #| fig-cap: "Convergence of the phytoplankton parameters. Band: 10 to 90% of the ensemble; line: median; red point: best member; dashed: start member; dotted: allowed range."
-knitr::include_graphics("images/calibration/param_conv_phyto.png")
+include_img("images/calibration/param_conv_phyto.png")
 ```
 
 Only the respiration rates converge: cyano `R_resp` (81% less spread) moves quickly in the first update and then settles near the start value, diatom `R_resp` (52%) moves down, and diatom `X_pmax` (28%) narrows a little. The half-saturation constants and the minimum P quotas keep a band as wide as the prior. The uptake parameters for P (`K_P`, `X_pmin`) are therefore not identified by the FRP and chlorophyll targets.
@@ -1009,7 +1015,7 @@ param_table("Oxygen and organic matter")
 #| echo: false
 #| label: fig-param-oxygen
 #| fig-cap: "Convergence of the oxygen and organic-matter parameters (as @fig-param-phyto)."
-knitr::include_graphics("images/calibration/param_conv_oxygen.png")
+include_img("images/calibration/param_conv_oxygen.png")
 ```
 
 The zone 1 sediment oxygen demand (54% less spread) and the DOM mineralisation rate (40%) are constrained,, and the ensemble median of the zone 2 to 4 demands drifts down slowly. The other demands, the oxygen half-saturation, the POC hydrolysis rate and both temperature multipliers keep most of the prior width. The best member sits at the lower bound for the zone 4 demand.
@@ -1029,7 +1035,7 @@ param_table("Sediment P release")
 #| echo: false
 #| label: fig-param-phosphorus
 #| fig-cap: "Convergence of the sediment P release parameters (as @fig-param-phyto)."
-knitr::include_graphics("images/calibration/param_conv_phosphorus.png")
+include_img("images/calibration/param_conv_phosphorus.png")
 ```
 
 None of the six is identified (at most 13% less spread), and the zone 2 release in the best member is at the upper bound of its range. Sediment P release was already fitted in the alum refits, where it also did not narrow (@sec-param-alum), so the sediment P release is poorly constrained by the lake P record in both stages.
@@ -1049,7 +1055,7 @@ param_table("Nitrogen")
 #| echo: false
 #| label: fig-param-nitrogen
 #| fig-cap: "Convergence of the nitrogen parameters (as @fig-param-phyto)."
-knitr::include_graphics("images/calibration/param_conv_nitrogen.png")
+include_img("images/calibration/param_conv_nitrogen.png")
 ```
 
 Only the denitrification rate narrows (32% less spread), and the best member (0.31 d⁻¹) is far below the start value (5 d⁻¹). The sediment ammonium and nitrate fluxes, `K_N` and PON hydrolysis stay close to the prior. The diatom `K_N` in the best member is at the lower bound. The earlier finding that these parameters moved total N past the observations (@sec-joint-results) fits this picture: they are weakly identified and respond to the cyano `R_resp` trade-off more than to the nitrogen targets.
@@ -1063,7 +1069,7 @@ The alum refit freed 14 parameters (the 8 alum parameters and 6 sediment P relea
 #| echo: false
 #| label: fig-param-alum
 #| fig-cap: "Convergence of the alum-stage parameters (stage `p4`; band: 10 to 90% of the ensemble; line: median; red point: best member; dotted: allowed range)."
-knitr::include_graphics("images/calibration/alum_conv.png")
+include_img("images/calibration/alum_conv.png")
 ```
 
 No parameter is identified: the largest reductions in spread are 17% (`k_w` and `K_P`) and 11% (`k_age_w`), and all the others are below 6%. The best member sits at 90% of the range for `k_bur` and 92% for `ksed_frp`, and at 10% for `k_s`. The values and their comparison with the thesis are in @tbl-alum-params.
@@ -1117,7 +1123,7 @@ Sensitivity is concentrated. 16 parameters carry half of the total, 44 carry 80%
 #| echo: false
 #| label: fig-sens-rank
 #| fig-cap: "The 40 most influential parameters for the calibration objective (`mu*` of log10 objective, 95% bootstrap interval over 30 trajectories)."
-knitr::include_graphics("images/sensitivity/phi_ranking.png")
+include_img("images/sensitivity/phi_ranking.png")
 ```
 
 ```{r}
@@ -1142,7 +1148,7 @@ knitr::kable(data.frame(Rank = seq_len(nrow(t)), Parameter = paste0("`", t$param
 #| echo: false
 #| label: fig-sens-sigma
 #| fig-cap: "`mu*` against `sigma` for the calibration objective (log axes). Points above the dashed line have an effect that varies more than it averages."
-knitr::include_graphics("images/sensitivity/phi_mu_sigma.png")
+include_img("images/sensitivity/phi_mu_sigma.png")
 ```
 
 For the 30 most influential parameters, `sigma` is a median of 2 times `mu*`; for the seven cyanobacteria parameters among them it is 2 to 4 times, and for the physics and alum parameters about 1.4 times. The responses are therefore strongly non-linear or interacting: the effect of changing cyanobacteria respiration depends on the other settings, especially where the change tips the cyanobacteria into collapse. The physics and alum parameters sit closer to the dashed line and respond more evenly. The ranking says which parameters to look at, and the sizes should be read as relative, not additive.
@@ -1154,7 +1160,7 @@ For the 30 most influential parameters, `sigma` is a median of 2 times `mu*`; fo
 #| echo: false
 #| label: fig-sens-heat
 #| fig-cap: "Sensitivity of each calibration-window target to the 45 most influential parameters (`mu*` divided by the standard deviation of that output over all runs, capped at 1.5)."
-knitr::include_graphics("images/sensitivity/target_heatmap.png")
+include_img("images/sensitivity/target_heatmap.png")
 ```
 
 ```{r}
@@ -1184,7 +1190,7 @@ The parameter ranking is the same in the held-out window. The Spearman correlati
 #| echo: false
 #| label: fig-sens-shrink
 #| fig-cap: "Sensitivity of the objective against the narrowing of the joint-stage ensemble, for the 40 free parameters. A parameter can only be identified if the objective responds to it, but responding does not guarantee it."
-knitr::include_graphics("images/sensitivity/sens_vs_shrink.png")
+include_img("images/sensitivity/sens_vs_shrink.png")
 ```
 
 - **Sensitivity is needed but is not enough to identify a parameter.** Every parameter whose spread fell by more than 30% in the joint stage ranks in the top 32 for sensitivity (@fig-sens-shrink); none of the insensitive parameters narrowed. Several highly sensitive parameters did not narrow: cyanobacteria `K_P` (rank 3, spread reduced by 12%) and `X_pmin` (rank 13, 13%). They respond strongly but with sign and size depending on the rest of the set (the large `sigma` above), which is the case where an ensemble smoother is least able to pin a single value.

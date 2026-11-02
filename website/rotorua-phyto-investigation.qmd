@@ -15,6 +15,12 @@ execute:
   message: false
 ---
 
+```{r}
+#| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
 ## Summary {#sec-summary}
 
 The calibrated Lake Rotorua model has no zooplankton (`aed_zooplankton` is commented out of the model list), so nothing grazes the phytoplankton and every phytoplankton parameter absorbed that missing loss. The result is a lake of diatoms and cyanobacteria only, with the greens gone. This investigation switches the zooplankton on and asks which settings give three coexisting groups with a plausible seasonal order (diatoms in the cool seasons, greens through the year, cyanobacteria in summer), total chlorophyll-a near the observations, and nutrients that stay close to the calibrated model.
@@ -61,7 +67,7 @@ The weighting is a judgement, not a result, so the ranking among near-equal scor
 ```{r}
 #| label: fig-oat
 #| fig-cap: "Change in the score components when one parameter is moved to 10% or 90% of its range from the h1 base case (largest 18 by total score change)."
-knitr::include_graphics("images/phyto_invest/oat_tornado.png")
+include_img("images/phyto_invest/oat_tornado.png")
 ```
 
 - **The zooplankton refuge `Cmin_grz_zoo`** is the most powerful single control. At the low end the grazing removes nearly all the algae (mean chlorophyll about 1 mg/m³); at the high end chlorophyll-a rises by about 7 mg/m³.
@@ -77,7 +83,7 @@ Each generation samples 90 configurations around the average of the best 20% of 
 ```{r}
 #| label: fig-progress
 #| fig-cap: "Score by generation."
-knitr::include_graphics("images/phyto_invest/progress.png")
+include_img("images/phyto_invest/progress.png")
 ```
 
 The best score fell from 5.5 to 2.7 over 11 generations and levelled off at about 2.7 to 3.0, so more generations with this score would add little. @fig-constraint shows how tightly the best 5% of runs pin each parameter.
@@ -85,7 +91,7 @@ The best score fell from 5.5 to 2.7 over 11 generations and levelled off at abou
 ```{r}
 #| label: fig-constraint
 #| fig-cap: "Spread of each parameter among the best 5% of all runs, as a share of its range. Long bars are poorly constrained."
-knitr::include_graphics("images/phyto_invest/constraint.png")
+include_img("images/phyto_invest/constraint.png")
 ```
 
 - **Well constrained:** the zooplankton phosphorus content, the refuge, the nitrogen content, the cladoceran grazing rate and the cyanobacteria respiration.
@@ -108,19 +114,19 @@ Observed means over the same pairs are chlorophyll-a 8.3 mg/m³, TP 0.018, FRP 0
 ```{r}
 #| label: fig-succ-top
 #| fig-cap: "Monthly share of surface biomass by group for the three best configurations and the h1 case."
-knitr::include_graphics("images/phyto_invest/succession_top.png")
+include_img("images/phyto_invest/succession_top.png")
 ```
 
 ```{r}
 #| label: fig-best-ts
 #| fig-cap: "Weekly mean surface biomass by group in the best configuration."
-knitr::include_graphics("images/phyto_invest/best_timeseries.png")
+include_img("images/phyto_invest/best_timeseries.png")
 ```
 
 ```{r}
 #| label: fig-best-zoo
 #| fig-cap: "Weekly mean zooplankton biomass in the best configuration."
-knitr::include_graphics("images/phyto_invest/best_zoo.png")
+include_img("images/phyto_invest/best_zoo.png")
 ```
 
 In the best configuration the spring diatom bloom (about 70 mmol C/m³ in October to November) is probably too sharp, and the summer is nearly flat, with biomass held at about 43 mmol C/m³ from December to April. The observed chlorophyll-a has more year to year variation than this.
@@ -130,19 +136,19 @@ In the best configuration the spring diatom bloom (about 70 mmol C/m³ in Octobe
 ```{r}
 #| label: fig-zoo-top
 #| fig-cap: "Weekly mean zooplankton biomass (0 to 5 m) by group in the three best configurations and the h1 case."
-knitr::include_graphics("images/phyto_invest/zoo_top_timeseries.png")
+include_img("images/phyto_invest/zoo_top_timeseries.png")
 ```
 
 ```{r}
 #| label: fig-zoo-monthly
 #| fig-cap: "Monthly mean zooplankton biomass by group."
-knitr::include_graphics("images/phyto_invest/zoo_monthly.png")
+include_img("images/phyto_invest/zoo_monthly.png")
 ```
 
 ```{r}
 #| label: fig-zoo-ratio
 #| fig-cap: "Total zooplankton biomass as a fraction of total phytoplankton biomass, by month."
-knitr::include_graphics("images/phyto_invest/zoo_phyto_ratio.png")
+include_img("images/phyto_invest/zoo_phyto_ratio.png")
 ```
 
 - **Zooplankton almost disappear in winter.** In every configuration biomass is close to zero from about June to September and comes back in October to December, peaking at 10 to 30 mmol C/m³ in summer. Real zooplankton in a lake of this temperature persist through winter at low levels, so the winter collapse is probably a model artefact (temperature limits on growth and the minimum biomass floor), and it lets the diatoms bloom unchecked each spring.

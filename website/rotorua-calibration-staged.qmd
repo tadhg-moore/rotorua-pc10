@@ -17,6 +17,12 @@ execute:
 ---
 
 ```{r}
+#| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
+```{r}
 library(dplyr)
 library(knitr)
 library(kableExtra)
@@ -76,7 +82,7 @@ Assumptions:
 
 ```{r}
 #| fig-cap: "Simulated and observed water level at the stage 1 best fit."
-knitr::include_graphics(file.path(img, "s1_wlev.png"))
+include_img(file.path(img, "s1_wlev.png"))
 ```
 
 Error score fell from 0.342 to 0.295 over four iterations.
@@ -97,7 +103,7 @@ Stage 2 screened 25 parameters (Morris), kept 8, and ran `pestpp-ies` on the sen
 
 ```{r}
 #| fig-cap: "Water temperature, whole simulation (stage 2 best fit)."
-knitr::include_graphics(file.path(img, "ts_physics_HYD_temp.png"))
+include_img(file.path(img, "ts_physics_HYD_temp.png"))
 ```
 
 ```{r}
@@ -216,49 +222,49 @@ The whole simulation period drawn with `AEME::plot_ts()`: the model is the line 
 ### Water level
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_physics_LKE_lvlwtr.png"))
+include_img(file.path(img, "ts_physics_LKE_lvlwtr.png"))
 ```
 
 ### Temperature
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_HYD_temp.png"))
+include_img(file.path(img, "ts_bgc_HYD_temp.png"))
 ```
 
 ### Oxygen
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_CHM_oxy.png"))
+include_img(file.path(img, "ts_bgc_CHM_oxy.png"))
 ```
 
 ### Ammonium
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_NIT_amm.png"))
+include_img(file.path(img, "ts_bgc_NIT_amm.png"))
 ```
 
 ### Nitrate
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_NIT_nit.png"))
+include_img(file.path(img, "ts_bgc_NIT_nit.png"))
 ```
 
 ### FRP
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_PHS_frp.png"))
+include_img(file.path(img, "ts_bgc_PHS_frp.png"))
 ```
 
 ### FRP (alum on)
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_alum_PHS_frp.png"))
+include_img(file.path(img, "ts_alum_PHS_frp.png"))
 ```
 
 ### Chlorophyll-a
 
 ```{r}
-knitr::include_graphics(file.path(img, "ts_bgc_PHY_tchla.png"))
+include_img(file.path(img, "ts_bgc_PHY_tchla.png"))
 ```
 :::
 

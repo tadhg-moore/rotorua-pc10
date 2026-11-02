@@ -15,6 +15,12 @@ execute:
 
 ```{r}
 #| include: false
+#| eval: true
+source("scripts/include_img.R")
+```
+
+```{r}
+#| include: false
 rd <- \(f) read.csv(file.path("data/ohau", f), check.names = FALSE)
 ```
 
@@ -45,7 +51,7 @@ The TP and DRP step in 2011 to 2012 and the 1993 to 1995 peak do not line up wit
 #| label: fig-ohau-ts
 #| fig-cap: "Ōhau Channel lab results, 1985 to 2026. Grey: legacy data; blue: routine data. Black line: annual median. Dashed lines: the start of dosing on the Utuhina (2006-06-15) and Puarenga (2010-01-14)."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_timeseries.png")
+include_img("images/ohau/ohau_timeseries.png")
 ```
 
 - **Phosphorus fell, and not at the start of dosing.** The annual median TP stayed near 0.04 g/m³ until 2010 (0.043, 0.041, 0.037, 0.037 and 0.033 g/m³ in 2006 to 2010) and dropped to 0.023 in 2011 and 0.014 in 2012. DRP shows the same step, from a median of 0.008 g/m³ before dosing to 0.003.
@@ -58,7 +64,7 @@ knitr::include_graphics("images/ohau/ohau_timeseries.png")
 #| label: fig-ohau-seasonal
 #| fig-cap: "Monthly distributions of the outlet lab results, 2005 to 2026."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_seasonal.png")
+include_img("images/ohau/ohau_seasonal.png")
 ```
 
 ```{r}
@@ -91,7 +97,7 @@ knitr::kable(data.frame(Period = t$period, Variable = t$variable, n = t$n, `Slop
 #| label: fig-ohau-period
 #| fig-cap: "Distributions by dosing period: before dosing (to mid-2006), the Utuhina only (mid-2006 to January 2010), and both streams (2010 on). TN is shown from 2009 because there are almost no earlier samples."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_by_period.png")
+include_img("images/ohau/ohau_by_period.png")
 ```
 
 ```{r}
@@ -110,7 +116,7 @@ knitr::kable(data.frame(Variable = c$variable, `Change in median` = sprintf("%+.
 #| label: fig-ohau-ratios
 #| fig-cap: "Nutrient ratios from same-day samples, 2009 onwards, with a loess smooth."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_ratios.png")
+include_img("images/ohau/ohau_ratios.png")
 ```
 
 ```{r}
@@ -128,7 +134,7 @@ knitr::kable(data.frame(Ratio = c("TN:TP (mass)", "DRP / TP", "DIN / TN", "DIN:D
 #| label: fig-ohau-lake
 #| fig-cap: "Monthly mean outlet value against the monthly mean of the lake sites 2 and 5 (top 5 m) for the same month."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_vs_lake.png")
+include_img("images/ohau/ohau_vs_lake.png")
 ```
 
 ```{r}
@@ -148,7 +154,7 @@ The 50-member joint ensemble (`j50x`), with the observed alum dosing and with no
 #| label: fig-ohau-model
 #| fig-cap: "The model's surface layer (monthly mean; median, interquartile range and full range of 50 members) with the observed alum dosing (blue) and with no alum (red) against the monthly outlet results (points). Dashed lines mark the start of dosing."
 #| out-width: "85%"
-knitr::include_graphics("images/ohau/ohau_vs_model.png")
+include_img("images/ohau/ohau_vs_model.png")
 ```
 
 ```{r}
