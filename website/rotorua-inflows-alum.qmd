@@ -197,7 +197,7 @@ The last row is the inconsistent case: the Utuhina stream removal was in the inf
 ### Recommended handling
 
 1. **Use the no-alum file for all streams** with the alum module on, so the dose is the only driver and the with/without alum scenarios are clean.
-2. **Add an in-stream reaction step** before the lake: the Puarenga (about 300 m) and Utuhina (about 700 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (`ALU_alp`) and reduce `ALU_ala` by the same amount. Use `fmax` and `R0` from @tbl-fit, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.
+2. **Add an in-stream reaction step** before the lake: the Puarenga (about 680 m) and Utuhina (about 1360 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (`ALU_alp`) and reduce `ALU_ala` by the same amount. Use `fmax` and `R0` from @tbl-fit, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.
 3. **Treat the in-lake effects separately.** Hamilton et al. and ERI 128 both needed an additional in-lake effect (about 50% less sediment P release, more flocculation). The module's settled-alum uptake and the sediment P flux parameters should be checked against that, once the inflows are consistent.
 4. **Keep the free-aluminium point in view.** At Al:DRP well above 20 most of the dosed Al is not used in the stream and reaches the lake; this excess is what the lake-side module acts on.
 
