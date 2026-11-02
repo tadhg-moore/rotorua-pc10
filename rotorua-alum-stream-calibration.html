@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-01">
+<meta name="dcterms.date" content="2026-11-02">
 
 <title>Alum stream step: calibration design from the thesis stoichiometry – Rotorua Lake Modelling</title>
 <style>
@@ -520,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 1, 2026</p>
+      <p class="date">November 2, 2026</p>
     </div>
   </div>
   
@@ -563,13 +563,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>Puarenga</td>
-<td>about 300 m</td>
+<td>about 680 m</td>
 <td><code>f = 0.9 × min(1, R / 23)</code></td>
 <td>McIntosh paired up- and downstream samples (Hamilton et al.&nbsp;2015, Fig 20)</td>
 </tr>
 <tr class="even">
 <td>Utuhina</td>
-<td>about 700 m</td>
+<td>about 1360 m</td>
 <td><code>f = 0.45</code></td>
 <td>Measured downstream DRP against the reconstructed untreated DRP (Hamilton et al.&nbsp;2015)</td>
 </tr>
@@ -628,7 +628,7 @@ Table&nbsp;1: Stream step of the previous setup on the dosed days, 2006 to 2022-
 <ol type="1">
 <li><strong>The stoichiometric rate is about 1 mol Al per mol P</strong> when P is limiting, for both the Puarenga and the lake water. The module’s capacity ratio of 1 matches this. The 26:1 of the stream ramp does not.</li>
 <li><strong>Surplus doses cannot give a ratio.</strong> If DRP is removed to below detection, the ratio is an upper bound on the dose needed, not a measurement. The model ratio should be compared on days when the model leaves measurable DRP (unsaturated days), and the share of Al applied on saturated days should be reported with it.</li>
-<li><strong>The data are from jar tests</strong> with hours of contact in mixed samples. The stream reaches are 300 to 700 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</li>
+<li><strong>The data are from jar tests</strong> with hours of contact in mixed samples. The stream reaches are 680 to 1360 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</li>
 </ol>
 <p>The thesis range also includes surplus-dose ratios up to 15.1:1. The thesis also cites an operational field ratio of about 7:1 for the Utuhina and Puarenga inflows (McDowell and Hawke, 2006), which it attributes to turbulence, short flocculation contact times and hydrodynamic losses in the stream. That is a dose-over-removal figure for real dosing, so it includes surplus days. Its jar-test value for Lake Rotorua (0.7:1, a 1.0 mg Al/L dose removing 1.60 of 1.62 mg DRP/L) is the best-case chemistry.</p>
 </section>
@@ -1306,7 +1306,7 @@ Figure&nbsp;2: Utuhina removal against dose ratio, with the fitted and previous 
 <li><strong>The removal is a plateau near 43%, not a function of the dose.</strong> The fitted <code>f_max</code> is 0.42 (0.40 to 0.45), and the flat rule fits as well as the two-parameter rules (RMSE 0.200 for all three). The previous flat 0.45 is inside the interval and is as good (RMSE 0.202). The previous ramp is worse (0.266) and H1 much worse (0.514), because both over-remove at low and moderate doses.</li>
 <li><strong>ε is not identified.</strong> Its interval runs from 0.14 to 2.1, so the Utuhina data are consistent with the thesis value (1) and with values 5 times lower. The plateau is reached at the lowest doses (a mean of 25 to 45 kg Al/d at R between 1 and 5 already gives 43 to 49%), so the dose never limits the removal, and the data cannot show what limits it.</li>
 <li><strong>The removal rises only slightly at high doses</strong>: 55% at R of 23 to 50 and 65% above 50, from 480 days. This is the only sign of a dose response.</li>
-<li><strong>Something other than capacity limits the Utuhina removal.</strong> A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 700 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</li>
+<li><strong>Something other than capacity limits the Utuhina removal.</strong> A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 1360 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</li>
 </ul>
 </section>
 <section id="sec-stoich" class="level2" data-number="7">
@@ -1884,8 +1884,8 @@ Table&nbsp;7: Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P 
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stream <span class="pp">|</span> Distance to the lake <span class="pp">|</span> Rule <span class="pp">|</span> Source <span class="pp">|</span></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Puarenga <span class="pp">|</span> about 300 m <span class="pp">|</span> <span class="in">`f = 0.9 × min(1, R / 23)`</span> <span class="pp">|</span> McIntosh paired up- and downstream samples (Hamilton et al. 2015, Fig 20) <span class="pp">|</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Utuhina <span class="pp">|</span> about 700 m <span class="pp">|</span> <span class="in">`f = 0.45`</span> <span class="pp">|</span> Measured downstream DRP against the reconstructed untreated DRP (Hamilton et al. 2015) <span class="pp">|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Puarenga <span class="pp">|</span> about 680 m <span class="pp">|</span> <span class="in">`f = 0.9 × min(1, R / 23)`</span> <span class="pp">|</span> McIntosh paired up- and downstream samples (Hamilton et al. 2015, Fig 20) <span class="pp">|</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Utuhina <span class="pp">|</span> about 1360 m <span class="pp">|</span> <span class="in">`f = 0.45`</span> <span class="pp">|</span> Measured downstream DRP against the reconstructed untreated DRP (Hamilton et al. 2015) <span class="pp">|</span></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Below <span class="in">`R`</span> = 23 the Puarenga rule binds <span class="in">`0.9 R / 23`</span> of the FRP, which spends 23 / 0.9 ≈ 26 mol Al per mol P removed. Applied to the dosed days of 2006 to 2022-06 (@tbl-previous), this gives about 30 mol/mol across both streams.</span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
@@ -1908,7 +1908,7 @@ Table&nbsp;7: Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P 
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**The stoichiometric rate is about 1 mol Al per mol P** when P is limiting, for both the Puarenga and the lake water. The module's capacity ratio of 1 matches this. The 26:1 of the stream ramp does not.</span>
 <span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Surplus doses cannot give a ratio.** If DRP is removed to below detection, the ratio is an upper bound on the dose needed, not a measurement. The model ratio should be compared on days when the model leaves measurable DRP (unsaturated days), and the share of Al applied on saturated days should be reported with it.</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**The data are from jar tests** with hours of contact in mixed samples. The stream reaches are 300 to 700 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**The data are from jar tests** with hours of contact in mixed samples. The stream reaches are 680 to 1360 m, with minutes of contact, so the thesis gives the efficiency of the chemistry, which the reach can only equal or fall short of. This is the reason to keep an efficiency parameter (H2) and not fix it at the thesis value.</span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>The thesis range also includes surplus-dose ratios up to 15.1:1. The thesis also cites an operational field ratio of about 7:1 for the Utuhina and Puarenga inflows (McDowell and Hawke, 2006), which it attributes to turbulence, short flocculation contact times and hydrodynamic losses in the stream. That is a dose-over-removal figure for real dosing, so it includes surplus days. Its jar-test value for Lake Rotorua (0.7:1, a 1.0 mg Al/L dose removing 1.60 of 1.62 mg DRP/L) is the best-case chemistry.</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
@@ -2041,7 +2041,7 @@ Table&nbsp;7: Member 46 with the lake stoichiometry set to 0.7 mol Al per mol P 
 <span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The removal is a plateau near 43%, not a function of the dose.** The fitted <span class="in">`f_max`</span> is 0.42 (0.40 to 0.45), and the flat rule fits as well as the two-parameter rules (RMSE 0.200 for all three). The previous flat 0.45 is inside the interval and is as good (RMSE 0.202). The previous ramp is worse (0.266) and H1 much worse (0.514), because both over-remove at low and moderate doses.</span>
 <span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ε is not identified.** Its interval runs from 0.14 to 2.1, so the Utuhina data are consistent with the thesis value (1) and with values 5 times lower. The plateau is reached at the lowest doses (a mean of 25 to 45 kg Al/d at R between 1 and 5 already gives 43 to 49%), so the dose never limits the removal, and the data cannot show what limits it.</span>
 <span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The removal rises only slightly at high doses**: 55% at R of 23 to 50 and 65% above 50, from 480 days. This is the only sign of a dose response.</span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Something other than capacity limits the Utuhina removal.** A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 700 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Something other than capacity limits the Utuhina removal.** A dose-limited reaction at the thesis stoichiometry would remove 100% of the DRP at R above 1, and the Utuhina removes 43%. Either the 1360 m reach is too short for the reaction to finish (a contact time limit), or the reconstructed untreated DRP is biased, because it comes from the pre-dosing DRP:TP ratio and that ratio may have moved for other reasons. The data in hand cannot separate the two.</span>
 <span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Lake stoichiometry set in R {#sec-stoich}</span></span>
 <span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>

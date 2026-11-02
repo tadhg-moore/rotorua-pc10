@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-01">
+<meta name="dcterms.date" content="2026-11-02">
 
 <title>Alum calibration: next steps – Rotorua Lake Modelling</title>
 <style>
@@ -581,7 +581,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 1, 2026</p>
+      <p class="date">November 2, 2026</p>
     </div>
   </div>
   
@@ -599,7 +599,7 @@ window.Quarto = {
 <p><strong>What is wrong with the current setup</strong></p>
 <ul>
 <li><strong>Utuhina is already treated.</strong> Its inflow P was measured downstream of the dosing point, but the alum module also acts on it in the lake, so part of the Utuhina removal is counted twice. The Puarenga inflow is untreated (sampled upstream). The “no alum” scenario runs also kept the Utuhina treatment.</li>
-<li><strong>The stream reaction is missing.</strong> Alum reacts with stream DRP in the 300 m (Puarenga) to 700 m (Utuhina) before the lake. Hamilton et al.&nbsp;(2015) found more than 80% removal in the Puarenga above 75 kg Al/d.&nbsp;The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.</li>
+<li><strong>The stream reaction is missing.</strong> Alum reacts with stream DRP in the 680 m (Puarenga) to 1360 m (Utuhina) of stream reach before the lake. Hamilton et al.&nbsp;(2015) found more than 80% removal in the Puarenga above 75 kg Al/d.&nbsp;The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.</li>
 <li><strong>The effect on the lake fit is small.</strong> Steps 1 and 2 (below) show that making the inflows consistent and adding the stream reaction changes surface TP by about 2% or less. The treatment is a fix for physical consistency and for clean scenarios, not for the fit. Once the refractory DOP (0.0046 g/m³, added to the model TP in the calibration objective) is included, the mean TP bias is within 3% for every variant and efficiency scale 0.85 to 1.0. An earlier efficiency sensitivity that left the offset out wrongly suggested a bias of about 23%.</li>
 <li><strong>The remaining misfit is elsewhere.</strong> Surface FRP is about 50% low (with the high-FRP episodes of 2005 to 2008 and 2020 to 2022 missed), chlorophyll is about 16% high, and TP is about 80% too high in 2017 to 2019 and too low in 2021 to 2022.</li>
 </ul>
@@ -674,13 +674,13 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>Puarenga</td>
-<td>about 300 m</td>
+<td>about 680 m</td>
 <td><code>0.9 × min(1, R / 23)</code></td>
 <td>McIntosh paired up- and downstream samples (Hamilton et al.&nbsp;2015, Fig 20): a ramp to a 90% cap at Al:DRP of about 23</td>
 </tr>
 <tr class="even">
 <td>Utuhina</td>
-<td>about 700 m</td>
+<td>about 1360 m</td>
 <td>0.45 (range 0.40 to 0.52)</td>
 <td>Measured downstream DRP against the reconstructed untreated DRP, dosed days 2007 onwards; the range reflects the reconstruction uncertainty</td>
 </tr>
@@ -711,7 +711,7 @@ window.Quarto = {
 </section>
 <section id="sec-fractionation" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="sec-fractionation"><span class="header-section-number">4.2</span> Stream fractionation</h3>
-<p>Alum reacts with stream DRP in the few hundred metres between the dosing point and the lake (about 300 m on the Puarenga, 700 m on the Utuhina). The model cannot resolve this reach, so the inflow is split into three pools before it enters the lake. Each day, for each dosed stream, a fraction <code>f</code> of the inflow FRP is bound to the dosed alum:</p>
+<p>Alum reacts with stream DRP in the stream reach between the dosing point and the lake (about 680 m on the Puarenga, 1360 m on the Utuhina). The model cannot resolve this reach, so the inflow is split into three pools before it enters the lake. Each day, for each dosed stream, a fraction <code>f</code> of the inflow FRP is bound to the dosed alum:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -5487,7 +5487,7 @@ Table&nbsp;15: Convergence of the screen: rank agreement (Spearman) with the ful
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>**What is wrong with the current setup**</span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Utuhina is already treated.** Its inflow P was measured downstream of the dosing point, but the alum module also acts on it in the lake, so part of the Utuhina removal is counted twice. The Puarenga inflow is untreated (sampled upstream). The "no alum" scenario runs also kept the Utuhina treatment.</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The stream reaction is missing.** Alum reacts with stream DRP in the 300 m (Puarenga) to 700 m (Utuhina) before the lake. Hamilton et al. (2015) found more than 80% removal in the Puarenga above 75 kg Al/d. The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The stream reaction is missing.** Alum reacts with stream DRP in the 680 m (Puarenga) to 1360 m (Utuhina) of stream reach before the lake. Hamilton et al. (2015) found more than 80% removal in the Puarenga above 75 kg Al/d. The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The effect on the lake fit is small.** Steps 1 and 2 (below) show that making the inflows consistent and adding the stream reaction changes surface TP by about 2% or less. The treatment is a fix for physical consistency and for clean scenarios, not for the fit. Once the refractory DOP (0.0046 g/m³, added to the model TP in the calibration objective) is included, the mean TP bias is within 3% for every variant and efficiency scale 0.85 to 1.0. An earlier efficiency sensitivity that left the offset out wrongly suggested a bias of about 23%.</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The remaining misfit is elsewhere.** Surface FRP is about 50% low (with the high-FRP episodes of 2005 to 2008 and 2020 to 2022 missed), chlorophyll is about 16% high, and TP is about 80% too high in 2017 to 2019 and too low in 2021 to 2022.</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
@@ -5516,8 +5516,8 @@ Table&nbsp;15: Convergence of the screen: rank agreement (Spearman) with the ful
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stream <span class="pp">|</span> Reach <span class="pp">|</span> Removal fraction <span class="in">`f`</span> <span class="pp">|</span> Basis <span class="pp">|</span></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Puarenga <span class="pp">|</span> about 300 m <span class="pp">|</span> <span class="in">`0.9 × min(1, R / 23)`</span> <span class="pp">|</span> McIntosh paired up- and downstream samples (Hamilton et al. 2015, Fig 20): a ramp to a 90% cap at Al:DRP of about 23 <span class="pp">|</span></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Utuhina <span class="pp">|</span> about 700 m <span class="pp">|</span> 0.45 (range 0.40 to 0.52) <span class="pp">|</span> Measured downstream DRP against the reconstructed untreated DRP, dosed days 2007 onwards; the range reflects the reconstruction uncertainty <span class="pp">|</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Puarenga <span class="pp">|</span> about 680 m <span class="pp">|</span> <span class="in">`0.9 × min(1, R / 23)`</span> <span class="pp">|</span> McIntosh paired up- and downstream samples (Hamilton et al. 2015, Fig 20): a ramp to a 90% cap at Al:DRP of about 23 <span class="pp">|</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Utuhina <span class="pp">|</span> about 1360 m <span class="pp">|</span> 0.45 (range 0.40 to 0.52) <span class="pp">|</span> Measured downstream DRP against the reconstructed untreated DRP, dosed days 2007 onwards; the range reflects the reconstruction uncertainty <span class="pp">|</span></span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>The bound P (<span class="in">`f`</span> times FRP) enters the lake as <span class="in">`ALU_alp`</span>, and the capacity <span class="in">`ALU_ala`</span> is reduced by the same amount. Total P is conserved. The calibration build omits <span class="in">`ALU_alp`</span> from the inflow variables (AEME calls it <span class="in">`ALU_alap`</span>), so the column and the namelist entry are added by hand after the build.</span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
@@ -5544,7 +5544,7 @@ Table&nbsp;15: Convergence of the screen: rank agreement (Spearman) with the ful
 <span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stream fractionation {#sec-fractionation}</span></span>
 <span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Alum reacts with stream DRP in the few hundred metres between the dosing point and the lake (about 300 m on the Puarenga, 700 m on the Utuhina). The model cannot resolve this reach, so the inflow is split into three pools before it enters the lake. Each day, for each dosed stream, a fraction <span class="in">`f`</span> of the inflow FRP is bound to the dosed alum:</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Alum reacts with stream DRP in the stream reach between the dosing point and the lake (about 680 m on the Puarenga, 1360 m on the Utuhina). The model cannot resolve this reach, so the inflow is split into three pools before it enters the lake. Each day, for each dosed stream, a fraction <span class="in">`f`</span> of the inflow FRP is bound to the dosed alum:</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inflow pool <span class="pp">|</span> Before the reaction <span class="pp">|</span> After the reaction <span class="pp">|</span> Meaning <span class="pp">|</span></span>
 <span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>

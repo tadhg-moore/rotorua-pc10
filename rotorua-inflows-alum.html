@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-01">
+<meta name="dcterms.date" content="2026-11-02">
 
 <title>Lake Rotorua inflows and alum: what the reports say and how the model inflows are built – Rotorua Lake Modelling</title>
 <style>
@@ -532,7 +532,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 1, 2026</p>
+      <p class="date">November 2, 2026</p>
     </div>
   </div>
   
@@ -1105,7 +1105,7 @@ Figure&nbsp;7: P forms delivered by the Utuhina and Puarenga with and without al
 <h3 data-number="5.2" class="anchored" data-anchor-id="recommended-handling"><span class="header-section-number">5.2</span> Recommended handling</h3>
 <ol type="1">
 <li><strong>Use the no-alum file for all streams</strong> with the alum module on, so the dose is the only driver and the with/without alum scenarios are clean.</li>
-<li><strong>Add an in-stream reaction step</strong> before the lake: the Puarenga (about 300 m) and Utuhina (about 700 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<code>ALU_alp</code>) and reduce <code>ALU_ala</code> by the same amount. Use <code>fmax</code> and <code>R0</code> from <a href="#tbl-fit" class="quarto-xref">Table&nbsp;3</a>, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</li>
+<li><strong>Add an in-stream reaction step</strong> before the lake: the Puarenga (about 680 m) and Utuhina (about 1360 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<code>ALU_alp</code>) and reduce <code>ALU_ala</code> by the same amount. Use <code>fmax</code> and <code>R0</code> from <a href="#tbl-fit" class="quarto-xref">Table&nbsp;3</a>, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</li>
 <li><strong>Treat the in-lake effects separately.</strong> Hamilton et al.&nbsp;and ERI 128 both needed an additional in-lake effect (about 50% less sediment P release, more flocculation). The module’s settled-alum uptake and the sediment P flux parameters should be checked against that, once the inflows are consistent.</li>
 <li><strong>Keep the free-aluminium point in view.</strong> At Al:DRP well above 20 most of the dosed Al is not used in the stream and reaches the lake; this excess is what the lake-side module acts on.</li>
 </ol>
@@ -1781,7 +1781,7 @@ Figure&nbsp;7: P forms delivered by the Utuhina and Puarenga with and without al
 <span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="fu">### Recommended handling</span></span>
 <span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Use the no-alum file for all streams** with the alum module on, so the dose is the only driver and the with/without alum scenarios are clean.</span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Add an in-stream reaction step** before the lake: the Puarenga (about 300 m) and Utuhina (about 700 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<span class="in">`ALU_alp`</span>) and reduce <span class="in">`ALU_ala`</span> by the same amount. Use <span class="in">`fmax`</span> and <span class="in">`R0`</span> from @tbl-fit, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Add an in-stream reaction step** before the lake: the Puarenga (about 680 m) and Utuhina (about 1360 m) reaches react a fraction of the DRP with the dosed alum. Move that fraction of FRP into the suspended alum-bound pool (<span class="in">`ALU_alp`</span>) and reduce <span class="in">`ALU_ala`</span> by the same amount. Use <span class="in">`fmax`</span> and <span class="in">`R0`</span> from @tbl-fit, with the Utuhina range (about 0.4 to 0.52) reflecting the reconstruction uncertainty.</span>
 <span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Treat the in-lake effects separately.** Hamilton et al. and ERI 128 both needed an additional in-lake effect (about 50% less sediment P release, more flocculation). The module's settled-alum uptake and the sediment P flux parameters should be checked against that, once the inflows are consistent.</span>
 <span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Keep the free-aluminium point in view.** At Al:DRP well above 20 most of the dosed Al is not used in the stream and reaches the lake; this excess is what the lake-side module acts on.</span>
 <span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
