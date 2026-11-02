@@ -1,0 +1,188 @@
+---
+title: "Phytoplankton groups and zooplankton: investigation"
+subtitle: "How zooplankton grazing, group traits and nutrient stoichiometry shape succession, chlorophyll-a and nutrients in the GLM-AED model"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  eval: true
+  echo: false
+  warning: false
+  message: false
+---
+
+## Summary {#sec-summary}
+
+The calibrated Lake Rotorua model has no zooplankton (`aed_zooplankton` is commented out of the model list), so nothing grazes the phytoplankton and every phytoplankton parameter absorbed that missing loss. The result is a lake of diatoms and cyanobacteria only, with the greens gone. This investigation switches the zooplankton on and asks which settings give three coexisting groups with a plausible seasonal order (diatoms in the cool seasons, greens through the year, cyanobacteria in summer), total chlorophyll-a near the observations, and nutrients that stay close to the calibrated model.
+
+**Method.** A 2-year window (2018-07 to 2020-06, plus the 540 day spin-up) of the stage j best member is run in about 20 s to 90 s per configuration. A one-at-a-time screen of 41 parameters (75 runs) was followed by an adaptive search of 11 generations of 90 runs (990 runs) over all 41 parameters at once. Each run is scored on chlorophyll-a, five nutrients, the seasonal group shares, zooplankton biomass and whether cyanobacteria favour calm days. No data exist for the individual groups or for zooplankton, so the group split and zooplankton biomass are set only to plausible ranges.
+
+**What was found**
+
+- **Zooplankton in this build do not conserve phosphorus or nitrogen.** Switching them on with their default phosphorus content raised surface TP from 0.02 to 0.11 g/m³ and FRP from 0.003 to 0.08 g/m³. In `aed_zooplankton.F90` the phosphorus and nitrogen eaten from phytoplankton are divided by 31 and 14 (a mg-to-mmol conversion), while the phytoplankton lose the full amount, so the zooplankton phosphorus content (`IPC_zoo`) and nitrogen content (`INC_zoo`) act as the closure terms of the budget. Every good configuration settles at an `IPC_zoo` between 0.003 and 0.008 mol P per mol C.
+- **Grazing is what opens the niche for three groups.** With the zooplankton on, the greens and diatoms are held back and the cyanobacteria, which the zooplankton hardly eat, get the warm season.
+- **The best configuration scores 2.7 against 3.6 for the hand-tuned case and 18.8 for the zooplankton-off model** (lower is better). It gives mean chlorophyll-a of 9.0 mg/m³ (8.3 observed in the window), diatoms 70% of biomass in September to November and cyanobacteria 44% in January to March.
+- **The result holds on a six-year window (2016 to 2022).** The best configuration scores 2.2 there, against 4.0 for the hand-tuned case and 18.1 for the zooplankton-off model, with the same seasonal order (diatoms 68% in September to November, cyanobacteria 43% in January to March) and chlorophyll-a of 9.2 mg/m³ against 8.2 observed. The search never saw most of these years, but it was scored on the 2-year window inside this one.
+- **Calm-water blooms are not reproduced.** In every configuration the cyanobacteria are no more abundant on stratified than on mixed summer days, and constant positive buoyancy or the motile option changes little, because the top 5 m of this polymictic lake is well mixed.
+- **Total nitrogen is too low** in all of the good configurations (about 0.15 to 0.25 g/m³ against 0.31 observed).
+
+## Method {#sec-method}
+
+### Parameter space
+
+Forty-one parameters (@tbl-space) cover the traits of the three phytoplankton groups, the grazing and mortality of three zooplankton groups, how much of each prey they take, and three switches (nitrogen fixation, motile cyanobacteria, copepods that eat other zooplankton). The temperature function is built from `T_opt` with fixed offsets for `T_std` and `T_max`, and combinations that the AED temperature solver cannot solve (which would stop GLM) are rejected before the run.
+
+```{r}
+#| label: tbl-space
+#| tbl-cap: "Parameters searched, with their range and the h1 base value."
+cons <- read.csv("data/phyto_invest/constraint.csv")
+knitr::kable(data.frame(Parameter = cons$param, Group = cons$grp, Low = signif(cons$lo_val, 3), High = signif(cons$hi_val, 3), Base = signif(cons$base_val, 3)), digits = 4)
+```
+
+### Score
+
+The score adds four parts (all are about 1 when the model is within a stated tolerance):
+
+1. **Chlorophyll-a:** log bias of the mean, the 90th percentile and the monthly pattern against the surface observations in the window.
+2. **Nutrients:** mean absolute scaled log bias of TP, FRP, total nitrogen, nitrate and ammonium.
+3. **Succession:** penalties when the diatom share in September to November and May to July averages below 0.5, the cyanobacteria share in January to March is below 0.5, the green share is below 0.35 over the year, and a large penalty for any group below 5% of biomass.
+4. **Zooplankton:** penalty outside 3 to 30 mmol C/m³ in total, and for any group below 0.05.
+
+The weighting is a judgement, not a result, so the ranking among near-equal scores should not be over-read.
+
+## One-at-a-time effects {#sec-oat}
+
+@fig-oat moves each parameter to 10% and 90% of its range around the h1 base case.
+
+```{r}
+#| label: fig-oat
+#| fig-cap: "Change in the score components when one parameter is moved to 10% or 90% of its range from the h1 base case (largest 18 by total score change)."
+knitr::include_graphics("images/phyto_invest/oat_tornado.png")
+```
+
+- **The zooplankton refuge `Cmin_grz_zoo`** is the most powerful single control. At the low end the grazing removes nearly all the algae (mean chlorophyll about 1 mg/m³); at the high end chlorophyll-a rises by about 7 mg/m³.
+- **Copepod and rotifer grazing rates** at the high end remove the cyanobacteria (even at a preference of 0.02) and so wreck the succession.
+- **`IPC_zoo`** at the high end raises TP about seven-fold, and at the low end TP falls, so it must be tuned together with grazing.
+- **Diatom respiration** at the high end wipes out the diatoms.
+- **Green growth, light and nutrient half-saturation** decide whether the greens survive, but none of them alone brings the cyanobacteria to the target summer share.
+
+## Adaptive search {#sec-search}
+
+Each generation samples 90 configurations around the average of the best 20% of the last, with a floor on the spread.
+
+```{r}
+#| label: fig-progress
+#| fig-cap: "Score by generation."
+knitr::include_graphics("images/phyto_invest/progress.png")
+```
+
+The best score fell from 5.5 to 2.7 over 11 generations and levelled off at about 2.7 to 3.0, so more generations with this score would add little. @fig-constraint shows how tightly the best 5% of runs pin each parameter.
+
+```{r}
+#| label: fig-constraint
+#| fig-cap: "Spread of each parameter among the best 5% of all runs, as a share of its range. Long bars are poorly constrained."
+knitr::include_graphics("images/phyto_invest/constraint.png")
+```
+
+- **Well constrained:** the zooplankton phosphorus content, the refuge, the nitrogen content, the cladoceran grazing rate and the cyanobacteria respiration.
+- **Poorly constrained:** whether copepods eat other zooplankton, copepod mortality, the cyanobacteria preference by zooplankton, and cyanobacteria buoyancy. Different values work about equally well, so these are not identifiable from total chlorophyll-a and nutrients.
+
+## Best configurations {#sec-best}
+
+```{r}
+#| label: tbl-compare
+#| tbl-cap: "Zooplankton-off reference, the h1 hand-tuned case and the three best configurations (2-year window)."
+x <- read.csv("data/phyto_invest/compare.csv"); x$id[1:2] <- c("reference (zooplankton off)", "h1 base")
+k <- c(score = "Score", chl_sim = "Chlorophyll-a (mg/m3)", PHS_tp_sim = "TP (g/m3)", PHS_frp_sim = "FRP (g/m3)", NIT_tn_sim = "TN (g/m3)", NIT_nit_sim = "Nitrate (g/m3)", NIT_amm_sim = "Ammonium (g/m3)",
+       sh_di_SON = "Diatom share Sep-Nov", sh_cy_JFM = "Cyano share Jan-Mar", sh_gr_all = "Green share, year", zoo_tot = "Zooplankton (mmol C/m3)", calm_ratio = "Cyano calm/mixed ratio")
+m <- t(x[, names(k)]); rownames(m) <- k; colnames(m) <- x$id
+knitr::kable(m, digits = 3)
+```
+
+Observed means over the same pairs are chlorophyll-a 8.3 mg/m³, TP 0.018, FRP 0.002, TN 0.31, nitrate 0.034 and ammonium 0.008 g/m³.
+
+```{r}
+#| label: fig-succ-top
+#| fig-cap: "Monthly share of surface biomass by group for the three best configurations and the h1 case."
+knitr::include_graphics("images/phyto_invest/succession_top.png")
+```
+
+```{r}
+#| label: fig-best-ts
+#| fig-cap: "Weekly mean surface biomass by group in the best configuration."
+knitr::include_graphics("images/phyto_invest/best_timeseries.png")
+```
+
+```{r}
+#| label: fig-best-zoo
+#| fig-cap: "Weekly mean zooplankton biomass in the best configuration."
+knitr::include_graphics("images/phyto_invest/best_zoo.png")
+```
+
+In the best configuration the spring diatom bloom (about 70 mmol C/m³ in October to November) is probably too sharp, and the summer is nearly flat, with biomass held at about 43 mmol C/m³ from December to April. The observed chlorophyll-a has more year to year variation than this.
+
+### Zooplankton in the best configurations {#sec-zoo}
+
+```{r}
+#| label: fig-zoo-top
+#| fig-cap: "Weekly mean zooplankton biomass (0 to 5 m) by group in the three best configurations and the h1 case."
+knitr::include_graphics("images/phyto_invest/zoo_top_timeseries.png")
+```
+
+```{r}
+#| label: fig-zoo-monthly
+#| fig-cap: "Monthly mean zooplankton biomass by group."
+knitr::include_graphics("images/phyto_invest/zoo_monthly.png")
+```
+
+```{r}
+#| label: fig-zoo-ratio
+#| fig-cap: "Total zooplankton biomass as a fraction of total phytoplankton biomass, by month."
+knitr::include_graphics("images/phyto_invest/zoo_phyto_ratio.png")
+```
+
+- **Zooplankton almost disappear in winter.** In every configuration biomass is close to zero from about June to September and comes back in October to December, peaking at 10 to 30 mmol C/m³ in summer. Real zooplankton in a lake of this temperature persist through winter at low levels, so the winter collapse is probably a model artefact (temperature limits on growth and the minimum biomass floor), and it lets the diatoms bloom unchecked each spring.
+- **Rotifers or cladocerans dominate; copepods are marginal** in all but one configuration (g010_042, where copepods reach 20 mmol C/m³ in spring). The search had no reason to favour copepods because no data say which group should dominate.
+- **Grazers are 20 to 60% of phytoplankton biomass in summer** and well under 5% in winter (@fig-zoo-ratio), which is strong top-down pressure. There are no zooplankton data to say whether that is realistic for Rotorua.
+
+### What was and was not varied
+
+The search varied, for each of the three zooplankton groups, the maximum grazing rate and the mortality rate; it varied the half-saturation (`Kgrz_zoo`), the refuge (`Cmin_grz_zoo`) and the assimilation efficiency in common for all three; it varied how strongly all three prefer greens, diatoms and cyanobacteria (one preference each, shared by the three groups); and whether copepods eat the other zooplankton. Not varied: which groups are present (all three are always on, so there is no run with, for example, rotifers only or cladocerans only), a separate food preference for each group, the zooplankton temperature limits (`Tstd_zoo`, `Topt_zoo`, `Tmax_zoo`), respiration, the split of excretion and faeces, the oxygen threshold, and predation on the zooplankton. The model has no fish or other predator, so predation pressure on the zooplankton enters only through the linear mortality rate, and that is the only lever on top-down control of the grazers. The winter collapse and the unconstrained copepod diet suggest that the community composition and the temperature limits are the next things to test.
+
+```{r}
+#| label: tbl-params
+#| tbl-cap: "Parameter values of the five best configurations (cat = 0/1)."
+p <- read.csv("data/phyto_invest/best_params.csv"); p <- p[, !(names(p) %in% c("row"))]
+knitr::kable(p, digits = 4)
+```
+
+```{r}
+#| label: val
+#| results: asis
+if (file.exists("data/phyto_invest/validation.csv")) {
+  cat("## Longer window {#sec-validation}\n\nThe three best configurations, the h1 case and the zooplankton-off reference were re-run on 2016-07 to 2022-06 (six years) to check that the 2-year result holds.\n\n")
+  v <- read.csv("data/phyto_invest/validation.csv"); k2 <- k[k %in% k & names(k) %in% names(v)]; v$id[v$id == "ref0_zoopoff"] <- "reference (zooplankton off)"
+  mm <- t(v[, names(k2)]); rownames(mm) <- k2; colnames(mm) <- v$id; print(knitr::kable(mm, digits = 3, caption = "Six-year window.")); cat("\n\n")
+  if (file.exists("images/phyto_invest/succession_validation.png")) cat("![Monthly share of surface biomass by group, six-year window.](images/phyto_invest/succession_validation.png)\n\n")
+}
+```
+
+## Interpretation and limits {#sec-limits}
+
+- **Zooplankton are a closure device here, not a measured pool.** There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module's stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.
+- **Group shares are not constrained by data.** Only total chlorophyll-a is observed. The shares are set to the ordering you described, so they show that the model can do it, not that it does.
+- **Calm-water cyanobacteria blooms are missing.** Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.
+- **Total nitrogen stays 20 to 50% low**, and nitrate is 30 to 60% high.
+- **The window is short** (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.
+
+## Suggested next steps {#sec-next}
+
+1. **Take the best configurations into a full ES-MDA refit** with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.
+2. **Ask the AED developers about the `/31` and `/14` factors** in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.
+3. **Try a calm-weather cyanobacteria mechanism** (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.
+4. **Run a second search on zooplankton community and predation** (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (`Tstd_zoo`, `Topt_zoo`, `Tmax_zoo`) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.
+5. **Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).
