@@ -18,101 +18,148 @@ website:
   site-path: "/rotorua-pc10/"
   favicon: www/favicon.ico
   navbar:
+    search: true
     left:
       - href: index.qmd
         text: Home
-    right:
-      - href: targets.qmd
-        text: Targets
-      - href: resources.qmd
-        text: Resources
-      - href: notes.qmd
-        text: Notes
       - href: gantt.qmd
-        text: GANTT
+        text: "Project admin"
+      - href: data.qmd
+        text: "Data preparation"
+      - href: burger-2007-benthic-fluxes.qmd
+        text: "Background info"
+      - href: rotorua-glm-config_v4.qmd
+        text: "Model setup"
+      - href: alum-model.qmd
+        text: "Alum model"
+      - href: aed_calibration_sa_plan.qmd
+        text: "Sensitivity & calibration"
+      - href: climate-impact-strategy.qmd
+        text: "Climate change"
+      - href: research-overview.qmd
+        text: "Presentations"
+    right:
       - icon: github
         href: https://github.com/tadhg-moore/rotorua-pc10
   sidebar:
-    style: "docked"
-    search: true
-    contents:
-      - text: "Project Overview"
-        href: index.qmd
-        contents:
-          - gantt.qmd
-          - href: modelling-updates.qmd
-            text: "Modelling Updates"
-      - section: "Lake Models"
-        contents:
-          # - href: rotorua-glm-config.qmd
-          #   text: "GLM Config"
-          - href: rotorua-glm-config_v4.qmd
-            text: "GLM Config (v4)"
-          - href: rotorua-glm-latest-run.qmd
-            text: "Latest Run"
-          - href: ohau-weir-glm-setup.qmd
-            text: "Ōhau Weir & GLM Outflow"
-          - href: rotorua-inflows.qmd
-            text: "Inflows"
-          - href: rotorua-inflows-alum.qmd
-            text: "Inflows and Alum (report summaries)"
-          - href: rotorua-alum-next-steps.qmd
-            text: "Alum Calibration: Next Steps"
-          - href: rotorua-alum-stream-calibration.qmd
-            text: "Alum Stream Step: Thesis Calibration Design"
-          - href: ohau-channel-water-quality.qmd
-            text: "Ōhau Channel Water Quality"
-          - href: light-data.qmd
-            text: "Light Data (Kw)"
-          - href: plot-rotorua.qmd
-            text: "Output Plots (v4)"
-          - href: aed_calibration_sa_plan.qmd
-            text: "Calibration & SA Plan"
-          - href: rotorua-calibration-staged.qmd
-            text: "Staged Calibration (first cut)"
-          - href: csps-metrics.qmd
-            text: "CSPS Metrics & Targets"
-          - href: calibration-step1-physics-oxygen.qmd
-            text: "Calibration Step 1: Physics and Oxygen"
-          - href: rotorua-calibration-report.qmd
-            text: "Calibration Report (nutrients, light, alum, anoxia)"
-          - href: sensitivity-csps.qmd
-            text: "CSPS Sensitivity Analysis"
-          - href: climate-impact-strategy.qmd
-            text: "Climate Impact Strategy (draft)"
-      - section: "Alum Dosing"
-        contents:
-          - href: alum-model.qmd
-            text: "Alum Model"
-          - href: aed-alum-module.qmd
-            text: "Simplified Alum Module"
-          - href: glm-aed-alum-stress-tests.qmd
-            text: "GLM-AED aed_alum Stress Tests"
-          - href: rotorua-alum-scenarios.qmd
-            text: "Alum Scenarios (Rotorua GLM-AED)"
-          - href: alum-dosing-sanila-msc-thesis.qmd
-            text: "Sanila Thesis Notes"
-      - section: "Presentations"
-        contents:
-          - research-overview.qmd
-      - section: "Tasks"
-        contents:
-          - data.qmd
-          - data-request.qmd
-          - cmip6-processing.qmd
-          - cmip6-visualisation.qmd
-          - href: climate-scenario-workflow.qmd
-            text: "Climate-Scenario Workflow"
-          - href: met-source-comparison.qmd
-            text: "Met Source Comparison"
-          - href: climate-extreme-events.qmd
-            text: "Extreme & Storm Events"
-          - href: utuhina-flow.qmd
-            text: "Utuhina Stream Flow"
-      - section: "Notes"
-        contents:
-          - href: notes.qmd
-            text: "Meeting Notes"
+    - id: admin
+      title: "Project Admin"
+      style: docked
+      search: true
+      contents:
+        - href: gantt.qmd
+          text: "GANTT & Milestones"
+        - href: notes.qmd
+          text: "Meeting Notes"
+        - href: targets.qmd
+          text: "Targets"
+        - href: resources.qmd
+          text: "Resources"
+    - id: data
+      title: "Data Preparation"
+      style: docked
+      search: true
+      contents:
+        - href: data.qmd
+          text: "Data Inputs"
+        - href: data-request.qmd
+          text: "Data Request"
+        - href: met-source-comparison.qmd
+          text: "Met Source Comparison"
+        - href: light-data.qmd
+          text: "Light Data (Kw)"
+        - href: utuhina-flow.qmd
+          text: "Utuhina Stream Flow"
+        - href: rotorua-inflows.qmd
+          text: "Inflows"
+        - href: ohau-channel-water-quality.qmd
+          text: "Ōhau Channel Water Quality"
+        - href: cmip6-processing.qmd
+          text: "CMIP6 Processing"
+        - href: cmip6-visualisation.qmd
+          text: "Visualise CMIP6"
+    - id: background
+      title: "Background Info"
+      style: docked
+      search: true
+      contents:
+        - href: burger-2007-benthic-fluxes.qmd
+          text: "Benthic Fluxes (Burger 2007)"
+        - href: rotorua-inflows-alum.qmd
+          text: "Inflows and Alum (report summaries)"
+        - href: alum-dosing-sanila-msc-thesis.qmd
+          text: "Sanila Thesis Notes"
+    - id: model
+      title: "Model Setup & Configuration"
+      style: docked
+      search: true
+      contents:
+        - href: rotorua-glm-config_v4.qmd
+          text: "GLM Config (v4)"
+        - href: ohau-weir-glm-setup.qmd
+          text: "Ōhau Weir & GLM Outflow"
+        - href: rotorua-glm-latest-run.qmd
+          text: "Latest Run"
+        - href: plot-rotorua.qmd
+          text: "Output Plots (v4)"
+    - id: alum
+      title: "Alum Model"
+      style: docked
+      search: true
+      contents:
+        - href: alum-model.qmd
+          text: "Alum Model"
+        - href: aed-alum-module.qmd
+          text: "Simplified Alum Module"
+        - href: glm-aed-alum-stress-tests.qmd
+          text: "aed_alum Stress Tests"
+        - href: rotorua-alum-stream-calibration.qmd
+          text: "Alum Stream Calibration Design"
+        - href: rotorua-alum-next-steps.qmd
+          text: "Alum Calibration: Next Steps"
+        - href: rotorua-alum-scenarios.qmd
+          text: "Alum Scenarios"
+    - id: calibration
+      title: "Sensitivity Analysis & Calibration"
+      style: docked
+      search: true
+      contents:
+        - href: aed_calibration_sa_plan.qmd
+          text: "Calibration & SA Plan"
+        - href: csps-metrics.qmd
+          text: "CSPS Metrics & Targets"
+        - href: rotorua-calibration-staged.qmd
+          text: "Staged Calibration (first cut)"
+        - href: calibration-step1-physics-oxygen.qmd
+          text: "Step 1: Physics and Oxygen"
+        - href: sensitivity-csps.qmd
+          text: "CSPS Sensitivity Analysis"
+        - href: pest_workflow_summary_2026-10.qmd
+          text: "PEST Workflow Summary"
+        - href: rotorua-calibration-report.qmd
+          text: "Calibration Report"
+        - href: rotorua-phyto-investigation.qmd
+          text: "Phytoplankton & Zooplankton Investigation"
+    - id: climate
+      title: "Climate Change Impacts"
+      style: docked
+      search: true
+      contents:
+        - href: climate-impact-strategy.qmd
+          text: "Climate Impact Strategy (draft)"
+        - href: climate-scenario-workflow.qmd
+          text: "Climate-Scenario Workflow"
+        - href: climate-extreme-events.qmd
+          text: "Extreme & Storm Events"
+    - id: presentations
+      title: "Presentations"
+      style: docked
+      search: true
+      contents:
+        - href: research-overview.qmd
+          text: "Research Overview"
+        - href: modelling-updates.qmd
+          text: "Modelling Updates"
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 
