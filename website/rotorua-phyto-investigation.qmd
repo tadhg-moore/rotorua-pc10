@@ -177,13 +177,107 @@ if (file.exists("data/phyto_invest/validation.csv")) {
 }
 ```
 
+## Fit to the observed group data, 2003 to 2011 {#sec-obsfit}
+
+The BOPRC phytoplankton counts (50 samples at sites 2 and 5, October 2003 to January 2011, mostly sampled in January, April, July and October) give the first observed group shares. They were used as follows.
+
+- **Window:** one run from 2003-07 to 2011-06 per configuration. Calibration scores use 2003-07 to 2007-06 (17 sample dates) and hold-out scores use 2007-07 to 2011-06 (14 sample dates); both are recorded for every run, and only the calibration score steered the search.
+- **Observed curves:** a first-harmonic seasonal curve per group, refit on the calibration samples only (so the hold-out years do not leak into the target), with a bootstrap spread as the tolerance (at least 0.07 in share). The model is scored on how far its monthly mean shares fall from these curves, in units of that tolerance (`z3` for the three-group scheme, `z4` for the four-group scheme with the cyanobacteria split).
+- **Four model structures**, all with zooplankton on and the 15 to 21 parameters of the earlier best configuration free: `s3` (cyanobacteria, greens, diatoms); `s4c` (cyanobacteria split into a nitrogen-fixing and a non-fixing group); `s4g` (an added group of other greens, the AED cryptophyte column with a lower light requirement); `s5` (both).
+- **Budget:** 240 runs (about 60 per structure). The first three rounds were scored against a diatom curve that was wrongly set to zero (a missing-value bug in my script). The model runs themselves were fine, so all 144 saved runs were re-scored offline and the search was resumed with two more rounds under the corrected score.
+- **Selection:** structures are compared on the terms they share (`z3`, chlorophyll-a, nutrients and zooplankton, summed as the "common score"), because the search score adds a four-group term for the split structures.
+
+```{r}
+#| label: tbl-obsfit
+#| tbl-cap: "Best run of each structure by common score. Calibration is 2003-07 to 2007-06 and hold-out 2007-07 to 2011-06. Observed mean chlorophyll-a is 11.3 (calibration) and 12.0 (hold-out) mg/m³ at the sample dates."
+b <- read.csv("data/phyto_invest/obsfit_best.csv")
+tab <- data.frame(Structure = c("3 groups", "Cyano split", "Other greens", "Split + other greens"), Run = b$id, `Common score, calibration` = b$common_cal, `Common score, hold-out` = b$common_val,
+  `z3, calibration` = b$z3_cal, `z3, hold-out` = b$z3_val, `Share error, calibration` = b$rmse_sh_cal, `Share error, hold-out` = b$rmse_sh_val, `Chl-a, calibration` = b$chl_sim_cal, `Chl-a, hold-out` = b$chl_sim_val, `Zooplankton (mmol C/m3)` = b$zoo_tot, check.names = FALSE)
+knitr::kable(tab, digits = 2)
+```
+
+```{r}
+#| label: fig-obsfit
+#| fig-cap: "Monthly mean group shares of the best run of each structure (calibration years solid, hold-out years dashed) against the observed seasonal curve fitted on the calibration samples (grey, with 95% band). Axis runs July to June."
+knitr::include_graphics("images/phyto_invest/obsfit_shares.png")
+```
+
+```{r}
+#| label: fig-obsfit-scatter
+#| fig-cap: "Model share against observed share on each sample date, by structure, group and period."
+knitr::include_graphics("images/phyto_invest/obsfit_scatter.png")
+```
+
+```{r}
+#| label: fig-obsfit-zoo
+#| fig-cap: "Monthly mean zooplankton biomass of the best run of each structure."
+knitr::include_graphics("images/phyto_invest/obsfit_zoo.png")
+```
+
+**What the comparison shows**
+
+- **The seasonal pattern can be matched.** In all four structures the model's monthly shares sit mostly inside the observed 95% band: diatoms dominate July to October, cyanobacteria peak in summer (January to March, about 20 to 50% in the model depending on the structure, against about 37% observed), and greens and other taxa are highest in summer to autumn. The earlier assumption that cyanobacteria should reach 50% in summer was too high, since the samples show them at about 25 to 35% of biovolume.
+- **Hold-out years are about as well fitted as the calibration years** for the three-group, cyano-split and other-greens structures (share error on the sample dates about 0.20 to 0.23 against 0.22 to 0.28), so the seasonal order found in 2003 to 2007 holds in 2007 to 2011. Mean chlorophyll-a is within about 25% of the observed mean in both periods (9.0 to 12.3 against 11.3 mg/m³ in the calibration years, 8.9 to 11.0 against 12.0 in the hold-out years).
+- **No structure is clearly better.** The common scores of the best runs are 4.1 (three groups), 4.3 (cyano split), 4.6 (other greens) and 4.5 (both), and the differences are small next to the run-to-run spread. With 60 runs per structure and 15 to 21 free parameters this is inside the noise of the search, so these results do not support the added complexity and also do not rule it out.
+- **Other greens help the summer greens, but not the hold-out.** The `s4g` run reproduces the observed summer rise in greens (peak near 0.7 in December) that the three-group and cyano-split runs miss (about 0.35), but it overestimates greens by 0.21 in the hold-out years. The five-group run has the largest hold-out errors (greens +0.28, diatoms -0.34 on the sample dates).
+- **A persistent diatom excess in summer.** Every structure keeps diatoms at about 25% of biomass from December to May, against about 5 to 15% observed.
+- **Cyanobacteria split:** the split run overestimates the summer cyanobacteria (about 50%, at the top of the observed band), and the four-group score term (`z4` of 1.7 to 2.0) shows the nitrogen-fixing and non-fixing groups are not separated cleanly by the model (the observed peaks are about two months apart).
+
+### Timing: time series and depth contours {#sec-timing}
+
+```{r}
+#| label: fig-obsfit-ts
+#| fig-cap: "Weekly mean surface biomass of each group (cyanobacteria and greens are sums of their sub-groups in the larger structures) for the best run of each structure, 2003 to 2011. Grey shading marks the hold-out years."
+knitr::include_graphics("images/phyto_invest/obsfit_timeseries.png")
+```
+
+```{r}
+#| label: fig-obsfit-share-ts
+#| fig-cap: "Share of surface biomass of each group through time for the best run of each structure (lines), with the observed biovolume shares on the sample dates (open circles)."
+knitr::include_graphics("images/phyto_invest/obsfit_share_timeseries.png")
+```
+
+The depth contours (@fig-depth-s3 to @fig-depth-s5) show the daily profiles of each group, the total chlorophyll-a and the temperature in the best run of each structure. Triangles at the top mark the sample dates.
+
+```{r}
+#| label: fig-depth-s3
+#| fig-cap: "Daily depth profiles, best run of the three-group structure."
+knitr::include_graphics("images/phyto_invest/obsfit_depth_s3.png")
+```
+
+```{r}
+#| label: fig-depth-s4c
+#| fig-cap: "Daily depth profiles, best run of the cyanobacteria-split structure."
+knitr::include_graphics("images/phyto_invest/obsfit_depth_s4c.png")
+```
+
+```{r}
+#| label: fig-depth-s4g
+#| fig-cap: "Daily depth profiles, best run of the other-greens structure."
+knitr::include_graphics("images/phyto_invest/obsfit_depth_s4g.png")
+```
+
+```{r}
+#| label: fig-depth-s5
+#| fig-cap: "Daily depth profiles, best run of the structure with both."
+knitr::include_graphics("images/phyto_invest/obsfit_depth_s5.png")
+```
+
+- **The timing repeats almost exactly every year.** In the three-group run the diatoms form a sharp peak in September to October, the cyanobacteria bloom from about December to April, and the greens are spread over the warm half of the year. The model has little year-to-year variation in timing, while the observed shares scatter widely between years (@fig-obsfit-share-ts).
+- **The groups are nearly uniform with depth.** The temperature panel shows weak stratification in summer, so the blooms extend through the whole 21 m column, including the bottom layers where light is low. Cyanobacteria are somewhat stronger near the surface, with streaks of high values through the column that follow mixing events. There is no surface scum layer, which is consistent with the earlier result that buoyancy changes little in this lake.
+- **Timing differs between structures.** The five-group run (@fig-depth-s5) has a long period of greens in the hold-out years and almost no spring diatom peak in 2008 to 2010, which is the source of its large hold-out errors.
+- **Which sample dates would constrain timing?** The sample dates fall mostly in January, April, July and October, so they pin the shares in those months but say little about when each bloom starts or ends (for example the diatom peak between July and October).
+
 ## Interpretation and limits {#sec-limits}
 
 - **Zooplankton are a closure device here, not a measured pool.** There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module's stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.
-- **Group shares are not constrained by data.** Only total chlorophyll-a is observed. The shares are set to the ordering you described, so they show that the model can do it, not that it does.
+- **Group shares in the first search were not constrained by data.** Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (@sec-obsfit) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.
 - **Calm-water cyanobacteria blooms are missing.** Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.
 - **Total nitrogen stays 20 to 50% low**, and nitrate is 30 to 60% high.
 - **The window is short** (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.
+- **The first search was scored on succession targets I assumed** (cyanobacteria at least 50% in summer, greens at least 35% all year). The observed data (@sec-obsfit) put cyanobacteria at about 37% in summer and greens at about 60% in summer to autumn, so the configurations of the first search should be treated as a first pass, not a calibration.
+- **Model shares are shares of carbon biomass and the observations are shares of biovolume.** Generic cell volumes are within a factor of two of Rotorua populations at best, and diatoms hold less carbon per unit volume than other groups, which may account for part of the diatom excess.
+- **The observed series is short and quarterly** (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.
 
 ## Suggested next steps {#sec-next}
 
@@ -191,4 +285,5 @@ if (file.exists("data/phyto_invest/validation.csv")) {
 2. **Ask the AED developers about the `/31` and `/14` factors** in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.
 3. **Try a calm-weather cyanobacteria mechanism** (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.
 4. **Run a second search on zooplankton community and predation** (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (`Tstd_zoo`, `Topt_zoo`, `Tmax_zoo`) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.
-5. **Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).
+5. **Extend the observation-based search** (@sec-obsfit) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.
+6. **Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).
