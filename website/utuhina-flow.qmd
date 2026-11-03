@@ -9,6 +9,8 @@ format:
     df-print: kable
   docx:
     toc: false
+    filters:
+      - docx-tables.lua
     execute:
       echo: false
 execute:
@@ -46,7 +48,7 @@ col_main <- "#1f78b4"
 col_alt  <- "#e31a1c"
 mon_lab  <- c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun")
 
-flow_file <- "../data/raw/Discharge.Primary@EK378429.EntireRecord.csv"
+flow_file <- "../data/raw/flows/Discharge.Primary@EK378429.EntireRecord.csv"
 
 raw <- fread(flow_file, skip = 14,
              select = c("Timestamp (UTC+12:00)", "Value", "Approval Level", "Grade"),
@@ -69,7 +71,8 @@ fish_t <- as.POSIXct(fish_dates, tz = tz)
 ## Data and quality
 
 ```{r}
-#| label: qc-summary
+#| label: tbl-qc-summary
+#| tbl-cap: "Summary of the Utuhina discharge record."
 step_min <- as.numeric(diff(raw$t), units = "mins")
 step_tab <- data.table(step = step_min)[, .N, by = step][order(-N)][1:4]
 setnames(step_tab, c("Interval between records (min)", "Records"))
@@ -83,6 +86,11 @@ qc <- data.table(
             sprintf("%.1f", max(raw$q)), sprintf("%.2f", min(raw$q)))
 )
 knitr::kable(qc)
+```
+
+```{r}
+#| label: tbl-qc-summary-2
+#| tbl-cap: "Most common intervals between records."
 knitr::kable(step_tab, format.args = list(big.mark = ","))
 ```
 
@@ -116,9 +124,15 @@ ggplot(cov_wy, aes(wy, cov, fill = complete)) +
 ```
 
 ```{r}
-#| label: approval
+#| label: tbl-approval
+#| tbl-cap: "Records by approval level."
 appr <- raw[, .(Records = .N, `First` = format(min(t), "%Y-%m-%d"), `Last` = format(max(t), "%Y-%m-%d")), by = .(`Approval level` = approval)]
 knitr::kable(appr, format.args = list(big.mark = ","))
+```
+
+```{r}
+#| label: tbl-approval-2
+#| tbl-cap: "Records by grade code."
 gr <- raw[, .N, by = grade][order(grade)][, pct := round(100 * N / sum(N), 1)]
 setnames(gr, c("Grade code", "Records", "%"))
 knitr::kable(gr, format.args = list(big.mark = ","))
@@ -136,14 +150,15 @@ knitr::kable(gr, format.args = list(big.mark = ","))
 ## Overall flow regime
 
 ```{r}
-#| label: thresholds
+#| label: tbl-thresholds
+#| tbl-cap: "Instantaneous-flow percentiles (all records)."
 qs <- quantile(raw$q, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999))
 dmed <- median(daily$qmean, na.rm = TRUE)
 mean_q <- mean(daily$qmean, na.rm = TRUE)
 fre3 <- 3 * dmed
 q95 <- unname(qs["95%"]); q99 <- unname(qs["99%"]); q999 <- unname(qs["99.9%"])
 q_tab <- data.table(Percentile = names(qs), `Flow (m³/s)` = round(unname(qs), 2))
-knitr::kable(q_tab, caption = "Instantaneous-flow percentiles (all records).")
+knitr::kable(q_tab)
 ```
 
 The median daily flow is **`r sprintf("%.2f", dmed)` m³/s** and the mean is `r sprintf("%.2f", mean_q)` m³/s. Mean being well above the median reflects a strongly right-skewed regime: a steady baseflow punctuated by storm peaks.
@@ -196,7 +211,8 @@ ggplot() +
 ### Annual statistics by water year
 
 ```{r}
-#| label: annual
+#| label: tbl-annual
+#| tbl-cap: "Annual flow statistics (m³/s) for complete water years. BFI = baseflow index; R-B = Richards-Baker flashiness index."
 # Lyne-Hollick digital filter baseflow separation (alpha = 0.925; forward-backward-forward)
 lyne_hollick <- function(q, alpha = 0.925) {
   pass <- function(x) {
@@ -239,8 +255,7 @@ setorder(annual, wy)
 ann_show <- annual[, .(`Water year` = wy, `Mean` = mean, `Median` = median, `Q5` = q05, `Q95` = q95,
                        `7-day min` = min7, `Max daily` = max_daily, `Max inst.` = max_inst,
                        `CV` = cv, `BFI` = bfi, `R-B index` = rb)]
-knitr::kable(ann_show, digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3),
-             caption = "Annual flow statistics (m³/s) for complete water years. BFI = baseflow index; R-B = Richards-Baker flashiness index.")
+knitr::kable(ann_show, digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3))
 ```
 
 ```{r}
@@ -276,7 +291,8 @@ ggplot(mk, aes(wy, value)) +
 Non-parametric Mann-Kendall tests (via Kendall's tau) with Theil-Sen slopes. With only ~`r nrow(annual)` annual values, power is limited and serial correlation is not accounted for; treat as indicative.
 
 ```{r}
-#| label: trends
+#| label: tbl-trends
+#| tbl-cap: "Mann-Kendall trend tests (Kendall tau) with Theil-Sen slopes for annual flow metrics."
 sen <- function(x, y) { i <- combn(length(x), 2); median((y[i[2, ]] - y[i[1, ]]) / (x[i[2, ]] - x[i[1, ]])) }
 trend_row <- function(nm, y, x = annual$wy) {
   ct <- suppressWarnings(cor.test(x, y, method = "kendall"))
@@ -326,7 +342,8 @@ ggplot(mm, aes(wy_month, factor(wy), fill = pmax(pmin(anom, 100), -50))) +
 ```
 
 ```{r}
-#| label: wetdry
+#| label: tbl-wetdry
+#| tbl-cap: "Water years classed as dry, average or wet by terciles of annual mean flow."
 terc <- quantile(annual$mean, c(1/3, 2/3))
 annual[, class := fifelse(mean <= terc[1], "Dry", fifelse(mean >= terc[2], "Wet", "Average"))]
 knitr::kable(annual[, .(`Water years` = paste(wy, collapse = ", "), `Mean annual flow range (m³/s)` = sprintf("%.2f-%.2f", min(mean), max(mean))), by = .(Class = class)][match(c("Dry", "Average", "Wet"), Class)])
@@ -402,14 +419,16 @@ rp_tab <- data.table(
 Thresholds examined (all in m³/s):
 
 ```{r}
-#| label: thr-tab
+#| label: tbl-thr-tab
+#| tbl-cap: "Flow thresholds used to define high-flow events."
 thrs <- c(`Q95` = q95, `3 × median (FRE3)` = fre3, `Q99` = q99, `Mean annual flood` = maf)
 thrs <- thrs[order(thrs)]
 knitr::kable(data.table(Threshold = names(thrs), `Flow (m³/s)` = round(unname(thrs), 2)))
 ```
 
 ```{r}
-#| label: events-all
+#| label: tbl-events-all
+#| tbl-cap: "Summary of high-flow events at each threshold (all records)."
 ev_list <- lapply(thrs, function(x) find_events(inst, x, min_gap_h))
 ev_all <- rbindlist(ev_list, idcol = "threshold")
 ev_all[, threshold := factor(threshold, levels = names(thrs))]
@@ -453,11 +472,12 @@ ggplot(epy, aes(wy, N)) +
 ```
 
 ```{r}
-#| label: interevent
+#| label: tbl-interevent
+#| tbl-cap: "Time between successive event peaks (includes any data-gap periods)."
 ie <- ev_all[order(threshold, peak_t), .(iei_days = as.numeric(diff(peak_t), units = "days")), by = threshold]
 ie_sum <- ie[, .(`Mean interval (d)` = mean(iei_days), `Median interval (d)` = median(iei_days),
                  `90th pct interval (d)` = quantile(iei_days, 0.9), `Longest interval (d)` = max(iei_days)), by = .(Threshold = threshold)]
-knitr::kable(ie_sum, digits = 1, caption = "Time between successive event peaks (includes any data-gap periods).")
+knitr::kable(ie_sum, digits = 1)
 ```
 
 #### Annual-maximum view: return periods of the largest floods
@@ -483,9 +503,9 @@ ggplot() +
 ```
 
 ```{r}
-#| label: rp-tab
-knitr::kable(rp_tab, digits = c(2, 1, 1, 1, 1),
-             caption = "Gumbel return-period flows from the annual maximum series of complete water years.")
+#| label: tbl-rp-tab
+#| tbl-cap: "Gumbel return-period flows from the annual maximum series of complete water years."
+knitr::kable(rp_tab, digits = c(2, 1, 1, 1, 1))
 ```
 
 The record contains `r nrow(ams)` annual maxima, so the **2–10 year** flows are reasonably constrained whereas 20 and 50 year values are extrapolations with wide intervals. The estimated mean annual flood is **`r sprintf("%.1f", maf)` m³/s**.
@@ -493,7 +513,8 @@ The record contains `r nrow(ams)` annual maxima, so the **2–10 year** flows ar
 #### The biggest events on record
 
 ```{r}
-#| label: top-events
+#| label: tbl-top-events
+#| tbl-cap: "The twelve largest events on record (3 × median threshold)."
 top <- ev_main[order(-peak)][1:12, .(
   `Peak time (NZST)` = format(peak_t, "%Y-%m-%d %H:%M"),
   `Peak (m³/s)` = peak,
@@ -537,7 +558,8 @@ ggplot(ev_all, aes(wy_month)) +
 ```
 
 ```{r}
-#| label: timing-circ
+#| label: tbl-timing-circ
+#| tbl-cap: "Circular mean date of event peaks, concentration R (0 = uniform through the year, 1 = all on the same date) and counts by season."
 circ <- function(doy) {
   a <- 2 * pi * doy / 365.25
   C <- mean(cos(a)); S <- mean(sin(a))
@@ -550,7 +572,7 @@ timing <- ev_all[, circ(doy), by = .(Threshold = threshold)]
 season_tab <- dcast(ev_all[, .N, by = .(threshold, season)], threshold ~ season, value.var = "N", fill = 0)
 setnames(season_tab, "threshold", "Threshold")
 knitr::kable(merge(timing, season_tab, by = "Threshold", sort = FALSE),
-             digits = 2, caption = "Circular mean date of event peaks, concentration R (0 = uniform through the year, 1 = all on the same date) and counts by season.")
+             digits = 2)
 ```
 
 ```{r}
@@ -588,7 +610,8 @@ p1 + p2
 ```
 
 ```{r}
-#| label: dur-summary
+#| label: tbl-dur-summary
+#| tbl-cap: "Characteristics of 3 × median events. Duration is in hours."
 ds <- ev_main[, .(
   `Duration` = quantile(dur_h, c(0.1, 0.5, 0.9, 1)),
   `Hours above threshold` = quantile(hrs_above, c(0.1, 0.5, 0.9, 1)),
@@ -596,7 +619,7 @@ ds <- ev_main[, .(
   `Rate of rise (m³/s/h)` = quantile(rise_rate, c(0.1, 0.5, 0.9, 1))
 )]
 ds <- cbind(Statistic = c("10th pct", "Median", "90th pct", "Max"), ds)
-knitr::kable(ds, digits = 2, caption = "Characteristics of 3 × median events. Duration is in hours.")
+knitr::kable(ds, digits = 2)
 ```
 
 ```{r}
@@ -689,7 +712,8 @@ g1 / g2
 ### Rates of change (stranding, displacement, hydraulic stability)
 
 ```{r}
-#| label: rates
+#| label: tbl-rates
+#| tbl-cap: "Day-over-day and sub-daily rates of change on the rising and falling limbs of events."
 daily[, qprev := shift(qmean)]
 # Day-over-day change on rising / falling limbs of events (daily means)
 rise_ratio <- daily[qprev < fre3 & qmean > fre3, qmean / qprev]       # day an event first shows in the daily mean
@@ -741,7 +765,8 @@ antecedent <- function(dates, dly = daily, events = ev_main, events_big = ev_q99
 The table below applies it to the actual electrofishing survey dates.
 
 ```{r}
-#| label: antecedent-example
+#| label: tbl-antecedent-example
+#| tbl-cap: "Antecedent flow metrics for each electrofishing survey date."
 ante <- antecedent(fish_dates)
 knitr::kable(ante, digits = 2)
 ```
@@ -755,7 +780,8 @@ This section uses the annual Utuhina electrofishing surveys (see the survey desc
 Three event classes are used (all from the instantaneous series, with the same 48 h event-merging rule as above):
 
 ```{r}
-#| label: flood-classes
+#| label: tbl-flood-classes
+#| tbl-cap: "Flood classes used in the fish survey analysis."
 # Large / Major are defined by return period of the annual maximum (Gumbel fit above), so
 # they are rare enough to discriminate between surveys. A 6 x median threshold was tried
 # first, but it is exceeded in almost every six-month window.
@@ -779,7 +805,8 @@ knitr::kable(cls_tab, digits = c(0, 0, 1, 0, 2))
 For each survey the table gives the number of floods of each class in the previous six months, the largest instantaneous peak in the previous 6 / 12 / 24 months (with the Gumbel return period of the six-month maximum) and the time since the last Large and Major flood at any time before the survey.
 
 ```{r}
-#| label: flood-metrics
+#| label: tbl-flood-metrics
+#| tbl-cap: "Flood history before each electrofishing survey. Peaks in m³/s; counts are events in the six months before the survey; coverage = % of those days with valid flow data."
 look <- 183L   # ~ six months, in days
 ev_day <- function(ev) as.Date(ev$peak_t, tz = tz)
 cls_rank <- function(nm, nl, nmod) fcase(nm > 0, "Major", nl > 0, "Large", nmod > 0, "Moderate", default = "None")
@@ -815,14 +842,14 @@ show <- flood_metrics[, .(
   `Max peak 6 mo` = max_peak_6m, `Return period (yr)` = rp_max_6m, `Peak date` = format(max_peak_6m_date),
   `Days peak to survey` = days_max_to_survey, `Max peak 12 mo` = max_peak_12m, `Max peak 24 mo` = max_peak_24m,
   `Days since Large` = days_since_large, `Days since Major` = days_since_major)]
-knitr::kable(show, digits = c(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0),
-             caption = "Flood history before each electrofishing survey. Peaks in m³/s; counts are events in the six months before the survey; coverage = % of those days with valid flow data.")
+knitr::kable(show, digits = c(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0))
 ```
 
 ```{r}
-#| label: class-counts
+#| label: tbl-class-counts
+#| tbl-cap: "Number of surveys by the largest flood class in the preceding six months."
 cc <- flood_metrics[, .N, by = .(`Largest flood class in prior 6 months` = class_6m)][order(`Largest flood class in prior 6 months`)]
-knitr::kable(cc, caption = "Number of surveys by the largest flood class in the preceding six months.")
+knitr::kable(cc)
 ```
 
 ### Flood history and survey timing
@@ -868,7 +895,8 @@ The surveys are described in the University of Waikato (ERI) annual monitoring r
 -   **Timing.** Surveys were done in different months (autumn to winter in most years, in **December from 2020**). Season matters for CPUE (and for juvenile trout in particular, which are newly recruited in spring), so survey month is shown and checked.
 
 ```{r}
-#| label: fish-prep
+#| label: tbl-fish-prep
+#| tbl-cap: "CPUE (fish or koura per hour) by species and site over all surveys."
 fish <- as.data.table(fish)
 fish[, species := factor(species, levels = c("Common bully", "Koura", "Trout"))]
 site_cols <- c(`Site 1` = "#444444", `Site 2` = "#1f78b4", `Site 3` = "#b15928")
@@ -883,9 +911,13 @@ fs <- fish[, .(anom = mean(anom, na.rm = TRUE), anom_lo = min(anom, na.rm = TRUE
 ltm <- fish[, .(`Long-term mean CPUE (per hour)` = mean(cpue, na.rm = TRUE), SD = sd(cpue, na.rm = TRUE),
                 Min = min(cpue, na.rm = TRUE), Max = max(cpue, na.rm = TRUE)), by = .(Species = species, Site = site)]
 setorder(ltm, Species, Site)
-knitr::kable(ltm, digits = 1, caption = "CPUE (fish or koura per hour) by species and site over all surveys.")
-knitr::kable(survey_months[, .(Surveys = .N), by = .(`Survey month` = month)][order(match(`Survey month`, month.abb))],
-             caption = "Number of surveys by calendar month.")
+knitr::kable(ltm, digits = 1)
+```
+
+```{r}
+#| label: tbl-fish-prep-2
+#| tbl-cap: "Number of surveys by calendar month."
+knitr::kable(survey_months[, .(Surveys = .N), by = .(`Survey month` = month)][order(match(`Survey month`, month.abb))])
 ```
 
 ### CPUE against flood history
@@ -991,32 +1023,43 @@ ggplot(fm[is.finite(days_since_large)], aes(days_since_large, anom)) +
 ```
 
 ```{r}
-#| label: rho-tab
-knitr::kable(rho_tab, digits = c(0, 0, 2, 3, 0),
-             caption = "Spearman rank correlations between the site-standardised CPUE anomaly (mean of three sites) and flood-history predictors.")
+#| label: tbl-rho-tab
+#| tbl-cap: "Spearman rank correlations between the site-standardised CPUE anomaly (mean of three sites) and flood-history predictors."
+knitr::kable(rho_tab, digits = c(0, 0, 2, 3, 0))
 ```
 
 ```{r}
-#| label: rho-site
-knitr::kable(rho_site, digits = c(0, 0, 0, 2, 3, 0),
-             caption = "The same correlations for each site separately. Sites 2 and 3 have mobile pumice substrate; Site 1 is the control reach above the alum diffuser.")
+#| label: tbl-rho-site
+#| tbl-cap: "The same correlations for each site separately. Sites 2 and 3 have mobile pumice substrate; Site 1 is the control reach above the alum diffuser."
+knitr::kable(rho_site, digits = c(0, 0, 0, 2, 3, 0))
 ```
 
 ```{r}
-#| label: class-cpue
+#| label: tbl-class-cpue
+#| tbl-cap: "CPUE anomaly grouped by the largest flood class in the six months before the survey (ratio = anomaly back-transformed; 1 = site long-term mean)."
 fm[, class_12m := factor(fcase(n_major_12m > 0, "Major", n_large_12m > 0, "Large", default = "No Large/Major"),
                          levels = c("No Large/Major", "Large", "Major"))]
 cl6 <- fm[, .(`Mean anomaly` = mean(anom), `Ratio to site mean` = exp(mean(anom)), Surveys = .N),
           by = .(Species = species, `Largest flood class, prior 6 mo` = class_6m)]
 setorder(cl6, Species, `Largest flood class, prior 6 mo`)
-knitr::kable(cl6, digits = 2, caption = "CPUE anomaly grouped by the largest flood class in the six months before the survey (ratio = anomaly back-transformed; 1 = site long-term mean).")
+knitr::kable(cl6, digits = 2)
+```
+
+```{r}
+#| label: tbl-class-cpue-2
+#| tbl-cap: "As above for the 12 months before the survey."
 cl12 <- fm[, .(`Mean anomaly` = mean(anom), `Ratio to site mean` = exp(mean(anom)), Surveys = .N),
            by = .(Species = species, `Largest flood class, prior 12 mo` = class_12m)]
 setorder(cl12, Species, `Largest flood class, prior 12 mo`)
-knitr::kable(cl12, digits = 2, caption = "As above for the 12 months before the survey.")
+knitr::kable(cl12, digits = 2)
+```
+
+```{r}
+#| label: tbl-class-cpue-3
+#| tbl-cap: "CPUE anomaly by survey month group, to check for a season effect that could be confused with flood history."
 mg <- fm[, .(`Mean anomaly` = mean(anom), Surveys = uniqueN(date)), by = .(Species = species, `Survey month` = month_grp)]
 setorder(mg, Species, `Survey month`)
-knitr::kable(mg, digits = 2, caption = "CPUE anomaly by survey month group, to check for a season effect that could be confused with flood history.")
+knitr::kable(mg, digits = 2)
 ```
 
 ::: callout-warning
