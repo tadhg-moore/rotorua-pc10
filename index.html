@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.20">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,14 +74,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./www/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4cf47456d81c96c3587e2b69f30f063c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,19 +118,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="www/styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Rotorua Lake Modelling</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -138,24 +138,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./targets.html"> 
-<span class="menu-text">Targets</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./resources.html"> 
-<span class="menu-text">Resources</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./notes.html"> 
-<span class="menu-text">Notes</span></a>
-  </li>  
   <li class="nav-item">
     <a class="nav-link" href="./gantt.html"> 
-<span class="menu-text">GANTT</span></a>
+<span class="menu-text">Project admin</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data.html"> 
+<span class="menu-text">Data preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./aed_calibration_sa_plan.html"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research-overview.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
 </i> 
@@ -165,325 +181,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Project Overview</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
-  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Project Overview</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GANTT Chart</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Modelling Updates</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Lake Models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GLM Config (v4)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Latest Run</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Inflows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Inflows and Alum (report summaries)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Calibration: Next Steps</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ōhau Channel Water Quality</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Light Data (Kw)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Output Plots (v4)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Calibration &amp; SA Plan</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Staged Calibration (first cut)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CSPS Sensitivity Analysis</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Climate Impact Strategy (draft)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Alum Dosing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Model</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Simplified Alum Module</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sanila Thesis Notes</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Presentations</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview of my Research</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Tasks</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Inputs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Request</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CMIP 6 Processing</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualise CMIP6</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Climate-Scenario Workflow</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Met Source Comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Extreme &amp; Storm Events</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Utuhina Stream Flow</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Notes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Meeting Notes</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-    </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">🔍 Overview</a></li>
+  <li><a href="#where-the-project-is-now-november-2026" id="toc-where-the-project-is-now-november-2026" class="nav-link active" data-scroll-target="#where-the-project-is-now-november-2026">📍 Where the project is now (November 2026)</a></li>
+  <li><a href="#site-guide" id="toc-site-guide" class="nav-link" data-scroll-target="#site-guide">🗂️ Site guide</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">🔍 Overview</a></li>
   <li><a href="#alumphosphorus-modelling" id="toc-alumphosphorus-modelling" class="nav-link" data-scroll-target="#alumphosphorus-modelling">⚗️ Alum–Phosphorus Modelling</a></li>
-  <li><a href="#timeline-and-resources" id="toc-timeline-and-resources" class="nav-link" data-scroll-target="#timeline-and-resources">🗓️ Timeline and Resources</a></li>
   <li><a href="#deliverables-and-milestones" id="toc-deliverables-and-milestones" class="nav-link" data-scroll-target="#deliverables-and-milestones">📅 Deliverables and Milestones</a></li>
   <li><a href="#other-considerations" id="toc-other-considerations" class="nav-link" data-scroll-target="#other-considerations">🧭 Other Considerations</a></li>
-  <li><a href="#repository-structure-for-development" id="toc-repository-structure-for-development" class="nav-link" data-scroll-target="#repository-structure-for-development">🧱 Repository Structure (for development)</a></li>
   <li><a href="#project-workflow-overview" id="toc-project-workflow-overview" class="nav-link" data-scroll-target="#project-workflow-overview">🧭 Project Workflow Overview</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -504,12 +226,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The Rotorua Lake model will be updated to <a href="https://aquatic.science.uwa.edu.au/research/models/AED/"><strong>GLM-AED</strong></a>, an open-source hydrodynamic–ecological model that enables improved simulation of vertical mixing, nutrient cycling, and management interventions under variable climate conditions.</p>
-<p>This upgrade will allow long-term scenario testing and a more flexible, modular architecture.</p>
+<p>The Lake Rotorua model has been rebuilt in <a href="https://aquatic.science.uwa.edu.au/research/models/AED/"><strong>GLM-AED</strong></a> (GLM v4), an open-source hydrodynamic–ecological model that simulates vertical mixing, nutrient cycling and management interventions such as alum dosing under variable climate conditions. The model supports the Bay of Plenty Regional Council’s Plan Change 10 (PC10) work on lake nutrient targets.</p>
+<p>This site documents the work as it progresses: data preparation, model set-up, calibration, the alum module and climate-change scenarios. Use the navigation bar at the top to move between sections, or the links below.</p>
 <hr>
+<section id="where-the-project-is-now-november-2026" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-project-is-now-november-2026">📍 Where the project is now (November 2026)</h2>
+<ul>
+<li><strong>Model built:</strong> GLM v4 with AED is configured, running and producing output for 1990 onwards, with inflows, Ōhau weir outflow, light and meteorological forcing in place.</li>
+<li><strong>Calibration:</strong> a staged PEST++ calibration (water balance, temperature, oxygen, then nutrients, light and phytoplankton) has produced best-fit parameter sets. Physics and oxygen are well matched (including anoxic duration); phosphorus, particularly the 2021–22 rebound, remains the main misfit.</li>
+<li><strong>Alum:</strong> an alum module (<code>aed_alum</code>) is running in the model with alum dosed through the two inflows. Work now focuses on the in-stream alum–P reaction and calibrating the alum parameters.</li>
+<li><strong>Sensitivity analysis:</strong> Morris screening on the latest setup has been run against the CSPS evaluation metrics.</li>
+<li><strong>Next:</strong> finish the alum calibration, re-run scenario and uncertainty analyses with the final parameter sets, then deliver the climate scenarios and the draft report to BoPRC (due 30 Sep – 15 Dec 2026).</li>
+</ul>
+<p>See the <a href="./gantt.html">GANTT chart and milestones</a> for the full timeline.</p>
+<hr>
+</section>
+<section id="site-guide" class="level2">
+<h2 class="anchored" data-anchor-id="site-guide">🗂️ Site guide</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Section</th>
+<th>What you will find</th>
+<th>Start here</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Project admin</strong></td>
+<td>Timeline and milestones, meeting notes, targets, resources</td>
+<td><a href="./gantt.html">GANTT</a>, <a href="./notes.html">Meeting notes</a>, <a href="./targets.html">Targets</a>, <a href="./resources.html">Resources</a></td>
+</tr>
+<tr class="even">
+<td><strong>Data preparation</strong></td>
+<td>Data inputs and requests, met forcing, light, inflows, Ōhau Channel, CMIP6</td>
+<td><a href="./data.html">Data inputs</a>, <a href="./met-source-comparison.html">Met source comparison</a>, <a href="./rotorua-inflows.html">Inflows</a>, <a href="./cmip6-processing.html">CMIP6 processing</a></td>
+</tr>
+<tr class="odd">
+<td><strong>Background info</strong></td>
+<td>Literature and earlier reports that inform the model</td>
+<td><a href="./burger-2007-benthic-fluxes.html">Benthic fluxes (Burger 2007)</a>, <a href="./rotorua-inflows-alum.html">Inflows and alum report summaries</a>, <a href="./alum-dosing-sanila-msc-thesis.html">Alum dosing thesis notes</a></td>
+</tr>
+<tr class="even">
+<td><strong>Model setup &amp; configuration</strong></td>
+<td>GLM v4 configuration, Ōhau weir outflow, latest run, output plots</td>
+<td><a href="./rotorua-glm-config_v4.html">GLM config (v4)</a>, <a href="rotorua-glm-latest-run.qmd">Latest run</a>, <a href="./ohau-weir-glm-setup.html">Ōhau weir</a>, <a href="./plot-rotorua.html">Output plots</a></td>
+</tr>
+<tr class="odd">
+<td><strong>Alum model</strong></td>
+<td>Alum–phosphorus module design, stress tests, calibration design and scenarios</td>
+<td><a href="./alum-model.html">Alum model</a>, <a href="./aed-alum-module.html">Simplified alum module</a>, <a href="./glm-aed-alum-stress-tests.html">Stress tests</a>, <a href="./rotorua-alum-scenarios.html">Alum scenarios</a></td>
+</tr>
+<tr class="even">
+<td><strong>Sensitivity analysis &amp; calibration</strong></td>
+<td>Calibration plan, CSPS metrics, staged calibration, sensitivity analysis, calibration report</td>
+<td><a href="./aed_calibration_sa_plan.html">Calibration &amp; SA plan</a>, <a href="./csps-metrics.html">CSPS metrics</a>, <a href="./rotorua-calibration-report.html">Calibration report</a>, <a href="./sensitivity-csps.html">Sensitivity</a></td>
+</tr>
+<tr class="odd">
+<td><strong>Climate change impacts</strong></td>
+<td>Climate-impact strategy, scenario meteorology workflow, extreme events</td>
+<td><a href="./climate-impact-strategy.html">Climate impact strategy</a>, <a href="./climate-scenario-workflow.html">Scenario workflow</a>, <a href="./climate-extreme-events.html">Extreme events</a></td>
+</tr>
+<tr class="even">
+<td><strong>Presentations</strong></td>
+<td>Overview talks and team updates</td>
+<td><a href="./research-overview.html">Research overview</a>, <a href="./modelling-updates.html">Modelling updates</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">🔍 Overview</h2>
-<p>Key enhancements over previous Lake Rotorua models will include:</p>
+<p>Key enhancements over previous Lake Rotorua models:</p>
 <ul>
 <li><strong>Dynamic sediment–water feedback</strong> to better represent internal nutrient loading and delayed responses to external inputs.<br>
 </li>
@@ -517,17 +306,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
 <li><strong>Mechanistic simulation of alum dosing</strong>, which is currently conducted in two inflows on a near-daily basis.<br>
 </li>
-<li><strong>Active and ongoing development</strong> of model software and related tools.</li>
+<li><strong>Active and ongoing development</strong> of model software and related tools, in collaboration with the AED developers at UWA.</li>
 </ul>
 <hr>
 </section>
 <section id="alumphosphorus-modelling" class="level2">
 <h2 class="anchored" data-anchor-id="alumphosphorus-modelling">⚗️ Alum–Phosphorus Modelling</h2>
-<p>One important improvement will be incorporating a <strong>mechanistic representation of Al–P interactions</strong>.<br>
-Current models do not explicitly simulate alum chemistry or its interaction with phosphorus.</p>
-<p>Model description <a href="https://tadhg-moore.github.io/rotorua-pc10/alum-model.html">here</a>.</p>
-<p>We are engaging with the <strong>University of Western Australia (UWA)</strong> to explore support for code modification within the AED structure.</p>
-<p>The proposed model will simulate:</p>
+<p>Previous models did not explicitly simulate alum chemistry or its interaction with phosphorus. Working with the <strong>University of Western Australia (UWA)</strong>, an alum module is now available in the AED libraries and is being tested and calibrated for Lake Rotorua. See the <a href="./alum-model.html">alum model description</a> and the <a href="./aed-alum-module.html">simplified module</a>.</p>
+<p>The module represents:</p>
 <ul>
 <li>Hydrolysis of dosed alum and speciation of aluminium (e.g.&nbsp;<em>Al³⁺</em>, <em>Al(OH)₃</em>)<br>
 </li>
@@ -539,34 +325,17 @@ Current models do not explicitly simulate alum chemistry or its interaction with
 </li>
 <li>Dosing through inflow boundary conditions, allowing for flexible scenario testing</li>
 </ul>
-<blockquote class="blockquote">
-<p>If this collaboration is not confirmed, alternate pathways for implementing alum dynamics will be explored to maintain model delivery timelines.</p>
-</blockquote>
-<hr>
-</section>
-<section id="timeline-and-resources" class="level2">
-<h2 class="anchored" data-anchor-id="timeline-and-resources">🗓️ Timeline and Resources</h2>
-<ul>
-<li>The model upgrade and calibration will <strong>begin in September 2025</strong>, using existing University of Waikato resources.<br>
-</li>
-<li><strong>Initial climate change scenarios</strong> will be prioritised and delivered by <strong>September 2026</strong>, with alum scenario testing dependent on code development.<br>
-</li>
-<li>This lake modelling work will <strong>proceed independently of catchment model scaling</strong>, ensuring continuity regardless of SWAT-MODFLOW outcomes.</li>
-</ul>
+<p>Current work is described in <a href="./rotorua-alum-next-steps.html">Alum calibration: next steps</a> and the <a href="./rotorua-alum-stream-calibration.html">stream calibration design</a>.</p>
 <hr>
 </section>
 <section id="deliverables-and-milestones" class="level2">
 <h2 class="anchored" data-anchor-id="deliverables-and-milestones">📅 Deliverables and Milestones</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 36%">
-<col style="width: 33%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Milestone</th>
 <th>Target Date</th>
+<th>Status</th>
 <th>Deliverable</th>
 </tr>
 </thead>
@@ -574,32 +343,50 @@ Current models do not explicitly simulate alum chemistry or its interaction with
 <tr class="odd">
 <td><strong>SWAT-MODFLOW pilot (3 catchments)</strong></td>
 <td>March 2026</td>
+<td>Separate workstream, not tracked on this site</td>
 <td>Calibrated sub-catchment models and model evaluation</td>
 </tr>
 <tr class="even">
 <td><strong>GLM-AED model upgrade</strong></td>
 <td>March 2026</td>
-<td>Lake model calibrated with sediment dynamics</td>
+<td>Done (GLM v4 configured and running)</td>
+<td>Lake model with sediment dynamics (<a href="./rotorua-glm-config_v4.html">config</a>)</td>
 </tr>
 <tr class="odd">
-<td><strong>Scaling decision – catchment model</strong></td>
-<td>Early 2026</td>
-<td>Evaluation and planning for full-catchment rollout</td>
+<td><strong>Lake model calibration</strong></td>
+<td>Oct–Nov 2026</td>
+<td>Under way, first-cut and staged calibration complete</td>
+<td>Calibrated parameter sets and report (<a href="./rotorua-calibration-report.html">report</a>)</td>
 </tr>
 <tr class="even">
-<td><strong>Initial climate scenarios for lake</strong></td>
-<td>September 2026</td>
-<td>Long-term projections under climate change (inclusion of catchment scenarios contingent on scaling decision)</td>
+<td><strong>Alum module</strong></td>
+<td>Mid 2026</td>
+<td>Implemented, calibration in progress</td>
+<td>Working alum–P module (<a href="./alum-model.html">alum model</a>)</td>
 </tr>
 <tr class="odd">
+<td><strong>Initial climate scenarios for lake</strong></td>
+<td>Late 2026</td>
+<td>Workflow designed, runs pending</td>
+<td>Long-term projections under climate change (<a href="./climate-impact-strategy.html">strategy</a>)</td>
+</tr>
+<tr class="even">
 <td><strong>Preliminary advice re Rotoiti</strong></td>
-<td>September–October 2026</td>
+<td>Late 2026 – early 2027</td>
+<td>Pending</td>
 <td>Advice on potential downstream impacts (if Ōhau Wall is repaired)</td>
+</tr>
+<tr class="odd">
+<td><strong>Draft reports to BoPRC</strong></td>
+<td>30 Sep – 15 Dec 2026</td>
+<td>Pending</td>
+<td>Draft lake modelling report</td>
 </tr>
 <tr class="even">
 <td><strong>Complete lake model and scenario delivery</strong></td>
 <td>February 2027</td>
-<td>Finalised lake model outputs including full climate and management scenario set; documentation and reporting</td>
+<td>Pending</td>
+<td>Final outputs, full climate and management scenario set, documentation</td>
 </tr>
 </tbody>
 </table>
@@ -607,57 +394,41 @@ Current models do not explicitly simulate alum chemistry or its interaction with
 </section>
 <section id="other-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="other-considerations">🧭 Other Considerations</h2>
-<p>The proposed work is <strong>strongly aligned with PC10 implementation</strong>.<br>
-Council staff have highlighted the need for <strong>early advice on potential changes in nutrient delivery to Lake Rotoiti</strong>, particularly if the Ōhau Wall is repaired.</p>
-<p>This advice — ideally delivered by <strong>September or October 2026</strong> — may be supported by the updated lake model and preliminary catchment scenario runs (depending on the outcome of the pilot).</p>
+<p>The work is <strong>strongly aligned with PC10 implementation</strong>. Council staff have highlighted the need for <strong>early advice on potential changes in nutrient delivery to Lake Rotoiti</strong>, particularly if the Ōhau Wall is repaired. The Ōhau Channel outflow is therefore part of the calibration targets (<a href="./ohau-weir-glm-setup.html">Ōhau weir set-up</a>, <a href="./ohau-channel-water-quality.html">Ōhau Channel water quality</a>).</p>
 <hr>
-</section>
-<section id="repository-structure-for-development" class="level2">
-<h2 class="anchored" data-anchor-id="repository-structure-for-development">🧱 Repository Structure (for development)</h2>
-<p>If this repository will include R modelling workflows (e.g.&nbsp;using the <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> package), a recommended structure is:</p>
 </section>
 <section id="project-workflow-overview" class="level2">
 <h2 class="anchored" data-anchor-id="project-workflow-overview">🧭 Project Workflow Overview</h2>
-<p>The following diagram summarises the key phases, dependencies, and outputs of the Rotorua Lake Modelling project.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">flowchart TD 
-%% --- Project Overview --- 
 
-A[Project Start&lt;br&gt;Sept 2025] --&gt; B[GLM-AED Model Upgrade] 
-B --&gt; C[Model Calibration&lt;br&gt;with Sediment Dynamics]
-C --&gt; D[Climate Scenario Development]
-D --&gt; E[Alum–Phosphorus Module&lt;br&gt;Collaboration with UWA] 
-E --&gt; F["Scenario Testing&lt;br&gt;(Climate &amp; Management)"] 
-F --&gt; G[Final Lake Model Outputs&lt;br&gt;Feb 2027] 
+<pre class="mermaid mermaid-js">flowchart TD
+A[Project Start&lt;br&gt;Nov 2025] --&gt; B[Data preparation&lt;br&gt;met, inflows, light, CMIP6]
+B --&gt; C[GLM-AED v4 model set-up]
+C --&gt; D[Staged calibration&lt;br&gt;physics, oxygen, nutrients, light]
+D --&gt; E[Alum module&lt;br&gt;calibration with UWA]
+E --&gt; F[Sensitivity analysis&lt;br&gt;and uncertainty]
+F --&gt; G["Scenario testing&lt;br&gt;(climate &amp; management)"]
+G --&gt; H[Draft reports to BoPRC&lt;br&gt;Sep-Dec 2026]
+G --&gt; I["Preliminary advice on Lake Rotoiti"]
+H --&gt; J[Final model and reporting&lt;br&gt;Feb 2027]
 
-
-%% --- Parallel / External Links --- 
-B -.-&gt; H["SWAT-MODFLOW Catchment Pilot&lt;br&gt;3 Catchments"] 
-H -.-&gt; I[Scaling Decision&lt;br&gt;Early 2026] 
-I -.-&gt; D
-
-%% --- Outputs &amp; Advice ---
-
-F --&gt; J["Preliminary Advice on Lake Rotoiti&lt;br&gt;(Sept–Oct 2026)"]
-G --&gt; K[Documentation &amp; Reporting] 
-
-%% --- Styles --- 
-style A fill:#cce5ff,stroke:#004085,stroke-width:1px 
-style G fill:#d4edda,stroke:#155724,stroke-width:1px 
-style K fill:#d4edda,stroke:#155724,stroke-width:1px 
-style H fill:#fff3cd,stroke:#856404,stroke-width:1px 
-style J fill:#fff3cd,stroke:#856404,stroke-width:1px 
-
+style A fill:#cce5ff,stroke:#004085,stroke-width:1px
+style B fill:#d4edda,stroke:#155724,stroke-width:1px
+style C fill:#d4edda,stroke:#155724,stroke-width:1px
+style D fill:#fff3cd,stroke:#856404,stroke-width:1px
+style E fill:#fff3cd,stroke:#856404,stroke-width:1px
+style F fill:#fff3cd,stroke:#856404,stroke-width:1px
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+<p>Green = complete, amber = in progress.</p>
 
 
 <!-- -->
@@ -794,7 +565,8 @@ style J fill:#fff3cd,stroke:#856404,stroke-width:1px
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -803,8 +575,69 @@ style J fill:#fff3cd,stroke:#856404,stroke-width:1px
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -818,6 +651,7 @@ style J fill:#fff3cd,stroke:#856404,stroke-width:1px
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -980,44 +814,54 @@ style J fill:#fff3cd,stroke:#856404,stroke-width:1px
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1115,6 +959,9 @@ style J fill:#fff3cd,stroke:#856404,stroke-width:1px
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Home"</span></span>

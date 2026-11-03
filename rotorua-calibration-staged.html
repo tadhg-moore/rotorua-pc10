@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.20">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-02">
+<meta name="dcterms.date" content="2026-11-03">
 
 <title>Staged PEST++ Calibration of GLM-AED – Rotorua Lake Modelling</title>
 <style>
@@ -76,14 +76,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./www/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b5c5bb59a2a7c2780937f303e56e9f4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4cf47456d81c96c3587e2b69f30f063c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -123,45 +124,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="www/styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed quarto-light">
+<body class="nav-sidebar docked nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Rotorua Lake Modelling</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>  
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./targets.html"> 
-<span class="menu-text">Targets</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./resources.html"> 
-<span class="menu-text">Resources</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./notes.html"> 
-<span class="menu-text">Notes</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./gantt.html"> 
-<span class="menu-text">GANTT</span></a>
+<span class="menu-text">Project admin</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data.html"> 
+<span class="menu-text">Data preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./aed_calibration_sa_plan.html" aria-current="page"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research-overview.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
 </i> 
@@ -171,15 +187,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-calibration-staged.html">Staged Calibration (first cut)</a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-calibration-staged.html">Staged Calibration (first cut)</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -190,7 +207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Section">
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
@@ -198,283 +215,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project Overview</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./gantt.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GANTT Chart</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./modelling-updates.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Modelling Updates</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Lake Models</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-glm-config_v4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GLM Config (v4)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-glm-latest-run.qmd" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Latest Run</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ohau-weir-glm-setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ōhau Weir &amp; GLM Outflow</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Inflows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-inflows-alum.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Inflows and Alum (report summaries)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Calibration: Next Steps</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-stream-calibration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Stream Step: Thesis Calibration Design</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ōhau Channel Water Quality</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Light Data (Kw)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./plot-rotorua.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Output Plots (v4)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Calibration &amp; SA Plan</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Staged Calibration (first cut)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Calibration Step 1: Physics and Oxygen</span></a>
+ <span class="menu-text">Step 1: Physics and Oxygen</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Calibration Report (nutrients, light, alum, anoxia)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">CSPS Sensitivity Analysis</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./climate-impact-strategy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Climate Impact Strategy (draft)</span></a>
+  <a href="./pest_workflow_summary_2026-10.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PEST Workflow Summary</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Alum Dosing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./alum-model.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Model</span></a>
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./aed-alum-module.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Simplified Alum Module</span></a>
+  <a href="./rotorua-phyto-investigation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Phytoplankton &amp; Zooplankton Investigation</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./glm-aed-alum-stress-tests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">GLM-AED aed_alum Stress Tests</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Scenarios (Rotorua GLM-AED)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./alum-dosing-sanila-msc-thesis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sanila Thesis Notes</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Presentations</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./research-overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview of my Research</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Tasks</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Inputs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Request</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CMIP 6 Processing</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualise CMIP6</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./climate-scenario-workflow.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Climate-Scenario Workflow</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Met Source Comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Extreme &amp; Storm Events</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./utuhina-flow.qmd" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Utuhina Stream Flow</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Notes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Meeting Notes</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
   <ul>
@@ -504,9 +299,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-glm-config_v4.html">Lake Models</a></li><li class="breadcrumb-item"><a href="./rotorua-calibration-staged.html">Staged Calibration (first cut)</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">Staged PEST++ Calibration of GLM-AED</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 <p class="subtitle lead">Water balance, temperature, biogeochemistry and alum for Lake Rotorua</p>
@@ -526,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 2, 2026</p>
+      <p class="date">November 3, 2026</p>
     </div>
   </div>
   
@@ -1782,7 +1577,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="rotorua-calibration-staged_files/figure-html/unnamed-chunk-18-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Sediment flux by zone: measured prior range, measured value and calibrated values."><img src="rotorua-calibration-staged_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864" alt="Sediment flux by zone: measured prior range, measured value and calibrated values."></a></p>
+<p><a href="rotorua-calibration-staged_files/figure-html/unnamed-chunk-19-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Sediment flux by zone: measured prior range, measured value and calibrated values."><img src="rotorua-calibration-staged_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="864" alt="Sediment flux by zone: measured prior range, measured value and calibrated values."></a></p>
 <figcaption>Sediment flux by zone: measured prior range, measured value and calibrated values.</figcaption>
 </figure>
 </div>
@@ -2166,7 +1961,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -2175,8 +1971,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -2190,6 +2047,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -2352,44 +2210,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -2487,6 +2355,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Staged PEST++ Calibration of GLM-AED"</span></span>
@@ -2507,362 +2378,368 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="st">"images/staged-calibration"</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>perf <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"performance.csv"</span>))</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"sediment_fluxes.csv"</span>))</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>kab <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) <span class="fu">kable</span>(x, ...) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"condensed"</span>))</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>The Lake Rotorua GLM-AED model was calibrated in stages with <span class="in">`aemetools`</span> and PEST++ (<span class="in">`pestpp-ies`</span>): **(1) water balance, (2) water temperature, (3) AED biogeochemistry, (4) alum with FRP and chlorophyll-a**. This page reports the run that used the updated daily temperature and oxygen observations and the corrected calibration pipeline.</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Water level and temperature are well calibrated** (level KGE 0.81, RMSE 8 cm; temperature KGE 0.98, RMSE 0.54 °C on 38,000 daily observations).</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Oxygen is now reasonably simulated** (KGE 0.69, RMSE 1.25 mg/L, r = 0.84). Chlorophyll-a has some skill (KGE 0.20, r = 0.24), FRP is unbiased but weakly correlated (r = 0.19), and **ammonium and nitrate are still poor**.</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Alum has a modest effect on modelled FRP in the calibrated model.** With the stage 3 parameters, removing the dose raises mean FRP from 0.0034 to 0.0044 mg/L (about 30%) and leaves the FRP error unchanged, and the alum parameters barely change the fit within their ranges. FRP is low in the model with or without alum, and only 56 to 73 observations, mostly near the detection limit, constrain it.</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**An earlier version of this page was wrong for oxygen, FRP, ammonium and nitrate.** A unit-conversion bug in the calibration (below) made PEST compare observations with values 30 to 70 times too small. The results here were rerun after fixing it.</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## What changed since the first cut</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Change <span class="pp">|</span> Effect <span class="pp">|</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------------------------|----------------------------------------------|</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Double unit conversion fixed.** <span class="in">`aemetools`</span> multiplied simulated oxygen, FRP, ammonium and nitrate by their conversion factor (0.032, 0.031, 0.014) after <span class="in">`AEME::read_model_outputs()`</span> had already converted them. PEST therefore scored observations against values about 1/32 of the true model value. <span class="pp">|</span> Earlier stage 3 and 4 results for these variables were invalid and are discarded. The fix is in a private copy of <span class="in">`aemetools`</span> (<span class="in">`calibration/lib_aemetools_patched`</span>); the same change is needed in the upstream package. <span class="pp">|</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Rainfall units fixed in the forcing (about 42 times too little rain) <span class="pp">|</span> Applied in <span class="in">`build_calib_base_aeme()`</span>; the same fix is needed at source in <span class="in">`era5_corrected_hourly`</span> <span class="pp">|</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Daily temperature and oxygen observations (updated by you) <span class="pp">|</span> Used for stages 2 to 4; any sub-daily duplicates are averaged to daily by <span class="in">`thin_lake_obs()`</span> <span class="pp">|</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom-water anoxia added as a target (<span class="in">`CHM_oxynal`</span>, number of anoxic layers) <span class="pp">|</span> Scored with weight 2 <span class="pp">|</span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Surface oxygen down-weighted (weight 0.1) <span class="pp">|</span> Surface oxygen follows air–water exchange and temperature, which the calibrated parameters barely move <span class="pp">|</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> One FRP group over the whole column and all months <span class="pp">|</span> Split into surface and bottom summer groups the two held only 5 and 9 observations at the detection limit, and one of them carried a weight of 431 <span class="pp">|</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> log1p scoring for chlorophyll-a <span class="pp">|</span> Reduces the pull of bloom peaks; needs the patched <span class="in">`aemetools`</span> <span class="pp">|</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sediment oxygen demand range opened to 8 times the measured values <span class="pp">|</span> The measured values could not draw bottom water down in the model (see Stage 3) <span class="pp">|</span></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Simulation window set with <span class="in">`set_time()`</span> only <span class="pp">|</span> Earlier runs simulated the full 2011 to 2022 record each time because <span class="in">`suggest_sim_period()`</span> overrode the window; runs are now 3 to 4 times faster <span class="pp">|</span></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## Approach</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>The calibration is a set of scripts in <span class="in">`calibration/`</span>, run from the project root, rather than <span class="in">`targets`</span> targets: PEST++ runs are long, stochastic and stateful, and each stage needs a human check of the previous one. <span class="in">`targets`</span> supplies the baseline Aeme object (<span class="in">`aeme_base_file`</span>, <span class="in">`R/build_calib_base_aeme.R`</span>).</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stage <span class="pp">|</span> Script <span class="pp">|</span> Targets <span class="pp">|</span> Parameters <span class="pp">|</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----|---------------|------------------------|-----------------------------|</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> <span class="in">`01_stage1_waterbalance.R`</span> <span class="pp">|</span> <span class="in">`LKE_vol`</span> <span class="pp">|</span> weir <span class="in">`crest_elev`</span> (±0.3 m), <span class="in">`crest_factor`</span>, wind scaling, <span class="in">`rh_factor`</span>; seepage fixed at 0; no outflow multiplier <span class="pp">|</span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2 <span class="pp">|</span> <span class="in">`02_stage2_temperature.R`</span> <span class="pp">|</span> <span class="in">`HYD_temp`</span> (surface, bottom, metalimnion), <span class="in">`HYD_schstb`</span>, <span class="in">`LKE_vol`</span>, <span class="in">`LKE_nrgtot`</span> <span class="pp">|</span> stage 1 parameters narrowed to their posterior, plus <span class="in">`Kw`</span>, radiation and air-temperature factors, <span class="in">`coef_mix_hyp`</span>, per-zone sediment temperature <span class="pp">|</span></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 3 <span class="pp">|</span> <span class="in">`03_stage3_aed_bgc.R`</span> <span class="pp">|</span> <span class="in">`CHM_oxy`</span> (surface, hypolimnion, bottom), <span class="in">`CHM_oxynal`</span>, <span class="in">`NIT_amm`</span>, <span class="in">`NIT_nit`</span>, <span class="in">`PHS_frp`</span>, <span class="in">`PHY_tchla`</span> (log1p), <span class="in">`HYD_temp`</span> anchors <span class="pp">|</span> sediment fluxes of O~2~, NH~4~ and FRP by zone (measured prior), organic-matter, nitrification and denitrification rates, phytoplankton <span class="in">`R_growth`</span>, <span class="in">`I_K`</span>, <span class="in">`R_resp`</span> for three groups, <span class="in">`Kw`</span> <span class="pp">|</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4 <span class="pp">|</span> <span class="in">`04_stage4_alum.R`</span> <span class="pp">|</span> <span class="in">`PHS_frp`</span>, <span class="in">`PHY_tchla`</span> (log1p), with <span class="in">`aed_alum`</span> on <span class="pp">|</span> dose efficiency (scanned), <span class="in">`aed_alum`</span> parameters, and the stage 3 parameters that act on FRP and chlorophyll-a, narrowed <span class="pp">|</span></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 5 <span class="pp">|</span> <span class="in">`05_apply_posterior.R`</span> <span class="pp">|</span> all <span class="pp">|</span> final parameter sets, forward runs, performance tables and plots <span class="pp">|</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/include_img.R"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="st">"images/staged-calibration"</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>perf <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"performance.csv"</span>))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"sediment_fluxes.csv"</span>))</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>kab <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) <span class="fu">kable</span>(x, ...) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>The Lake Rotorua GLM-AED model was calibrated in stages with <span class="in">`aemetools`</span> and PEST++ (<span class="in">`pestpp-ies`</span>): **(1) water balance, (2) water temperature, (3) AED biogeochemistry, (4) alum with FRP and chlorophyll-a**. This page reports the run that used the updated daily temperature and oxygen observations and the corrected calibration pipeline.</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Water level and temperature are well calibrated** (level KGE 0.81, RMSE 8 cm; temperature KGE 0.98, RMSE 0.54 °C on 38,000 daily observations).</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Oxygen is now reasonably simulated** (KGE 0.69, RMSE 1.25 mg/L, r = 0.84). Chlorophyll-a has some skill (KGE 0.20, r = 0.24), FRP is unbiased but weakly correlated (r = 0.19), and **ammonium and nitrate are still poor**.</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Alum has a modest effect on modelled FRP in the calibrated model.** With the stage 3 parameters, removing the dose raises mean FRP from 0.0034 to 0.0044 mg/L (about 30%) and leaves the FRP error unchanged, and the alum parameters barely change the fit within their ranges. FRP is low in the model with or without alum, and only 56 to 73 observations, mostly near the detection limit, constrain it.</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**An earlier version of this page was wrong for oxygen, FRP, ammonium and nitrate.** A unit-conversion bug in the calibration (below) made PEST compare observations with values 30 to 70 times too small. The results here were rerun after fixing it.</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## What changed since the first cut</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Change <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------------------------|----------------------------------------------|</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Double unit conversion fixed.** <span class="in">`aemetools`</span> multiplied simulated oxygen, FRP, ammonium and nitrate by their conversion factor (0.032, 0.031, 0.014) after <span class="in">`AEME::read_model_outputs()`</span> had already converted them. PEST therefore scored observations against values about 1/32 of the true model value. <span class="pp">|</span> Earlier stage 3 and 4 results for these variables were invalid and are discarded. The fix is in a private copy of <span class="in">`aemetools`</span> (<span class="in">`calibration/lib_aemetools_patched`</span>); the same change is needed in the upstream package. <span class="pp">|</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Rainfall units fixed in the forcing (about 42 times too little rain) <span class="pp">|</span> Applied in <span class="in">`build_calib_base_aeme()`</span>; the same fix is needed at source in <span class="in">`era5_corrected_hourly`</span> <span class="pp">|</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Daily temperature and oxygen observations (updated by you) <span class="pp">|</span> Used for stages 2 to 4; any sub-daily duplicates are averaged to daily by <span class="in">`thin_lake_obs()`</span> <span class="pp">|</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom-water anoxia added as a target (<span class="in">`CHM_oxynal`</span>, number of anoxic layers) <span class="pp">|</span> Scored with weight 2 <span class="pp">|</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Surface oxygen down-weighted (weight 0.1) <span class="pp">|</span> Surface oxygen follows air–water exchange and temperature, which the calibrated parameters barely move <span class="pp">|</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> One FRP group over the whole column and all months <span class="pp">|</span> Split into surface and bottom summer groups the two held only 5 and 9 observations at the detection limit, and one of them carried a weight of 431 <span class="pp">|</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> log1p scoring for chlorophyll-a <span class="pp">|</span> Reduces the pull of bloom peaks; needs the patched <span class="in">`aemetools`</span> <span class="pp">|</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sediment oxygen demand range opened to 8 times the measured values <span class="pp">|</span> The measured values could not draw bottom water down in the model (see Stage 3) <span class="pp">|</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Simulation window set with <span class="in">`set_time()`</span> only <span class="pp">|</span> Earlier runs simulated the full 2011 to 2022 record each time because <span class="in">`suggest_sim_period()`</span> overrode the window; runs are now 3 to 4 times faster <span class="pp">|</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="fu">## Approach</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>The calibration is a set of scripts in <span class="in">`calibration/`</span>, run from the project root, rather than <span class="in">`targets`</span> targets: PEST++ runs are long, stochastic and stateful, and each stage needs a human check of the previous one. <span class="in">`targets`</span> supplies the baseline Aeme object (<span class="in">`aeme_base_file`</span>, <span class="in">`R/build_calib_base_aeme.R`</span>).</span>
 <span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>Settings: stages 1 and 2 used 40 realisations and 4 iterations (10 workers); stage 3 used 30 realisations, 4 iterations and 4 workers, simulating 2017 to 2020 and scoring 2019 to 2020; stage 4 used 24 realisations, 3 iterations and 4 workers, simulating 5 years and scoring 3. Each stage reads the previous stage's checkpoint. The PEST machinery (building, localisation, <span class="in">`carry`</span>/<span class="in">`narrow`</span> hand-offs) is reused from <span class="in">`scripts/pest_funs.R`</span>.</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>Assumptions:</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>The measured sediment flux study has five zones; the deepest pit was removed from the hypsograph, so measured zones 2 to 5 map to model zones 1 to 4.</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Measured fluxes replace the generic values in <span class="in">`aed_sa_calib_params.csv`</span> (10 to 100 times too large for Rotorua).</span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Outflow is the Ōhau weir rating curve, so the outflow multiplier is not calibrated.</span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>No suspended-solids observations exist, so <span class="in">`aed_noncohesive`</span> stays at its defaults.</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Stage 3 was calibrated with **no alum**, although the lake was dosed throughout. Stage 4 re-fits FRP and chlorophyll-a with alum on, but nitrogen and oxygen parameters are not re-fitted.</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stage <span class="pp">|</span> Script <span class="pp">|</span> Targets <span class="pp">|</span> Parameters <span class="pp">|</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----|---------------|------------------------|-----------------------------|</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 1 <span class="pp">|</span> <span class="in">`01_stage1_waterbalance.R`</span> <span class="pp">|</span> <span class="in">`LKE_vol`</span> <span class="pp">|</span> weir <span class="in">`crest_elev`</span> (±0.3 m), <span class="in">`crest_factor`</span>, wind scaling, <span class="in">`rh_factor`</span>; seepage fixed at 0; no outflow multiplier <span class="pp">|</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 2 <span class="pp">|</span> <span class="in">`02_stage2_temperature.R`</span> <span class="pp">|</span> <span class="in">`HYD_temp`</span> (surface, bottom, metalimnion), <span class="in">`HYD_schstb`</span>, <span class="in">`LKE_vol`</span>, <span class="in">`LKE_nrgtot`</span> <span class="pp">|</span> stage 1 parameters narrowed to their posterior, plus <span class="in">`Kw`</span>, radiation and air-temperature factors, <span class="in">`coef_mix_hyp`</span>, per-zone sediment temperature <span class="pp">|</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 3 <span class="pp">|</span> <span class="in">`03_stage3_aed_bgc.R`</span> <span class="pp">|</span> <span class="in">`CHM_oxy`</span> (surface, hypolimnion, bottom), <span class="in">`CHM_oxynal`</span>, <span class="in">`NIT_amm`</span>, <span class="in">`NIT_nit`</span>, <span class="in">`PHS_frp`</span>, <span class="in">`PHY_tchla`</span> (log1p), <span class="in">`HYD_temp`</span> anchors <span class="pp">|</span> sediment fluxes of O~2~, NH~4~ and FRP by zone (measured prior), organic-matter, nitrification and denitrification rates, phytoplankton <span class="in">`R_growth`</span>, <span class="in">`I_K`</span>, <span class="in">`R_resp`</span> for three groups, <span class="in">`Kw`</span> <span class="pp">|</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 4 <span class="pp">|</span> <span class="in">`04_stage4_alum.R`</span> <span class="pp">|</span> <span class="in">`PHS_frp`</span>, <span class="in">`PHY_tchla`</span> (log1p), with <span class="in">`aed_alum`</span> on <span class="pp">|</span> dose efficiency (scanned), <span class="in">`aed_alum`</span> parameters, and the stage 3 parameters that act on FRP and chlorophyll-a, narrowed <span class="pp">|</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 5 <span class="pp">|</span> <span class="in">`05_apply_posterior.R`</span> <span class="pp">|</span> all <span class="pp">|</span> final parameter sets, forward runs, performance tables and plots <span class="pp">|</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>Settings: stages 1 and 2 used 40 realisations and 4 iterations (10 workers); stage 3 used 30 realisations, 4 iterations and 4 workers, simulating 2017 to 2020 and scoring 2019 to 2020; stage 4 used 24 realisations, 3 iterations and 4 workers, simulating 5 years and scoring 3. Each stage reads the previous stage's checkpoint. The PEST machinery (building, localisation, <span class="in">`carry`</span>/<span class="in">`narrow`</span> hand-offs) is reused from <span class="in">`scripts/pest_funs.R`</span>.</span>
 <span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 1: water balance</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>Assumptions:</span>
 <span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Simulated and observed water level at the stage 1 best fit."</span></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"s1_wlev.png"</span>))</span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>Error score fell from 0.342 to 0.295 over four iterations.</span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter           <span class="pp">|</span> Value     <span class="pp">|</span> Bounds           <span class="pp">|</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------------------|-----------|------------------|</span></span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`MET_wndspd`</span>        <span class="pp">|</span> 1.74      <span class="pp">|</span> 0.5 to 2.0       <span class="pp">|</span></span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`rh_factor`</span>         <span class="pp">|</span> 0.945     <span class="pp">|</span> 0.7 to 1.3       <span class="pp">|</span></span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> weir <span class="in">`crest_elev`</span>   <span class="pp">|</span> 279.431 m <span class="pp">|</span> 278.85 to 279.45 <span class="pp">|</span></span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> weir <span class="in">`crest_factor`</span> <span class="pp">|</span> 0.497     <span class="pp">|</span> 0.262 to 0.562   <span class="pp">|</span></span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`seepage_rate`</span>      <span class="pp">|</span> 0 (fixed) <span class="pp">|</span>                  <span class="pp">|</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>The measured sediment flux study has five zones; the deepest pit was removed from the hypsograph, so measured zones 2 to 5 map to model zones 1 to 4.</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Measured fluxes replace the generic values in <span class="in">`aed_sa_calib_params.csv`</span> (10 to 100 times too large for Rotorua).</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Outflow is the Ōhau weir rating curve, so the outflow multiplier is not calibrated.</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>No suspended-solids observations exist, so <span class="in">`aed_noncohesive`</span> stays at its defaults.</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Stage 3 was calibrated with **no alum**, although the lake was dosed throughout. Stage 4 re-fits FRP and chlorophyll-a with alum on, but nitrogen and oxygen parameters are not re-fitted.</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 1: water balance</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Simulated and observed water level at the stage 1 best fit."</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"s1_wlev.png"</span>))</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>Error score fell from 0.342 to 0.295 over four iterations.</span>
 <span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>The crest elevation finished 0.016 m from its upper bound and the wind factor is large, so some of the water balance is being closed by compensating parameters.</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 2: water temperature</span></span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>Stage 2 screened 25 parameters (Morris), kept 8, and ran <span class="in">`pestpp-ies`</span> on the sensitive set. The error score fell from 0.4375 to 0.4266.</span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Water temperature, whole simulation (stage 2 best fit)."</span></span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_physics_HYD_temp.png"</span>))</span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"physics_params.csv"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(index), <span class="st">""</span>, index)) <span class="sc">|&gt;</span></span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, index, value, min, max) <span class="sc">|&gt;</span></span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Stage 2 best-fit parameters (including values carried from stage 1; min = max for fixed parameters)."</span>)</span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>Wind scaling (1.64 against a limit of 2.0) and the zone 2 sediment temperature amplitude (5.99 against 6.0) are at or near their bounds, so some heat budget error is being absorbed by those parameters.</span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 3: AED biogeochemistry</span></span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>Stage 3 is a single joint <span class="in">`pestpp-ies`</span> run over 26 adjustable parameters. The window is 2017 to 2020 (two years of spin-up) with scoring over 2019 to 2020.</span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why sediment oxygen demand needed wider bounds</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter           <span class="pp">|</span> Value     <span class="pp">|</span> Bounds           <span class="pp">|</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------------------|-----------|------------------|</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`MET_wndspd`</span>        <span class="pp">|</span> 1.74      <span class="pp">|</span> 0.5 to 2.0       <span class="pp">|</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`rh_factor`</span>         <span class="pp">|</span> 0.945     <span class="pp">|</span> 0.7 to 1.3       <span class="pp">|</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> weir <span class="in">`crest_elev`</span>   <span class="pp">|</span> 279.431 m <span class="pp">|</span> 278.85 to 279.45 <span class="pp">|</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> weir <span class="in">`crest_factor`</span> <span class="pp">|</span> 0.497     <span class="pp">|</span> 0.262 to 0.562   <span class="pp">|</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`seepage_rate`</span>      <span class="pp">|</span> 0 (fixed) <span class="pp">|</span>                  <span class="pp">|</span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>The crest elevation finished 0.016 m from its upper bound and the wind factor is large, so some of the water balance is being closed by compensating parameters.</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 2: water temperature</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>Stage 2 screened 25 parameters (Morris), kept 8, and ran <span class="in">`pestpp-ies`</span> on the sensitive set. The error score fell from 0.4375 to 0.4266.</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Water temperature, whole simulation (stage 2 best fit)."</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_physics_HYD_temp.png"</span>))</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"physics_params.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(index), <span class="st">""</span>, index)) <span class="sc">|&gt;</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, index, value, min, max) <span class="sc">|&gt;</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Stage 2 best-fit parameters (including values carried from stage 1; min = max for fixed parameters)."</span>)</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>Bottom-water (17 to 21 m) oxygen responded to the sediment oxygen demand only when it was about four times the measured values (a check using <span class="in">`AEME::get_var()`</span>, not affected by the unit bug):</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>Wind scaling (1.64 against a limit of 2.0) and the zone 2 sediment temperature amplitude (5.99 against 6.0) are at or near their bounds, so some heat budget error is being absorbed by those parameters.</span>
 <span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Run                  <span class="pp">|</span> Bottom-water oxygen, 5th percentile (mg/L) <span class="pp">|</span> Anoxic readings <span class="pp">|</span></span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------------------|--------------------------------------------|-----------------|</span></span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Observed             <span class="pp">|</span> 2.5                                        <span class="pp">|</span> 3.9%            <span class="pp">|</span></span>
-<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Measured demand (×1) <span class="pp">|</span> 7.1                                        <span class="pp">|</span> 0%              <span class="pp">|</span></span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×2                   <span class="pp">|</span> 5.6                                        <span class="pp">|</span> 0.5%            <span class="pp">|</span></span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×4                   <span class="pp">|</span> 3.3                                        <span class="pp">|</span> 2.4%            <span class="pp">|</span></span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×8                   <span class="pp">|</span> 1.0                                        <span class="pp">|</span> 11.5%           <span class="pp">|</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 3: AED biogeochemistry</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>Stage 3 is a single joint <span class="in">`pestpp-ies`</span> run over 26 adjustable parameters. The window is 2017 to 2020 (two years of spin-up) with scoring over 2019 to 2020.</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why sediment oxygen demand needed wider bounds</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>Bottom-water (17 to 21 m) oxygen responded to the sediment oxygen demand only when it was about four times the measured values (a check using <span class="in">`AEME::get_var()`</span>, not affected by the unit bug):</span>
 <span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>The measured values (−5 to −27 mmol m^-2^ d^-1^) cannot reproduce the observed drawdown in this model, so the range was opened to 8 times measured.</span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### Error score by target</span></span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_phi_group.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>ks <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(g), <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"total_runs"</span>, <span class="st">"obs_realization"</span>, <span class="st">"par_realization"</span>))</span>
-<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>tot <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(g[, ks], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> g[g<span class="sc">$</span>iteration <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> g<span class="sc">$</span>par_realization <span class="sc">==</span> <span class="st">"base"</span>, ks]</span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> g[<span class="fu">which.min</span>(tot), ks]</span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">target =</span> ks, <span class="at">start =</span> <span class="fu">unlist</span>(base[<span class="dv">1</span>, ]), <span class="at">best =</span> <span class="fu">unlist</span>(best[<span class="dv">1</span>, ])) <span class="sc">|&gt;</span></span>
-<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(<span class="fu">data.frame</span>(<span class="at">target =</span> <span class="st">"TOTAL"</span>, <span class="at">start =</span> <span class="fu">sum</span>(base, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">best =</span> <span class="fu">sum</span>(best, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"Contribution of each target to the PEST error score at the starting parameters and at the best realisation (iteration 2)."</span>)</span>
-<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>The error score fell by a third (21.0 to 13.9). FRP (4.9 to 1.2), chlorophyll-a (3.9 to 1.5) and the number of anoxic layers (4.7 to 3.9) improved. The oxygen groups were already small after the unit fix, and ammonium, nitrate and temperature changed little.</span>
-<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3j_best_params_summary.csv"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(group), <span class="st">""</span>, group), <span class="at">index =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(index), <span class="st">""</span>, index),</span>
-<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>         <span class="at">flag =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(flag), <span class="st">""</span>, flag)) <span class="sc">|&gt;</span></span>
-<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, group, index, value, min, max, flag) <span class="sc">|&gt;</span></span>
-<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"Stage 3 best-fit parameters and ranges (flag = within 3% of a bound)."</span>)</span>
-<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>Two parameters are at their bound: <span class="in">`rpoc_hydrol`</span> (organic matter hydrolysis, 0.098 of 0.1) and diatom <span class="in">`R_growth`</span> (4.16 of 4.2). The calibrated sediment oxygen demand (−32, −33, −49 and −82 mmol m^-2^ d^-1^ for zones 1 to 4) is about 2 to 5 times the measured values, inside the opened range.</span>
-<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 4: alum {#stage-4-alum}</span></span>
-<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dose efficiency</span></span>
-<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a>The efficiency of the dosed alum in the field is not a model parameter PEST can reach. The script scaled the dosed <span class="in">`ALU_ala`</span> in the Utuhina and Puarenga inflows and ran the stage 3 parameters:</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Run                  <span class="pp">|</span> Bottom-water oxygen, 5th percentile (mg/L) <span class="pp">|</span> Anoxic readings <span class="pp">|</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------------------|--------------------------------------------|-----------------|</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Observed             <span class="pp">|</span> 2.5                                        <span class="pp">|</span> 3.9%            <span class="pp">|</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Measured demand (×1) <span class="pp">|</span> 7.1                                        <span class="pp">|</span> 0%              <span class="pp">|</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×2                   <span class="pp">|</span> 5.6                                        <span class="pp">|</span> 0.5%            <span class="pp">|</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×4                   <span class="pp">|</span> 3.3                                        <span class="pp">|</span> 2.4%            <span class="pp">|</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> ×8                   <span class="pp">|</span> 1.0                                        <span class="pp">|</span> 11.5%           <span class="pp">|</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>The measured values (−5 to −27 mmol m^-2^ d^-1^) cannot reproduce the observed drawdown in this model, so the range was opened to 8 times measured.</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="fu">### Error score by target</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_phi_group.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>ks <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(g), <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"total_runs"</span>, <span class="st">"obs_realization"</span>, <span class="st">"par_realization"</span>))</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>tot <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(g[, ks], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> g[g<span class="sc">$</span>iteration <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> g<span class="sc">$</span>par_realization <span class="sc">==</span> <span class="st">"base"</span>, ks]</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> g[<span class="fu">which.min</span>(tot), ks]</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">target =</span> ks, <span class="at">start =</span> <span class="fu">unlist</span>(base[<span class="dv">1</span>, ]), <span class="at">best =</span> <span class="fu">unlist</span>(best[<span class="dv">1</span>, ])) <span class="sc">|&gt;</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(<span class="fu">data.frame</span>(<span class="at">target =</span> <span class="st">"TOTAL"</span>, <span class="at">start =</span> <span class="fu">sum</span>(base, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">best =</span> <span class="fu">sum</span>(best, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"Contribution of each target to the PEST error score at the starting parameters and at the best realisation (iteration 2)."</span>)</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>The error score fell by a third (21.0 to 13.9). FRP (4.9 to 1.2), chlorophyll-a (3.9 to 1.5) and the number of anoxic layers (4.7 to 3.9) improved. The oxygen groups were already small after the unit fix, and ammonium, nitrate and temperature changed little.</span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3j_best_params_summary.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(group), <span class="st">""</span>, group), <span class="at">index =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(index), <span class="st">""</span>, index),</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>         <span class="at">flag =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(flag), <span class="st">""</span>, flag)) <span class="sc">|&gt;</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, group, index, value, min, max, flag) <span class="sc">|&gt;</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"Stage 3 best-fit parameters and ranges (flag = within 3% of a bound)."</span>)</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s4_eta_scan.csv"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">Efficiency (1 = historical dose)</span><span class="st">`</span> <span class="ot">=</span> eta, <span class="st">`</span><span class="at">FRP RMSE</span><span class="st">`</span> <span class="ot">=</span> rmse, <span class="at">KGE =</span> kge, <span class="at">Bias =</span> bias) <span class="sc">|&gt;</span></span>
-<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"FRP error against dose efficiency, 0.15 (field, about 7:1 Al:P) to 1.4 (jar test, 0.7:1)."</span>)</span>
-<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>Two parameters are at their bound: <span class="in">`rpoc_hydrol`</span> (organic matter hydrolysis, 0.098 of 0.1) and diatom <span class="in">`R_growth`</span> (4.16 of 4.2). The calibrated sediment oxygen demand (−32, −33, −49 and −82 mmol m^-2^ d^-1^ for zones 1 to 4) is about 2 to 5 times the measured values, inside the opened range.</span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stage 4: alum {#stage-4-alum}</span></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dose efficiency</span></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>The efficiency of the dosed alum in the field is not a model parameter PEST can reach. The script scaled the dosed <span class="in">`ALU_ala`</span> in the Utuhina and Puarenga inflows and ran the stage 3 parameters:</span>
 <span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a>FRP error improves up to an efficiency of 1 and is flat above it, so 1 was used (the smallest value within 2% of the lowest error). The modelled FRP stays below the observations at every efficiency.</span>
-<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration</span></span>
-<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>Alum is switched on by <span class="in">`fix_alum()`</span>: <span class="in">`aed_alum`</span> is added to the AED module list with resuspension on and the surface dose off, because alum is dosed through the inflows. The calibration fitted FRP and chlorophyll-a together, because stage 3 had been fitted without alum (with FRP alone, chlorophyll-a drifted to a bias of −7.8 mg/m^3^). Parameter ranges follow Sanila (2026), see the <span class="co">[</span><span class="ot">thesis notes</span><span class="co">](alum-dosing-sanila-msc-thesis.qmd)</span>:</span>
-<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Start <span class="pp">|</span> Range <span class="pp">|</span> Basis <span class="pp">|</span></span>
-<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------------|---------|------------|----------------------------------------|</span></span>
-<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`w_ala`</span> (settling, m d^-1^) <span class="pp">|</span> 0.5 <span class="pp">|</span> 0.3 to 1.5 <span class="pp">|</span> 89 flocs tracked on video; 0.5 allows for wind mixing <span class="pp">|</span></span>
-<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`k_w`</span> (binding in the water) <span class="pp">|</span> 1 <span class="pp">|</span> 0.2 to 10 <span class="pp">|</span> removal complete within about 20 minutes <span class="pp">|</span></span>
-<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`K_P`</span> (half-saturation) <span class="pp">|</span> 0.3 <span class="pp">|</span> 0.05 to 1 <span class="pp">|</span> not measured <span class="pp">|</span></span>
-<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`k_s`</span>, <span class="in">`k_age_w`</span>, <span class="in">`k_age_s`</span>, <span class="in">`k_bur`</span>, <span class="in">`k_res`</span> <span class="pp">|</span> defaults <span class="pp">|</span> see <span class="in">`alum_calib_table()`</span> <span class="pp">|</span> not constrained by the thesis <span class="pp">|</span></span>
-<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`S_ala`</span>, <span class="in">`pH_opt`</span>, <span class="in">`sigma_pH`</span> <span class="pp">|</span> 0, 7, 1 (fixed) <span class="pp">|</span>  <span class="pp">|</span> dosing is through the inflows; pH modifier off <span class="pp">|</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s4_eta_scan.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">Efficiency (1 = historical dose)</span><span class="st">`</span> <span class="ot">=</span> eta, <span class="st">`</span><span class="at">FRP RMSE</span><span class="st">`</span> <span class="ot">=</span> rmse, <span class="at">KGE =</span> kge, <span class="at">Bias =</span> bias) <span class="sc">|&gt;</span></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"FRP error against dose efficiency, 0.15 (field, about 7:1 Al:P) to 1.4 (jar test, 0.7:1)."</span>)</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>FRP error improves up to an efficiency of 1 and is flat above it, so 1 was used (the smallest value within 2% of the lowest error). The modelled FRP stays below the observations at every efficiency.</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calibration</span></span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a>Alum is switched on by <span class="in">`fix_alum()`</span>: <span class="in">`aed_alum`</span> is added to the AED module list with resuspension on and the surface dose off, because alum is dosed through the inflows. The calibration fitted FRP and chlorophyll-a together, because stage 3 had been fitted without alum (with FRP alone, chlorophyll-a drifted to a bias of −7.8 mg/m^3^). Parameter ranges follow Sanila (2026), see the <span class="co">[</span><span class="ot">thesis notes</span><span class="co">](alum-dosing-sanila-msc-thesis.qmd)</span>:</span>
 <span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>The error score fell from 2.80 to 2.24 over three iterations, mostly from the chlorophyll-a group. The model output was checked for the effect of the dose and of each parameter group:</span>
-<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">file.path</span>(img, <span class="st">"s4_sensitivity_check.csv"</span>)</span>
-<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f)) {</span>
-<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(f); <span class="fu">names</span>(x)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"run"</span></span>
-<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">|&gt;</span> <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"FRP response to the alum parameters, the sediment FRP flux and the dose (stage 4 window)."</span>)</span>
-<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a>The FRP error is almost the same in every run (RMSE 0.0106 to 0.0112). Extreme alum parameters change mean FRP by about 0.0005 mg/L, doubling the sediment FRP flux changes it by about 0.0003, and removing the dose raises it by about 0.001 (30%). The observations have a much larger spread (sd 0.0106) than the model (sd 0.004), and the correlation is low (0.03 to 0.24), so the available FRP data cannot constrain the alum parameters. This differs from the first version of this page, which showed a large alum effect because it used the invalid stage 3 result.</span>
-<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Performance</span></span>
-<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"LKE_lvlwtr"</span>, <span class="st">"HYD_temp"</span>, <span class="st">"HYD_surft"</span>, <span class="st">"CHM_oxy"</span>, <span class="st">"NIT_amm"</span>, <span class="st">"NIT_nit"</span>, <span class="st">"PHS_frp"</span>, <span class="st">"PHY_tchla"</span>)</span>
-<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>lab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">LKE_lvlwtr =</span> <span class="st">"Water level (m)"</span>, <span class="at">HYD_temp =</span> <span class="st">"Water temperature (°C)"</span>,</span>
-<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a>         <span class="at">HYD_surft =</span> <span class="st">"Surface temperature (°C)"</span>, <span class="at">CHM_oxy =</span> <span class="st">"Oxygen (mg/L)"</span>,</span>
-<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a>         <span class="at">NIT_amm =</span> <span class="st">"Ammonium"</span>, <span class="at">NIT_nit =</span> <span class="st">"Nitrate"</span>, <span class="at">PHS_frp =</span> <span class="st">"FRP"</span>, <span class="at">PHY_tchla =</span> <span class="st">"Chlorophyll-a"</span>)</span>
-<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a>setlab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">physics =</span> <span class="st">"Stage 2 (physics)"</span>, <span class="at">bgc =</span> <span class="st">"Stage 3 (no alum)"</span>, <span class="at">alum =</span> <span class="st">"Stage 4 (alum on)"</span>)</span>
-<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a>perf <span class="sc">|&gt;</span></span>
-<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var_aeme <span class="sc">%in%</span> keep, <span class="sc">!</span>(set <span class="sc">==</span> <span class="st">"physics"</span> <span class="sc">&amp;</span> <span class="sc">!</span>var_aeme <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"LKE_lvlwtr"</span>, <span class="st">"HYD_temp"</span>, <span class="st">"HYD_surft"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Run =</span> setlab[set], <span class="at">Variable =</span> lab[var_aeme]) <span class="sc">|&gt;</span></span>
-<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(set, <span class="fu">names</span>(setlab)), <span class="fu">match</span>(var_aeme, keep)) <span class="sc">|&gt;</span></span>
-<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Run, Variable, n, <span class="at">Bias =</span> bias, <span class="at">RMSE =</span> rmse, <span class="at">NSE =</span> nse, <span class="at">KGE =</span> kge, r) <span class="sc">|&gt;</span></span>
-<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Performance over each run's scored window."</span>)</span>
-<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>Temperature, level and oxygen are good. Chlorophyll-a is much better than in the first cut but still has low skill; FRP has no bias but a correlation of only 0.03 to 0.19. **Ammonium is under-predicted by about 0.05 mg/L (KGE about −0.6) and is the weakest variable**; the ammonium sediment flux and nitrification parameters are not constraining it, and the cause has not been investigated.</span>
-<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model and observations</span></span>
-<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>The whole simulation period drawn with <span class="in">`AEME::plot_ts()`</span>: the model is the line and the observations are the open circles. Depth-resolved variables are shown for the surface (0 to 2 m) and the bottom (17 to 21 m). The observations are the current ones in <span class="in">`aeme_base.rds`</span>.</span>
-<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a><span class="fu">### Water level</span></span>
-<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_physics_LKE_lvlwtr.png"</span>))</span>
-<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a><span class="fu">### Temperature</span></span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Parameter <span class="pp">|</span> Start <span class="pp">|</span> Range <span class="pp">|</span> Basis <span class="pp">|</span></span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------------|---------|------------|----------------------------------------|</span></span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`w_ala`</span> (settling, m d^-1^) <span class="pp">|</span> 0.5 <span class="pp">|</span> 0.3 to 1.5 <span class="pp">|</span> 89 flocs tracked on video; 0.5 allows for wind mixing <span class="pp">|</span></span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`k_w`</span> (binding in the water) <span class="pp">|</span> 1 <span class="pp">|</span> 0.2 to 10 <span class="pp">|</span> removal complete within about 20 minutes <span class="pp">|</span></span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`K_P`</span> (half-saturation) <span class="pp">|</span> 0.3 <span class="pp">|</span> 0.05 to 1 <span class="pp">|</span> not measured <span class="pp">|</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`k_s`</span>, <span class="in">`k_age_w`</span>, <span class="in">`k_age_s`</span>, <span class="in">`k_bur`</span>, <span class="in">`k_res`</span> <span class="pp">|</span> defaults <span class="pp">|</span> see <span class="in">`alum_calib_table()`</span> <span class="pp">|</span> not constrained by the thesis <span class="pp">|</span></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`S_ala`</span>, <span class="in">`pH_opt`</span>, <span class="in">`sigma_pH`</span> <span class="pp">|</span> 0, 7, 1 (fixed) <span class="pp">|</span>  <span class="pp">|</span> dosing is through the inflows; pH modifier off <span class="pp">|</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>The error score fell from 2.80 to 2.24 over three iterations, mostly from the chlorophyll-a group. The model output was checked for the effect of the dose and of each parameter group:</span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">file.path</span>(img, <span class="st">"s4_sensitivity_check.csv"</span>)</span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f)) {</span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(f); <span class="fu">names</span>(x)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"run"</span></span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">|&gt;</span> <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"FRP response to the alum parameters, the sediment FRP flux and the dose (stage 4 window)."</span>)</span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>The FRP error is almost the same in every run (RMSE 0.0106 to 0.0112). Extreme alum parameters change mean FRP by about 0.0005 mg/L, doubling the sediment FRP flux changes it by about 0.0003, and removing the dose raises it by about 0.001 (30%). The observations have a much larger spread (sd 0.0106) than the model (sd 0.004), and the correlation is low (0.03 to 0.24), so the available FRP data cannot constrain the alum parameters. This differs from the first version of this page, which showed a large alum effect because it used the invalid stage 3 result.</span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a><span class="fu">## Performance</span></span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"LKE_lvlwtr"</span>, <span class="st">"HYD_temp"</span>, <span class="st">"HYD_surft"</span>, <span class="st">"CHM_oxy"</span>, <span class="st">"NIT_amm"</span>, <span class="st">"NIT_nit"</span>, <span class="st">"PHS_frp"</span>, <span class="st">"PHY_tchla"</span>)</span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>lab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">LKE_lvlwtr =</span> <span class="st">"Water level (m)"</span>, <span class="at">HYD_temp =</span> <span class="st">"Water temperature (°C)"</span>,</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>         <span class="at">HYD_surft =</span> <span class="st">"Surface temperature (°C)"</span>, <span class="at">CHM_oxy =</span> <span class="st">"Oxygen (mg/L)"</span>,</span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>         <span class="at">NIT_amm =</span> <span class="st">"Ammonium"</span>, <span class="at">NIT_nit =</span> <span class="st">"Nitrate"</span>, <span class="at">PHS_frp =</span> <span class="st">"FRP"</span>, <span class="at">PHY_tchla =</span> <span class="st">"Chlorophyll-a"</span>)</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>setlab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">physics =</span> <span class="st">"Stage 2 (physics)"</span>, <span class="at">bgc =</span> <span class="st">"Stage 3 (no alum)"</span>, <span class="at">alum =</span> <span class="st">"Stage 4 (alum on)"</span>)</span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>perf <span class="sc">|&gt;</span></span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var_aeme <span class="sc">%in%</span> keep, <span class="sc">!</span>(set <span class="sc">==</span> <span class="st">"physics"</span> <span class="sc">&amp;</span> <span class="sc">!</span>var_aeme <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"LKE_lvlwtr"</span>, <span class="st">"HYD_temp"</span>, <span class="st">"HYD_surft"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Run =</span> setlab[set], <span class="at">Variable =</span> lab[var_aeme]) <span class="sc">|&gt;</span></span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(set, <span class="fu">names</span>(setlab)), <span class="fu">match</span>(var_aeme, keep)) <span class="sc">|&gt;</span></span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Run, Variable, n, <span class="at">Bias =</span> bias, <span class="at">RMSE =</span> rmse, <span class="at">NSE =</span> nse, <span class="at">KGE =</span> kge, r) <span class="sc">|&gt;</span></span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Performance over each run's scored window."</span>)</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>Temperature, level and oxygen are good. Chlorophyll-a is much better than in the first cut but still has low skill; FRP has no bias but a correlation of only 0.03 to 0.19. **Ammonium is under-predicted by about 0.05 mg/L (KGE about −0.6) and is the weakest variable**; the ammonium sediment flux and nitrification parameters are not constraining it, and the cause has not been investigated.</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model and observations</span></span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>The whole simulation period drawn with <span class="in">`AEME::plot_ts()`</span>: the model is the line and the observations are the open circles. Depth-resolved variables are shown for the surface (0 to 2 m) and the bottom (17 to 21 m). The observations are the current ones in <span class="in">`aeme_base.rds`</span>.</span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a><span class="fu">### Water level</span></span>
 <span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_HYD_temp.png"</span>))</span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_physics_LKE_lvlwtr.png"</span>))</span>
 <span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a><span class="fu">### Oxygen</span></span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a><span class="fu">### Temperature</span></span>
 <span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-254"><a href="#cb2-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_CHM_oxy.png"</span>))</span>
+<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_HYD_temp.png"</span>))</span>
 <span id="cb2-256"><a href="#cb2-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-257"><a href="#cb2-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ammonium</span></span>
+<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a><span class="fu">### Oxygen</span></span>
 <span id="cb2-259"><a href="#cb2-259" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-262"><a href="#cb2-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_NIT_amm.png"</span>))</span>
+<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_CHM_oxy.png"</span>))</span>
 <span id="cb2-264"><a href="#cb2-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-265"><a href="#cb2-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a><span class="fu">### Nitrate</span></span>
+<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ammonium</span></span>
 <span id="cb2-267"><a href="#cb2-267" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-270"><a href="#cb2-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_NIT_nit.png"</span>))</span>
+<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_NIT_amm.png"</span>))</span>
 <span id="cb2-272"><a href="#cb2-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-273"><a href="#cb2-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### FRP</span></span>
+<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### Nitrate</span></span>
 <span id="cb2-275"><a href="#cb2-275" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-278"><a href="#cb2-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_PHS_frp.png"</span>))</span>
+<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_NIT_nit.png"</span>))</span>
 <span id="cb2-280"><a href="#cb2-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-281"><a href="#cb2-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-282"><a href="#cb2-282" aria-hidden="true" tabindex="-1"></a><span class="fu">### FRP (alum on)</span></span>
+<span id="cb2-282"><a href="#cb2-282" aria-hidden="true" tabindex="-1"></a><span class="fu">### FRP</span></span>
 <span id="cb2-283"><a href="#cb2-283" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-286"><a href="#cb2-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-287"><a href="#cb2-287" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_alum_PHS_frp.png"</span>))</span>
+<span id="cb2-287"><a href="#cb2-287" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_PHS_frp.png"</span>))</span>
 <span id="cb2-288"><a href="#cb2-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-289"><a href="#cb2-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-290"><a href="#cb2-290" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chlorophyll-a</span></span>
+<span id="cb2-290"><a href="#cb2-290" aria-hidden="true" tabindex="-1"></a><span class="fu">### FRP (alum on)</span></span>
 <span id="cb2-291"><a href="#cb2-291" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-294"><a href="#cb2-294" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-295"><a href="#cb2-295" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_PHY_tchla.png"</span>))</span>
+<span id="cb2-295"><a href="#cb2-295" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_alum_PHS_frp.png"</span>))</span>
 <span id="cb2-296"><a href="#cb2-296" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-297"><a href="#cb2-297" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb2-298"><a href="#cb2-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-299"><a href="#cb2-299" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sediment fluxes by zone</span></span>
-<span id="cb2-300"><a href="#cb2-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-301"><a href="#cb2-301" aria-hidden="true" tabindex="-1"></a>The model has four sediment zones (zone 1 deepest). The grey bar is the measured range, the open circle the measured value, and the filled points the calibrated values. For oxygen uptake the calibration was allowed 8 times the measured value (thin line). Nitrate flux was not calibrated and is fixed at the measured value of 0.</span>
-<span id="cb2-302"><a href="#cb2-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-305"><a href="#cb2-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-306"><a href="#cb2-306" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb2-307"><a href="#cb2-307" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb2-308"><a href="#cb2-308" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sediment flux by zone: measured prior range, measured value and calibrated values."</span></span>
-<span id="cb2-309"><a href="#cb2-309" aria-hidden="true" tabindex="-1"></a>flab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">fsed_frp =</span> <span class="st">"FRP flux (mmol/m2/d)"</span>, <span class="at">fsed_amm =</span> <span class="st">"Ammonium flux (mmol/m2/d)"</span>,</span>
-<span id="cb2-310"><a href="#cb2-310" aria-hidden="true" tabindex="-1"></a>          <span class="at">fsed_nit =</span> <span class="st">"Nitrate flux (mmol/m2/d), fixed"</span>, <span class="at">fsed_oxy =</span> <span class="st">"Oxygen uptake (mmol/m2/d)"</span>)</span>
-<span id="cb2-311"><a href="#cb2-311" aria-hidden="true" tabindex="-1"></a>fl<span class="sc">$</span>flux <span class="ot">&lt;-</span> <span class="fu">factor</span>(fl<span class="sc">$</span>flux, <span class="at">levels =</span> <span class="fu">names</span>(flab))</span>
-<span id="cb2-312"><a href="#cb2-312" aria-hidden="true" tabindex="-1"></a>oxy <span class="ot">&lt;-</span> fl <span class="sc">|&gt;</span> <span class="fu">filter</span>(flux <span class="sc">==</span> <span class="st">"fsed_oxy"</span>) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(flux, zone, prior) <span class="sc">|&gt;</span></span>
-<span id="cb2-313"><a href="#cb2-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">calib_min =</span> prior <span class="sc">*</span> <span class="dv">8</span>, <span class="at">calib_max =</span> prior <span class="sc">*</span> <span class="fl">0.5</span>)</span>
-<span id="cb2-314"><a href="#cb2-314" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fl, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(zone))) <span class="sc">+</span></span>
-<span id="cb2-315"><a href="#cb2-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> prior_min, <span class="at">ymax =</span> prior_max), <span class="at">colour =</span> <span class="st">"grey60"</span>, <span class="at">linewidth =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb2-316"><a href="#cb2-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="at">data =</span> oxy, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(zone), <span class="at">ymin =</span> calib_min, <span class="at">ymax =</span> calib_max), <span class="at">colour =</span> <span class="st">"grey30"</span>) <span class="sc">+</span></span>
-<span id="cb2-317"><a href="#cb2-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> prior), <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb2-318"><a href="#cb2-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> fl[<span class="sc">!</span><span class="fu">is.na</span>(fl<span class="sc">$</span>set), ], <span class="fu">aes</span>(<span class="at">y =</span> value, <span class="at">colour =</span> set), <span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb2-319"><a href="#cb2-319" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.3</span>)) <span class="sc">+</span></span>
-<span id="cb2-320"><a href="#cb2-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>flux, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">flux =</span> flab)) <span class="sc">+</span></span>
-<span id="cb2-321"><a href="#cb2-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"stage 3"</span> <span class="ot">=</span> <span class="st">"#1b9e77"</span>, <span class="st">"stage 4"</span> <span class="ot">=</span> <span class="st">"#7570b3"</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb2-322"><a href="#cb2-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sediment zone (1 = deepest)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb2-323"><a href="#cb2-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb2-324"><a href="#cb2-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-325"><a href="#cb2-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-326"><a href="#cb2-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ammonium and nitrate</span></span>
-<span id="cb2-327"><a href="#cb2-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-328"><a href="#cb2-328" aria-hidden="true" tabindex="-1"></a>Ammonium and nitrate are the weakest variables. What the data and a set of forward runs show (stage 3 best fit, 2017 to 2020, bottom water = 17 m and deeper, December to April):</span>
-<span id="cb2-329"><a href="#cb2-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-330"><a href="#cb2-330" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Observed ammonium is high through the lower water column in summer**, not only at the bed: the mean is 0.11 mg/L at 10 to 17 m, 0.12 at 17 to 21 m and 0.16 at 21 to 25 m (maximum 0.73), against about 0.003 mg/L everywhere in the model.</span>
-<span id="cb2-331"><a href="#cb2-331" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Total N is also short** in the model (0.26 mg/L at the bottom against 0.44 observed, and about 0.25 against 0.30 at the surface).</span>
-<span id="cb2-332"><a href="#cb2-332" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Bottom nitrate is 2 to 3 times too high** in the model (0.041 against 0.017 mg/L), consistent with ammonium being nitrified rather than accumulating.</span>
+<span id="cb2-297"><a href="#cb2-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-298"><a href="#cb2-298" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chlorophyll-a</span></span>
+<span id="cb2-299"><a href="#cb2-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-302"><a href="#cb2-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-303"><a href="#cb2-303" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="fu">file.path</span>(img, <span class="st">"ts_bgc_PHY_tchla.png"</span>))</span>
+<span id="cb2-304"><a href="#cb2-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-305"><a href="#cb2-305" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb2-306"><a href="#cb2-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-307"><a href="#cb2-307" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sediment fluxes by zone</span></span>
+<span id="cb2-308"><a href="#cb2-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-309"><a href="#cb2-309" aria-hidden="true" tabindex="-1"></a>The model has four sediment zones (zone 1 deepest). The grey bar is the measured range, the open circle the measured value, and the filled points the calibrated values. For oxygen uptake the calibration was allowed 8 times the measured value (thin line). Nitrate flux was not calibrated and is fixed at the measured value of 0.</span>
+<span id="cb2-310"><a href="#cb2-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-313"><a href="#cb2-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-314"><a href="#cb2-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb2-315"><a href="#cb2-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb2-316"><a href="#cb2-316" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sediment flux by zone: measured prior range, measured value and calibrated values."</span></span>
+<span id="cb2-317"><a href="#cb2-317" aria-hidden="true" tabindex="-1"></a>flab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">fsed_frp =</span> <span class="st">"FRP flux (mmol/m2/d)"</span>, <span class="at">fsed_amm =</span> <span class="st">"Ammonium flux (mmol/m2/d)"</span>,</span>
+<span id="cb2-318"><a href="#cb2-318" aria-hidden="true" tabindex="-1"></a>          <span class="at">fsed_nit =</span> <span class="st">"Nitrate flux (mmol/m2/d), fixed"</span>, <span class="at">fsed_oxy =</span> <span class="st">"Oxygen uptake (mmol/m2/d)"</span>)</span>
+<span id="cb2-319"><a href="#cb2-319" aria-hidden="true" tabindex="-1"></a>fl<span class="sc">$</span>flux <span class="ot">&lt;-</span> <span class="fu">factor</span>(fl<span class="sc">$</span>flux, <span class="at">levels =</span> <span class="fu">names</span>(flab))</span>
+<span id="cb2-320"><a href="#cb2-320" aria-hidden="true" tabindex="-1"></a>oxy <span class="ot">&lt;-</span> fl <span class="sc">|&gt;</span> <span class="fu">filter</span>(flux <span class="sc">==</span> <span class="st">"fsed_oxy"</span>) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(flux, zone, prior) <span class="sc">|&gt;</span></span>
+<span id="cb2-321"><a href="#cb2-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">calib_min =</span> prior <span class="sc">*</span> <span class="dv">8</span>, <span class="at">calib_max =</span> prior <span class="sc">*</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-322"><a href="#cb2-322" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fl, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(zone))) <span class="sc">+</span></span>
+<span id="cb2-323"><a href="#cb2-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> prior_min, <span class="at">ymax =</span> prior_max), <span class="at">colour =</span> <span class="st">"grey60"</span>, <span class="at">linewidth =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb2-324"><a href="#cb2-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="at">data =</span> oxy, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(zone), <span class="at">ymin =</span> calib_min, <span class="at">ymax =</span> calib_max), <span class="at">colour =</span> <span class="st">"grey30"</span>) <span class="sc">+</span></span>
+<span id="cb2-325"><a href="#cb2-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> prior), <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb2-326"><a href="#cb2-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> fl[<span class="sc">!</span><span class="fu">is.na</span>(fl<span class="sc">$</span>set), ], <span class="fu">aes</span>(<span class="at">y =</span> value, <span class="at">colour =</span> set), <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb2-327"><a href="#cb2-327" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.3</span>)) <span class="sc">+</span></span>
+<span id="cb2-328"><a href="#cb2-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>flux, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">flux =</span> flab)) <span class="sc">+</span></span>
+<span id="cb2-329"><a href="#cb2-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"stage 3"</span> <span class="ot">=</span> <span class="st">"#1b9e77"</span>, <span class="st">"stage 4"</span> <span class="ot">=</span> <span class="st">"#7570b3"</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb2-330"><a href="#cb2-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sediment zone (1 = deepest)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb2-331"><a href="#cb2-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb2-332"><a href="#cb2-332" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-333"><a href="#cb2-333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-336"><a href="#cb2-336" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-337"><a href="#cb2-337" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb2-338"><a href="#cb2-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"release and nitrification"</span>),</span>
-<span id="cb2-339"><a href="#cb2-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check2.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"with stronger oxygen demand"</span>),</span>
-<span id="cb2-340"><a href="#cb2-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check3.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"organic N breakdown"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-341"><a href="#cb2-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"NIT_amm"</span>, <span class="st">"NIT_nit"</span>, <span class="st">"NIT_tn"</span>), run <span class="sc">!=</span> <span class="st">"best"</span> <span class="sc">|</span> set <span class="sc">==</span> <span class="st">"release and nitrification"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-342"><a href="#cb2-342" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">c</span>(<span class="at">NIT_amm =</span> <span class="st">"Ammonium"</span>, <span class="at">NIT_nit =</span> <span class="st">"Nitrate"</span>, <span class="at">NIT_tn =</span> <span class="st">"Total N"</span>)[var]) <span class="sc">|&gt;</span></span>
-<span id="cb2-343"><a href="#cb2-343" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(set, run, var, obs, sim) <span class="sc">|&gt;</span></span>
-<span id="cb2-344"><a href="#cb2-344" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> <span class="fu">c</span>(obs, sim)) <span class="sc">|&gt;</span></span>
-<span id="cb2-345"><a href="#cb2-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(set, run, <span class="st">`</span><span class="at">sim Ammonium</span><span class="st">`</span> <span class="ot">=</span> sim_Ammonium, <span class="st">`</span><span class="at">sim Nitrate</span><span class="st">`</span> <span class="ot">=</span> sim_Nitrate, <span class="st">`</span><span class="at">sim Total N</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">sim_Total N</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-346"><a href="#cb2-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">signif</span>(x, <span class="dv">3</span>)))</span>
-<span id="cb2-347"><a href="#cb2-347" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(chk, <span class="at">caption =</span> <span class="st">"Bottom-water (17 m and deeper), December to April means (mg/L) when sediment ammonium release, oxygen demand, nitrification and organic N breakdown are scaled from the stage 3 best fit. Observed means: ammonium 0.177, nitrate 0.017, total N 0.435."</span>)</span>
-<span id="cb2-348"><a href="#cb2-348" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-349"><a href="#cb2-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-350"><a href="#cb2-350" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**More sediment ammonium release does not produce the observed ammonium.** Scaling the flux 10, 30 and 70 times raises bottom ammonium only from 0.003 to 0.003, 0.004 and 0.007 mg/L (total N rises from 0.26 to 0.31, so the nitrogen enters the model but not as ammonium). Adding two or three times the oxygen demand (bottom oxygen then matches the observed 5.8 mg/L) gives at most 0.009 mg/L, and lowering the oxygen half-saturation for release changes nothing.</span>
-<span id="cb2-351"><a href="#cb2-351" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The released ammonium does not accumulate.** In the 30 times run the bottom layer is anoxic (below 1 mg/L) on 11% of days and the flux (0.9 mmol m^-2^ d^-1^) adds about 0.7 mmol m^-3^ d^-1^ to the 1.2 m bottom layer, yet its ammonium on those days averages 0.004 mg/L. Anoxic spells in the model are short, so it is mixed away and lost (denitrification in the bottom layer averages about 0.7 mmol m^-3^ d^-1^); the observations imply weeks of isolation.</span>
-<span id="cb2-352"><a href="#cb2-352" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Faster breakdown of organic N does not help.** Raising <span class="in">`rpon_hydrol`</span> 10 to 20 times lowers total N (to 0.16 to 0.19 mg/L) and leaves ammonium at 0.006 mg/L; the extra nitrogen is lost.</span>
-<span id="cb2-353"><a href="#cb2-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-354"><a href="#cb2-354" aria-hidden="true" tabindex="-1"></a>**A nitrogen-only calibration with wide ranges confirmed this.** I ran a separate `pestpp-ies` step (80 model runs, everything else held at the joint stage 3 result) that opened the levers above: sediment ammonium flux by zone from 0.5 to 150 times the measured value (up to 2.7 to 5.9 mmol m^-2^ d^-1^ in the ensemble), `ksed_amm`, `rnitrif`, `knitrif`, `rdenit`, `kdenit` and `f_an`, scored on ammonium and nitrate in three depth bands over December to April. The error score did not improve (9.42 at the start, 9.44, 9.90 and 9.69 in later iterations; the best realisation was one of the starting ensemble). Across the starting ensemble, which spans those very wide ranges, the bottom and mid-depth ammonium groups changed by only 10 to 20%. So the ammonium shortfall is **not a parameter problem**: these parameters cannot make the model hold ammonium in the lower water column.</span>
-<span id="cb2-355"><a href="#cb2-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-356"><a href="#cb2-356" aria-hidden="true" tabindex="-1"></a>Likely causes, in the order I would check them:</span>
+<span id="cb2-334"><a href="#cb2-334" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ammonium and nitrate</span></span>
+<span id="cb2-335"><a href="#cb2-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-336"><a href="#cb2-336" aria-hidden="true" tabindex="-1"></a>Ammonium and nitrate are the weakest variables. What the data and a set of forward runs show (stage 3 best fit, 2017 to 2020, bottom water = 17 m and deeper, December to April):</span>
+<span id="cb2-337"><a href="#cb2-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-338"><a href="#cb2-338" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Observed ammonium is high through the lower water column in summer**, not only at the bed: the mean is 0.11 mg/L at 10 to 17 m, 0.12 at 17 to 21 m and 0.16 at 21 to 25 m (maximum 0.73), against about 0.003 mg/L everywhere in the model.</span>
+<span id="cb2-339"><a href="#cb2-339" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Total N is also short** in the model (0.26 mg/L at the bottom against 0.44 observed, and about 0.25 against 0.30 at the surface).</span>
+<span id="cb2-340"><a href="#cb2-340" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Bottom nitrate is 2 to 3 times too high** in the model (0.041 against 0.017 mg/L), consistent with ammonium being nitrified rather than accumulating.</span>
+<span id="cb2-341"><a href="#cb2-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-344"><a href="#cb2-344" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-345"><a href="#cb2-345" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb2-346"><a href="#cb2-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"release and nitrification"</span>),</span>
+<span id="cb2-347"><a href="#cb2-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check2.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"with stronger oxygen demand"</span>),</span>
+<span id="cb2-348"><a href="#cb2-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_ammonium_check3.csv"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"organic N breakdown"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-349"><a href="#cb2-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"NIT_amm"</span>, <span class="st">"NIT_nit"</span>, <span class="st">"NIT_tn"</span>), run <span class="sc">!=</span> <span class="st">"best"</span> <span class="sc">|</span> set <span class="sc">==</span> <span class="st">"release and nitrification"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-350"><a href="#cb2-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">c</span>(<span class="at">NIT_amm =</span> <span class="st">"Ammonium"</span>, <span class="at">NIT_nit =</span> <span class="st">"Nitrate"</span>, <span class="at">NIT_tn =</span> <span class="st">"Total N"</span>)[var]) <span class="sc">|&gt;</span></span>
+<span id="cb2-351"><a href="#cb2-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(set, run, var, obs, sim) <span class="sc">|&gt;</span></span>
+<span id="cb2-352"><a href="#cb2-352" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> <span class="fu">c</span>(obs, sim)) <span class="sc">|&gt;</span></span>
+<span id="cb2-353"><a href="#cb2-353" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(set, run, <span class="st">`</span><span class="at">sim Ammonium</span><span class="st">`</span> <span class="ot">=</span> sim_Ammonium, <span class="st">`</span><span class="at">sim Nitrate</span><span class="st">`</span> <span class="ot">=</span> sim_Nitrate, <span class="st">`</span><span class="at">sim Total N</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">sim_Total N</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-354"><a href="#cb2-354" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">signif</span>(x, <span class="dv">3</span>)))</span>
+<span id="cb2-355"><a href="#cb2-355" aria-hidden="true" tabindex="-1"></a><span class="fu">kab</span>(chk, <span class="at">caption =</span> <span class="st">"Bottom-water (17 m and deeper), December to April means (mg/L) when sediment ammonium release, oxygen demand, nitrification and organic N breakdown are scaled from the stage 3 best fit. Observed means: ammonium 0.177, nitrate 0.017, total N 0.435."</span>)</span>
+<span id="cb2-356"><a href="#cb2-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-357"><a href="#cb2-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-358"><a href="#cb2-358" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Units of the measured sediment fluxes.** The measured ammonium flux (0.011 to 0.039) is in the range expected for g N m^-2^ d^-1^ (0.8 to 2.8 mmol m^-2^ d^-1^), but AED takes mmol m^-2^ d^-1^. If the study reported grams, the ammonium flux is entered about 70 times too small (the FRP flux about 30 times). **This is unconfirmed: the study's units need checking against its source.** The nitrogen step above covered fluxes of that size and still could not fit ammonium, so correcting the units may be right but would not fix ammonium on its own.</span>
-<span id="cb2-359"><a href="#cb2-359" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Structure and mixing (the most likely cause now).** See the next section: the calibrated wind scaling is 1.64 and the model cannot combine moderate stratification with the observed anoxia and ammonium. The model also has no deep pit (<span class="in">`hyps_no_hole`</span>, 21.5 m deep) while the observed ammonium is highest at 21 to 25 m, and the model hypolimnion is not isolated for long enough. Also check denitrification (<span class="in">`rdenit`</span> is 15 of a range to 20) and the external N load, given the 0.05 to 0.18 mg/L total N deficit.</span>
-<span id="cb2-360"><a href="#cb2-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-361"><a href="#cb2-361" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mixing and stratification</span></span>
-<span id="cb2-362"><a href="#cb2-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-363"><a href="#cb2-363" aria-hidden="true" tabindex="-1"></a>The checks above point to mixing. The question is whether the model's lower water column is mixed too strongly to hold ammonium. The answer is more awkward than "too strong".</span>
-<span id="cb2-364"><a href="#cb2-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-365"><a href="#cb2-365" aria-hidden="true" tabindex="-1"></a>**The calibrated wind scaling is very high.** Stage 2 settled on a wind scaling of 1.64 (limit 2.0) applied to an ERA5 series that is already bias-corrected. That series averages about 5.2 m/s (2017 to 2020), against 4.6 m/s measured at the buoy (2022 to 2026), so the model is driven by a mean wind of about 8.6 m/s. Mixing energy goes with the cube of wind speed, so this is about 4 times the stirring of the corrected forcing. The wind scaling was fitted to the heat and water budget, not to mixing, so it is acting as a compensating parameter.</span>
-<span id="cb2-366"><a href="#cb2-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-367"><a href="#cb2-367" aria-hidden="true" tabindex="-1"></a>**The model needs that wind to avoid over-stratifying.** The table re-runs the stage 3 best fit (with the sediment ammonium flux 30 times higher, so that release is not the limit) at lower wind scaling and with weaker hypolimnetic mixing (<span class="in">`coef_mix_hyp`</span>). Surface minus bottom temperature (ΔT), bottom (17 m and deeper) oxygen and ammonium are compared with observations on December to April days:</span>
+<span id="cb2-358"><a href="#cb2-358" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**More sediment ammonium release does not produce the observed ammonium.** Scaling the flux 10, 30 and 70 times raises bottom ammonium only from 0.003 to 0.003, 0.004 and 0.007 mg/L (total N rises from 0.26 to 0.31, so the nitrogen enters the model but not as ammonium). Adding two or three times the oxygen demand (bottom oxygen then matches the observed 5.8 mg/L) gives at most 0.009 mg/L, and lowering the oxygen half-saturation for release changes nothing.</span>
+<span id="cb2-359"><a href="#cb2-359" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The released ammonium does not accumulate.** In the 30 times run the bottom layer is anoxic (below 1 mg/L) on 11% of days and the flux (0.9 mmol m^-2^ d^-1^) adds about 0.7 mmol m^-3^ d^-1^ to the 1.2 m bottom layer, yet its ammonium on those days averages 0.004 mg/L. Anoxic spells in the model are short, so it is mixed away and lost (denitrification in the bottom layer averages about 0.7 mmol m^-3^ d^-1^); the observations imply weeks of isolation.</span>
+<span id="cb2-360"><a href="#cb2-360" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Faster breakdown of organic N does not help.** Raising <span class="in">`rpon_hydrol`</span> 10 to 20 times lowers total N (to 0.16 to 0.19 mg/L) and leaves ammonium at 0.006 mg/L; the extra nitrogen is lost.</span>
+<span id="cb2-361"><a href="#cb2-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-362"><a href="#cb2-362" aria-hidden="true" tabindex="-1"></a>**A nitrogen-only calibration with wide ranges confirmed this.** I ran a separate `pestpp-ies` step (80 model runs, everything else held at the joint stage 3 result) that opened the levers above: sediment ammonium flux by zone from 0.5 to 150 times the measured value (up to 2.7 to 5.9 mmol m^-2^ d^-1^ in the ensemble), `ksed_amm`, `rnitrif`, `knitrif`, `rdenit`, `kdenit` and `f_an`, scored on ammonium and nitrate in three depth bands over December to April. The error score did not improve (9.42 at the start, 9.44, 9.90 and 9.69 in later iterations; the best realisation was one of the starting ensemble). Across the starting ensemble, which spans those very wide ranges, the bottom and mid-depth ammonium groups changed by only 10 to 20%. So the ammonium shortfall is **not a parameter problem**: these parameters cannot make the model hold ammonium in the lower water column.</span>
+<span id="cb2-363"><a href="#cb2-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-364"><a href="#cb2-364" aria-hidden="true" tabindex="-1"></a>Likely causes, in the order I would check them:</span>
+<span id="cb2-365"><a href="#cb2-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-366"><a href="#cb2-366" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Units of the measured sediment fluxes.** The measured ammonium flux (0.011 to 0.039) is in the range expected for g N m^-2^ d^-1^ (0.8 to 2.8 mmol m^-2^ d^-1^), but AED takes mmol m^-2^ d^-1^. If the study reported grams, the ammonium flux is entered about 70 times too small (the FRP flux about 30 times). **This is unconfirmed: the study's units need checking against its source.** The nitrogen step above covered fluxes of that size and still could not fit ammonium, so correcting the units may be right but would not fix ammonium on its own.</span>
+<span id="cb2-367"><a href="#cb2-367" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Structure and mixing (the most likely cause now).** See the next section: the calibrated wind scaling is 1.64 and the model cannot combine moderate stratification with the observed anoxia and ammonium. The model also has no deep pit (<span class="in">`hyps_no_hole`</span>, 21.5 m deep) while the observed ammonium is highest at 21 to 25 m, and the model hypolimnion is not isolated for long enough. Also check denitrification (<span class="in">`rdenit`</span> is 15 of a range to 20) and the external N load, given the 0.05 to 0.18 mg/L total N deficit.</span>
 <span id="cb2-368"><a href="#cb2-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-371"><a href="#cb2-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-372"><a href="#cb2-372" aria-hidden="true" tabindex="-1"></a>mx <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_mixing_check.csv"</span>))</span>
-<span id="cb2-373"><a href="#cb2-373" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb2-374"><a href="#cb2-374" aria-hidden="true" tabindex="-1"></a>  <span class="at">run =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, mx<span class="sc">$</span>run),</span>
-<span id="cb2-375"><a href="#cb2-375" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Days stratified (ΔT &gt; 1 °C)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>strat_frac_obs[<span class="dv">1</span>], mx<span class="sc">$</span>strat_frac_sim),</span>
-<span id="cb2-376"><a href="#cb2-376" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Mean ΔT (°C)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>dT_mean_obs[<span class="dv">1</span>], mx<span class="sc">$</span>dT_mean_sim),</span>
-<span id="cb2-377"><a href="#cb2-377" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bottom oxygen (mg/L)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>bot_DO_obs[<span class="dv">1</span>], mx<span class="sc">$</span>bot_DO_sim),</span>
-<span id="cb2-378"><a href="#cb2-378" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Days with bottom oxygen &lt; 2 mg/L</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>DO_lt2_obs[<span class="dv">1</span>], mx<span class="sc">$</span>DO_lt2_sim),</span>
-<span id="cb2-379"><a href="#cb2-379" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bottom ammonium (mg/L)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>bot_NH4_obs[<span class="dv">1</span>], mx<span class="sc">$</span>bot_NH4_sim),</span>
-<span id="cb2-380"><a href="#cb2-380" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-381"><a href="#cb2-381" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">run =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, <span class="st">"Calibrated (wind 1.64)"</span>, <span class="st">"+ ammonium flux x30"</span>, <span class="st">"wind 1.3"</span>, <span class="st">"wind 1.0"</span>, <span class="st">"coef_mix_hyp 0.1"</span>, <span class="st">"wind 1.0 + coef_mix_hyp 0.1"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-382"><a href="#cb2-382" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Stratification, bottom-water oxygen and ammonium for different wind scaling and hypolimnetic mixing (December to April)."</span>)</span>
-<span id="cb2-383"><a href="#cb2-383" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-384"><a href="#cb2-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-385"><a href="#cb2-385" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**At the calibrated wind the model is already more stratified than the lake** (53% of days against 39%, mean ΔT 1.4 against 1.0 °C), yet bottom oxygen drops below 2 mg/L on only 2% of days (10% observed) and bottom ammonium stays at 0.003 mg/L (0.18 observed).</span>
-<span id="cb2-386"><a href="#cb2-386" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Lowering the wind makes stratification far too strong long before ammonium gets close.** At a scaling of 1.3, 70% of days are stratified (ΔT 2.4 °C) and 36% of days are anoxic; at 1.0 the model is stratified on 92% of days with a ΔT of 6.6 °C, a bottom temperature 1.6 °C too cold and anoxia on 87% of days, and bottom ammonium only reaches 0.075 mg/L.</span>
-<span id="cb2-387"><a href="#cb2-387" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Weaker hypolimnetic mixing alone** (<span class="in">`coef_mix_hyp`</span> 0.1) changes little (anoxia 14% of days, ammonium 0.007 mg/L).</span>
-<span id="cb2-388"><a href="#cb2-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-389"><a href="#cb2-389" aria-hidden="true" tabindex="-1"></a>So the model cannot reproduce what the lake does: **moderate stratification, anoxia on about 10% of days, and ammonium of 0.18 mg/L together.** Ammonium only accumulates in the model when most of the days are anoxic, which is far from the observed 10%. Two things follow:</span>
-<span id="cb2-390"><a href="#cb2-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-391"><a href="#cb2-391" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Wind scaling cannot be used to fit the heat budget. It is hiding a heat or evaporation error and, through the cubed dependence of mixing on wind, it sets the stratification. The wind scaling should be fixed near the buoy-based value, and the heat and evaporation terms (<span class="in">`ce`</span>, <span class="in">`ch`</span>, <span class="in">`cd`</span>, radiation and humidity factors) and the mixing coefficients (<span class="in">`coef_mix_conv`</span>, <span class="in">`coef_mix_shear`</span>, <span class="in">`coef_mix_turb`</span>, <span class="in">`coef_mix_KH`</span>) should carry that error instead.</span>
-<span id="cb2-392"><a href="#cb2-392" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stratification should be a calibration target. The current temperature targets (surface, bottom, metalimnion bands) fit the temperatures well but leave the surface-to-bottom difference, Schmidt stability and thermocline depth unconstrained (KGE about −0.2 and −0.1 in the first cut).</span>
-<span id="cb2-393"><a href="#cb2-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-394"><a href="#cb2-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Issues and next steps</span></span>
-<span id="cb2-395"><a href="#cb2-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-396"><a href="#cb2-396" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Ammonium and nitrate** are poorly simulated for structural or unit reasons, not because of tuning (see the section above). First confirm the units of the measured sediment fluxes, then re-open the ammonium flux range and use total N as a target to constrain the budget.</span>
-<span id="cb2-397"><a href="#cb2-397" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Alum parameters are weakly identified.** FRP is dominated by the dose and the efficiency; treat alum efficiency and settling as scenario dimensions, not fitted values, in any projection. Only 56 to 73 FRP observations fall in the windows, mostly near the detection limit.</span>
-<span id="cb2-398"><a href="#cb2-398" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**TLI4 depends on total P, total N and Secchi**, none of which are calibration targets yet. Add them before using <span class="in">`LKE_tli4`</span> (see the <span class="co">[</span><span class="ot">climate strategy</span><span class="co">](climate-impact-strategy.qmd)</span>).</span>
-<span id="cb2-399"><a href="#cb2-399" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Stage 3 was calibrated without alum.** Consider running stage 3 with alum on from the start, using the dosing history.</span>
-<span id="cb2-400"><a href="#cb2-400" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Parameters at their bounds** in stages 2 and 3 (wind scaling, crest elevation, sediment temperature amplitude, <span class="in">`rpoc_hydrol`</span>, diatom <span class="in">`R_growth`</span>) suggest compensating errors; test whether the projections are sensitive to them.</span>
-<span id="cb2-401"><a href="#cb2-401" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>**Fix the upstream bugs:** the double unit conversion in <span class="in">`aemetools`</span> and the rainfall units in the <span class="in">`era5_corrected_hourly`</span> target.</span>
-<span id="cb2-402"><a href="#cb2-402" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>**Housekeeping.** The large PEST working directories (<span class="in">`pest/`</span>, <span class="in">`pest_smoke/`</span>, <span class="in">`pest_diag/`</span>), the test folders in <span class="in">`calibration/`</span> and <span class="in">`aeme_base_prerainfix.rds`</span> can be deleted. Archived (invalid) results are in <span class="in">`calibration/checkpoints/archive_prevdata/`</span>.</span>
+<span id="cb2-369"><a href="#cb2-369" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mixing and stratification</span></span>
+<span id="cb2-370"><a href="#cb2-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-371"><a href="#cb2-371" aria-hidden="true" tabindex="-1"></a>The checks above point to mixing. The question is whether the model's lower water column is mixed too strongly to hold ammonium. The answer is more awkward than "too strong".</span>
+<span id="cb2-372"><a href="#cb2-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-373"><a href="#cb2-373" aria-hidden="true" tabindex="-1"></a>**The calibrated wind scaling is very high.** Stage 2 settled on a wind scaling of 1.64 (limit 2.0) applied to an ERA5 series that is already bias-corrected. That series averages about 5.2 m/s (2017 to 2020), against 4.6 m/s measured at the buoy (2022 to 2026), so the model is driven by a mean wind of about 8.6 m/s. Mixing energy goes with the cube of wind speed, so this is about 4 times the stirring of the corrected forcing. The wind scaling was fitted to the heat and water budget, not to mixing, so it is acting as a compensating parameter.</span>
+<span id="cb2-374"><a href="#cb2-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-375"><a href="#cb2-375" aria-hidden="true" tabindex="-1"></a>**The model needs that wind to avoid over-stratifying.** The table re-runs the stage 3 best fit (with the sediment ammonium flux 30 times higher, so that release is not the limit) at lower wind scaling and with weaker hypolimnetic mixing (<span class="in">`coef_mix_hyp`</span>). Surface minus bottom temperature (ΔT), bottom (17 m and deeper) oxygen and ammonium are compared with observations on December to April days:</span>
+<span id="cb2-376"><a href="#cb2-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-379"><a href="#cb2-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-380"><a href="#cb2-380" aria-hidden="true" tabindex="-1"></a>mx <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(img, <span class="st">"s3_mixing_check.csv"</span>))</span>
+<span id="cb2-381"><a href="#cb2-381" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-382"><a href="#cb2-382" aria-hidden="true" tabindex="-1"></a>  <span class="at">run =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, mx<span class="sc">$</span>run),</span>
+<span id="cb2-383"><a href="#cb2-383" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Days stratified (ΔT &gt; 1 °C)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>strat_frac_obs[<span class="dv">1</span>], mx<span class="sc">$</span>strat_frac_sim),</span>
+<span id="cb2-384"><a href="#cb2-384" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Mean ΔT (°C)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>dT_mean_obs[<span class="dv">1</span>], mx<span class="sc">$</span>dT_mean_sim),</span>
+<span id="cb2-385"><a href="#cb2-385" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bottom oxygen (mg/L)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>bot_DO_obs[<span class="dv">1</span>], mx<span class="sc">$</span>bot_DO_sim),</span>
+<span id="cb2-386"><a href="#cb2-386" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Days with bottom oxygen &lt; 2 mg/L</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>DO_lt2_obs[<span class="dv">1</span>], mx<span class="sc">$</span>DO_lt2_sim),</span>
+<span id="cb2-387"><a href="#cb2-387" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bottom ammonium (mg/L)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(mx<span class="sc">$</span>bot_NH4_obs[<span class="dv">1</span>], mx<span class="sc">$</span>bot_NH4_sim),</span>
+<span id="cb2-388"><a href="#cb2-388" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-389"><a href="#cb2-389" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">run =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, <span class="st">"Calibrated (wind 1.64)"</span>, <span class="st">"+ ammonium flux x30"</span>, <span class="st">"wind 1.3"</span>, <span class="st">"wind 1.0"</span>, <span class="st">"coef_mix_hyp 0.1"</span>, <span class="st">"wind 1.0 + coef_mix_hyp 0.1"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-390"><a href="#cb2-390" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kab</span>(<span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Stratification, bottom-water oxygen and ammonium for different wind scaling and hypolimnetic mixing (December to April)."</span>)</span>
+<span id="cb2-391"><a href="#cb2-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-392"><a href="#cb2-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-393"><a href="#cb2-393" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**At the calibrated wind the model is already more stratified than the lake** (53% of days against 39%, mean ΔT 1.4 against 1.0 °C), yet bottom oxygen drops below 2 mg/L on only 2% of days (10% observed) and bottom ammonium stays at 0.003 mg/L (0.18 observed).</span>
+<span id="cb2-394"><a href="#cb2-394" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Lowering the wind makes stratification far too strong long before ammonium gets close.** At a scaling of 1.3, 70% of days are stratified (ΔT 2.4 °C) and 36% of days are anoxic; at 1.0 the model is stratified on 92% of days with a ΔT of 6.6 °C, a bottom temperature 1.6 °C too cold and anoxia on 87% of days, and bottom ammonium only reaches 0.075 mg/L.</span>
+<span id="cb2-395"><a href="#cb2-395" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Weaker hypolimnetic mixing alone** (<span class="in">`coef_mix_hyp`</span> 0.1) changes little (anoxia 14% of days, ammonium 0.007 mg/L).</span>
+<span id="cb2-396"><a href="#cb2-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-397"><a href="#cb2-397" aria-hidden="true" tabindex="-1"></a>So the model cannot reproduce what the lake does: **moderate stratification, anoxia on about 10% of days, and ammonium of 0.18 mg/L together.** Ammonium only accumulates in the model when most of the days are anoxic, which is far from the observed 10%. Two things follow:</span>
+<span id="cb2-398"><a href="#cb2-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-399"><a href="#cb2-399" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Wind scaling cannot be used to fit the heat budget. It is hiding a heat or evaporation error and, through the cubed dependence of mixing on wind, it sets the stratification. The wind scaling should be fixed near the buoy-based value, and the heat and evaporation terms (<span class="in">`ce`</span>, <span class="in">`ch`</span>, <span class="in">`cd`</span>, radiation and humidity factors) and the mixing coefficients (<span class="in">`coef_mix_conv`</span>, <span class="in">`coef_mix_shear`</span>, <span class="in">`coef_mix_turb`</span>, <span class="in">`coef_mix_KH`</span>) should carry that error instead.</span>
+<span id="cb2-400"><a href="#cb2-400" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stratification should be a calibration target. The current temperature targets (surface, bottom, metalimnion bands) fit the temperatures well but leave the surface-to-bottom difference, Schmidt stability and thermocline depth unconstrained (KGE about −0.2 and −0.1 in the first cut).</span>
+<span id="cb2-401"><a href="#cb2-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-402"><a href="#cb2-402" aria-hidden="true" tabindex="-1"></a><span class="fu">## Issues and next steps</span></span>
 <span id="cb2-403"><a href="#cb2-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-404"><a href="#cb2-404" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducing</span></span>
-<span id="cb2-405"><a href="#cb2-405" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-406"><a href="#cb2-406" aria-hidden="true" tabindex="-1"></a><span class="in">``` bash</span></span>
-<span id="cb2-407"><a href="#cb2-407" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'targets::tar_make(aeme_base_file)'</span></span>
-<span id="cb2-408"><a href="#cb2-408" aria-hidden="true" tabindex="-1"></a><span class="va">PEST_NCORE</span><span class="op">=</span>10 <span class="va">PEST_NOPTMAX</span><span class="op">=</span>4 <span class="va">PEST_NREALS</span><span class="op">=</span>40 <span class="ex">Rscript</span> calibration/run_stage.R 1</span>
-<span id="cb2-409"><a href="#cb2-409" aria-hidden="true" tabindex="-1"></a><span class="va">PEST_NCORE</span><span class="op">=</span>10 <span class="va">PEST_NOPTMAX</span><span class="op">=</span>4 <span class="va">PEST_NREALS</span><span class="op">=</span>40 <span class="ex">Rscript</span> calibration/run_stage.R 2</span>
-<span id="cb2-410"><a href="#cb2-410" aria-hidden="true" tabindex="-1"></a><span class="co"># stages 3-5 (patched aemetools in calibration/lib_aemetools_patched)</span></span>
-<span id="cb2-411"><a href="#cb2-411" aria-hidden="true" tabindex="-1"></a><span class="ex">powershell</span> <span class="at">-NoProfile</span> <span class="at">-File</span> calibration/run_stages_3_to_5_v2.ps1</span>
-<span id="cb2-412"><a href="#cb2-412" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> calibration/07_export_report_data.R   <span class="co"># plots and tables for this page</span></span>
-<span id="cb2-413"><a href="#cb2-413" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-414"><a href="#cb2-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-415"><a href="#cb2-415" aria-hidden="true" tabindex="-1"></a>Set <span class="in">`PEST_SMOKE=1`</span> for a quick wiring test, and <span class="in">`PEST_STAGE3_DIAG=1|oxy`</span> or <span class="in">`PEST_STAGE4_DIAG=1`</span> for the sensitivity checks.</span>
+<span id="cb2-404"><a href="#cb2-404" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Ammonium and nitrate** are poorly simulated for structural or unit reasons, not because of tuning (see the section above). First confirm the units of the measured sediment fluxes, then re-open the ammonium flux range and use total N as a target to constrain the budget.</span>
+<span id="cb2-405"><a href="#cb2-405" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Alum parameters are weakly identified.** FRP is dominated by the dose and the efficiency; treat alum efficiency and settling as scenario dimensions, not fitted values, in any projection. Only 56 to 73 FRP observations fall in the windows, mostly near the detection limit.</span>
+<span id="cb2-406"><a href="#cb2-406" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**TLI4 depends on total P, total N and Secchi**, none of which are calibration targets yet. Add them before using <span class="in">`LKE_tli4`</span> (see the <span class="co">[</span><span class="ot">climate strategy</span><span class="co">](climate-impact-strategy.qmd)</span>).</span>
+<span id="cb2-407"><a href="#cb2-407" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Stage 3 was calibrated without alum.** Consider running stage 3 with alum on from the start, using the dosing history.</span>
+<span id="cb2-408"><a href="#cb2-408" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Parameters at their bounds** in stages 2 and 3 (wind scaling, crest elevation, sediment temperature amplitude, <span class="in">`rpoc_hydrol`</span>, diatom <span class="in">`R_growth`</span>) suggest compensating errors; test whether the projections are sensitive to them.</span>
+<span id="cb2-409"><a href="#cb2-409" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>**Fix the upstream bugs:** the double unit conversion in <span class="in">`aemetools`</span> and the rainfall units in the <span class="in">`era5_corrected_hourly`</span> target.</span>
+<span id="cb2-410"><a href="#cb2-410" aria-hidden="true" tabindex="-1"></a><span class="ss">7.  </span>**Housekeeping.** The large PEST working directories (<span class="in">`pest/`</span>, <span class="in">`pest_smoke/`</span>, <span class="in">`pest_diag/`</span>), the test folders in <span class="in">`calibration/`</span> and <span class="in">`aeme_base_prerainfix.rds`</span> can be deleted. Archived (invalid) results are in <span class="in">`calibration/checkpoints/archive_prevdata/`</span>.</span>
+<span id="cb2-411"><a href="#cb2-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-412"><a href="#cb2-412" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducing</span></span>
+<span id="cb2-413"><a href="#cb2-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-414"><a href="#cb2-414" aria-hidden="true" tabindex="-1"></a><span class="in">``` bash</span></span>
+<span id="cb2-415"><a href="#cb2-415" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'targets::tar_make(aeme_base_file)'</span></span>
+<span id="cb2-416"><a href="#cb2-416" aria-hidden="true" tabindex="-1"></a><span class="va">PEST_NCORE</span><span class="op">=</span>10 <span class="va">PEST_NOPTMAX</span><span class="op">=</span>4 <span class="va">PEST_NREALS</span><span class="op">=</span>40 <span class="ex">Rscript</span> calibration/run_stage.R 1</span>
+<span id="cb2-417"><a href="#cb2-417" aria-hidden="true" tabindex="-1"></a><span class="va">PEST_NCORE</span><span class="op">=</span>10 <span class="va">PEST_NOPTMAX</span><span class="op">=</span>4 <span class="va">PEST_NREALS</span><span class="op">=</span>40 <span class="ex">Rscript</span> calibration/run_stage.R 2</span>
+<span id="cb2-418"><a href="#cb2-418" aria-hidden="true" tabindex="-1"></a><span class="co"># stages 3-5 (patched aemetools in calibration/lib_aemetools_patched)</span></span>
+<span id="cb2-419"><a href="#cb2-419" aria-hidden="true" tabindex="-1"></a><span class="ex">powershell</span> <span class="at">-NoProfile</span> <span class="at">-File</span> calibration/run_stages_3_to_5_v2.ps1</span>
+<span id="cb2-420"><a href="#cb2-420" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> calibration/07_export_report_data.R   <span class="co"># plots and tables for this page</span></span>
+<span id="cb2-421"><a href="#cb2-421" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-422"><a href="#cb2-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-423"><a href="#cb2-423" aria-hidden="true" tabindex="-1"></a>Set <span class="in">`PEST_SMOKE=1`</span> for a quick wiring test, and <span class="in">`PEST_STAGE3_DIAG=1|oxy`</span> or <span class="in">`PEST_STAGE4_DIAG=1`</span> for the sensitivity checks.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

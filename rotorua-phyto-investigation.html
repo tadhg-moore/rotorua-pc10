@@ -1,0 +1,2693 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-03">
+
+<title>Phytoplankton groups and zooplankton: investigation – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4cf47456d81c96c3587e2b69f30f063c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">Project admin</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data.html"> 
+<span class="menu-text">Data preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./aed_calibration_sa_plan.html" aria-current="page"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research-overview.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./rotorua-phyto-investigation.html">Phytoplankton &amp; Zooplankton Investigation</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Section">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aed_calibration_sa_plan.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration &amp; SA Plan</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./csps-metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Metrics &amp; Targets</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-staged.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Staged Calibration (first cut)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./calibration-step1-physics-oxygen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Step 1: Physics and Oxygen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity-csps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSPS Sensitivity Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pest_workflow_summary_2026-10.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PEST Workflow Summary</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-calibration-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Calibration Report</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-phyto-investigation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Phytoplankton &amp; Zooplankton Investigation</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link active" data-scroll-target="#sec-summary"><span class="header-section-number">1</span> Summary</a></li>
+  <li><a href="#sec-method" id="toc-sec-method" class="nav-link" data-scroll-target="#sec-method"><span class="header-section-number">2</span> Method</a>
+  <ul class="collapse">
+  <li><a href="#parameter-space" id="toc-parameter-space" class="nav-link" data-scroll-target="#parameter-space"><span class="header-section-number">2.1</span> Parameter space</a></li>
+  <li><a href="#score" id="toc-score" class="nav-link" data-scroll-target="#score"><span class="header-section-number">2.2</span> Score</a></li>
+  </ul></li>
+  <li><a href="#sec-oat" id="toc-sec-oat" class="nav-link" data-scroll-target="#sec-oat"><span class="header-section-number">3</span> One-at-a-time effects</a></li>
+  <li><a href="#sec-search" id="toc-sec-search" class="nav-link" data-scroll-target="#sec-search"><span class="header-section-number">4</span> Adaptive search</a></li>
+  <li><a href="#sec-best" id="toc-sec-best" class="nav-link" data-scroll-target="#sec-best"><span class="header-section-number">5</span> Best configurations</a>
+  <ul class="collapse">
+  <li><a href="#sec-zoo" id="toc-sec-zoo" class="nav-link" data-scroll-target="#sec-zoo"><span class="header-section-number">5.1</span> Zooplankton in the best configurations</a></li>
+  <li><a href="#what-was-and-was-not-varied" id="toc-what-was-and-was-not-varied" class="nav-link" data-scroll-target="#what-was-and-was-not-varied"><span class="header-section-number">5.2</span> What was and was not varied</a></li>
+  </ul></li>
+  <li><a href="#sec-validation" id="toc-sec-validation" class="nav-link" data-scroll-target="#sec-validation"><span class="header-section-number">6</span> Longer window</a></li>
+  <li><a href="#sec-obsfit" id="toc-sec-obsfit" class="nav-link" data-scroll-target="#sec-obsfit"><span class="header-section-number">7</span> Fit to the observed group data, 2003 to 2011</a>
+  <ul class="collapse">
+  <li><a href="#sec-timing" id="toc-sec-timing" class="nav-link" data-scroll-target="#sec-timing"><span class="header-section-number">7.1</span> Timing: time series and depth contours</a></li>
+  </ul></li>
+  <li><a href="#sec-limits" id="toc-sec-limits" class="nav-link" data-scroll-target="#sec-limits"><span class="header-section-number">8</span> Interpretation and limits</a></li>
+  <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next"><span class="header-section-number">9</span> Suggested next steps</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Phytoplankton groups and zooplankton: investigation</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">How zooplankton grazing, group traits and nutrient stoichiometry shape succession, chlorophyll-a and nutrients in the GLM-AED model</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 3, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-summary" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
+<p>The calibrated Lake Rotorua model has no zooplankton (<code>aed_zooplankton</code> is commented out of the model list), so nothing grazes the phytoplankton and every phytoplankton parameter absorbed that missing loss. The result is a lake of diatoms and cyanobacteria only, with the greens gone. This investigation switches the zooplankton on and asks which settings give three coexisting groups with a plausible seasonal order (diatoms in the cool seasons, greens through the year, cyanobacteria in summer), total chlorophyll-a near the observations, and nutrients that stay close to the calibrated model.</p>
+<p><strong>Method.</strong> A 2-year window (2018-07 to 2020-06, plus the 540 day spin-up) of the stage j best member is run in about 20 s to 90 s per configuration. A one-at-a-time screen of 41 parameters (75 runs) was followed by an adaptive search of 11 generations of 90 runs (990 runs) over all 41 parameters at once. Each run is scored on chlorophyll-a, five nutrients, the seasonal group shares, zooplankton biomass and whether cyanobacteria favour calm days. No data exist for the individual groups or for zooplankton, so the group split and zooplankton biomass are set only to plausible ranges.</p>
+<p><strong>What was found</strong></p>
+<ul>
+<li><strong>Zooplankton in this build do not conserve phosphorus or nitrogen.</strong> Switching them on with their default phosphorus content raised surface TP from 0.02 to 0.11 g/m³ and FRP from 0.003 to 0.08 g/m³. In <code>aed_zooplankton.F90</code> the phosphorus and nitrogen eaten from phytoplankton are divided by 31 and 14 (a mg-to-mmol conversion), while the phytoplankton lose the full amount, so the zooplankton phosphorus content (<code>IPC_zoo</code>) and nitrogen content (<code>INC_zoo</code>) act as the closure terms of the budget. Every good configuration settles at an <code>IPC_zoo</code> between 0.003 and 0.008 mol P per mol C.</li>
+<li><strong>Grazing is what opens the niche for three groups.</strong> With the zooplankton on, the greens and diatoms are held back and the cyanobacteria, which the zooplankton hardly eat, get the warm season.</li>
+<li><strong>The best configuration scores 2.7 against 3.6 for the hand-tuned case and 18.8 for the zooplankton-off model</strong> (lower is better). It gives mean chlorophyll-a of 9.0 mg/m³ (8.3 observed in the window), diatoms 70% of biomass in September to November and cyanobacteria 44% in January to March.</li>
+<li><strong>The result holds on a six-year window (2016 to 2022).</strong> The best configuration scores 2.2 there, against 4.0 for the hand-tuned case and 18.1 for the zooplankton-off model, with the same seasonal order (diatoms 68% in September to November, cyanobacteria 43% in January to March) and chlorophyll-a of 9.2 mg/m³ against 8.2 observed. The search never saw most of these years, but it was scored on the 2-year window inside this one.</li>
+<li><strong>Calm-water blooms are not reproduced.</strong> In every configuration the cyanobacteria are no more abundant on stratified than on mixed summer days, and constant positive buoyancy or the motile option changes little, because the top 5 m of this polymictic lake is well mixed.</li>
+<li><strong>Total nitrogen is too low</strong> in all of the good configurations (about 0.15 to 0.25 g/m³ against 0.31 observed).</li>
+</ul>
+</section>
+<section id="sec-method" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-method"><span class="header-section-number">2</span> Method</h2>
+<section id="parameter-space" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="parameter-space"><span class="header-section-number">2.1</span> Parameter space</h3>
+<p>Forty-one parameters (<a href="#tbl-space" class="quarto-xref">Table&nbsp;1</a>) cover the traits of the three phytoplankton groups, the grazing and mortality of three zooplankton groups, how much of each prey they take, and three switches (nitrogen fixation, motile cyanobacteria, copepods that eat other zooplankton). The temperature function is built from <code>T_opt</code> with fixed offsets for <code>T_std</code> and <code>T_max</code>, and combinations that the AED temperature solver cannot solve (which would stop GLM) are rejected before the run.</p>
+<div class="cell">
+<div id="tbl-space" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-space-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Parameters searched, with their range and the h1 base value.
+</figcaption>
+<div aria-describedby="tbl-space-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Group</th>
+<th style="text-align: right;">Low</th>
+<th style="text-align: right;">High</th>
+<th style="text-align: right;">Base</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cy_Rg</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">1.1700</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_Rg</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">0.3000</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">0.9000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_Rg</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">1.2000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_To</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">24.0000</td>
+<td style="text-align: right;">32.00</td>
+<td style="text-align: right;">28.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_To</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">22.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">27.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_To</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">14.0000</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">20.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_KP</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.1490</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_KP</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.2240</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_KP</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.0210</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_KN</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">13.9000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_KN</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">10.7000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_KN</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">2.9000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_IK</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">42.4000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_IK</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">48.2000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_IK</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">25.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_Rr</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.1080</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_Rr</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0129</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_Rr</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0306</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_wp</td>
+<td style="text-align: left;">cyano</td>
+<td style="text-align: right;">-0.1000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_wp</td>
+<td style="text-align: left;">green</td>
+<td style="text-align: right;">-0.4000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.2250</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_wp</td>
+<td style="text-align: left;">diatom</td>
+<td style="text-align: right;">-0.4000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.1580</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zr_rot</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.5000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zr_cla</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.6000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zr_cop</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.4000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zm_rot</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.0500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zm_cla</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.0800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zm_cop</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.0500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_Kgrz</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">z_Cmin</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">10.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_assim</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.8000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">p_green</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">p_diatom</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.4000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">p_cyano</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0010</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.0200</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_IPC</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.0030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">z_INC</td>
+<td style="text-align: left;">zoop</td>
+<td style="text-align: right;">0.0050</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.0500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nfix</td>
+<td style="text-align: left;">cat</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_motile</td>
+<td style="text-align: left;">cat</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cop_zdiet</td>
+<td style="text-align: left;">cat</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="score" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="score"><span class="header-section-number">2.2</span> Score</h3>
+<p>The score adds four parts (all are about 1 when the model is within a stated tolerance):</p>
+<ol type="1">
+<li><strong>Chlorophyll-a:</strong> log bias of the mean, the 90th percentile and the monthly pattern against the surface observations in the window.</li>
+<li><strong>Nutrients:</strong> mean absolute scaled log bias of TP, FRP, total nitrogen, nitrate and ammonium.</li>
+<li><strong>Succession:</strong> penalties when the diatom share in September to November and May to July averages below 0.5, the cyanobacteria share in January to March is below 0.5, the green share is below 0.35 over the year, and a large penalty for any group below 5% of biomass.</li>
+<li><strong>Zooplankton:</strong> penalty outside 3 to 30 mmol C/m³ in total, and for any group below 0.05.</li>
+</ol>
+<p>The weighting is a judgement, not a result, so the ranking among near-equal scores should not be over-read.</p>
+</section>
+</section>
+<section id="sec-oat" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-oat"><span class="header-section-number">3</span> One-at-a-time effects</h2>
+<p><a href="#fig-oat" class="quarto-xref">Figure&nbsp;1</a> moves each parameter to 10% and 90% of its range around the h1 base case.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-oat" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-oat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/oat_tornado.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Change in the score components when one parameter is moved to 10% or 90% of its range from the h1 base case (largest 18 by total score change)."><img src="images/phyto_invest/oat_tornado.png" class="img-fluid figure-img" width="520"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-oat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Change in the score components when one parameter is moved to 10% or 90% of its range from the h1 base case (largest 18 by total score change).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>The zooplankton refuge <code>Cmin_grz_zoo</code></strong> is the most powerful single control. At the low end the grazing removes nearly all the algae (mean chlorophyll about 1 mg/m³); at the high end chlorophyll-a rises by about 7 mg/m³.</li>
+<li><strong>Copepod and rotifer grazing rates</strong> at the high end remove the cyanobacteria (even at a preference of 0.02) and so wreck the succession.</li>
+<li><strong><code>IPC_zoo</code></strong> at the high end raises TP about seven-fold, and at the low end TP falls, so it must be tuned together with grazing.</li>
+<li><strong>Diatom respiration</strong> at the high end wipes out the diatoms.</li>
+<li><strong>Green growth, light and nutrient half-saturation</strong> decide whether the greens survive, but none of them alone brings the cyanobacteria to the target summer share.</li>
+</ul>
+</section>
+<section id="sec-search" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-search"><span class="header-section-number">4</span> Adaptive search</h2>
+<p>Each generation samples 90 configurations around the average of the best 20% of the last, with a floor on the spread.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-progress" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-progress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/progress.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Score by generation."><img src="images/phyto_invest/progress.png" class="img-fluid figure-img" width="390"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-progress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Score by generation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The best score fell from 5.5 to 2.7 over 11 generations and levelled off at about 2.7 to 3.0, so more generations with this score would add little. <a href="#fig-constraint" class="quarto-xref">Figure&nbsp;3</a> shows how tightly the best 5% of runs pin each parameter.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-constraint" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-constraint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/constraint.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Spread of each parameter among the best 5% of all runs, as a share of its range. Long bars are poorly constrained."><img src="images/phyto_invest/constraint.png" class="img-fluid figure-img" width="422"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-constraint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Spread of each parameter among the best 5% of all runs, as a share of its range. Long bars are poorly constrained.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Well constrained:</strong> the zooplankton phosphorus content, the refuge, the nitrogen content, the cladoceran grazing rate and the cyanobacteria respiration.</li>
+<li><strong>Poorly constrained:</strong> whether copepods eat other zooplankton, copepod mortality, the cyanobacteria preference by zooplankton, and cyanobacteria buoyancy. Different values work about equally well, so these are not identifiable from total chlorophyll-a and nutrients.</li>
+</ul>
+</section>
+<section id="sec-best" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-best"><span class="header-section-number">5</span> Best configurations</h2>
+<div class="cell">
+<div id="tbl-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Zooplankton-off reference, the h1 hand-tuned case and the three best configurations (2-year window).
+</figcaption>
+<div aria-describedby="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 32%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">reference (zooplankton off)</th>
+<th style="text-align: right;">h1 base</th>
+<th style="text-align: right;">g009_084</th>
+<th style="text-align: right;">g010_042</th>
+<th style="text-align: right;">g008_008</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Score</td>
+<td style="text-align: right;">18.751</td>
+<td style="text-align: right;">3.640</td>
+<td style="text-align: right;">2.735</td>
+<td style="text-align: right;">2.838</td>
+<td style="text-align: right;">2.887</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chlorophyll-a (mg/m3)</td>
+<td style="text-align: right;">12.025</td>
+<td style="text-align: right;">9.318</td>
+<td style="text-align: right;">9.036</td>
+<td style="text-align: right;">7.372</td>
+<td style="text-align: right;">9.139</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP (g/m3)</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.013</td>
+<td style="text-align: right;">0.028</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">0.015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FRP (g/m3)</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TN (g/m3)</td>
+<td style="text-align: right;">0.390</td>
+<td style="text-align: right;">0.137</td>
+<td style="text-align: right;">0.199</td>
+<td style="text-align: right;">0.162</td>
+<td style="text-align: right;">0.195</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nitrate (g/m3)</td>
+<td style="text-align: right;">0.081</td>
+<td style="text-align: right;">0.044</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">0.046</td>
+<td style="text-align: right;">0.055</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ammonium (g/m3)</td>
+<td style="text-align: right;">0.042</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: right;">0.015</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Diatom share Sep-Nov</td>
+<td style="text-align: right;">0.987</td>
+<td style="text-align: right;">0.623</td>
+<td style="text-align: right;">0.697</td>
+<td style="text-align: right;">0.603</td>
+<td style="text-align: right;">0.536</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cyano share Jan-Mar</td>
+<td style="text-align: right;">0.821</td>
+<td style="text-align: right;">0.276</td>
+<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.338</td>
+<td style="text-align: right;">0.458</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green share, year</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.417</td>
+<td style="text-align: right;">0.349</td>
+<td style="text-align: right;">0.350</td>
+<td style="text-align: right;">0.439</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Zooplankton (mmol C/m3)</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">5.571</td>
+<td style="text-align: right;">4.664</td>
+<td style="text-align: right;">8.331</td>
+<td style="text-align: right;">5.168</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyano calm/mixed ratio</td>
+<td style="text-align: right;">1.103</td>
+<td style="text-align: right;">0.808</td>
+<td style="text-align: right;">1.030</td>
+<td style="text-align: right;">1.008</td>
+<td style="text-align: right;">0.938</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Observed means over the same pairs are chlorophyll-a 8.3 mg/m³, TP 0.018, FRP 0.002, TN 0.31, nitrate 0.034 and ammonium 0.008 g/m³.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-succ-top" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-succ-top-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/succession_top.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Monthly share of surface biomass by group for the three best configurations and the h1 case."><img src="images/phyto_invest/succession_top.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-succ-top-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Monthly share of surface biomass by group for the three best configurations and the h1 case.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-best-ts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-best-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/best_timeseries.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Weekly mean surface biomass by group in the best configuration."><img src="images/phyto_invest/best_timeseries.png" class="img-fluid figure-img" width="520"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-best-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Weekly mean surface biomass by group in the best configuration.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-best-zoo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-best-zoo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/best_zoo.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Weekly mean zooplankton biomass in the best configuration."><img src="images/phyto_invest/best_zoo.png" class="img-fluid figure-img" width="520"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-best-zoo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Weekly mean zooplankton biomass in the best configuration.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In the best configuration the spring diatom bloom (about 70 mmol C/m³ in October to November) is probably too sharp, and the summer is nearly flat, with biomass held at about 43 mmol C/m³ from December to April. The observed chlorophyll-a has more year to year variation than this.</p>
+<section id="sec-zoo" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="sec-zoo"><span class="header-section-number">5.1</span> Zooplankton in the best configurations</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-zoo-top" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-zoo-top-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/zoo_top_timeseries.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Weekly mean zooplankton biomass (0 to 5 m) by group in the three best configurations and the h1 case."><img src="images/phyto_invest/zoo_top_timeseries.png" class="img-fluid figure-img" width="520"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zoo-top-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Weekly mean zooplankton biomass (0 to 5 m) by group in the three best configurations and the h1 case.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-zoo-monthly" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-zoo-monthly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/zoo_monthly.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Monthly mean zooplankton biomass by group."><img src="images/phyto_invest/zoo_monthly.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zoo-monthly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Monthly mean zooplankton biomass by group.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-zoo-ratio" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-zoo-ratio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/zoo_phyto_ratio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;9: Total zooplankton biomass as a fraction of total phytoplankton biomass, by month."><img src="images/phyto_invest/zoo_phyto_ratio.png" class="img-fluid figure-img" width="455"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zoo-ratio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Total zooplankton biomass as a fraction of total phytoplankton biomass, by month.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Zooplankton almost disappear in winter.</strong> In every configuration biomass is close to zero from about June to September and comes back in October to December, peaking at 10 to 30 mmol C/m³ in summer. Real zooplankton in a lake of this temperature persist through winter at low levels, so the winter collapse is probably a model artefact (temperature limits on growth and the minimum biomass floor), and it lets the diatoms bloom unchecked each spring.</li>
+<li><strong>Rotifers or cladocerans dominate; copepods are marginal</strong> in all but one configuration (g010_042, where copepods reach 20 mmol C/m³ in spring). The search had no reason to favour copepods because no data say which group should dominate.</li>
+<li><strong>Grazers are 20 to 60% of phytoplankton biomass in summer</strong> and well under 5% in winter (<a href="#fig-zoo-ratio" class="quarto-xref">Figure&nbsp;9</a>), which is strong top-down pressure. There are no zooplankton data to say whether that is realistic for Rotorua.</li>
+</ul>
+</section>
+<section id="what-was-and-was-not-varied" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="what-was-and-was-not-varied"><span class="header-section-number">5.2</span> What was and was not varied</h3>
+<p>The search varied, for each of the three zooplankton groups, the maximum grazing rate and the mortality rate; it varied the half-saturation (<code>Kgrz_zoo</code>), the refuge (<code>Cmin_grz_zoo</code>) and the assimilation efficiency in common for all three; it varied how strongly all three prefer greens, diatoms and cyanobacteria (one preference each, shared by the three groups); and whether copepods eat the other zooplankton. Not varied: which groups are present (all three are always on, so there is no run with, for example, rotifers only or cladocerans only), a separate food preference for each group, the zooplankton temperature limits (<code>Tstd_zoo</code>, <code>Topt_zoo</code>, <code>Tmax_zoo</code>), respiration, the split of excretion and faeces, the oxygen threshold, and predation on the zooplankton. The model has no fish or other predator, so predation pressure on the zooplankton enters only through the linear mortality rate, and that is the only lever on top-down control of the grazers. The winter collapse and the unconstrained copepod diet suggest that the community composition and the temperature limits are the next things to test.</p>
+<div class="cell">
+<div id="tbl-params" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Parameter values of the five best configurations (cat = 0/1).
+</figcaption>
+<div aria-describedby="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">param</th>
+<th style="text-align: right;">base</th>
+<th style="text-align: right;">lo</th>
+<th style="text-align: right;">hi</th>
+<th style="text-align: right;">g009_084</th>
+<th style="text-align: right;">g010_042</th>
+<th style="text-align: right;">g008_008</th>
+<th style="text-align: right;">g011_028</th>
+<th style="text-align: right;">g003_023</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cy_Rg</td>
+<td style="text-align: right;">1.1680</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">1.2184</td>
+<td style="text-align: right;">1.7598</td>
+<td style="text-align: right;">1.2810</td>
+<td style="text-align: right;">1.2171</td>
+<td style="text-align: right;">1.1874</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_Rg</td>
+<td style="text-align: right;">0.9000</td>
+<td style="text-align: right;">0.3000</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">0.6707</td>
+<td style="text-align: right;">0.7276</td>
+<td style="text-align: right;">0.8352</td>
+<td style="text-align: right;">0.9298</td>
+<td style="text-align: right;">1.0578</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_Rg</td>
+<td style="text-align: right;">1.2000</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">1.2275</td>
+<td style="text-align: right;">1.2576</td>
+<td style="text-align: right;">1.2736</td>
+<td style="text-align: right;">1.2720</td>
+<td style="text-align: right;">1.6317</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_To</td>
+<td style="text-align: right;">28.0000</td>
+<td style="text-align: right;">24.0000</td>
+<td style="text-align: right;">32.00</td>
+<td style="text-align: right;">27.9641</td>
+<td style="text-align: right;">30.1624</td>
+<td style="text-align: right;">28.2094</td>
+<td style="text-align: right;">31.1936</td>
+<td style="text-align: right;">26.5835</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_To</td>
+<td style="text-align: right;">27.0000</td>
+<td style="text-align: right;">22.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">28.4668</td>
+<td style="text-align: right;">25.5155</td>
+<td style="text-align: right;">25.6249</td>
+<td style="text-align: right;">26.9204</td>
+<td style="text-align: right;">23.3534</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_To</td>
+<td style="text-align: right;">20.0000</td>
+<td style="text-align: right;">14.0000</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">20.1578</td>
+<td style="text-align: right;">22.0571</td>
+<td style="text-align: right;">18.8416</td>
+<td style="text-align: right;">20.6274</td>
+<td style="text-align: right;">18.5450</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_KP</td>
+<td style="text-align: right;">0.1490</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.1766</td>
+<td style="text-align: right;">0.2313</td>
+<td style="text-align: right;">0.2850</td>
+<td style="text-align: right;">0.2009</td>
+<td style="text-align: right;">0.1932</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_KP</td>
+<td style="text-align: right;">0.2240</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.3521</td>
+<td style="text-align: right;">0.0998</td>
+<td style="text-align: right;">0.4250</td>
+<td style="text-align: right;">0.0581</td>
+<td style="text-align: right;">0.4782</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_KP</td>
+<td style="text-align: right;">0.0210</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.1073</td>
+<td style="text-align: right;">0.0616</td>
+<td style="text-align: right;">0.0360</td>
+<td style="text-align: right;">0.0186</td>
+<td style="text-align: right;">0.0128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_KN</td>
+<td style="text-align: right;">13.9000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">10.0571</td>
+<td style="text-align: right;">7.0975</td>
+<td style="text-align: right;">15.4653</td>
+<td style="text-align: right;">11.0990</td>
+<td style="text-align: right;">24.5922</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_KN</td>
+<td style="text-align: right;">10.7000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">6.5782</td>
+<td style="text-align: right;">6.1170</td>
+<td style="text-align: right;">19.0786</td>
+<td style="text-align: right;">10.9241</td>
+<td style="text-align: right;">11.4894</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_KN</td>
+<td style="text-align: right;">2.9000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">9.3123</td>
+<td style="text-align: right;">4.8771</td>
+<td style="text-align: right;">3.8931</td>
+<td style="text-align: right;">6.5913</td>
+<td style="text-align: right;">12.7428</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_IK</td>
+<td style="text-align: right;">42.4000</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">41.5288</td>
+<td style="text-align: right;">40.8613</td>
+<td style="text-align: right;">33.9716</td>
+<td style="text-align: right;">44.3025</td>
+<td style="text-align: right;">25.1877</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_IK</td>
+<td style="text-align: right;">48.2000</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">44.7102</td>
+<td style="text-align: right;">41.1055</td>
+<td style="text-align: right;">68.3628</td>
+<td style="text-align: right;">39.2906</td>
+<td style="text-align: right;">80.7565</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_IK</td>
+<td style="text-align: right;">25.5000</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">17.5271</td>
+<td style="text-align: right;">20.3638</td>
+<td style="text-align: right;">12.1279</td>
+<td style="text-align: right;">19.6816</td>
+<td style="text-align: right;">36.4785</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cy_Rr</td>
+<td style="text-align: right;">0.1080</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.1020</td>
+<td style="text-align: right;">0.1353</td>
+<td style="text-align: right;">0.1127</td>
+<td style="text-align: right;">0.0889</td>
+<td style="text-align: right;">0.0961</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gr_Rr</td>
+<td style="text-align: right;">0.0129</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0111</td>
+<td style="text-align: right;">0.0129</td>
+<td style="text-align: right;">0.0114</td>
+<td style="text-align: right;">0.0170</td>
+<td style="text-align: right;">0.0103</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">di_Rr</td>
+<td style="text-align: right;">0.0306</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.0542</td>
+<td style="text-align: right;">0.0254</td>
+<td style="text-align: right;">0.0610</td>
+<td style="text-align: right;">0.0356</td>
+<td style="text-align: right;">0.0226</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_wp</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">-0.1000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.7488</td>
+<td style="text-align: right;">0.6761</td>
+<td style="text-align: right;">0.3688</td>
+<td style="text-align: right;">0.7446</td>
+<td style="text-align: right;">0.2499</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gr_wp</td>
+<td style="text-align: right;">-0.2250</td>
+<td style="text-align: right;">-0.4000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.2711</td>
+<td style="text-align: right;">-0.1549</td>
+<td style="text-align: right;">-0.2003</td>
+<td style="text-align: right;">-0.2873</td>
+<td style="text-align: right;">-0.1319</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">di_wp</td>
+<td style="text-align: right;">-0.1580</td>
+<td style="text-align: right;">-0.4000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.1656</td>
+<td style="text-align: right;">-0.1998</td>
+<td style="text-align: right;">-0.2173</td>
+<td style="text-align: right;">-0.1866</td>
+<td style="text-align: right;">-0.0650</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zr_rot</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.6106</td>
+<td style="text-align: right;">0.6826</td>
+<td style="text-align: right;">0.5358</td>
+<td style="text-align: right;">0.4997</td>
+<td style="text-align: right;">0.4069</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zr_cla</td>
+<td style="text-align: right;">0.6000</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.7649</td>
+<td style="text-align: right;">0.6467</td>
+<td style="text-align: right;">0.5556</td>
+<td style="text-align: right;">0.6193</td>
+<td style="text-align: right;">0.3236</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zr_cop</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">0.6898</td>
+<td style="text-align: right;">0.8666</td>
+<td style="text-align: right;">0.8429</td>
+<td style="text-align: right;">0.5489</td>
+<td style="text-align: right;">0.3353</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zm_rot</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.0330</td>
+<td style="text-align: right;">0.0674</td>
+<td style="text-align: right;">0.0159</td>
+<td style="text-align: right;">0.0827</td>
+<td style="text-align: right;">0.0775</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">zm_cla</td>
+<td style="text-align: right;">0.0800</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.1114</td>
+<td style="text-align: right;">0.0349</td>
+<td style="text-align: right;">0.1021</td>
+<td style="text-align: right;">0.1623</td>
+<td style="text-align: right;">0.0571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">zm_cop</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.0100</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.0572</td>
+<td style="text-align: right;">0.0513</td>
+<td style="text-align: right;">0.1051</td>
+<td style="text-align: right;">0.0796</td>
+<td style="text-align: right;">0.1108</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_Kgrz</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">0.7381</td>
+<td style="text-align: right;">0.8504</td>
+<td style="text-align: right;">1.7513</td>
+<td style="text-align: right;">0.7000</td>
+<td style="text-align: right;">0.7733</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">z_Cmin</td>
+<td style="text-align: right;">10.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">14.0980</td>
+<td style="text-align: right;">8.6348</td>
+<td style="text-align: right;">13.1351</td>
+<td style="text-align: right;">11.2288</td>
+<td style="text-align: right;">7.1718</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_assim</td>
+<td style="text-align: right;">0.8000</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.8257</td>
+<td style="text-align: right;">0.8294</td>
+<td style="text-align: right;">0.7790</td>
+<td style="text-align: right;">0.8019</td>
+<td style="text-align: right;">0.8223</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">p_green</td>
+<td style="text-align: right;">0.5000</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.2139</td>
+<td style="text-align: right;">0.4810</td>
+<td style="text-align: right;">0.4111</td>
+<td style="text-align: right;">0.2140</td>
+<td style="text-align: right;">0.1934</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">p_diatom</td>
+<td style="text-align: right;">0.4000</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.2926</td>
+<td style="text-align: right;">0.4170</td>
+<td style="text-align: right;">0.4171</td>
+<td style="text-align: right;">0.3981</td>
+<td style="text-align: right;">0.2417</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">p_cyano</td>
+<td style="text-align: right;">0.0200</td>
+<td style="text-align: right;">0.0010</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.0697</td>
+<td style="text-align: right;">0.1402</td>
+<td style="text-align: right;">0.0434</td>
+<td style="text-align: right;">0.0178</td>
+<td style="text-align: right;">0.0753</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">z_IPC</td>
+<td style="text-align: right;">0.0030</td>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.0077</td>
+<td style="text-align: right;">0.0044</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: right;">0.0047</td>
+<td style="text-align: right;">0.0037</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">z_INC</td>
+<td style="text-align: right;">0.0500</td>
+<td style="text-align: right;">0.0050</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.1351</td>
+<td style="text-align: right;">0.1216</td>
+<td style="text-align: right;">0.1855</td>
+<td style="text-align: right;">0.1132</td>
+<td style="text-align: right;">0.2262</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nfix</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cy_motile</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cop_zdiet</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-validation" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-validation"><span class="header-section-number">6</span> Longer window</h2>
+<p>The three best configurations, the h1 case and the zooplankton-off reference were re-run on 2016-07 to 2022-06 (six years) to check that the 2-year result holds.</p>
+<table class="caption-top table">
+<caption>Six-year window.</caption>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 27%">
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">reference (zooplankton off)</th>
+<th style="text-align: right;">base_h1</th>
+<th style="text-align: right;">top1_g009_084</th>
+<th style="text-align: right;">top2_g010_042</th>
+<th style="text-align: right;">top3_g008_008</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Score</td>
+<td style="text-align: right;">18.086</td>
+<td style="text-align: right;">4.001</td>
+<td style="text-align: right;">2.225</td>
+<td style="text-align: right;">2.758</td>
+<td style="text-align: right;">3.831</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chlorophyll-a (mg/m3)</td>
+<td style="text-align: right;">9.816</td>
+<td style="text-align: right;">9.098</td>
+<td style="text-align: right;">9.165</td>
+<td style="text-align: right;">7.372</td>
+<td style="text-align: right;">9.649</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP (g/m3)</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.013</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FRP (g/m3)</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TN (g/m3)</td>
+<td style="text-align: right;">0.299</td>
+<td style="text-align: right;">0.132</td>
+<td style="text-align: right;">0.205</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">0.183</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nitrate (g/m3)</td>
+<td style="text-align: right;">0.070</td>
+<td style="text-align: right;">0.039</td>
+<td style="text-align: right;">0.051</td>
+<td style="text-align: right;">0.044</td>
+<td style="text-align: right;">0.049</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ammonium (g/m3)</td>
+<td style="text-align: right;">0.032</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Diatom share Sep-Nov</td>
+<td style="text-align: right;">0.990</td>
+<td style="text-align: right;">0.553</td>
+<td style="text-align: right;">0.681</td>
+<td style="text-align: right;">0.608</td>
+<td style="text-align: right;">0.490</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cyano share Jan-Mar</td>
+<td style="text-align: right;">0.740</td>
+<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">0.336</td>
+<td style="text-align: right;">0.315</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Green share, year</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.499</td>
+<td style="text-align: right;">0.361</td>
+<td style="text-align: right;">0.353</td>
+<td style="text-align: right;">0.536</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Zooplankton (mmol C/m3)</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">5.308</td>
+<td style="text-align: right;">4.300</td>
+<td style="text-align: right;">7.351</td>
+<td style="text-align: right;">4.611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyano calm/mixed ratio</td>
+<td style="text-align: right;">1.294</td>
+<td style="text-align: right;">1.016</td>
+<td style="text-align: right;">1.017</td>
+<td style="text-align: right;">1.027</td>
+<td style="text-align: right;">1.244</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/phyto_invest/succession_validation.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Monthly share of surface biomass by group, six-year window."><img src="images/phyto_invest/succession_validation.png" class="img-fluid figure-img" alt="Monthly share of surface biomass by group, six-year window."></a></p>
+<figcaption>Monthly share of surface biomass by group, six-year window.</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-obsfit" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-obsfit"><span class="header-section-number">7</span> Fit to the observed group data, 2003 to 2011</h2>
+<p>The BOPRC phytoplankton counts (50 samples at sites 2 and 5, October 2003 to January 2011, mostly sampled in January, April, July and October) give the first observed group shares. They were used as follows.</p>
+<ul>
+<li><strong>Window:</strong> one run from 2003-07 to 2011-06 per configuration. Calibration scores use 2003-07 to 2007-06 (17 sample dates) and hold-out scores use 2007-07 to 2011-06 (14 sample dates); both are recorded for every run, and only the calibration score steered the search.</li>
+<li><strong>Observed curves:</strong> a first-harmonic seasonal curve per group, refit on the calibration samples only (so the hold-out years do not leak into the target), with a bootstrap spread as the tolerance (at least 0.07 in share). The model is scored on how far its monthly mean shares fall from these curves, in units of that tolerance (<code>z3</code> for the three-group scheme, <code>z4</code> for the four-group scheme with the cyanobacteria split).</li>
+<li><strong>Four model structures</strong>, all with zooplankton on and the 15 to 21 parameters of the earlier best configuration free: <code>s3</code> (cyanobacteria, greens, diatoms); <code>s4c</code> (cyanobacteria split into a nitrogen-fixing and a non-fixing group); <code>s4g</code> (an added group of other greens, the AED cryptophyte column with a lower light requirement); <code>s5</code> (both).</li>
+<li><strong>Budget:</strong> 240 runs (about 60 per structure). The first three rounds were scored against a diatom curve that was wrongly set to zero (a missing-value bug in my script). The model runs themselves were fine, so all 144 saved runs were re-scored offline and the search was resumed with two more rounds under the corrected score.</li>
+<li><strong>Selection:</strong> structures are compared on the terms they share (<code>z3</code>, chlorophyll-a, nutrients and zooplankton, summed as the “common score”), because the search score adds a four-group term for the split structures.</li>
+</ul>
+<div class="cell">
+<div id="tbl-obsfit" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-obsfit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Best run of each structure by common score. Calibration is 2003-07 to 2007-06 and hold-out 2007-07 to 2011-06. Observed mean chlorophyll-a is 11.3 (calibration) and 12.0 (hold-out) mg/m³ at the sample dates.
+</figcaption>
+<div aria-describedby="tbl-obsfit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Structure</th>
+<th style="text-align: left;">Run</th>
+<th style="text-align: right;">Common score, calibration</th>
+<th style="text-align: right;">Common score, hold-out</th>
+<th style="text-align: right;">z3, calibration</th>
+<th style="text-align: right;">z3, hold-out</th>
+<th style="text-align: right;">Share error, calibration</th>
+<th style="text-align: right;">Share error, hold-out</th>
+<th style="text-align: right;">Chl-a, calibration</th>
+<th style="text-align: right;">Chl-a, hold-out</th>
+<th style="text-align: right;">Zooplankton (mmol C/m3)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">3 groups</td>
+<td style="text-align: left;">r1_s3_01</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">9.63</td>
+<td style="text-align: right;">8.92</td>
+<td style="text-align: right;">3.68</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyano split</td>
+<td style="text-align: left;">r5_s4c_12</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">3.99</td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">9.10</td>
+<td style="text-align: right;">5.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Other greens</td>
+<td style="text-align: left;">r3_s4g_10</td>
+<td style="text-align: right;">4.56</td>
+<td style="text-align: right;">3.94</td>
+<td style="text-align: right;">1.43</td>
+<td style="text-align: right;">1.34</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">9.14</td>
+<td style="text-align: right;">8.96</td>
+<td style="text-align: right;">3.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Split + other greens</td>
+<td style="text-align: left;">r2_s5_09</td>
+<td style="text-align: right;">4.48</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">1.43</td>
+<td style="text-align: right;">1.96</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">12.31</td>
+<td style="text-align: right;">11.02</td>
+<td style="text-align: right;">4.63</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-obsfit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-obsfit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_shares.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;10: Monthly mean group shares of the best run of each structure (calibration years solid, hold-out years dashed) against the observed seasonal curve fitted on the calibration samples (grey, with 95% band). Axis runs July to June."><img src="images/phyto_invest/obsfit_shares.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obsfit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Monthly mean group shares of the best run of each structure (calibration years solid, hold-out years dashed) against the observed seasonal curve fitted on the calibration samples (grey, with 95% band). Axis runs July to June.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-obsfit-scatter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-obsfit-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_scatter.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figure&nbsp;11: Model share against observed share on each sample date, by structure, group and period."><img src="images/phyto_invest/obsfit_scatter.png" class="img-fluid figure-img" width="455"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obsfit-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Model share against observed share on each sample date, by structure, group and period.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-obsfit-zoo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-obsfit-zoo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_zoo.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figure&nbsp;12: Monthly mean zooplankton biomass of the best run of each structure."><img src="images/phyto_invest/obsfit_zoo.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obsfit-zoo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Monthly mean zooplankton biomass of the best run of each structure.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What the comparison shows</strong></p>
+<ul>
+<li><strong>The seasonal pattern can be matched.</strong> In all four structures the model’s monthly shares sit mostly inside the observed 95% band: diatoms dominate July to October, cyanobacteria peak in summer (January to March, about 20 to 50% in the model depending on the structure, against about 37% observed), and greens and other taxa are highest in summer to autumn. The earlier assumption that cyanobacteria should reach 50% in summer was too high, since the samples show them at about 25 to 35% of biovolume.</li>
+<li><strong>Hold-out years are about as well fitted as the calibration years</strong> for the three-group, cyano-split and other-greens structures (share error on the sample dates about 0.20 to 0.23 against 0.22 to 0.28), so the seasonal order found in 2003 to 2007 holds in 2007 to 2011. Mean chlorophyll-a is within about 25% of the observed mean in both periods (9.0 to 12.3 against 11.3 mg/m³ in the calibration years, 8.9 to 11.0 against 12.0 in the hold-out years).</li>
+<li><strong>No structure is clearly better.</strong> The common scores of the best runs are 4.1 (three groups), 4.3 (cyano split), 4.6 (other greens) and 4.5 (both), and the differences are small next to the run-to-run spread. With 60 runs per structure and 15 to 21 free parameters this is inside the noise of the search, so these results do not support the added complexity and also do not rule it out.</li>
+<li><strong>Other greens help the summer greens, but not the hold-out.</strong> The <code>s4g</code> run reproduces the observed summer rise in greens (peak near 0.7 in December) that the three-group and cyano-split runs miss (about 0.35), but it overestimates greens by 0.21 in the hold-out years. The five-group run has the largest hold-out errors (greens +0.28, diatoms -0.34 on the sample dates).</li>
+<li><strong>A persistent diatom excess in summer.</strong> Every structure keeps diatoms at about 25% of biomass from December to May, against about 5 to 15% observed.</li>
+<li><strong>Cyanobacteria split:</strong> the split run overestimates the summer cyanobacteria (about 50%, at the top of the observed band), and the four-group score term (<code>z4</code> of 1.7 to 2.0) shows the nitrogen-fixing and non-fixing groups are not separated cleanly by the model (the observed peaks are about two months apart).</li>
+</ul>
+<section id="sec-timing" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="sec-timing"><span class="header-section-number">7.1</span> Timing: time series and depth contours</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-obsfit-ts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-obsfit-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_timeseries.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figure&nbsp;13: Weekly mean surface biomass of each group (cyanobacteria and greens are sums of their sub-groups in the larger structures) for the best run of each structure, 2003 to 2011. Grey shading marks the hold-out years."><img src="images/phyto_invest/obsfit_timeseries.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obsfit-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Weekly mean surface biomass of each group (cyanobacteria and greens are sums of their sub-groups in the larger structures) for the best run of each structure, 2003 to 2011. Grey shading marks the hold-out years.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-obsfit-share-ts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-obsfit-share-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_share_timeseries.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figure&nbsp;14: Share of surface biomass of each group through time for the best run of each structure (lines), with the observed biovolume shares on the sample dates (open circles)."><img src="images/phyto_invest/obsfit_share_timeseries.png" class="img-fluid figure-img" width="585"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obsfit-share-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14: Share of surface biomass of each group through time for the best run of each structure (lines), with the observed biovolume shares on the sample dates (open circles).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The depth contours (<a href="#fig-depth-s3" class="quarto-xref">Figure&nbsp;15</a> to <a href="#fig-depth-s5" class="quarto-xref">Figure&nbsp;18</a>) show the daily profiles of each group, the total chlorophyll-a and the temperature in the best run of each structure. Triangles at the top mark the sample dates.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-depth-s3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-depth-s3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_depth_s3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figure&nbsp;15: Daily depth profiles, best run of the three-group structure."><img src="images/phyto_invest/obsfit_depth_s3.png" class="img-fluid figure-img" width="540"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-depth-s3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15: Daily depth profiles, best run of the three-group structure.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-depth-s4c" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-depth-s4c-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_depth_s4c.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Figure&nbsp;16: Daily depth profiles, best run of the cyanobacteria-split structure."><img src="images/phyto_invest/obsfit_depth_s4c.png" class="img-fluid figure-img" width="540"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-depth-s4c-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: Daily depth profiles, best run of the cyanobacteria-split structure.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-depth-s4g" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-depth-s4g-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_depth_s4g.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figure&nbsp;17: Daily depth profiles, best run of the other-greens structure."><img src="images/phyto_invest/obsfit_depth_s4g.png" class="img-fluid figure-img" width="540"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-depth-s4g-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17: Daily depth profiles, best run of the other-greens structure.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-depth-s5" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-depth-s5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/phyto_invest/obsfit_depth_s5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figure&nbsp;18: Daily depth profiles, best run of the structure with both."><img src="images/phyto_invest/obsfit_depth_s5.png" class="img-fluid figure-img" width="540"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-depth-s5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18: Daily depth profiles, best run of the structure with both.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>The timing repeats almost exactly every year.</strong> In the three-group run the diatoms form a sharp peak in September to October, the cyanobacteria bloom from about December to April, and the greens are spread over the warm half of the year. The model has little year-to-year variation in timing, while the observed shares scatter widely between years (<a href="#fig-obsfit-share-ts" class="quarto-xref">Figure&nbsp;14</a>).</li>
+<li><strong>The groups are nearly uniform with depth.</strong> The temperature panel shows weak stratification in summer, so the blooms extend through the whole 21 m column, including the bottom layers where light is low. Cyanobacteria are somewhat stronger near the surface, with streaks of high values through the column that follow mixing events. There is no surface scum layer, which is consistent with the earlier result that buoyancy changes little in this lake.</li>
+<li><strong>Timing differs between structures.</strong> The five-group run (<a href="#fig-depth-s5" class="quarto-xref">Figure&nbsp;18</a>) has a long period of greens in the hold-out years and almost no spring diatom peak in 2008 to 2010, which is the source of its large hold-out errors.</li>
+<li><strong>Which sample dates would constrain timing?</strong> The sample dates fall mostly in January, April, July and October, so they pin the shares in those months but say little about when each bloom starts or ends (for example the diatom peak between July and October).</li>
+</ul>
+</section>
+</section>
+<section id="sec-limits" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="sec-limits"><span class="header-section-number">8</span> Interpretation and limits</h2>
+<ul>
+<li><strong>Zooplankton are a closure device here, not a measured pool.</strong> There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module’s stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.</li>
+<li><strong>Group shares in the first search were not constrained by data.</strong> Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (<a href="#sec-obsfit" class="quarto-xref">Section&nbsp;7</a>) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.</li>
+<li><strong>Calm-water cyanobacteria blooms are missing.</strong> Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.</li>
+<li><strong>Total nitrogen stays 20 to 50% low</strong>, and nitrate is 30 to 60% high.</li>
+<li><strong>The window is short</strong> (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.</li>
+<li><strong>The first search was scored on succession targets I assumed</strong> (cyanobacteria at least 50% in summer, greens at least 35% all year). The observed data (<a href="#sec-obsfit" class="quarto-xref">Section&nbsp;7</a>) put cyanobacteria at about 37% in summer and greens at about 60% in summer to autumn, so the configurations of the first search should be treated as a first pass, not a calibration.</li>
+<li><strong>Model shares are shares of carbon biomass and the observations are shares of biovolume.</strong> Generic cell volumes are within a factor of two of Rotorua populations at best, and diatoms hold less carbon per unit volume than other groups, which may account for part of the diatom excess.</li>
+<li><strong>The observed series is short and quarterly</strong> (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.</li>
+</ul>
+</section>
+<section id="sec-next" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sec-next"><span class="header-section-number">9</span> Suggested next steps</h2>
+<ol type="1">
+<li><strong>Take the best configurations into a full ES-MDA refit</strong> with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.</li>
+<li><strong>Ask the AED developers about the <code>/31</code> and <code>/14</code> factors</strong> in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.</li>
+<li><strong>Try a calm-weather cyanobacteria mechanism</strong> (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.</li>
+<li><strong>Run a second search on zooplankton community and predation</strong> (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (<code>Tstd_zoo</code>, <code>Topt_zoo</code>, <code>Tmax_zoo</code>) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.</li>
+<li><strong>Extend the observation-based search</strong> (<a href="#sec-obsfit" class="quarto-xref">Section&nbsp;7</a>) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.</li>
+<li><strong>Add zooplankton or group-level data</strong> if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).</li>
+</ol>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Phytoplankton groups and zooplankton: investigation"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "How zooplankton grazing, group traits and nutrient stoichiometry shape succession, chlorophyll-a and nutrients in the GLM-AED model"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  eval: true</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/include_img.R"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>The calibrated Lake Rotorua model has no zooplankton (<span class="in">`aed_zooplankton`</span> is commented out of the model list), so nothing grazes the phytoplankton and every phytoplankton parameter absorbed that missing loss. The result is a lake of diatoms and cyanobacteria only, with the greens gone. This investigation switches the zooplankton on and asks which settings give three coexisting groups with a plausible seasonal order (diatoms in the cool seasons, greens through the year, cyanobacteria in summer), total chlorophyll-a near the observations, and nutrients that stay close to the calibrated model.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>**Method.** A 2-year window (2018-07 to 2020-06, plus the 540 day spin-up) of the stage j best member is run in about 20 s to 90 s per configuration. A one-at-a-time screen of 41 parameters (75 runs) was followed by an adaptive search of 11 generations of 90 runs (990 runs) over all 41 parameters at once. Each run is scored on chlorophyll-a, five nutrients, the seasonal group shares, zooplankton biomass and whether cyanobacteria favour calm days. No data exist for the individual groups or for zooplankton, so the group split and zooplankton biomass are set only to plausible ranges.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>**What was found**</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zooplankton in this build do not conserve phosphorus or nitrogen.** Switching them on with their default phosphorus content raised surface TP from 0.02 to 0.11 g/m³ and FRP from 0.003 to 0.08 g/m³. In <span class="in">`aed_zooplankton.F90`</span> the phosphorus and nitrogen eaten from phytoplankton are divided by 31 and 14 (a mg-to-mmol conversion), while the phytoplankton lose the full amount, so the zooplankton phosphorus content (<span class="in">`IPC_zoo`</span>) and nitrogen content (<span class="in">`INC_zoo`</span>) act as the closure terms of the budget. Every good configuration settles at an <span class="in">`IPC_zoo`</span> between 0.003 and 0.008 mol P per mol C.</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Grazing is what opens the niche for three groups.** With the zooplankton on, the greens and diatoms are held back and the cyanobacteria, which the zooplankton hardly eat, get the warm season.</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The best configuration scores 2.7 against 3.6 for the hand-tuned case and 18.8 for the zooplankton-off model** (lower is better). It gives mean chlorophyll-a of 9.0 mg/m³ (8.3 observed in the window), diatoms 70% of biomass in September to November and cyanobacteria 44% in January to March.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The result holds on a six-year window (2016 to 2022).** The best configuration scores 2.2 there, against 4.0 for the hand-tuned case and 18.1 for the zooplankton-off model, with the same seasonal order (diatoms 68% in September to November, cyanobacteria 43% in January to March) and chlorophyll-a of 9.2 mg/m³ against 8.2 observed. The search never saw most of these years, but it was scored on the 2-year window inside this one.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Calm-water blooms are not reproduced.** In every configuration the cyanobacteria are no more abundant on stratified than on mixed summer days, and constant positive buoyancy or the motile option changes little, because the top 5 m of this polymictic lake is well mixed.</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total nitrogen is too low** in all of the good configurations (about 0.15 to 0.25 g/m³ against 0.31 observed).</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Method {#sec-method}</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Parameter space</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>Forty-one parameters (@tbl-space) cover the traits of the three phytoplankton groups, the grazing and mortality of three zooplankton groups, how much of each prey they take, and three switches (nitrogen fixation, motile cyanobacteria, copepods that eat other zooplankton). The temperature function is built from <span class="in">`T_opt`</span> with fixed offsets for <span class="in">`T_std`</span> and <span class="in">`T_max`</span>, and combinations that the AED temperature solver cannot solve (which would stop GLM) are rejected before the run.</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-space</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Parameters searched, with their range and the h1 base value."</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>cons <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/constraint.csv"</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Parameter =</span> cons<span class="sc">$</span>param, <span class="at">Group =</span> cons<span class="sc">$</span>grp, <span class="at">Low =</span> <span class="fu">signif</span>(cons<span class="sc">$</span>lo_val, <span class="dv">3</span>), <span class="at">High =</span> <span class="fu">signif</span>(cons<span class="sc">$</span>hi_val, <span class="dv">3</span>), <span class="at">Base =</span> <span class="fu">signif</span>(cons<span class="sc">$</span>base_val, <span class="dv">3</span>)), <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Score</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>The score adds four parts (all are about 1 when the model is within a stated tolerance):</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Chlorophyll-a:** log bias of the mean, the 90th percentile and the monthly pattern against the surface observations in the window.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Nutrients:** mean absolute scaled log bias of TP, FRP, total nitrogen, nitrate and ammonium.</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Succession:** penalties when the diatom share in September to November and May to July averages below 0.5, the cyanobacteria share in January to March is below 0.5, the green share is below 0.35 over the year, and a large penalty for any group below 5% of biomass.</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Zooplankton:** penalty outside 3 to 30 mmol C/m³ in total, and for any group below 0.05.</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>The weighting is a judgement, not a result, so the ranking among near-equal scores should not be over-read.</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## One-at-a-time effects {#sec-oat}</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>@fig-oat moves each parameter to 10% and 90% of its range around the h1 base case.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-oat</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Change in the score components when one parameter is moved to 10% or 90% of its range from the h1 base case (largest 18 by total score change)."</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/oat_tornado.png"</span>)</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The zooplankton refuge `Cmin_grz_zoo`** is the most powerful single control. At the low end the grazing removes nearly all the algae (mean chlorophyll about 1 mg/m³); at the high end chlorophyll-a rises by about 7 mg/m³.</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Copepod and rotifer grazing rates** at the high end remove the cyanobacteria (even at a preference of 0.02) and so wreck the succession.</span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`IPC_zoo`** at the high end raises TP about seven-fold, and at the low end TP falls, so it must be tuned together with grazing.</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Diatom respiration** at the high end wipes out the diatoms.</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Green growth, light and nutrient half-saturation** decide whether the greens survive, but none of them alone brings the cyanobacteria to the target summer share.</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Adaptive search {#sec-search}</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>Each generation samples 90 configurations around the average of the best 20% of the last, with a floor on the spread.</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-progress</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Score by generation."</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/progress.png"</span>)</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>The best score fell from 5.5 to 2.7 over 11 generations and levelled off at about 2.7 to 3.0, so more generations with this score would add little. @fig-constraint shows how tightly the best 5% of runs pin each parameter.</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-constraint</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Spread of each parameter among the best 5% of all runs, as a share of its range. Long bars are poorly constrained."</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/constraint.png"</span>)</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Well constrained:** the zooplankton phosphorus content, the refuge, the nitrogen content, the cladoceran grazing rate and the cyanobacteria respiration.</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Poorly constrained:** whether copepods eat other zooplankton, copepod mortality, the cyanobacteria preference by zooplankton, and cyanobacteria buoyancy. Different values work about equally well, so these are not identifiable from total chlorophyll-a and nutrients.</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## Best configurations {#sec-best}</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-compare</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Zooplankton-off reference, the h1 hand-tuned case and the three best configurations (2-year window)."</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/compare.csv"</span>); x<span class="sc">$</span>id[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"reference (zooplankton off)"</span>, <span class="st">"h1 base"</span>)</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">score =</span> <span class="st">"Score"</span>, <span class="at">chl_sim =</span> <span class="st">"Chlorophyll-a (mg/m3)"</span>, <span class="at">PHS_tp_sim =</span> <span class="st">"TP (g/m3)"</span>, <span class="at">PHS_frp_sim =</span> <span class="st">"FRP (g/m3)"</span>, <span class="at">NIT_tn_sim =</span> <span class="st">"TN (g/m3)"</span>, <span class="at">NIT_nit_sim =</span> <span class="st">"Nitrate (g/m3)"</span>, <span class="at">NIT_amm_sim =</span> <span class="st">"Ammonium (g/m3)"</span>,</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>       <span class="at">sh_di_SON =</span> <span class="st">"Diatom share Sep-Nov"</span>, <span class="at">sh_cy_JFM =</span> <span class="st">"Cyano share Jan-Mar"</span>, <span class="at">sh_gr_all =</span> <span class="st">"Green share, year"</span>, <span class="at">zoo_tot =</span> <span class="st">"Zooplankton (mmol C/m3)"</span>, <span class="at">calm_ratio =</span> <span class="st">"Cyano calm/mixed ratio"</span>)</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">t</span>(x[, <span class="fu">names</span>(k)]); <span class="fu">rownames</span>(m) <span class="ot">&lt;-</span> k; <span class="fu">colnames</span>(m) <span class="ot">&lt;-</span> x<span class="sc">$</span>id</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>Observed means over the same pairs are chlorophyll-a 8.3 mg/m³, TP 0.018, FRP 0.002, TN 0.31, nitrate 0.034 and ammonium 0.008 g/m³.</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-succ-top</span></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly share of surface biomass by group for the three best configurations and the h1 case."</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/succession_top.png"</span>)</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-best-ts</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Weekly mean surface biomass by group in the best configuration."</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/best_timeseries.png"</span>)</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-best-zoo</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Weekly mean zooplankton biomass in the best configuration."</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/best_zoo.png"</span>)</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>In the best configuration the spring diatom bloom (about 70 mmol C/m³ in October to November) is probably too sharp, and the summer is nearly flat, with biomass held at about 43 mmol C/m³ from December to April. The observed chlorophyll-a has more year to year variation than this.</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Zooplankton in the best configurations {#sec-zoo}</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-zoo-top</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Weekly mean zooplankton biomass (0 to 5 m) by group in the three best configurations and the h1 case."</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/zoo_top_timeseries.png"</span>)</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-zoo-monthly</span></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly mean zooplankton biomass by group."</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/zoo_monthly.png"</span>)</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-zoo-ratio</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Total zooplankton biomass as a fraction of total phytoplankton biomass, by month."</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/phyto_invest/zoo_phyto_ratio.png"</span>)</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zooplankton almost disappear in winter.** In every configuration biomass is close to zero from about June to September and comes back in October to December, peaking at 10 to 30 mmol C/m³ in summer. Real zooplankton in a lake of this temperature persist through winter at low levels, so the winter collapse is probably a model artefact (temperature limits on growth and the minimum biomass floor), and it lets the diatoms bloom unchecked each spring.</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rotifers or cladocerans dominate; copepods are marginal** in all but one configuration (g010_042, where copepods reach 20 mmol C/m³ in spring). The search had no reason to favour copepods because no data say which group should dominate.</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Grazers are 20 to 60% of phytoplankton biomass in summer** and well under 5% in winter (@fig-zoo-ratio), which is strong top-down pressure. There are no zooplankton data to say whether that is realistic for Rotorua.</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="fu">### What was and was not varied</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>The search varied, for each of the three zooplankton groups, the maximum grazing rate and the mortality rate; it varied the half-saturation (<span class="in">`Kgrz_zoo`</span>), the refuge (<span class="in">`Cmin_grz_zoo`</span>) and the assimilation efficiency in common for all three; it varied how strongly all three prefer greens, diatoms and cyanobacteria (one preference each, shared by the three groups); and whether copepods eat the other zooplankton. Not varied: which groups are present (all three are always on, so there is no run with, for example, rotifers only or cladocerans only), a separate food preference for each group, the zooplankton temperature limits (<span class="in">`Tstd_zoo`</span>, <span class="in">`Topt_zoo`</span>, <span class="in">`Tmax_zoo`</span>), respiration, the split of excretion and faeces, the oxygen threshold, and predation on the zooplankton. The model has no fish or other predator, so predation pressure on the zooplankton enters only through the linear mortality rate, and that is the only lever on top-down control of the grazers. The winter collapse and the unconstrained copepod diet suggest that the community composition and the temperature limits are the next things to test.</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-params</span></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Parameter values of the five best configurations (cat = 0/1)."</span></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/best_params.csv"</span>); p <span class="ot">&lt;-</span> p[, <span class="sc">!</span>(<span class="fu">names</span>(p) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"row"</span>))]</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(p, <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: val</span></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: asis</span></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"data/phyto_invest/validation.csv"</span>)) {</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"## Longer window {#sec-validation}</span><span class="sc">\n\n</span><span class="st">The three best configurations, the h1 case and the zooplankton-off reference were re-run on 2016-07 to 2022-06 (six years) to check that the 2-year result holds.</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/validation.csv"</span>); k2 <span class="ot">&lt;-</span> k[k <span class="sc">%in%</span> k <span class="sc">&amp;</span> <span class="fu">names</span>(k) <span class="sc">%in%</span> <span class="fu">names</span>(v)]; v<span class="sc">$</span>id[v<span class="sc">$</span>id <span class="sc">==</span> <span class="st">"ref0_zoopoff"</span>] <span class="ot">&lt;-</span> <span class="st">"reference (zooplankton off)"</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>  mm <span class="ot">&lt;-</span> <span class="fu">t</span>(v[, <span class="fu">names</span>(k2)]); <span class="fu">rownames</span>(mm) <span class="ot">&lt;-</span> k2; <span class="fu">colnames</span>(mm) <span class="ot">&lt;-</span> v<span class="sc">$</span>id; <span class="fu">print</span>(knitr<span class="sc">::</span><span class="fu">kable</span>(mm, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Six-year window."</span>)); <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"images/phyto_invest/succession_validation.png"</span>)) <span class="fu">cat</span>(<span class="st">"![Monthly share of surface biomass by group, six-year window.](images/phyto_invest/succession_validation.png)</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fit to the observed group data, 2003 to 2011 {#sec-obsfit}</span></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>The BOPRC phytoplankton counts (50 samples at sites 2 and 5, October 2003 to January 2011, mostly sampled in January, April, July and October) give the first observed group shares. They were used as follows.</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Window:** one run from 2003-07 to 2011-06 per configuration. Calibration scores use 2003-07 to 2007-06 (17 sample dates) and hold-out scores use 2007-07 to 2011-06 (14 sample dates); both are recorded for every run, and only the calibration score steered the search.</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Observed curves:** a first-harmonic seasonal curve per group, refit on the calibration samples only (so the hold-out years do not leak into the target), with a bootstrap spread as the tolerance (at least 0.07 in share). The model is scored on how far its monthly mean shares fall from these curves, in units of that tolerance (<span class="in">`z3`</span> for the three-group scheme, <span class="in">`z4`</span> for the four-group scheme with the cyanobacteria split).</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Four model structures**, all with zooplankton on and the 15 to 21 parameters of the earlier best configuration free: <span class="in">`s3`</span> (cyanobacteria, greens, diatoms); <span class="in">`s4c`</span> (cyanobacteria split into a nitrogen-fixing and a non-fixing group); <span class="in">`s4g`</span> (an added group of other greens, the AED cryptophyte column with a lower light requirement); <span class="in">`s5`</span> (both).</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Budget:** 240 runs (about 60 per structure). The first three rounds were scored against a diatom curve that was wrongly set to zero (a missing-value bug in my script). The model runs themselves were fine, so all 144 saved runs were re-scored offline and the search was resumed with two more rounds under the corrected score.</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Selection:** structures are compared on the terms they share (<span class="in">`z3`</span>, chlorophyll-a, nutrients and zooplankton, summed as the "common score"), because the search score adds a four-group term for the split structures.</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-obsfit</span></span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Best run of each structure by common score. Calibration is 2003-07 to 2007-06 and hold-out 2007-07 to 2011-06. Observed mean chlorophyll-a is 11.3 (calibration) and 12.0 (hold-out) mg/m³ at the sample dates."</span></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/obsfit_best.csv"</span>)</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Structure =</span> <span class="fu">c</span>(<span class="st">"3 groups"</span>, <span class="st">"Cyano split"</span>, <span class="st">"Other greens"</span>, <span class="st">"Split + other greens"</span>), <span class="at">Run =</span> b<span class="sc">$</span>id, <span class="st">`</span><span class="at">Common score, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>common_cal, <span class="st">`</span><span class="at">Common score, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>common_val,</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">z3, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>z3_cal, <span class="st">`</span><span class="at">z3, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>z3_val, <span class="st">`</span><span class="at">Share error, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>rmse_sh_cal, <span class="st">`</span><span class="at">Share error, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>rmse_sh_val, <span class="st">`</span><span class="at">Chl-a, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>chl_sim_cal, <span class="st">`</span><span class="at">Chl-a, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>chl_sim_val, <span class="st">`</span><span class="at">Zooplankton (mmol C/m3)</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>zoo_tot, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tab, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obsfit</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly mean group shares of the best run of each structure (calibration years solid, hold-out years dashed) against the observed seasonal curve fitted on the calibration samples (grey, with 95% band). Axis runs July to June."</span></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_shares.png"</span>)</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obsfit-scatter</span></span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Model share against observed share on each sample date, by structure, group and period."</span></span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_scatter.png"</span>)</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obsfit-zoo</span></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly mean zooplankton biomass of the best run of each structure."</span></span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_zoo.png"</span>)</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>**What the comparison shows**</span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The seasonal pattern can be matched.** In all four structures the model's monthly shares sit mostly inside the observed 95% band: diatoms dominate July to October, cyanobacteria peak in summer (January to March, about 20 to 50% in the model depending on the structure, against about 37% observed), and greens and other taxa are highest in summer to autumn. The earlier assumption that cyanobacteria should reach 50% in summer was too high, since the samples show them at about 25 to 35% of biovolume.</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hold-out years are about as well fitted as the calibration years** for the three-group, cyano-split and other-greens structures (share error on the sample dates about 0.20 to 0.23 against 0.22 to 0.28), so the seasonal order found in 2003 to 2007 holds in 2007 to 2011. Mean chlorophyll-a is within about 25% of the observed mean in both periods (9.0 to 12.3 against 11.3 mg/m³ in the calibration years, 8.9 to 11.0 against 12.0 in the hold-out years).</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No structure is clearly better.** The common scores of the best runs are 4.1 (three groups), 4.3 (cyano split), 4.6 (other greens) and 4.5 (both), and the differences are small next to the run-to-run spread. With 60 runs per structure and 15 to 21 free parameters this is inside the noise of the search, so these results do not support the added complexity and also do not rule it out.</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Other greens help the summer greens, but not the hold-out.** The <span class="in">`s4g`</span> run reproduces the observed summer rise in greens (peak near 0.7 in December) that the three-group and cyano-split runs miss (about 0.35), but it overestimates greens by 0.21 in the hold-out years. The five-group run has the largest hold-out errors (greens +0.28, diatoms -0.34 on the sample dates).</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A persistent diatom excess in summer.** Every structure keeps diatoms at about 25% of biomass from December to May, against about 5 to 15% observed.</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Cyanobacteria split:** the split run overestimates the summer cyanobacteria (about 50%, at the top of the observed band), and the four-group score term (<span class="in">`z4`</span> of 1.7 to 2.0) shows the nitrogen-fixing and non-fixing groups are not separated cleanly by the model (the observed peaks are about two months apart).</span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### Timing: time series and depth contours {#sec-timing}</span></span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obsfit-ts</span></span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Weekly mean surface biomass of each group (cyanobacteria and greens are sums of their sub-groups in the larger structures) for the best run of each structure, 2003 to 2011. Grey shading marks the hold-out years."</span></span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_timeseries.png"</span>)</span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obsfit-share-ts</span></span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Share of surface biomass of each group through time for the best run of each structure (lines), with the observed biovolume shares on the sample dates (open circles)."</span></span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_share_timeseries.png"</span>)</span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>The depth contours (@fig-depth-s3 to @fig-depth-s5) show the daily profiles of each group, the total chlorophyll-a and the temperature in the best run of each structure. Triangles at the top mark the sample dates.</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-s3</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily depth profiles, best run of the three-group structure."</span></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_depth_s3.png"</span>)</span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-s4c</span></span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily depth profiles, best run of the cyanobacteria-split structure."</span></span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_depth_s4c.png"</span>)</span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-s4g</span></span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily depth profiles, best run of the other-greens structure."</span></span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_depth_s4g.png"</span>)</span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-s5</span></span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily depth profiles, best run of the structure with both."</span></span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/phyto_invest/obsfit_depth_s5.png"</span>)</span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The timing repeats almost exactly every year.** In the three-group run the diatoms form a sharp peak in September to October, the cyanobacteria bloom from about December to April, and the greens are spread over the warm half of the year. The model has little year-to-year variation in timing, while the observed shares scatter widely between years (@fig-obsfit-share-ts).</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The groups are nearly uniform with depth.** The temperature panel shows weak stratification in summer, so the blooms extend through the whole 21 m column, including the bottom layers where light is low. Cyanobacteria are somewhat stronger near the surface, with streaks of high values through the column that follow mixing events. There is no surface scum layer, which is consistent with the earlier result that buoyancy changes little in this lake.</span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Timing differs between structures.** The five-group run (@fig-depth-s5) has a long period of greens in the hold-out years and almost no spring diatom peak in 2008 to 2010, which is the source of its large hold-out errors.</span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Which sample dates would constrain timing?** The sample dates fall mostly in January, April, July and October, so they pin the shares in those months but say little about when each bloom starts or ends (for example the diatom peak between July and October).</span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretation and limits {#sec-limits}</span></span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zooplankton are a closure device here, not a measured pool.** There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module's stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Group shares in the first search were not constrained by data.** Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (@sec-obsfit) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.</span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Calm-water cyanobacteria blooms are missing.** Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.</span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total nitrogen stays 20 to 50% low**, and nitrate is 30 to 60% high.</span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The window is short** (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.</span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The first search was scored on succession targets I assumed** (cyanobacteria at least 50% in summer, greens at least 35% all year). The observed data (@sec-obsfit) put cyanobacteria at about 37% in summer and greens at about 60% in summer to autumn, so the configurations of the first search should be treated as a first pass, not a calibration.</span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Model shares are shares of carbon biomass and the observations are shares of biovolume.** Generic cell volumes are within a factor of two of Rotorua populations at best, and diatoms hold less carbon per unit volume than other groups, which may account for part of the diatom excess.</span>
+<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The observed series is short and quarterly** (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.</span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a><span class="fu">## Suggested next steps {#sec-next}</span></span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Take the best configurations into a full ES-MDA refit** with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.</span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Ask the AED developers about the `/31` and `/14` factors** in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.</span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Try a calm-weather cyanobacteria mechanism** (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.</span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Run a second search on zooplankton community and predation** (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (<span class="in">`Tstd_zoo`</span>, <span class="in">`Topt_zoo`</span>, <span class="in">`Tmax_zoo`</span>) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.</span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Extend the observation-based search** (@sec-obsfit) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.</span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
