@@ -192,7 +192,7 @@ knitr::kable(read.csv("data/inflows/files_difference.csv"), col.names = c("Inflo
 | **No alum module** (observed inflows reproduce the effect) | Treated: measured = with-alum file | Treated: estimated = with-alum file (once its mass is closed) | Off |
 | *Used so far in the GLM-AED calibration* | *Treated (with-alum values)* | *Untreated (raw)* | *On* |
 
-The last row is the inconsistent case: the Utuhina stream removal was in the inflow data **and** the alum module acted on the same P in the lake, while the Puarenga had only the module. The calibrated alum efficiency may therefore have absorbed part of the Utuhina stream effect (a first test found the effect on lake TP small, within about 3%; see [the next-steps page](rotorua-alum-next-steps.qmd)), and the scenario runs labelled "no alum" still contained the Utuhina stream treatment (about 30% less DRP).
+The last row is the inconsistent case: the Utuhina stream removal was in the inflow data **and** the alum module acted on the same P in the lake, while the Puarenga had only the module. The calibrated alum efficiency may therefore have absorbed part of the Utuhina stream effect (a first test found the effect on lake TP small, within about 3%; see [the alum calibration stage 1 page](alum-calibration-stage-1.qmd)), and the scenario runs labelled "no alum" still contained the Utuhina stream treatment (about 30% less DRP).
 
 ### Recommended handling
 

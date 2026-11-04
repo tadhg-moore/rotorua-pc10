@@ -115,8 +115,6 @@ website:
           text: "aed_alum Stress Tests"
         - href: rotorua-alum-stream-calibration.qmd
           text: "Alum Stream Calibration Design"
-        - href: rotorua-alum-next-steps.qmd
-          text: "Alum Calibration: Next Steps"
         - href: rotorua-alum-scenarios.qmd
           text: "Alum Scenarios"
     - id: calibration
@@ -138,6 +136,8 @@ website:
           text: "PEST Workflow Summary"
         - href: rotorua-calibration-report.qmd
           text: "Calibration Report"
+        - href: alum-calibration-stage-1.qmd
+          text: "Alum calibration stage 1"
         - href: rotorua-phyto-investigation.qmd
           text: "Phytoplankton & Zooplankton Investigation"
     - id: climate
