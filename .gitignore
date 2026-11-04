@@ -10,8 +10,16 @@ docs
 data/raw/
 data/processed/
 LID11133_rotorua/*.rds
+# Manifest hashes of the last OneDrive download (see sync_onedrive_folder)
+.onedrive_stamps/
 
 # Secrets
 .env
 .Renviron
 token_encrypted.txt
+
+# Staged calibration outputs
+/pest/
+/pest_smoke/
+calibration/checkpoints*/
+calibration/base_build/

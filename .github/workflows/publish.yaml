@@ -80,6 +80,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-targets-
 
+      # OneDrive downloads. sync_onedrive_*() compares the remote Graph content hashes with the
+      # stamp saved in .onedrive_stamps and only downloads what changed; this cache lets the
+      # previous downloads (and their stamps) survive between runs. A stale or partial restore is
+      # safe: a missing file or stamp mismatch simply triggers a fresh download. Only untracked
+      # paths go here (restoring over git-tracked files would clobber the checkout), and the
+      # CMIP6 folders in data/processed are left out to stay within the 10 GB cache limit.
+      - name: Restore OneDrive data
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .onedrive_stamps
+            data/raw
+            LID11133_rotorua/aeme_download.rds
+            website/LakeRotorua
+            website/bin
+            website/images
+            website/data
+            website/R
+          key: ${{ runner.os }}-onedrive-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-onedrive-
+
       - name: Run targets pipeline
         id: targets
         working-directory: website
@@ -91,6 +113,22 @@ jobs:
         with:
           path: _targets
           key: ${{ runner.os }}-targets-${{ github.run_id }}
+
+      # Only when something was actually downloaded from OneDrive (see ONEDRIVE_SYNC_LOG).
+      - name: Save OneDrive data
+        if: ${{ !cancelled() && steps.targets.outputs.onedrive_downloaded == 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .onedrive_stamps
+            data/raw
+            LID11133_rotorua/aeme_download.rds
+            website/LakeRotorua
+            website/bin
+            website/images
+            website/data
+            website/R
+          key: ${{ runner.os }}-onedrive-${{ github.run_id }}
 
       # Quarto freeze (rendered output of unchanged pages). Small, so saved every run; the
       # newest copy is restored and quarto's `freeze: auto` re-renders only pages whose

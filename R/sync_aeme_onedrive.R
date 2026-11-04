@@ -17,20 +17,129 @@ get_onedrive_session <- function() {
   Microsoft365R::get_business_onedrive(token = token)
 }
 
-#' Download a single file from OneDrive to `dest`. Returns `dest`.
+#' Content fingerprint for row `i` of a `list_items(info = "all")` data frame.
+#' Uses every content hash Graph supplies (quickXorHash on OneDrive for
+#' Business, sha1/sha256 elsewhere) and only falls back to eTag when there is
+#' none, so metadata-only edits don't count as changes.
+od_row_fingerprint <- function(x, i) {
+  f <- x[["file"]]
+  if (is.data.frame(f) && is.data.frame(f[["hashes"]])) {
+    h <- unlist(f[["hashes"]][i, , drop = FALSE])
+    h <- h[!is.na(h)]
+    if (length(h)) return(paste(sort(paste(names(h), h, sep = "=")), collapse = ";"))
+  }
+  if (!is.null(x[["eTag"]])) x[["eTag"]][i] else NA_character_
+}
+
+#' Remote manifest of a OneDrive file or folder (recursive): one row per file
+#' with its relative path, size and content fingerprint. Cheap (metadata only,
+#' no downloads). `od` is injectable for testing.
+onedrive_manifest <- function(src, od = get_onedrive_session()) {
+  empty <- data.frame(path = character(), size = numeric(), hash = character(),
+                      stringsAsFactors = FALSE)
+  walk <- function(path, prefix) {
+    x <- od$get_item(path)$list_items(info = "all")
+    out <- list(empty)
+    for (i in seq_len(nrow(x))) {
+      rel <- if (nzchar(prefix)) paste(prefix, x$name[i], sep = "/") else x$name[i]
+      if (isTRUE(x$isdir[i])) {
+        out[[length(out) + 1]] <- walk(paste(path, x$name[i], sep = "/"), rel)
+      } else {
+        out[[length(out) + 1]] <- data.frame(
+          path = rel, size = as.numeric(x$size[i]),
+          hash = od_row_fingerprint(x, i), stringsAsFactors = FALSE)
+      }
+    }
+    do.call(rbind, out)
+  }
+  item <- od$get_item(src)
+  m <- if (is.null(item$properties$folder)) {
+    # single file: take its own properties
+    p <- item$properties
+    h <- unlist(p$file$hashes)
+    data.frame(path = p$name, size = as.numeric(p$size),
+               hash = if (length(h)) paste(sort(paste(names(h), h, sep = "=")), collapse = ";")
+                      else if (!is.null(p$eTag)) p$eTag else NA_character_,
+               stringsAsFactors = FALSE)
+  } else {
+    walk(src, "")
+  }
+  m <- m[order(m$path), , drop = FALSE]
+  rownames(m) <- NULL
+  m
+}
+
+#' Single SHA-256 key for a manifest; changes iff any file is added, removed,
+#' renamed or has different content.
+onedrive_manifest_key <- function(manifest) {
+  txt <- paste(manifest$path, manifest$size, manifest$hash, sep = "\t",
+               collapse = "\n")
+  paste(unclass(openssl::sha256(charToRaw(txt))), collapse = "")
+}
+
+# Stamps record the manifest key last downloaded to a destination. They live in
+# a separate (git-ignored, CI-cached) dir rather than inside `dest`, so synced
+# folders stay clean. A stale or missing stamp just means "download again".
+od_stamp_path <- function(src, dest) {
+  slug <- gsub("[^A-Za-z0-9]+", "_", src)
+  root <- Sys.getenv("ONEDRIVE_STAMP_DIR", here::here(".onedrive_stamps"))
+  file.path(root, paste0(slug, ".sha256"))
+}
+
+od_log <- function(...) {
+  msg <- paste0(...)
+  message(msg)
+  log_file <- Sys.getenv("ONEDRIVE_SYNC_LOG")
+  if (nzchar(log_file)) cat(msg, "\n", file = log_file, append = TRUE, sep = "")
+}
+
+# TRUE when `dest` is already current for `key`: stamp matches and the local
+# copy exists. ONEDRIVE_FORCE_SYNC=true bypasses the check.
+od_is_current <- function(src, dest, key) {
+  if (identical(tolower(Sys.getenv("ONEDRIVE_FORCE_SYNC")), "true")) return(FALSE)
+  stamp <- od_stamp_path(src, dest)
+  file.exists(stamp) && file.exists(dest) &&
+    identical(trimws(readLines(stamp, warn = FALSE)[1]), key)
+}
+
+od_write_stamp <- function(src, dest, key) {
+  stamp <- od_stamp_path(src, dest)
+  dir.create(dirname(stamp), recursive = TRUE, showWarnings = FALSE)
+  writeLines(key, stamp)
+}
+
+#' Download a single file from OneDrive to `dest`, skipping the download when
+#' the remote content hash matches the last download and `dest` still exists.
+#' Returns `dest`.
 sync_onedrive_file <- function(src, dest) {
   od <- get_onedrive_session()
+  key <- onedrive_manifest_key(onedrive_manifest(src, od))
+  if (od_is_current(src, dest, key)) {
+    od_log("OneDrive unchanged, skipping download: ", src)
+    return(dest)
+  }
+  od_log("OneDrive downloading: ", src)
   dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
   od$download_file(src = src, dest = dest, overwrite = TRUE)
+  od_write_stamp(src, dest, key)
   dest
 }
 
-#' Download a folder (recursively) from OneDrive to `dest`. Returns `dest`.
+#' Download a folder (recursively) from OneDrive to `dest`, skipping the
+#' download when the remote manifest hash matches the last download and `dest`
+#' still exists. Returns `dest`.
 sync_onedrive_folder <- function(src, dest) {
   od <- get_onedrive_session()
+  key <- onedrive_manifest_key(onedrive_manifest(src, od))
+  if (od_is_current(src, dest, key)) {
+    od_log("OneDrive unchanged, skipping download: ", src)
+    return(dest)
+  }
+  od_log("OneDrive downloading: ", src)
   dir.create(dest, recursive = TRUE, showWarnings = FALSE)
   od$download_folder(src = src, dest = dest, overwrite = TRUE,
                       recursive = TRUE, parallel = FALSE)
+  od_write_stamp(src, dest, key)
   dest
 }
 
