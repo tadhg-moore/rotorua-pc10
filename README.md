@@ -56,7 +56,7 @@ The module represents:
 -   Aging or decay of reactive Al over time to simulate persistence of alum effects\
 -   Dosing through inflow boundary conditions, allowing for flexible scenario testing
 
-Current work is described in [Alum calibration: next steps](https://tadhg-moore.github.io/rotorua-pc10/rotorua-alum-next-steps.html) and the [stream calibration design](https://tadhg-moore.github.io/rotorua-pc10/rotorua-alum-stream-calibration.html).
+Current work is described in [Alum calibration stage 1](https://tadhg-moore.github.io/rotorua-pc10/alum-calibration-stage-1.html) and the [stream calibration design](https://tadhg-moore.github.io/rotorua-pc10/rotorua-alum-stream-calibration.html).
 
 ------------------------------------------------------------------------
 

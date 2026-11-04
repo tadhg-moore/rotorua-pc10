@@ -59,7 +59,7 @@ The module represents:
 -   Aging or decay of reactive Al over time to simulate persistence of alum effects\
 -   Dosing through inflow boundary conditions, allowing for flexible scenario testing
 
-Current work is described in [Alum calibration: next steps](rotorua-alum-next-steps.qmd) and the [stream calibration design](rotorua-alum-stream-calibration.qmd).
+Current work is described in [Alum calibration stage 1](alum-calibration-stage-1.qmd) and the [stream calibration design](rotorua-alum-stream-calibration.qmd).
 
 ------------------------------------------------------------------------
 
