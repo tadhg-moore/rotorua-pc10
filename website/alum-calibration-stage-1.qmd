@@ -9,7 +9,7 @@ format:
     toc-depth: 3
     number-sections: true
 execute:
-  eval: false
+  eval: true
   echo: false
   warning: false
   message: false
@@ -70,8 +70,10 @@ Calibration stages are called by what they fit. The older one-letter codes still
 ### The calibration process {#sec-process}
 
 ```{mermaid}
+%%| eval: true
+%%| echo: false
 %%| label: fig-process
-%%| fig-cap: "The calibration sequence. Each box is a stage that frees one group of parameters, starting from the best member of the stage before; the text on each arrow is the misfit that led to the next stage."
+%%| fig-cap: "The calibration sequence. Each arrow is labelled with the misfit that led to the next step."
 flowchart TD
   A["<b>1. Physics</b><br/>Water level, temperature<br/>wind fixed at 1; mixing and heat-flux coefficients free"]
   B["<b>2. Pre-alum biology</b> (alum off)<br/>Phytoplankton, N, P, sediment, light, diatoms<br/>calibrate to 2003, hold out 2004 to May 2006"]
@@ -1497,7 +1499,9 @@ knitr::kable(data.frame(Trajectories = cv$trajectories, `Rank agreement, objecti
 
 ## Open questions {#sec-open}
 
-- **Provenance of the files.** How the Puarenga with-alum series (the 90% cap, the unassigned DRP) and the Utuhina untreated reconstruction were produced.
-- **Utuhina dose dependence.** Hamilton et al. show the downstream DRP:TP falling with dose; the files show a nearly flat removal. A dose-dependent Utuhina rule could be tested if the paired data exist.
-- **Puarenga DRP.** Part of its decline after 2009 may come from wastewater treatment changes, so the upstream series is not purely untreated stream P.
-- **Late-record TP.** The 2020 to 2022 TP rebound has not been reproduced; it may reflect event loads or alum ageing, not the inflow handling.
+- **P removal too high** Levels of P removal were relatively high, but overall in the correct ballpark for FRP. Revisit parameter ranges and compare with thesis.
+- **Handling of pH** Currently, `aed_carbon` is not switched on, and use a simple scaling 0.85 on efficiency. Can we potentially include pH as a driver variable?
+- **Diagonostic alum variables** from initial runs, it looks like most alum ages rather than takes up P. Is it possible to add ageing as a diagnostic to help further quantify where the alum is going?
+- **Calibration strategy** currently run without `aed_zooplankton`, we have no data to constrain. However, we have some seasonal phytoplankton succession, so maybe we can further calibrate that.
+- **Utuhina dose dependence.** Hamilton et al. show the downstream DRP:TP falling with dose; the files show a nearly flat removal. A dose-dependent Utuhina rule could be tested if the paired data can be sourced.
+- **Late-record TP.** The 2020 to 2022 TP rebound has not been reproduced; it may reflect event loads or alum ageing, not the inflow handling. Will need to re-run once we get updated loads data from CMcB.
