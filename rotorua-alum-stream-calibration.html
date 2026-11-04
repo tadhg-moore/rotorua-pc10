@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-03">
+<meta name="dcterms.date" content="2026-11-04">
 
 <title>Alum stream step: calibration design from the thesis stoichiometry – Rotorua Lake Modelling</title>
 <style>
@@ -237,12 +237,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./rotorua-alum-next-steps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Alum Calibration: Next Steps</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./rotorua-alum-scenarios.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Alum Scenarios</span></a>
   </div>
@@ -307,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 3, 2026</p>
+      <p class="date">November 4, 2026</p>
     </div>
   </div>
   
@@ -321,10 +315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="sec-summary" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
-<p>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (<a href="#sec-previous" class="quarto-xref">Section&nbsp;2</a>). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see “Alum applied per P removed, and the fate of alum and P” on the <a href="./rotorua-alum-next-steps.html#sec-alum-fate">next-steps page</a>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</p>
+<p>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (<a href="#sec-previous" class="quarto-xref">Section&nbsp;2</a>). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see “Alum applied per P removed, and the fate of alum and P” on the <a href="./alum-calibration-stage-1.html#sec-alum-fate">alum calibration stage 1 page</a>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</p>
 <ul>
 <li><strong>The thesis finding.</strong> Alum reduced DRP in all waters, and the Al:P molar ratios ranged from 0.7:1 to 15.1:1. Where DRP stayed measurable after treatment, the ratio was near 1:1 (Lake Rotorua 0.7:1, Puarenga Stream 0.98:1). Where DRP fell below detection, the dose was in surplus and a minimum effective dose could not be determined.</li>
-<li><strong>What that means for the comparison.</strong> Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the next-steps page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</li>
+<li><strong>What that means for the comparison.</strong> Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the alum calibration stage 1 page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</li>
 <li><strong>The design.</strong> Three stream-step hypotheses on the same lake: the previous rule (H0), the thesis stoichiometry in both streams (H1), and the thesis in the Puarenga with the measured Utuhina removal kept (H1b). A calibrated efficiency (H2) follows if H1 does not settle it (<a href="#sec-design" class="quarto-xref">Section&nbsp;4</a>).</li>
 <li><strong>First results.</strong> H1 and H1b have been run on the best member of the joint stage (<a href="#sec-h1" class="quarto-xref">Section&nbsp;5</a>). The stream rule was then fitted to the Utuhina data (<a href="#sec-fit" class="quarto-xref">Section&nbsp;6</a>): removal is a plateau near 43% and the efficiency ε is not identified, so the thesis value is neither confirmed nor excluded. The thesis lake stoichiometry is applied by scaling the input in R, not by a new module parameter (<a href="#sec-stoich" class="quarto-xref">Section&nbsp;7</a>).</li>
 </ul>
@@ -2194,10 +2188,10 @@ Table&nbsp;11: Fit of the surface (0 to 5 m) samples, 2006 to 2022-06, for the b
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (@sec-previous). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see "Alum applied per P removed, and the fate of alum and P" on the <span class="co">[</span><span class="ot">next-steps page</span><span class="co">](rotorua-alum-next-steps.qmd#sec-alum-fate)</span>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>The alum calibration so far treated the reaction between alum and stream phosphorus (P) before the lake with two rules taken from field data: a ramp to a 90% cap at 23 mol Al per mol DRP for the Puarenga, and a flat 45% removal for the Utuhina (@sec-previous). Together they used about 30 mol of aluminium per mol of P removed in the streams, and 5.5 in the lake (see "Alum applied per P removed, and the fate of alum and P" on the <span class="co">[</span><span class="ot">alum calibration stage 1 page</span><span class="co">](alum-calibration-stage-1.qmd#sec-alum-fate)</span>). The thesis (Sanila) gives a different picture, which this page turns into a calibration design.</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The thesis finding.** Alum reduced DRP in all waters, and the Al:P molar ratios ranged from 0.7:1 to 15.1:1. Where DRP stayed measurable after treatment, the ratio was near 1:1 (Lake Rotorua 0.7:1, Puarenga Stream 0.98:1). Where DRP fell below detection, the dose was in surplus and a minimum effective dose could not be determined.</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**What that means for the comparison.** Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the next-steps page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**What that means for the comparison.** Only days where DRP stays measurable carry a ratio. Most of the Al in the model goes out on surplus days (98% of the Puarenga Al at a dose ratio above 10, see the alum calibration stage 1 page), so the earlier comparison with the thesis (ratio of 30 against about 1) mixed both kinds of day. The ramp also spends 26 mol Al per mol P on the days the thesis says 1:1, so the two disagree even on the days that can be compared.</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The design.** Three stream-step hypotheses on the same lake: the previous rule (H0), the thesis stoichiometry in both streams (H1), and the thesis in the Puarenga with the measured Utuhina removal kept (H1b). A calibrated efficiency (H2) follows if H1 does not settle it (@sec-design).</span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**First results.** H1 and H1b have been run on the best member of the joint stage (@sec-h1). The stream rule was then fitted to the Utuhina data (@sec-fit): removal is a plateau near 43% and the efficiency ε is not identified, so the thesis value is neither confirmed nor excluded. The thesis lake stoichiometry is applied by scaling the input in R, not by a new module parameter (@sec-stoich).</span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
