@@ -1501,7 +1501,7 @@ knitr::kable(data.frame(Trajectories = cv$trajectories, `Rank agreement, objecti
 
 - **P removal too high** Levels of P removal were relatively high, but overall in the correct ballpark for FRP. Revisit parameter ranges and compare with thesis.
 - **Handling of pH** Currently, `aed_carbon` is not switched on, and use a simple scaling 0.85 on efficiency. Can we potentially include pH as a driver variable?
-- **Diagonostic alum variables** from initial runs, it looks like most alum ages rather than takes up P. Is it possible to add ageing as a diagnostic to help further quantify where the alum is going?
+- **Diagonostic alum variables** from initial runs, it looks like most alum ages rather than takes up P. Is it possible to add ageing as a diagnostic to help further quantify where the alum is going? Other diagnostics include: ageing, burial and resuspension in the sediment zones.
 - **Calibration strategy** currently run without `aed_zooplankton`, we have no data to constrain. However, we have some seasonal phytoplankton succession, so maybe we can further calibrate that.
 - **Utuhina dose dependence.** Hamilton et al. show the downstream DRP:TP falling with dose; the files show a nearly flat removal. A dose-dependent Utuhina rule could be tested if the paired data can be sourced.
 - **Late-record TP.** The 2020 to 2022 TP rebound has not been reproduced; it may reflect event loads or alum ageing, not the inflow handling. Will need to re-run once we get updated loads data from CMcB.
