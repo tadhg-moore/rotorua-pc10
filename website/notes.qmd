@@ -1,23 +1,26 @@
 ---
 title: "Meeting Notes"
 format: html
-editor: visual
 ---
 
 ## Meeting 29 Sep
 
 ### Progress updates
+
 - AB asked about overall progress.
 - GLM-AED progress was reviewed, along with CMIP6 and a second version of the GLM sediment heat model.
 
 ### Climate scenarios workflow
+
 - Covers water balance and sediment components.
 - **Action:** find a few papers to support this approach.
 
 ### Modelling with buoy data
+
 - Buoy data is to be used in the modelling work.
 
 ### Phytoplankton data
+
 - Focus is on seasonal succession.
 - Candidate datasets:
   - BoP
@@ -30,14 +33,15 @@ editor: visual
 - Next steps: calibrate AED, then run a sensitivity analysis.
 
 ### Reference
+
 - [Environmental decision making for models](https://www.sciencedirect.com/science/article/abs/pii/S146290111830409X) flagged for reading.
 
 ### Action items
+
 - [ ] Source supporting papers for the climate scenarios workflow
 - [ ] Begin with buoy chl-a/phyco and council data
 - [ ] Calibrate AED, then run the sensitivity analysis
 - [ ] Read the environmental decision-making paper
-
 
 ## Meeting with MH 12 Aug
 
