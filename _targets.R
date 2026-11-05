@@ -56,6 +56,7 @@ tar_source(
     here::here("R", "read_met_service_xl.R"),
     here::here("R", "make_met_data_zip.R"),
     here::here("R", "read_bop_csv_url.R"),
+    here::here("R", "read_bop_daily_flow.R"),
     here::here("R", "read_bop_lab_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
@@ -195,6 +196,22 @@ list(
         dplyr::select(Date, level, flow)
     }
   ),
+  # Measured inflow discharge (BOPRC Aquarius, entire period of record) for the ENSO analysis.
+  # Instantaneous exports are large, so only the daily-mean summary is kept.
+  tar_target(ngongotaha_flow_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Discharge.Primary%40DK982984&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=141&_=1793833415800"),
+  tar_target(ngongotaha_flow_daily, read_bop_daily_flow(ngongotaha_flow_url, "DK982984", "Ngongotaha at SH5")),
+  tar_target(puarenga_sh30_flow_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Discharge.Primary%40EK630244&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=141&_=1793833457235"),
+  tar_target(puarenga_sh30_flow_daily, read_bop_daily_flow(puarenga_sh30_flow_url, "EK630244", "Puarenga at SH30")),
+  tar_target(waingaehe_flow_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Discharge.Primary%40FK014535&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=141&_=1793833511623"),
+  tar_target(waingaehe_flow_daily, read_bop_daily_flow(waingaehe_flow_url, "FK014535", "Waingaehe at SH30")),
+  tar_target(kuirau_flow_url, "https://envdata.boprc.govt.nz/Export/BulkExport?DateRange=EntirePeriodOfRecord&TimeZone=12&Calendar=CALENDARYEAR&Interval=PointsAsRecorded&Step=1&ExportFormat=csv&TimeAligned=True&RoundData=False&IncludeGradeCodes=True&IncludeApprovalLevels=True&IncludeQualifiers=True&IncludeInterpolationTypes=False&IncludeNotes=undefined&Datasets[0].DatasetName=Discharge.Primary%40EK406461&Datasets[0].Calculation=Instantaneous&Datasets[0].UnitId=141&_=1793833569369"),
+  tar_target(kuirau_flow_daily, read_bop_daily_flow(kuirau_flow_url, "EK406461", "Kuirau at Tarewa Rd")),
+  tar_target(
+    measured_inflow_daily,
+    dplyr::bind_rows(ngongotaha_flow_daily, puarenga_sh30_flow_daily,
+                     waingaehe_flow_daily, kuirau_flow_daily)
+  ),
+
   tar_target(ohau_weir_width, 26.0),
   
   tar_target(
