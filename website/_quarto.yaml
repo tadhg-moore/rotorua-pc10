@@ -151,6 +151,8 @@ website:
           text: "Climate-Scenario Workflow"
         - href: climate-extreme-events.qmd
           text: "Extreme & Storm Events"
+        - href: enso-lake-rotorua.qmd
+          text: "ENSO and Lake Rotorua"
     - id: presentations
       title: "Presentations"
       style: docked
@@ -160,6 +162,10 @@ website:
           text: "Research Overview"
         - href: modelling-updates.qmd
           text: "Modelling Updates"
+        - href: nzfss-abstract.qmd
+          text: "NZFSS Abstract"
+        - href: nzfss-conference.qmd
+          text: "NZFSS Conference Talk"
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 

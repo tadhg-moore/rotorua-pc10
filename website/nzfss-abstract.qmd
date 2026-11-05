@@ -1,0 +1,34 @@
+---
+title: "NZFSS Abstract"
+format: html
+date: 2026-08-11
+---
+
+Title: From dose to decision: a process-based model for continuous alum treatment in lakes
+
+Presentation Type: Oral presentation
+
+Theme: Freshwater in a Time of Change
+
+Sub Theme: Modelling to inform decision-making 
+
+Authors:
+
+1. Dr Tadhg Moore
+2. Chris McBride
+3. Prof Deniz Özkundakci
+
+Affiliations:
+1. University of Waikato
+2. Limnotrack
+3. University of Waikato
+
+Abstract:
+
+Excess phosphorus loading continues to drive eutrophication in lakes worldwide, promoting widespread use of alum (aluminium sulfate) to reduce phosphorus availability. While the chemistry of alum–phosphorus interactions is well understood, quantitative tools that link treatment dose to in-lake phosphorus trajectories remain largely empirical because existing modelling tools cannot explicitly link alum dosing strategies to lake-scale phosphorus dynamics and long-term water quality outcomes.
+
+We present a new process-based module developed for the General Lake Model coupled with the Aquatic EcoDynamics (GLM-AED) framework applied to Lake Rotorua (Bay of Plenty). The module simulates key processes governing alum effectiveness, including delivery of alum from treated inflows, kinetic uptake of phosphorus in the water column, gravitational settling of alum floc to the lake bed, continued phosphorus binding at the sediment–water interface, and gradual loss of reactivity through alum floc ageing. A pH modifier captures the sensitivity of binding efficiency to lake water chemistry, is particularly relevant in lakes where pH can vary substantially.
+
+The model is applied to Lake Rotorua, where more than two decades of continuous alum dosing provide a rare opportunity to develop, calibrate and evaluate a mechanistic representation of alum treatment. The resulting framework provides a mechanistic tool for evaluating treatment scheduling (frequency and timing of doses), trade-offs between water-column and sediment-based removal, and the influence of inflow conditions on treatment outcomes. Further work will include scenario modelling under different management scenarios to assess whether alum treatment alone is sufficient to meet water quality targets, or whether it needs to be combined with catchment-scale load reductions.
+
+The GLM-AED alum module is designed to be transferable beyond Lake Rotorua to any system where alum or similar coagulant treatment is being considered as a management intervention. By embedding treatment dynamics within a full lake process model, it bridges the gap between operational dosing decisions and long-term water quality outcomes.

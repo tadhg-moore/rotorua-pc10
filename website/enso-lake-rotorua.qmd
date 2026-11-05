@@ -1,0 +1,126 @@
+---
+title: "ENSO and Lake Rotorua"
+subtitle: "Historical influence on meteorology, inflows and the lake, and how ENSO is represented in the downscaled CMIP6 data"
+format: html
+editor: visual
+warning: false
+message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(dplyr)
+library(readr)
+library(knitr)
+source("scripts/include_img.R")
+d <- function(f) read_csv(file.path("data", "enso", f), show_col_types = FALSE)
+```
+
+::: {.callout-note}
+**Status: work in progress.** Sections 1-3 are complete. Section 4 (AEME counterfactual hindcast) and section 5 (ENSO in CMIP6) are not yet run. Analysis scripts are in `calibration/enso/` (numbered `00`-`07`), with working notes `NOTE_enso_met.md` and `NOTE_enso_lake.md`.
+:::
+
+## 1. Approach and data
+
+**ENSO index.** Following the [Stats NZ ENSO indicator](https://www.stats.govt.nz/indicators/el-nino-southern-oscillation-data-to-2025/), ENSO phase is the 3-month mean Southern Oscillation Index (SOI): at or above +1 is La Niña, at or below -1 is El Niño. The Stats NZ / Earth Sciences NZ series (1990-2025) is used directly; before 1990 the NOAA CPC SOI is rescaled to it (r = 0.97 over the overlap). ONI (Niño3.4) is a sensitivity check; the IPO tripole index is used as a confounder. Over 1990-2025 the record holds 48 El Niño, 62 La Niña and 322 neutral months, so phase composites rest on few events.
+
+**Observations before reanalysis.** Meteorology is from NIWA station 1770 (Rotorua airport; rain 1982-, temperature, wind, radiation 1991-) and MetService NZROA hourly (1993-2023, used for wind direction). ERA5 (a reanalysis) is only used where no observation exists. Inflows are the measured BOPRC gauge records (not the generated inflow files); lake data are the BOPRC Lake Rotorua monitoring and CTD profiles.
+
+```{r}
+#| label: era5-check
+#| echo: false
+tibble::tibble(
+  Variable = c("Temperature", "Wind speed", "Rain", "Radiation"),
+  `ERA5 vs station 1770 (monthly anomaly r)` = c(0.95, 0.88, 0.86, 0.84)) |> kable()
+```
+
+## 2. Meteorology: the ENSO signal at Rotorua
+
+La Niña tends to bring more easterly and north-easterly flow, and wetter, warmer conditions; El Niño more westerly flow, as the Stats NZ page describes. The strongest signal is wind direction, not wind speed.
+
+```{r}
+#| label: lagged-cor
+#| echo: false
+#| fig-cap: "Correlation of station-1770 monthly anomalies with the 3-month SOI at lags of 0-6 months, by target season."
+include_img("images/enso/met_lagged_cor.png")
+```
+
+```{r}
+#| label: composites
+#| echo: false
+#| fig-cap: "Seasonal anomalies by ENSO phase (90% bootstrap interval). Only 2-7 seasons fall in each El Niño/La Niña class."
+include_img("images/enso/met_seasonal_composites.png")
+```
+
+Key results (1991-2025, seasonal means):
+
+- SOI explains a modest share of rain (r about 0.2-0.4 by season) and winter-spring temperature.
+- After controlling for the IPO and a linear trend, the **temperature signal disappears** and the rain signal weakens: much of the apparent SOI-temperature link is shared warming trend and IPO phase.
+- Wind: La Niña shifts flow towards the east/north-east (west-east component r from -0.19 to -0.42 at station 1770; MetService hourly direction agrees), the clearest ENSO fingerprint in the record.
+- ONI gives the same pattern with the opposite sign (SOI and ONI correlate at -0.83), so the conclusions do not depend on the index.
+
+```{r}
+#| label: met-reg
+#| echo: false
+d("met_soi_regression.csv") |> mutate(across(where(is.numeric), ~ signif(.x, 2))) |>
+  rename(`SOI only` = soi_only, `p (SOI only)` = p_only, `SOI + IPO + trend` = soi_ctrl, `p (controlled)` = p_ctrl, `R2 (controlled)` = r2_ctrl) |>
+  kable(caption = "Seasonal anomaly regressed on SOI, without and with IPO and a linear trend (units per SOI unit: mm rain, degC, m/s, MJ/m2).")
+```
+
+## 3. Inflows and the lake
+
+### 3.1 Inflows
+
+On the 50-year Ngongotaha record (1975-2025) La Niña seasons are wetter:
+
+```{r}
+#| label: inflow
+#| echo: false
+d("inflow_longrecord_soi.csv") |> filter(site == "Ngongotaha", var == "Q_mean") |>
+  transmute(Season = season, n, r = round(r, 2), `p-value` = round(p, 3),
+            `% flow change per +1 SOI` = round(pct_per_soi, 1), `p (with IPO + trend)` = round(p_ctrl, 2)) |>
+  kable(caption = "Ngongotaha at SH5, seasonal mean flow vs SOI.")
+```
+
+```{r}
+#| label: inflow-fig
+#| echo: false
+#| fig-cap: "Mean seasonal inflow anomaly by ENSO phase, Ngongotaha (and Waingaehe, which has gaps and is less informative)."
+include_img("images/enso/inflow_longrecord_composites.png")
+```
+
+Mean flow is about 5-12% higher per +1 SOI (significant for summer and spring only), maxima respond more (+17 to +28%), and El Niño seasons run 8-19% below average. With IPO and trend controlled the direction is retained but significance is lost. Of 24 site x metric x season tests only the Ngongotaha summer and spring means reach p < 0.05, so this is a consistent but modest tendency. Measured records for Puarenga, Waingaehe and Kuirau are now in the pipeline (`measured_inflow_daily` target).
+
+### 3.2 Lake water quality and structure
+
+```{r}
+#| label: lake
+#| echo: false
+bind_rows(
+  d("lake_wq_soi.csv") |> mutate(group = "Water quality"),
+  d("lake_profile_soi.csv") |> mutate(group = "Profile")) |>
+  filter(var %in% c("TP", "TN", "CHLA", "SECCHI", "t_surf", "t_bot", "dT", "do_bot")) |>
+  transmute(group, var, season, n, r = round(r, 2), p = signif(p, 2), `p (controlled)` = signif(p_ctrl, 2)) |>
+  filter(p < 0.15 | `p (controlled)` < 0.15) |>
+  kable(caption = "Lake responses with p < 0.15 (uncontrolled or controlled). Controlled = SOI plus alum period and/or IPO and a linear trend; see the notes.")
+```
+
+- **Nutrients, chlorophyll and Secchi:** no significant same-season ENSO relationship, with or without alum and trend controls. A lagged spring-TN signal (SOI leading by 3-4 months, r about -0.55) is exploratory: about 100 season x lag combinations were scanned.
+- **Temperature and stratification:** winter-spring surface and bottom temperature rise with SOI (r about 0.45-0.5), and spring stratification strength correlates with SOI at 2-4 months' lead, but these relationships **vanish when IPO and trend are controlled** (23 seasons).
+- **Bottom oxygen and hypoxia:** no ENSO signal. Monthly profiles seldom capture short anoxic episodes, so the observed record is weak evidence.
+
+## 4. AEME counterfactual hindcast {#sec-hindcast}
+
+*Not yet run.* Plan: run the latest calibrated model (`calibration/final/`) over 1992-2022 with the real forcing, then with the meteorology of selected El Niño and La Niña years swapped for neutral-year composites, to separate the meteorological ENSO effect on stratification, oxygen, nutrients and chlorophyll from loads and alum.
+
+## 5. ENSO in the downscaled CMIP6 data {#sec-cmip6}
+
+*Not yet run.* The data are free-running, so ENSO is judged statistically (2-7 year spectral power, interannual variability, teleconnection pattern) from the local variables. Parent-GCM Niño3.4 and pressure are out of scope.
+
+## 6. Summary so far
+
+1. ENSO has a measurable but modest imprint on Rotorua: the clearest signals are wind direction, rainfall and inflow, with La Niña wetter and more easterly.
+2. The temperature response is not separable from the warming trend and IPO phase with the available record.
+3. No detectable ENSO signal in lake nutrients, chlorophyll, Secchi or bottom oxygen in the observations; the record is short and noisy and alum and load changes dominate.
+4. The CMIP6 evaluation and the model-based attribution (sections 4-5) will determine whether any of this can be extended to future climate.

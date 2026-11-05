@@ -1,0 +1,254 @@
+---
+title: "From dose to decision"
+subtitle: "A process-based model for continuous alum treatment in lakes"
+author:
+  - name: Tadhg Moore
+    orcid: 0000-0002-3834-8868
+    email: t.moore@waikato.ac.nz
+    affiliations:
+      - ref: uni
+  - name: Chris McBride
+    orcid: 0000-0001-5784-9767
+    affiliations:
+      - ref: lt
+  - name: Deniz Özkundakci
+    orcid: 0000-0002-5442-4576
+    affiliations:
+      - ref: uni
+affiliations:
+  - id: lt
+    name: LimnoTrack
+    city: Hamilton
+    country: New Zealand
+  - id: uni
+    name: University of Waikato
+date: 2026-11-03
+format:
+  revealjs:
+    theme: [default]
+    slide-number: true
+    # transition: fade
+    footer: "Lake Science in Action: Processes, Predictions and Restoration"
+    incremental: false
+    width: 1280
+    height: 720
+    preview-links: auto
+    chalkboard: false
+    hash: true
+    controls: false
+    include-after-body: www/hub.html
+    css: www/styles.css
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<!--
+OUTLINE DRAFT. Target ~15 min / ~13 content slides (about 1 min each).
+Items marked TODO are placeholders for figures or numbers to confirm.
+Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before presenting.
+-->
+
+# Why alum, and why a model? {background-color="#1b3a4b"}
+
+## The problem {.smaller}
+
+- Excess phosphorus (P) loading still drives eutrophication in lakes worldwide
+- Alum (aluminium sulfate) is widely used to reduce P availability
+- The chemistry of Al–P binding is well understood
+- **But** dose-to-outcome tools remain largely empirical
+
+::: {.callout-important}
+## The gap
+Existing lake models cannot explicitly link *alum dosing strategy* to *lake-scale P dynamics* and *long-term water quality*.
+:::
+
+::: {.notes}
+Frame the decision problem: managers choose dose, timing, location, not chemistry.
+:::
+
+## Lake Rotorua: a rare long record
+
+:::: {.columns}
+::: {.column width="45%"}
+- Bay of Plenty, Aotearoa New Zealand
+- Warm monomictic, eutrophic, history of cyanobacterial blooms and bottom-water anoxia
+- **Continuous alum dosing of the two main inflows (Puarenga and Utuhina streams) for over two decades**
+- Long monitoring record: lake, streams, outlet
+:::
+::: {.column width="55%"}
+<!-- TODO: map of Lake Rotorua with dosing plants, inflows, outlet (Ohau Channel), monitoring site -->
+![](figures/map_rotorua.png){fig-alt="Map of Lake Rotorua"}
+:::
+::::
+
+::: {.notes}
+Dosing in the streams, not the lake, is why we need an inflow-delivery component.
+:::
+
+## Question and approach
+
+**Can we build a mechanistic, transferable representation of continuous alum treatment inside a full lake model, and use it to inform dosing decisions?**
+
+1. Develop an alum module for GLM-AED
+2. Calibrate and evaluate on 20+ years of Rotorua dosing
+3. Use it to test treatment scheduling and trade-offs
+4. Scenarios: is alum alone enough?
+
+# The model {background-color="#1b3a4b"}
+
+## The GLM-AED alum module
+
+<!-- TODO: process diagram (mermaid or SVG). Boxes below. -->
+
+```{mermaid}
+flowchart LR
+  A[Alum in treated inflow] --> B[Reactive Al floc<br/>in water column]
+  B -- "kinetic P uptake<br/>f(T, pH)" --> C[Al-bound P]
+  B -- "ageing<br/>(loss of reactivity)" --> X[Inert Al]
+  B -- settling --> D[Floc on lake bed]
+  C -- settling --> D
+  D -- "continued P binding<br/>at sediment-water interface" --> E[Buried / resuspended]
+```
+
+::: {.notes}
+Five processes from the abstract: delivery from inflows, kinetic uptake in the water column, settling, continued binding at the SWI, ageing.
+:::
+
+## Process by process {.smaller}
+
+| Process | Representation |
+|---|---|
+| Delivery | Alum dose carried by treated inflows (dose ratio set per stream) |
+| Water-column uptake | Second-order kinetics, Al~r~ × PO~4~, temperature (Q~10~) scaling |
+| Settling | Gravitational settling of floc to the bed (w~ala~) |
+| Sediment binding | Continued P uptake at the sediment–water interface |
+| Ageing | First-order loss of reactivity (k~age~, water and sediment) |
+| pH modifier | Gaussian efficiency response f(pH), peaks near neutral |
+
+$$R_{bind} = k_{20}\,Q_{10}^{(T-20)/10}\,f(pH)\,Al_r\,PO_4$$
+
+::: {.notes}
+Keep equation small. Emphasise: few parameters, each one has a physical meaning, so each can be tested.
+:::
+
+## Why pH matters
+
+- Binding efficiency falls away from near-neutral pH
+- Rotorua pH varies substantially (summer photosynthesis raises it)
+- Module includes a pH modifier; transferable to higher-pH systems
+
+<!-- TODO: figure of f(pH) curve and observed Rotorua pH distribution (calibration/alum/ph_obs.rds exists). Caveat: pH not yet simulated, see Limitations. -->
+
+# Calibration and evaluation {background-color="#1b3a4b"}
+
+## Staged calibration
+
+:::: {.columns}
+::: {.column width="50%"}
+1. Physics: water balance, temperature, light, oxygen
+2. Biogeochemistry **before** alum (pre-alum record, ~1990-2005)
+3. Alum parameters, with the pre-alum fit fixed
+4. Oxygen / anoxia re-check with alum on
+:::
+::: {.column width="50%"}
+- Wind kept as measured; compensation sits in mixing and heat-flux coefficients
+- Targets: lake TP, FRP, chlorophyll, nitrate, bottom DO and anoxic days
+- Pre-alum period gives a clean "no treatment" baseline
+:::
+::::
+
+::: {.notes}
+Key message: separating alum from biology calibration avoids the alum parameters absorbing biology error.
+:::
+
+## How well does it reproduce the lake?
+
+<!-- TODO: time series figure, observed vs simulated TP / FRP / chl with alum era shaded. Source: calibration/final, website/calibration-* pages -->
+
+- Anoxic days: **~236 simulated vs 239 observed** (O member; year-to-year r ≈ 0.74)
+- Bottom DO r ≈ 0.91
+- TP within a few percent of observed; FRP and chl biases are the main residuals
+- Honest misfit: the 2021–22 TP/FRP rebound is **not** reproduced (suggests event-driven external load or alum-P release)
+
+::: {.notes}
+Be upfront about the rebound; it motivates the next-steps slide.
+:::
+
+## Where does the alum and P go? {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+<!-- TODO: Sankey or stacked-bar of alum/P fate. Source: website/rotorua-alum-next-steps.qmd (sec-alum-fate), calibration/alum/50_alum_fate.R -->
+![](figures/alum_fate.png){fig-alt="Fate of alum and bound phosphorus"}
+:::
+::: {.column width="45%"}
+- ~52 t Al yr^-1^ applied, ~12–17 t P yr^-1^ removed
+- ~30 mol Al per mol P in the **streams**, ~5 in the lake, 3.5–5 whole system
+- ~97% of alum-bound P ends buried
+- Most reactive capacity ages out in the water column before reaching the bed
+:::
+::::
+
+::: {.notes}
+Treat absolute settling and burial as a range; module flux diagnostics are not yet output (closure issue). Say so.
+:::
+
+# Using the model for decisions {background-color="#1b3a4b"}
+
+## What the framework lets us ask
+
+- **Scheduling**: frequency and timing of doses (seasonal, flow-proportional, event-based)
+- **Where P is removed**: water column vs sediment-based removal
+- **Inflow conditions**: how flow, temperature and pH change treatment outcomes
+- **Efficiency**: Al applied per unit P removed
+
+## Scenario results {.smaller}
+
+<!-- TODO: pick 2-3 headline results from website/rotorua-alum-scenarios.qmd
+     (S0 no alum vs S1 historical dose; settling velocity, capacity, resuspension, surface-dose sensitivities). -->
+
+:::: {.columns}
+::: {.column width="50%"}
+**No alum vs historical dose**
+
+TODO: change in lake TP, chl, anoxia, P export
+:::
+::: {.column width="50%"}
+**Sensitivity of outcomes to**
+
+TODO: floc settling, capacity (Al:P), resuspension, surface vs stream dosing
+:::
+::::
+
+## Is alum alone enough?
+
+- Next step: scenarios under alternative management
+  - Alum only
+  - Alum + catchment load reduction
+  - Climate-adjusted conditions
+- Compare against lake water quality targets (TLI / CSPS metrics)
+
+<!-- TODO: schematic or placeholder figure; present as ongoing work unless results are ready -->
+
+# Take-home {background-color="#1b3a4b"}
+
+## Limitations and next steps {.smaller}
+
+- pH not yet simulated (fixed efficiency in current runs); a prescribed-pH mode would allow calibrating pH~opt~ and σ~pH~
+- Process flux diagnostics (ageing, burial, resuspension) need to be added to the module to close the Al and P budgets
+- Late-period P rebound unexplained
+- Transfer tests on other coagulant-treated lakes
+
+## Key messages
+
+1. A process-based alum module in GLM-AED links **dose → floc → P binding → lake outcomes**
+2. 20+ years of Rotorua dosing allow calibration and evaluation rarely possible elsewhere
+3. Supports decisions on *when and how much* to dose, and *whether alum alone is enough*
+4. Designed to transfer to any lake considering alum or similar coagulants
+
+::: {.callout-tip}
+## Acknowledgements and contact
+TODO: funders, partners, Bay of Plenty Regional Council, data providers, co-authors, contact details / QR code to repo or website
+:::
