@@ -166,7 +166,7 @@ website:
           text: "Modelling Updates"
         - href: nzfss-abstract.qmd
           text: "NZFSS Abstract"
-        - href: nzfss-conference.qmd
+        - href: nzfss-2026-alum.qmd
           text: "NZFSS Conference Talk"
   page-footer: 
     left: 

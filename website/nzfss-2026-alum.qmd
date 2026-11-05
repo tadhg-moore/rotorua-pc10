@@ -103,51 +103,51 @@ Dosing in the streams, not the lake, is why we need an inflow-delivery component
 <!-- TODO: process diagram (mermaid or SVG). Boxes below. -->
 
 ```{mermaid}
-flowchart LR
+flowchart TB
   DOSE(["Alum dosed<br/>to stream"])
 
   subgraph LAKE["Lake"]
-    direction TB
-
     subgraph WC["Water column"]
-      direction LR
       WR["Reactive Al"]
       WB["Al-bound P"]
+      WAA["Aged Al<br/>(no capacity)"]
+
       WR -- "P binding<br/>f(T, pH)" --> WB
-      WR -- "ageing" --> AA
     end
 
     subgraph SED["Sediment"]
-      direction LR
       BR["Benthic reactive Al"]
       BB["Benthic Al-bound P"]
+      BAA["Aged Al<br/>(no capacity)"]
       BUR[("Buried")]
+
       BR -- "P binding at<br/>sediment-water interface" --> BB
-      BR -- "ageing" --> AA
       BB -- "burial" --> BUR
-      BA -- "burial" --> BUR
     end
-  
-    AA["Aged Al<br/>(no capacity)"]
 
     WR -- "settling" --> BR
     WB -- "settling" --> BB
-    WA -- "settling" --> BA
     BR -. "resuspension" .-> WR
     BB -. "resuspension" .-> WB
+    WR -- "ageing" --> WAA
+    BR -- "ageing" --> BAA
   end
 
   OUT(["Lake outflow<br/>(export)"])
 
-  DOSE --> WC
+  DOSE --> WR
   WC -- "export" --> OUT
+  SED ~~~ OUT
 
   classDef alum fill:#fde8c8,stroke:#d95f02,color:#222
   classDef bound fill:#cfe3f1,stroke:#1b6ca8,color:#222
   classDef sink fill:#e5e5e5,stroke:#666,color:#222
-  class SR,WR,BR alum
-  class SB,WB,BB bound
-  class WA,BA,BUR,OUT sink
+  class WR,BR alum
+  class WB,BB bound
+  class WAA,BAA,BUR,OUT sink
+
+  style WC fill:#d6ebf8,stroke:#1b6ca8
+  style SED fill:#e8d5b5,stroke:#8b6b3e
 ```
 
 ::: {.notes}
