@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-04">
+<meta name="dcterms.date" content="2026-11-05">
 
 <title>Phytoplankton groups and zooplankton: investigation – Rotorua Lake Modelling</title>
 <style>
@@ -84,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4cf47456d81c96c3587e2b69f30f063c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -293,8 +293,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#sec-timing" id="toc-sec-timing" class="nav-link" data-scroll-target="#sec-timing"><span class="header-section-number">7.1</span> Timing: time series and depth contours</a></li>
   </ul></li>
-  <li><a href="#sec-limits" id="toc-sec-limits" class="nav-link" data-scroll-target="#sec-limits"><span class="header-section-number">8</span> Interpretation and limits</a></li>
-  <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next"><span class="header-section-number">9</span> Suggested next steps</a></li>
+  <li><a href="#sec-pest" id="toc-sec-pest" class="nav-link" data-scroll-target="#sec-pest"><span class="header-section-number">8</span> Calibration with PEST++ and a nutrient-extended search</a></li>
+  <li><a href="#sec-csps" id="toc-sec-csps" class="nav-link" data-scroll-target="#sec-csps"><span class="header-section-number">9</span> CSPS-based scoring: nutrient and alum dynamics</a></li>
+  <li><a href="#sec-limits" id="toc-sec-limits" class="nav-link" data-scroll-target="#sec-limits"><span class="header-section-number">10</span> Interpretation and limits</a></li>
+  <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next"><span class="header-section-number">11</span> Suggested next steps</a></li>
   </ul>
 </nav>
     </div>
@@ -321,7 +323,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 4, 2026</p>
+      <p class="date">November 5, 2026</p>
     </div>
   </div>
   
@@ -1792,8 +1794,305 @@ Figure&nbsp;18: Daily depth profiles, best run of the structure with both.
 </ul>
 </section>
 </section>
-<section id="sec-limits" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="sec-limits"><span class="header-section-number">8</span> Interpretation and limits</h2>
+<section id="sec-pest" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="sec-pest"><span class="header-section-number">8</span> Calibration with PEST++ and a nutrient-extended search</h2>
+<p>The random search tunes only the phytoplankton and zooplankton settings. Three further attempts tested whether a formal calibration, or freeing the nutrient processes, gives a better match to the nutrients as well as the succession. All three use the three-group structure (<code>s3</code>) with the zooplankton on, calibrate on 2003-07 to 2007-06 and hold out 2007-07 to 2011-06.</p>
+<ul>
+<li><strong>PEST++ run 1 (phytoplankton and zooplankton only).</strong> <code>pestpp-ies</code> through aemetools, 39 free parameters (growth, light and nutrient half-saturation, respiration and settling for the three groups, and seven grazing settings for each of three zooplankton groups), 40 realisations, 5 iterations, 5 agents (333 min). Targets were the surface (0 to 5 m) total chlorophyll-a, the three group chlorophyll-a series from the BOPRC counts (25 samples per group in the calibration years, log1p), and FRP, TP, nitrate, ammonium and TN. The zooplankton parameters were switched on through the AEME configuration and calibrated through the same parameter table as the rest.</li>
+<li><strong>PEST++ run 2 (narrowed priors, nutrients freed).</strong> The same set-up, started from the best nutrient-weighted member of the random search (<code>r5_s3_11</code>). The prior ranges of the phytoplankton and zooplankton settings were narrowed to the span of the 12 best search members (padded by 1.3; ±40% for settings the search never varied), and nine nutrient processes were freed within a factor of 4 (sediment ammonium, nitrate and FRP fluxes, nitrification, denitrification, DOM mineralisation, PON and POP hydrolysis, PO4 sorption). That gave 57 free parameters, with larger weights on TP, TN, FRP, nitrate and ammonium (357 min).</li>
+<li><strong>Nutrient-extended search.</strong> The cross-entropy search of <a href="#sec-search" class="quarto-xref">Section&nbsp;4</a>, restarted from the 8 best earlier members with nine multipliers (0.25 to 4) on the same nutrient processes as extra search dimensions. 60 rounds of 12 runs (720 runs, 3 workers). It is scored by the same metrics as the earlier searches, so succession (<code>z3</code>), chlorophyll-a, nutrients and zooplankton all count.</li>
+</ul>
+<div class="cell">
+<div id="tbl-pest" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Best member of each approach, scored with the metrics of the random search (lower is better for the scores, <code>z3</code> and the penalties). Calibration is 2003-07 to 2007-06 and hold-out 2007-07 to 2011-06. Simulated means are surface (top 5 m) values in g/m³ (chlorophyll-a in mg/m³).
+</figcaption>
+<div aria-describedby="tbl-pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Member</th>
+<th style="text-align: right;">Score, calibration</th>
+<th style="text-align: right;">Score, hold-out</th>
+<th style="text-align: right;">z3, calibration</th>
+<th style="text-align: right;">z3, hold-out</th>
+<th style="text-align: right;">Nutrient penalty, calibration</th>
+<th style="text-align: right;">Nutrient penalty, hold-out</th>
+<th style="text-align: right;">Chl-a, calibration</th>
+<th style="text-align: right;">Chl-a, hold-out</th>
+<th style="text-align: right;">TN</th>
+<th style="text-align: right;">TP</th>
+<th style="text-align: right;">FRP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Search best (earlier, r1_s3_01)</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">1.32</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">8.9</td>
+<td style="text-align: right;">0.206</td>
+<td style="text-align: right;">0.042</td>
+<td style="text-align: right;">0.023</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PEST++ run 1 (phyto + zoo)</td>
+<td style="text-align: right;">7.77</td>
+<td style="text-align: right;">8.01</td>
+<td style="text-align: right;">2.24</td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">1.15</td>
+<td style="text-align: right;">1.24</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">0.517</td>
+<td style="text-align: right;">0.024</td>
+<td style="text-align: right;">0.013</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PEST++ run 2 (narrowed priors, nutrients freed)</td>
+<td style="text-align: right;">6.35</td>
+<td style="text-align: right;">6.08</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">1.56</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">1.20</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">0.275</td>
+<td style="text-align: right;">0.040</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Search with nutrient multipliers (r45_s3_02)</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">3.37</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">0.328</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.013</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>What the comparison shows</strong></p>
+<ul>
+<li><strong>The PEST++ route works, including for the zooplankton parameters.</strong> The zooplankton module is switched on through the model configuration, its parameters sit in the same table as the rest, and group-level observations can be added to the AEME observations. The runs finish and the objective falls (run 1: 20.5 to 12.4 on its own objective).</li>
+<li><strong>But the PEST++ members score worse on the search metrics than the member they started from.</strong> Run 1 gives 7.8 (calibration) and 8.0 (hold-out) against 4.1 for the starting member, run 2 gives 6.4 and 6.1. Run 1 cut total chlorophyll-a to about 6.4 mg/m³ (observed 11 to 12 mg/m³) and surface TP to 0.024 (calibration) and 0.014 (hold-out), while raising TN from 0.20 to 0.52 (0.31 observed). Run 2 improved little in its own objective after the first iteration (best phi about 15.3), and its nutrient penalty rose from 0.74 to 1.39.</li>
+<li><strong>Why: the two objectives differ.</strong> PEST++ fits the surface residuals of each variable. The search score adds the seasonal succession shares, a chlorophyll-a high-percentile and seasonality term, and a zooplankton biomass range. Optimising one does not improve the other, and only 25 group samples per group constrain the succession in the PEST++ runs.</li>
+<li><strong>The nutrient-extended search improved on all of the other approaches.</strong> Its best member (<code>r45_s3_02</code>) scores 3.38 on the calibration years and 3.37 on the hold-out years, against 4.06 for the earlier best, with a nutrient penalty of 0.70 against 1.17 (re-scored; 1.32 in the original search) and 0.61 on hold-out. The hold-out matches the calibration score, so there is no sign of overfitting in the final member, although the hold-out score of the best-so-far member rose to 4.0 for a while in the middle of the search.</li>
+<li><strong>Succession did not improve.</strong> <code>z3</code> is 1.65 against 1.57 for the earlier best, with biases of +0.11 (cyanobacteria), -0.17 (greens) and +0.06 (diatoms) on the sample dates, so the greens are still underestimated. The nutrient gain was not paid for in the shares, but it did not help them either.</li>
+<li><strong>What the nutrient parameters did.</strong> The best member raises the sediment ammonium flux and denitrification by about 2.9 times and the nitrate flux by 1.1, and lowers the sediment FRP flux (0.30), nitrification (0.40), PON hydrolysis (0.41), POP hydrolysis (0.63) and PO4 sorption (0.56). Surface TN is 0.33 g/m³ (0.31 observed), TP 0.035, FRP 0.013 and nitrate 0.024. Several of these multipliers moved far from 1, and the nutrient parameters are not identified separately from each other, so they should be read as a combined adjustment, not as separate estimates.</li>
+<li><strong>Remaining gap.</strong> The search plateaued: the last 14 rounds improved the score by about 0.04. Simulated ammonium rose to 0.025 g/m³ (0.004 to 0.017 in the other members), and I have not compared nitrate, ammonium, TP or FRP with the observed means. The persistent summer diatom excess also remains.</li>
+</ul>
+</section>
+<section id="sec-csps" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sec-csps"><span class="header-section-number">9</span> CSPS-based scoring: nutrient and alum dynamics</h2>
+<p>The CSPS framework (<code>calibration/csps_metrics.R</code>) scores a model by <em>signatures</em>: summary statistics computed in the same way on the observations and on the model, on the days that were sampled, with the interannual spread of the observed signature as the tolerance. Until now it covered mixing, anoxia, internal loading, chlorophyll-a and trophic state. Two sets were added, switched on with <code>extended = TRUE</code> so the sensitivity analysis and the step 1 to 3 calibrations are unchanged.</p>
+<ul>
+<li><strong>Nutrient dynamics</strong> (<code>nut_*</code>, 23 signatures). For TP, TN, FRP, nitrate and ammonium in the surface 2 m: median, 90th percentile, coefficient of variation and the ratio of summer (December to April) to winter (June to August) medians, which catches a wrong seasonal cycle such as a winter nitrate pile-up that is not drawn down in summer. Also the TN:TP mass ratio, FRP as a fraction of TP and the dissolved inorganic N to FRP ratio.</li>
+<li><strong>Alum dynamics</strong> (<code>alum_*</code>, 7 signatures). The response to the alum programme: surface TP, surface chlorophyll-a and summer bottom-water FRP after dosing (from 2008) over before dosing (before June 2006), the trend in annual mean TP after dosing, the change in surface pH, and the aluminium in the water (needs the 2011 to 2015 Al record, read from the GLM output with <code>csps_pair_al()</code>). The observed ratios are 0.44 for TP, 0.88 for chlorophyll-a and 0.19 for bottom FRP, so the observed TP fell by 56% and the summer bottom FRP by 81%.</li>
+</ul>
+<p>The tolerances and observed values are in <code>calibration/csps_targets_ext.csv</code> (65 signatures, built by <code>csps_build_targets_ext.R</code>). Several tolerances are wide because the observed series are short (FRP has only 5 usable years; nitrate and ammonium are mostly near the detection limit).</p>
+<p><strong>In the phytoplankton scoring</strong> (<code>calibration/phyto_groups/csps_phyto.R</code>), each run is now also scored on the CSPS signatures of its calibration and hold-out windows. A term is the mean of min(|z|, 3) over its signatures, where z is the model minus observed signature, in tolerance units, on the paired days of that window: <code>csps_chl</code> (7 chlorophyll-a signatures), <code>csps_nut</code> (23), <code>csps_load</code> (9 bottom against surface signatures), <code>csps_sys</code> (trophic state) and <code>csps_alum</code> (the alum response across 2003 to 2011). The new <code>score2</code> keeps the succession, zooplankton and extinction terms of the earlier score and replaces the chlorophyll-a and nutrient terms by the CSPS terms. The earlier <code>score</code> is still recorded, so earlier runs stay comparable, and the nutrient-extended search can be steered by <code>score2</code> by setting <code>INV_SCORE=score2</code>; that search has not been re-run with it.</p>
+<div class="cell">
+<div id="tbl-csps" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-csps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: CSPS terms for the earlier best search member (r1_s3_01) and the best member of the nutrient-extended search (r45_s3_02). Terms are mean min(|z|, 3) in tolerance units, lower is better; the pass fraction is the share of signatures within one tolerance.
+</figcaption>
+<div aria-describedby="tbl-csps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 53%">
+<col style="width: 16%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Earlier best</th>
+<th style="text-align: right;">Nutrient-extended best</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Score (earlier), calibration</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">3.38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Score (earlier), hold-out</td>
+<td style="text-align: right;">4.06</td>
+<td style="text-align: right;">3.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CSPS score (score2), calibration</td>
+<td style="text-align: right;">6.76</td>
+<td style="text-align: right;">5.85</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CSPS score (score2), hold-out</td>
+<td style="text-align: right;">6.33</td>
+<td style="text-align: right;">6.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chl-a signatures, calibration</td>
+<td style="text-align: right;">1.54</td>
+<td style="text-align: right;">0.99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chl-a signatures, hold-out</td>
+<td style="text-align: right;">1.53</td>
+<td style="text-align: right;">1.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nutrient signatures, calibration</td>
+<td style="text-align: right;">1.51</td>
+<td style="text-align: right;">1.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nutrient signatures, hold-out</td>
+<td style="text-align: right;">1.02</td>
+<td style="text-align: right;">0.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Internal loading signatures, calibration</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">0.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Internal loading signatures, hold-out</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">1.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pass fraction, calibration</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">0.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pass fraction, hold-out</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">0.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alum response signatures (2003 to 2011)</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-csps-z" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-csps-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Signatures of the best nutrient-extended member that are more than 1.5 tolerances from the observations in the calibration years (z = model minus observed, in tolerances; the alum signatures use 2003 to 2011).
+</figcaption>
+<div aria-describedby="tbl-csps-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Signature</th>
+<th style="text-align: right;">Earlier best</th>
+<th style="text-align: right;">Nutrient-extended best</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">chl_summer_winter_ratio</td>
+<td style="text-align: right;">3.16</td>
+<td style="text-align: right;">4.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nut_nit_cv</td>
+<td style="text-align: right;">-3.16</td>
+<td style="text-align: right;">-3.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nut_tn_median</td>
+<td style="text-align: right;">-4.86</td>
+<td style="text-align: right;">-2.74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nut_tn_p90</td>
+<td style="text-align: right;">-4.34</td>
+<td style="text-align: right;">-2.58</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load_amm_bot_p90</td>
+<td style="text-align: right;">-1.96</td>
+<td style="text-align: right;">-1.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nut_frp_median</td>
+<td style="text-align: right;">6.58</td>
+<td style="text-align: right;">1.80</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">load_tp_bot_p90</td>
+<td style="text-align: right;">-1.48</td>
+<td style="text-align: right;">-1.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nut_frp_tp_frac</td>
+<td style="text-align: right;">4.74</td>
+<td style="text-align: right;">1.64</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>What the CSPS scoring shows</strong></p>
+<ul>
+<li><strong>The nutrient-extended member is better than the earlier best on the CSPS terms too.</strong> Chlorophyll-a signatures 1.54 to 0.99 and nutrient signatures 1.51 to 1.05 in the calibration years, with the pass fraction rising from 0.39 to 0.59. In the hold-out years the gains are smaller (chlorophyll-a 1.53 to 1.18, nutrients 1.02 to 0.99, pass fraction 0.52 to 0.50), and internal loading is worse (1.07 to 1.30), so the improvement is concentrated in the calibration years.</li>
+<li><strong>The model reproduces the alum response.</strong> The model’s post-dose over pre-dose ratios of TP and chlorophyll-a are within 0.15 tolerances of the observed ratios in both members, and the bottom FRP ratio within 0.8 tolerances. This is expected because the alum dosing is in the forcing and the alum parameters were calibrated earlier; it is a check that the phytoplankton and nutrient changes have not broken it.</li>
+<li><strong>The signatures show what the earlier terms hide.</strong> The nutrient-extended member still has chlorophyll-a that is too seasonal (summer to winter ratio about 4 tolerances too high), TN that is too low (median about 2.7 and 90th percentile 2.6 tolerances low), ammonium and TP in the bottom water that are too low (90th percentiles about 1.9 and 1.8 tolerances low), and a nitrate variability that is too low (3.2 tolerances). The nutrient-extended search did reduce the TN shortfall, from about 4.9 to 2.7 tolerances.</li>
+<li><strong>Limits of this check.</strong> Only two members were scored, so this is a demonstration of the terms and not a new calibration. The FRP, nitrate and ammonium tolerances are wide or based on few years, and several signatures overlap (median, 90th percentile and variability of the same series), so the mean over signatures weights nutrients with many signatures more heavily than the others. <code>sys_chl_tp_slope</code> is left out of the terms because its value for a window of a few years is not stable.</li>
+</ul>
+</section>
+<section id="sec-limits" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="sec-limits"><span class="header-section-number">10</span> Interpretation and limits</h2>
 <ul>
 <li><strong>Zooplankton are a closure device here, not a measured pool.</strong> There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module’s stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.</li>
 <li><strong>Group shares in the first search were not constrained by data.</strong> Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (<a href="#sec-obsfit" class="quarto-xref">Section&nbsp;7</a>) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.</li>
@@ -1805,14 +2104,15 @@ Figure&nbsp;18: Daily depth profiles, best run of the structure with both.
 <li><strong>The observed series is short and quarterly</strong> (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.</li>
 </ul>
 </section>
-<section id="sec-next" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="sec-next"><span class="header-section-number">9</span> Suggested next steps</h2>
+<section id="sec-next" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="sec-next"><span class="header-section-number">11</span> Suggested next steps</h2>
 <ol type="1">
 <li><strong>Take the best configurations into a full ES-MDA refit</strong> with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.</li>
 <li><strong>Ask the AED developers about the <code>/31</code> and <code>/14</code> factors</strong> in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.</li>
 <li><strong>Try a calm-weather cyanobacteria mechanism</strong> (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.</li>
 <li><strong>Run a second search on zooplankton community and predation</strong> (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (<code>Tstd_zoo</code>, <code>Topt_zoo</code>, <code>Tmax_zoo</code>) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.</li>
 <li><strong>Extend the observation-based search</strong> (<a href="#sec-obsfit" class="quarto-xref">Section&nbsp;7</a>) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.</li>
+<li><strong>Make PEST++ see the succession.</strong> <code>calibration/phyto_groups/pest/calibrate_curve.R</code> replaces the 25 raw group samples by the observed seasonal curve (monthly shares scaled by the observed monthly chlorophyll-a), so the succession is part of the PEST++ objective. It has not been run (about 5.5 h). Alternatively add the search score terms as a penalty.</li>
 <li><strong>Add zooplankton or group-level data</strong> if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).</li>
 </ol>
 
@@ -2619,25 +2919,90 @@ Figure&nbsp;18: Daily depth profiles, best run of the structure with both.
 <span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Timing differs between structures.** The five-group run (@fig-depth-s5) has a long period of greens in the hold-out years and almost no spring diatom peak in 2008 to 2010, which is the source of its large hold-out errors.</span>
 <span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Which sample dates would constrain timing?** The sample dates fall mostly in January, April, July and October, so they pin the shares in those months but say little about when each bloom starts or ends (for example the diatom peak between July and October).</span>
 <span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretation and limits {#sec-limits}</span></span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Calibration with PEST++ and a nutrient-extended search {#sec-pest}</span></span>
 <span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zooplankton are a closure device here, not a measured pool.** There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module's stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.</span>
-<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Group shares in the first search were not constrained by data.** Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (@sec-obsfit) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.</span>
-<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Calm-water cyanobacteria blooms are missing.** Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.</span>
-<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total nitrogen stays 20 to 50% low**, and nitrate is 30 to 60% high.</span>
-<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The window is short** (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.</span>
-<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The first search was scored on succession targets I assumed** (cyanobacteria at least 50% in summer, greens at least 35% all year). The observed data (@sec-obsfit) put cyanobacteria at about 37% in summer and greens at about 60% in summer to autumn, so the configurations of the first search should be treated as a first pass, not a calibration.</span>
-<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Model shares are shares of carbon biomass and the observations are shares of biovolume.** Generic cell volumes are within a factor of two of Rotorua populations at best, and diatoms hold less carbon per unit volume than other groups, which may account for part of the diatom excess.</span>
-<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The observed series is short and quarterly** (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.</span>
-<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a><span class="fu">## Suggested next steps {#sec-next}</span></span>
-<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Take the best configurations into a full ES-MDA refit** with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.</span>
-<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Ask the AED developers about the `/31` and `/14` factors** in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.</span>
-<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Try a calm-weather cyanobacteria mechanism** (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.</span>
-<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Run a second search on zooplankton community and predation** (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (<span class="in">`Tstd_zoo`</span>, <span class="in">`Topt_zoo`</span>, <span class="in">`Tmax_zoo`</span>) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.</span>
-<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Extend the observation-based search** (@sec-obsfit) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.</span>
-<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).</span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a>The random search tunes only the phytoplankton and zooplankton settings. Three further attempts tested whether a formal calibration, or freeing the nutrient processes, gives a better match to the nutrients as well as the succession. All three use the three-group structure (<span class="in">`s3`</span>) with the zooplankton on, calibrate on 2003-07 to 2007-06 and hold out 2007-07 to 2011-06.</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PEST++ run 1 (phytoplankton and zooplankton only).** <span class="in">`pestpp-ies`</span> through aemetools, 39 free parameters (growth, light and nutrient half-saturation, respiration and settling for the three groups, and seven grazing settings for each of three zooplankton groups), 40 realisations, 5 iterations, 5 agents (333 min). Targets were the surface (0 to 5 m) total chlorophyll-a, the three group chlorophyll-a series from the BOPRC counts (25 samples per group in the calibration years, log1p), and FRP, TP, nitrate, ammonium and TN. The zooplankton parameters were switched on through the AEME configuration and calibrated through the same parameter table as the rest.</span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PEST++ run 2 (narrowed priors, nutrients freed).** The same set-up, started from the best nutrient-weighted member of the random search (<span class="in">`r5_s3_11`</span>). The prior ranges of the phytoplankton and zooplankton settings were narrowed to the span of the 12 best search members (padded by 1.3; ±40% for settings the search never varied), and nine nutrient processes were freed within a factor of 4 (sediment ammonium, nitrate and FRP fluxes, nitrification, denitrification, DOM mineralisation, PON and POP hydrolysis, PO4 sorption). That gave 57 free parameters, with larger weights on TP, TN, FRP, nitrate and ammonium (357 min).</span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Nutrient-extended search.** The cross-entropy search of @sec-search, restarted from the 8 best earlier members with nine multipliers (0.25 to 4) on the same nutrient processes as extra search dimensions. 60 rounds of 12 runs (720 runs, 3 workers). It is scored by the same metrics as the earlier searches, so succession (<span class="in">`z3`</span>), chlorophyll-a, nutrients and zooplankton all count.</span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-pest</span></span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Best member of each approach, scored with the metrics of the random search (lower is better for the scores, `z3` and the penalties). Calibration is 2003-07 to 2007-06 and hold-out 2007-07 to 2011-06. Simulated means are surface (top 5 m) values in g/m³ (chlorophyll-a in mg/m³)."</span></span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/calib_compare.csv"</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Member =</span> b<span class="sc">$</span>member, <span class="st">`</span><span class="at">Score, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>score, <span class="st">`</span><span class="at">Score, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>score_val, <span class="st">`</span><span class="at">z3, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>z3_cal, <span class="st">`</span><span class="at">z3, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>z3_val, <span class="st">`</span><span class="at">Nutrient penalty, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>pen_nut_cal,</span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Nutrient penalty, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>pen_nut_val, <span class="st">`</span><span class="at">Chl-a, calibration</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>chl_sim_cal, <span class="st">`</span><span class="at">Chl-a, hold-out</span><span class="st">`</span> <span class="ot">=</span> b<span class="sc">$</span>chl_sim_val, <span class="at">TN =</span> b<span class="sc">$</span>NIT_tn_sim_cal, <span class="at">TP =</span> b<span class="sc">$</span>PHS_tp_sim_cal, <span class="at">FRP =</span> b<span class="sc">$</span>PHS_frp_sim_cal, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tab, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a>**What the comparison shows**</span>
+<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The PEST++ route works, including for the zooplankton parameters.** The zooplankton module is switched on through the model configuration, its parameters sit in the same table as the rest, and group-level observations can be added to the AEME observations. The runs finish and the objective falls (run 1: 20.5 to 12.4 on its own objective).</span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**But the PEST++ members score worse on the search metrics than the member they started from.** Run 1 gives 7.8 (calibration) and 8.0 (hold-out) against 4.1 for the starting member, run 2 gives 6.4 and 6.1. Run 1 cut total chlorophyll-a to about 6.4 mg/m³ (observed 11 to 12 mg/m³) and surface TP to 0.024 (calibration) and 0.014 (hold-out), while raising TN from 0.20 to 0.52 (0.31 observed). Run 2 improved little in its own objective after the first iteration (best phi about 15.3), and its nutrient penalty rose from 0.74 to 1.39.</span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Why: the two objectives differ.** PEST++ fits the surface residuals of each variable. The search score adds the seasonal succession shares, a chlorophyll-a high-percentile and seasonality term, and a zooplankton biomass range. Optimising one does not improve the other, and only 25 group samples per group constrain the succession in the PEST++ runs.</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The nutrient-extended search improved on all of the other approaches.** Its best member (<span class="in">`r45_s3_02`</span>) scores 3.38 on the calibration years and 3.37 on the hold-out years, against 4.06 for the earlier best, with a nutrient penalty of 0.70 against 1.17 (re-scored; 1.32 in the original search) and 0.61 on hold-out. The hold-out matches the calibration score, so there is no sign of overfitting in the final member, although the hold-out score of the best-so-far member rose to 4.0 for a while in the middle of the search.</span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Succession did not improve.** <span class="in">`z3`</span> is 1.65 against 1.57 for the earlier best, with biases of +0.11 (cyanobacteria), -0.17 (greens) and +0.06 (diatoms) on the sample dates, so the greens are still underestimated. The nutrient gain was not paid for in the shares, but it did not help them either.</span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**What the nutrient parameters did.** The best member raises the sediment ammonium flux and denitrification by about 2.9 times and the nitrate flux by 1.1, and lowers the sediment FRP flux (0.30), nitrification (0.40), PON hydrolysis (0.41), POP hydrolysis (0.63) and PO4 sorption (0.56). Surface TN is 0.33 g/m³ (0.31 observed), TP 0.035, FRP 0.013 and nitrate 0.024. Several of these multipliers moved far from 1, and the nutrient parameters are not identified separately from each other, so they should be read as a combined adjustment, not as separate estimates.</span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Remaining gap.** The search plateaued: the last 14 rounds improved the score by about 0.04. Simulated ammonium rose to 0.025 g/m³ (0.004 to 0.017 in the other members), and I have not compared nitrate, ammonium, TP or FRP with the observed means. The persistent summer diatom excess also remains.</span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a><span class="fu">## CSPS-based scoring: nutrient and alum dynamics {#sec-csps}</span></span>
+<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>The CSPS framework (<span class="in">`calibration/csps_metrics.R`</span>) scores a model by *signatures*: summary statistics computed in the same way on the observations and on the model, on the days that were sampled, with the interannual spread of the observed signature as the tolerance. Until now it covered mixing, anoxia, internal loading, chlorophyll-a and trophic state. Two sets were added, switched on with <span class="in">`extended = TRUE`</span> so the sensitivity analysis and the step 1 to 3 calibrations are unchanged.</span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Nutrient dynamics** (<span class="in">`nut_*`</span>, 23 signatures). For TP, TN, FRP, nitrate and ammonium in the surface 2 m: median, 90th percentile, coefficient of variation and the ratio of summer (December to April) to winter (June to August) medians, which catches a wrong seasonal cycle such as a winter nitrate pile-up that is not drawn down in summer. Also the TN:TP mass ratio, FRP as a fraction of TP and the dissolved inorganic N to FRP ratio.</span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Alum dynamics** (<span class="in">`alum_*`</span>, 7 signatures). The response to the alum programme: surface TP, surface chlorophyll-a and summer bottom-water FRP after dosing (from 2008) over before dosing (before June 2006), the trend in annual mean TP after dosing, the change in surface pH, and the aluminium in the water (needs the 2011 to 2015 Al record, read from the GLM output with <span class="in">`csps_pair_al()`</span>). The observed ratios are 0.44 for TP, 0.88 for chlorophyll-a and 0.19 for bottom FRP, so the observed TP fell by 56% and the summer bottom FRP by 81%.</span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>The tolerances and observed values are in <span class="in">`calibration/csps_targets_ext.csv`</span> (65 signatures, built by <span class="in">`csps_build_targets_ext.R`</span>). Several tolerances are wide because the observed series are short (FRP has only 5 usable years; nitrate and ammonium are mostly near the detection limit).</span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a>**In the phytoplankton scoring** (<span class="in">`calibration/phyto_groups/csps_phyto.R`</span>), each run is now also scored on the CSPS signatures of its calibration and hold-out windows. A term is the mean of min(|z|, 3) over its signatures, where z is the model minus observed signature, in tolerance units, on the paired days of that window: <span class="in">`csps_chl`</span> (7 chlorophyll-a signatures), <span class="in">`csps_nut`</span> (23), <span class="in">`csps_load`</span> (9 bottom against surface signatures), <span class="in">`csps_sys`</span> (trophic state) and <span class="in">`csps_alum`</span> (the alum response across 2003 to 2011). The new <span class="in">`score2`</span> keeps the succession, zooplankton and extinction terms of the earlier score and replaces the chlorophyll-a and nutrient terms by the CSPS terms. The earlier <span class="in">`score`</span> is still recorded, so earlier runs stay comparable, and the nutrient-extended search can be steered by <span class="in">`score2`</span> by setting <span class="in">`INV_SCORE=score2`</span>; that search has not been re-run with it.</span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-csps</span></span>
+<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "CSPS terms for the earlier best search member (r1_s3_01) and the best member of the nutrient-extended search (r45_s3_02). Terms are mean min(|z|, 3) in tolerance units, lower is better; the pass fraction is the share of signatures within one tolerance."</span></span>
+<span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/csps_check_metrics.csv"</span>, <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a>lab <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">score =</span> <span class="st">"Score (earlier), calibration"</span>, <span class="at">score_val =</span> <span class="st">"Score (earlier), hold-out"</span>, <span class="at">score2 =</span> <span class="st">"CSPS score (score2), calibration"</span>, <span class="at">score2_val =</span> <span class="st">"CSPS score (score2), hold-out"</span>, <span class="at">csps_chl_cal =</span> <span class="st">"Chl-a signatures, calibration"</span>,</span>
+<span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a>  <span class="at">csps_chl_val =</span> <span class="st">"Chl-a signatures, hold-out"</span>, <span class="at">csps_nut_cal =</span> <span class="st">"Nutrient signatures, calibration"</span>, <span class="at">csps_nut_val =</span> <span class="st">"Nutrient signatures, hold-out"</span>, <span class="at">csps_load_cal =</span> <span class="st">"Internal loading signatures, calibration"</span>,</span>
+<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>  <span class="at">csps_load_val =</span> <span class="st">"Internal loading signatures, hold-out"</span>, <span class="at">csps_pass_cal =</span> <span class="st">"Pass fraction, calibration"</span>, <span class="at">csps_pass_val =</span> <span class="st">"Pass fraction, hold-out"</span>, <span class="at">csps_alum =</span> <span class="st">"Alum response signatures (2003 to 2011)"</span>)</span>
+<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(m) <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">"[.]90%$"</span>, <span class="st">""</span>, <span class="fu">rownames</span>(m)); m <span class="ot">&lt;-</span> m[<span class="fu">names</span>(lab), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]; <span class="fu">rownames</span>(m) <span class="ot">&lt;-</span> lab</span>
+<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(m, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Earlier best"</span>, <span class="st">"Nutrient-extended best"</span>))</span>
+<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-csps-z</span></span>
+<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Signatures of the best nutrient-extended member that are more than 1.5 tolerances from the observations in the calibration years (z = model minus observed, in tolerances; the alum signatures use 2003 to 2011)."</span></span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/phyto_invest/csps_check_z.csv"</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>); <span class="fu">names</span>(z)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"sig"</span>; z <span class="ot">&lt;-</span> z[<span class="sc">!</span><span class="fu">is.na</span>(z<span class="sc">$</span>sig) <span class="sc">&amp;</span> z<span class="sc">$</span>sig <span class="sc">!=</span> <span class="st">""</span> <span class="sc">&amp;</span> z<span class="sc">$</span>sig <span class="sc">!=</span> <span class="st">"NA"</span> <span class="sc">&amp;</span> z<span class="sc">$</span>sig <span class="sc">!=</span> <span class="st">"sys_chl_tp_slope"</span>, ]</span>
+<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">&lt;-</span> z[<span class="fu">is.finite</span>(z[[<span class="dv">3</span>]]) <span class="sc">&amp;</span> <span class="fu">abs</span>(z[[<span class="dv">3</span>]]) <span class="sc">&gt;</span> <span class="fl">1.5</span>, ]; bad <span class="ot">&lt;-</span> bad[<span class="fu">order</span>(<span class="sc">-</span><span class="fu">abs</span>(bad[[<span class="dv">3</span>]])), ]</span>
+<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Signature =</span> bad<span class="sc">$</span>sig, <span class="st">`</span><span class="at">Earlier best</span><span class="st">`</span> <span class="ot">=</span> bad[[<span class="dv">2</span>]], <span class="st">`</span><span class="at">Nutrient-extended best</span><span class="st">`</span> <span class="ot">=</span> bad[[<span class="dv">3</span>]], <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>**What the CSPS scoring shows**</span>
+<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The nutrient-extended member is better than the earlier best on the CSPS terms too.** Chlorophyll-a signatures 1.54 to 0.99 and nutrient signatures 1.51 to 1.05 in the calibration years, with the pass fraction rising from 0.39 to 0.59. In the hold-out years the gains are smaller (chlorophyll-a 1.53 to 1.18, nutrients 1.02 to 0.99, pass fraction 0.52 to 0.50), and internal loading is worse (1.07 to 1.30), so the improvement is concentrated in the calibration years.</span>
+<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The model reproduces the alum response.** The model's post-dose over pre-dose ratios of TP and chlorophyll-a are within 0.15 tolerances of the observed ratios in both members, and the bottom FRP ratio within 0.8 tolerances. This is expected because the alum dosing is in the forcing and the alum parameters were calibrated earlier; it is a check that the phytoplankton and nutrient changes have not broken it.</span>
+<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The signatures show what the earlier terms hide.** The nutrient-extended member still has chlorophyll-a that is too seasonal (summer to winter ratio about 4 tolerances too high), TN that is too low (median about 2.7 and 90th percentile 2.6 tolerances low), ammonium and TP in the bottom water that are too low (90th percentiles about 1.9 and 1.8 tolerances low), and a nitrate variability that is too low (3.2 tolerances). The nutrient-extended search did reduce the TN shortfall, from about 4.9 to 2.7 tolerances.</span>
+<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Limits of this check.** Only two members were scored, so this is a demonstration of the terms and not a new calibration. The FRP, nitrate and ammonium tolerances are wide or based on few years, and several signatures overlap (median, 90th percentile and variability of the same series), so the mean over signatures weights nutrients with many signatures more heavily than the others. <span class="in">`sys_chl_tp_slope`</span> is left out of the terms because its value for a window of a few years is not stable.</span>
+<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretation and limits {#sec-limits}</span></span>
+<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zooplankton are a closure device here, not a measured pool.** There are no zooplankton data, and the phosphorus and nitrogen content that make the budget work are far from textbook values (a C:P of about 130 for the best run, close to the algae themselves rather than a zooplankton value), because the module's stoichiometry does not conserve mass in this build. A fix in the source (removing the divisions by 31 and 14 if the phytoplankton internal stores are already in mmol) would change these settings, and should be checked with the AED developers before the zooplankton parameters are taken as physical.</span>
+<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Group shares in the first search were not constrained by data.** Only total chlorophyll-a was used, and the shares were set to the ordering described in the brief. The later search (@sec-obsfit) uses the BOPRC counts, which are 31 quarterly dates from 2003 to 2011.</span>
+<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Calm-water cyanobacteria blooms are missing.** Whatever the buoyancy setting, the surface layer is too well mixed for floating to matter. A bloom that follows calm days would need either a stability-dependent growth or loss term, a lower mixing of the top metres (a model change in GLM), or a vertical resolution at the surface that this configuration does not have.</span>
+<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Total nitrogen stays 20 to 50% low**, and nitrate is 30 to 60% high.</span>
+<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The window is short** (2 years from two strong cyanobacteria summers), so a configuration may be tuned to them. The six-year check helps but is not independent of the search.</span>
+<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The first search was scored on succession targets I assumed** (cyanobacteria at least 50% in summer, greens at least 35% all year). The observed data (@sec-obsfit) put cyanobacteria at about 37% in summer and greens at about 60% in summer to autumn, so the configurations of the first search should be treated as a first pass, not a calibration.</span>
+<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Model shares are shares of carbon biomass and the observations are shares of biovolume.** Generic cell volumes are within a factor of two of Rotorua populations at best, and diatoms hold less carbon per unit volume than other groups, which may account for part of the diatom excess.</span>
+<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The observed series is short and quarterly** (31 dates), so the curves and the hold-out check have wide uncertainty, and year-to-year differences are as large as the seasonal ones for diatoms and nitrogen-fixing cyanobacteria.</span>
+<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a><span class="fu">## Suggested next steps {#sec-next}</span></span>
+<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Take the best configurations into a full ES-MDA refit** with the zooplankton on and the group-share targets as soft constraints, starting from member 46, because the nutrient budget and the sediment and alum parameters were calibrated without grazing.</span>
+<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Ask the AED developers about the `/31` and `/14` factors** in the grazing budget, and rebuild a binary with them corrected if they are confirmed as unit conversions that no longer apply.</span>
+<span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Try a calm-weather cyanobacteria mechanism** (a wind- or stability-dependent growth multiplier or a buoyancy that depends on light and nutrient state) and test it on the 2-year window with the same score.</span>
+<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Run a second search on zooplankton community and predation** (held until this page has been reviewed). Add as free parameters or switches: which of the three groups are present (including rotifers only and cladocerans only), a separate food preference for each group, and the zooplankton temperature limits (<span class="in">`Tstd_zoo`</span>, <span class="in">`Topt_zoo`</span>, <span class="in">`Tmax_zoo`</span>) so they can persist through winter. Also vary respiration and the excretion/faeces split, and treat the mortality rate as the stand-in for predation by fish since the model has no predator. Score zooplankton on a winter floor (not near zero from June to September) as well as the existing summer range, and keep the same nutrient, chlorophyll-a and succession terms.</span>
+<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Extend the observation-based search** (@sec-obsfit) before choosing a structure: several hundred more runs per structure, fewer free parameters (fix the well-constrained zooplankton settings), an extra term for the summer diatom excess, and a repeat of the comparison with the hold-out and calibration periods swapped, to see whether the ranking of the structures holds.</span>
+<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Make PEST++ see the succession.** <span class="in">`calibration/phyto_groups/pest/calibrate_curve.R`</span> replaces the 25 raw group samples by the observed seasonal curve (monthly shares scaled by the observed monthly chlorophyll-a), so the succession is part of the PEST++ objective. It has not been run (about 5.5 h). Alternatively add the search score terms as a penalty.</span>
+<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>**Add zooplankton or group-level data** if any exist (even a few years of cell counts or pigment data would constrain the group shares and the zooplankton biomass).</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
