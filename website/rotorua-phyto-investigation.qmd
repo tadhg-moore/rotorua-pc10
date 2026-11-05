@@ -49,6 +49,30 @@ cons <- read.csv("data/phyto_invest/constraint.csv")
 knitr::kable(data.frame(Parameter = cons$param, Group = cons$grp, Low = signif(cons$lo_val, 3), High = signif(cons$hi_val, 3), Base = signif(cons$base_val, 3)), digits = 4)
 ```
 
+@tbl-desc describes what each parameter does in AED and why it was included. Parameters that exist once per group are shown as one row with the prefix `cy_` (cyanobacteria), `gr_` (greens) or `di_` (diatoms); the zooplankton rates with `zr_`/`zm_` come in three versions (`rot`, `cla`, `cop` for rotifers, cladocerans and copepods).
+
+| Parameter | Description | Why it is included |
+|:-----------------|:---------------------------------|:---------------------------------|
+| `cy_Rg`, `gr_Rg`, `di_Rg` | Maximum growth rate at 20 °C (1/d) of each phytoplankton group (`R_growth`). | Sets how fast each group can respond to favourable conditions, so it controls how quickly one group can overtake another. |
+| `cy_To`, `gr_To`, `di_To` | Optimum temperature (°C) of the growth temperature function (`T_opt`). `T_std` and `T_max` are fixed offsets from it. | Temperature is the main driver of seasonal succession: diatoms in cool months, greens and cyanobacteria in warm months. |
+| `cy_KP`, `gr_KP`, `di_KP` | Half-saturation concentration for phosphorus uptake (g/m³; `K_P`). | Lets the groups differ in competitive ability for P, the nutrient most linked to alum treatment and bloom control. |
+| `cy_KN`, `gr_KN`, `di_KN` | Half-saturation concentration for nitrogen uptake (`K_N`). | Same role for N; total N is under-predicted, so N limitation may be mis-set. |
+| `cy_IK`, `gr_IK`, `di_IK` | Light intensity at which photosynthesis saturates (W/m²; `I_K`). | Low-light tolerance separates diatoms (low value) from surface-adapted groups and shapes the depth distribution. |
+| `cy_Rr`, `gr_Rr`, `di_Rr` | Respiration rate (1/d; `R_resp`). | Together with growth it sets the net growth rate, and with it winter persistence of each group. |
+| `cy_wp`, `gr_wp`, `di_wp` | Vertical velocity (m/d; `w_p`): negative sinks, positive rises. | Cyanobacteria are buoyant and diatoms and greens sink, which affects where each group sits in the water column. |
+| `zr_rot`, `zr_cla`, `zr_cop` | Maximum grazing rate of rotifers, cladocerans and copepods (`Rgrz_zoo`). | Grazing is the main loss term for phytoplankton and is needed to hold the groups close to observed biomass. |
+| `zm_rot`, `zm_cla`, `zm_cop` | Mortality rate of each zooplankton group (`Rmort_zoo`). | Controls how large the zooplankton stock can grow, and so how much grazing pressure there is. |
+| `z_Kgrz` | Prey concentration at which grazing is half its maximum (`Kgrz_zoo`). | Determines whether grazing is steady or only strong during blooms. |
+| `z_Cmin` | Prey concentration below which grazing stops (`Cmin_grz_zoo`). | Gives a prey refuge so that groups at low biomass are not driven to zero. |
+| `z_assim` | Fraction of grazed carbon assimilated (`fassim_zoo`). | Splits grazed material between zooplankton growth and recycling, which feeds back on nutrients. |
+| `p_green`, `p_diatom`, `p_cyano` | Zooplankton preference for each phytoplankton group (`pref_*`). | Cyanobacteria are poor food and diatoms and greens are better, so the preferences shape which group is grazed down. |
+| `z_IPC`, `z_INC` | Internal phosphorus and nitrogen to carbon ratio of zooplankton (`IPC_zoo`, `INC_zoo`). | Set how much nutrient is held in and released by zooplankton, so they affect TP, FRP and total N. |
+| `nfix` | Switch: cyanobacteria fix nitrogen (`simNFixation`). | Tests whether N fixation is needed to sustain cyanobacteria when N is low. |
+| `cy_motile` | Switch: cyanobacteria use the motile (buoyancy-regulating) option (`settling4`). | Tests whether buoyancy control explains summer cyanobacteria dominance. |
+| `cop_zdiet` | Switch: copepods also eat rotifers, cladocerans and diatoms (`copepod_eats_zoop`). | Tests the effect of omnivory and top-down control within the zooplankton. |
+
+: Description of the parameters searched and the reason each is included. {#tbl-desc}
+
 ### Score
 
 The score adds four parts (all are about 1 when the model is within a stated tolerance):
