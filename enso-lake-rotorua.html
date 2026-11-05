@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-084a9de20672d8f620d5623538955755.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -289,7 +289,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Status: work in progress.</strong> Sections 1-3 are complete. Section 4 (AEME counterfactual hindcast) and section 5 (ENSO in CMIP6) are not yet run. Analysis scripts are in <code>calibration/enso/</code> (numbered <code>00</code>-<code>07</code>), with working notes <code>NOTE_enso_met.md</code> and <code>NOTE_enso_lake.md</code>.</p>
+<p><strong>Status: work in progress.</strong> Sections 1-5 are complete; a synthesis section remains to be finalised. Analysis scripts are in <code>calibration/enso/</code> (numbered <code>00</code>-<code>07</code>), with working notes <code>NOTE_enso_met.md</code> and <code>NOTE_enso_lake.md</code>.</p>
 </div>
 </div>
 <section id="approach-and-data" class="level2">
@@ -737,11 +737,459 @@ Note
 </section>
 <section id="sec-hindcast" class="level2">
 <h2 class="anchored" data-anchor-id="sec-hindcast">4. AEME counterfactual hindcast</h2>
-<p><em>Not yet run.</em> Plan: run the latest calibrated model (<code>calibration/final/</code>) over 1992-2022 with the real forcing, then with the meteorology of selected El Niño and La Niña years swapped for neutral-year composites, to separate the meteorological ENSO effect on stratification, oxygen, nutrients and chlorophyll from loads and alum.</p>
+<p>The calibrated AEME model (alum refit member H1b_B143, alum on, 2005-2022) was run with the actual meteorology and then four times with the meteorology of every El Niño/La Niña year replaced by a randomly drawn neutral year (hourly, same calendar day). Inflows, alum dosing and parameters were unchanged, so the difference isolates the <strong>meteorological</strong> ENSO effect. Years are classed by the October-March mean SOI (at or below -0.75 El Niño, at or above +0.75 La Niña): El Niño 2010 and 2016, La Niña 2008, 2009, 2011, 2012, 2021 and 2022.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Modelled effect of actual ENSO-year weather (units: degC; mg/L; days per year; ug/L; TP in mmol/m3).</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 6%">
+<col style="width: 38%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">ENSO phase</th>
+<th style="text-align: right;">Years</th>
+<th style="text-align: right;">Actual minus neutral-weather (mean)</th>
+<th style="text-align: right;">Spread between neutral draws</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">anox_days</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-0.6200</td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">anox_days</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">8.1000</td>
+<td style="text-align: right;">2.500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">chl_surf</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-0.2100</td>
+<td style="text-align: right;">0.830</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">chl_surf</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.0740</td>
+<td style="text-align: right;">0.660</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dT</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-0.0750</td>
+<td style="text-align: right;">0.110</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dT</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.0930</td>
+<td style="text-align: right;">0.078</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hypox_days</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-5.0000</td>
+<td style="text-align: right;">17.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hypox_days</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">13.0000</td>
+<td style="text-align: right;">14.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">oxy_bot</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.1900</td>
+<td style="text-align: right;">0.370</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">oxy_bot</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">-0.2800</td>
+<td style="text-align: right;">0.260</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temp_surf</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-0.0370</td>
+<td style="text-align: right;">0.330</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">temp_surf</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.1800</td>
+<td style="text-align: right;">0.410</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tp_surf</td>
+<td style="text-align: left;">El Nino</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.0036</td>
+<td style="text-align: right;">0.018</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tp_surf</td>
+<td style="text-align: left;">La Nina</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">-0.0015</td>
+<td style="text-align: right;">0.015</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/enso/counterfactual_effects.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Reference minus neutral-weather counterfactual by flagged year (whiskers = spread between the four neutral draws)."><img src="images/enso/counterfactual_effects.png" class="img-fluid figure-img" width="750" alt="Reference minus neutral-weather counterfactual by flagged year (whiskers = spread between the four neutral draws)."></a></p>
+<figcaption>Reference minus neutral-weather counterfactual by flagged year (whiskers = spread between the four neutral draws).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The meteorological ENSO effect on temperature, stratification, chlorophyll and phosphorus is within the year-to-year spread of neutral weather. La Niña years show somewhat more low oxygen (about 13 more days below 4 mg/L, 8 more anoxic days per year), but this comes almost entirely from the year to June 2022, when a warm November-January (1.5-2 °C above the neutral draws) pushed the modelled bottom water to about 1 mg/L; the other La Niña years show little. This is one event at a model threshold, with only 2 El Niño and 6 La Niña years, one parameter member and met-only changes (the wetter La Niña inflows are not included). Details and caveats, including a warming-trend bias in the neutral donor years, are in <code>calibration/enso/NOTE_enso_hindcast.md</code>.</p>
 </section>
 <section id="sec-cmip6" class="level2">
 <h2 class="anchored" data-anchor-id="sec-cmip6">5. ENSO in the downscaled CMIP6 data</h2>
-<p><em>Not yet run.</em> The data are free-running, so ENSO is judged statistically (2-7 year spectral power, interannual variability, teleconnection pattern) from the local variables. Parent-GCM Niño3.4 and pressure are out of scope.</p>
+<p>The downscaled CMIP6 data (7 GCMs, one realisation each) are free-running, hold only local variables (tas, pr, rsds, hurs, sfcWind) and no Niño3.4 or SOI, so ENSO cannot be tracked event by event. It is assessed statistically from its imprint on the local record, against ERA5 1988-2024 (GCM window 1978-2014, also 37 years). Bias-corrected versions exist only for pr and tas.</p>
+<p><strong>Variability.</strong> Interannual variability is realistic: the coefficient of variation of seasonal anomalies is 0.29-0.38 for rain (ERA5 0.30), 0.042-0.056 for temperature (0.046) and 0.074-0.093 for wind speed (0.065). The share of variance in the 2-7 year ENSO band (0.04-0.19) is close to ERA5 (0.07-0.16), but it is also close to what red noise gives, in observations as well as the models, so this test cannot confirm or refute ENSO.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Interannual variability of monthly anomalies at the lake point (deseasonalised, detrended).</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 18%">
+<col style="width: 32%">
+<col style="width: 22%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">ENSO-band variance share</th>
+<th style="text-align: right;">p vs AR(1) noise</th>
+<th style="text-align: right;">Seasonal CV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">ACCESS-CM2</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.292</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">AWI-CM-1-1-MR</td>
+<td style="text-align: right;">0.115</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.375</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">CNRM-CM6-1</td>
+<td style="text-align: right;">0.064</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">0.336</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">EC-Earth3</td>
+<td style="text-align: right;">0.137</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.331</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">ERA5</td>
+<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.302</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">GFDL-ESM4</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.302</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">NZESM</td>
+<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.338</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pr</td>
+<td style="text-align: left;">NorESM2-MM</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.288</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">ACCESS-CM2</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">0.043</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">AWI-CM-1-1-MR</td>
+<td style="text-align: right;">0.099</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.056</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">CNRM-CM6-1</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.054</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">EC-Earth3</td>
+<td style="text-align: right;">0.122</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.049</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">ERA5</td>
+<td style="text-align: right;">0.107</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">GFDL-ESM4</td>
+<td style="text-align: right;">0.107</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">0.051</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">NZESM</td>
+<td style="text-align: right;">0.059</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.043</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rsds</td>
+<td style="text-align: left;">NorESM2-MM</td>
+<td style="text-align: right;">0.079</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">ACCESS-CM2</td>
+<td style="text-align: right;">0.065</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.074</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">AWI-CM-1-1-MR</td>
+<td style="text-align: right;">0.050</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.077</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">CNRM-CM6-1</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">0.086</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">EC-Earth3</td>
+<td style="text-align: right;">0.066</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.075</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">ERA5</td>
+<td style="text-align: right;">0.069</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">0.065</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">GFDL-ESM4</td>
+<td style="text-align: right;">0.111</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">0.079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">NZESM</td>
+<td style="text-align: right;">0.091</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.093</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sfcWind</td>
+<td style="text-align: left;">NorESM2-MM</td>
+<td style="text-align: right;">0.097</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.076</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">ACCESS-CM2</td>
+<td style="text-align: right;">0.159</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">AWI-CM-1-1-MR</td>
+<td style="text-align: right;">0.107</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0.042</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">CNRM-CM6-1</td>
+<td style="text-align: right;">0.153</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.042</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">EC-Earth3</td>
+<td style="text-align: right;">0.129</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.046</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">ERA5</td>
+<td style="text-align: right;">0.160</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.046</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">GFDL-ESM4</td>
+<td style="text-align: right;">0.124</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.042</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">NZESM</td>
+<td style="text-align: right;">0.186</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.056</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tas</td>
+<td style="text-align: left;">NorESM2-MM</td>
+<td style="text-align: right;">0.153</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.045</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Co-variability.</strong> All GCMs reproduce the main rain-radiation link and the autumn-winter rain-temperature link. In spring, when the observed ENSO imprint on temperature, wind direction and lake temperature is strongest, several GCMs differ: rain and temperature are positively related in observations (+0.3 to +0.4) but negatively in four of seven GCMs, and rain and wind speed are negatively related in observations but positively in four GCMs. With 37 years the sampling error on each correlation is about 0.3, so this is suggestive rather than conclusive.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Spring (SON) interannual correlations of seasonal anomalies, observations vs GCMs, 1978-2014.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">pr~tas</th>
+<th style="text-align: right;">pr~sfcWind</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ERA5 1988-2024</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">-0.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Station 1770</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">-0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACCESS-CM2</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AWI-CM-1-1-MR</td>
+<td style="text-align: right;">-0.27</td>
+<td style="text-align: right;">0.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CNRM-CM6-1</td>
+<td style="text-align: right;">-0.42</td>
+<td style="text-align: right;">0.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">EC-Earth3</td>
+<td style="text-align: right;">-0.15</td>
+<td style="text-align: right;">0.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GFDL-ESM4</td>
+<td style="text-align: right;">-0.21</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NZESM</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">-0.16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NorESM2-MM</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">0.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Future.</strong> The interannual standard deviation of seasonal anomalies in 2050-2099 relative to 1965-2014 has a median ratio of 0.93-1.04 for every variable and SSP, with GCM ranges that include 1 (0.8-1.35), and the ENSO-band share changes by less than 0.03. There is no robust change in local interannual variability.</p>
+<p><strong>Conclusion.</strong> The downscaled CMIP6 data reproduce the size and main co-variability of Rotorua’s interannual weather, but they cannot show that ENSO itself is captured, and spring co-variability is not reproduced by several GCMs. They should not be used for year-by-year or ENSO-phase-conditional statements. Scoring each GCM properly would need parent-GCM Niño3.4 and pressure (out of scope here). Details are in <code>calibration/enso/NOTE_enso_cmip6.md</code>.</p>
 </section>
 <section id="summary-so-far" class="level2">
 <h2 class="anchored" data-anchor-id="summary-so-far">6. Summary so far</h2>
@@ -749,7 +1197,8 @@ Note
 <li>ENSO has a measurable but modest imprint on Rotorua: the clearest signals are wind direction, rainfall and inflow, with La Niña wetter and more easterly.</li>
 <li>The temperature response is not separable from the warming trend and IPO phase with the available record.</li>
 <li>No detectable ENSO signal in lake nutrients, chlorophyll, Secchi or bottom oxygen in the observations; the record is short and noisy and alum and load changes dominate.</li>
-<li>The CMIP6 evaluation and the model-based attribution (sections 4-5) will determine whether any of this can be extended to future climate.</li>
+<li>The AEME hindcast shows the meteorological ENSO effect on stratification, chlorophyll and phosphorus is within normal weather variability; the only notable effect is more low oxygen in the La Niña year to June 2022.</li>
+<li>The downscaled CMIP6 data match Rotorua’s interannual variability but cannot show that ENSO is captured (and spring co-variability is not reproduced by several GCMs), so they do not support ENSO-conditioned future statements. Future ENSO change is unquantified.</li>
 </ol>
 
 
@@ -1305,7 +1754,7 @@ Note
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>**Status: work in progress.** Sections 1-3 are complete. Section 4 (AEME counterfactual hindcast) and section 5 (ENSO in CMIP6) are not yet run. Analysis scripts are in <span class="in">`calibration/enso/`</span> (numbered <span class="in">`00`</span>-<span class="in">`07`</span>), with working notes <span class="in">`NOTE_enso_met.md`</span> and <span class="in">`NOTE_enso_lake.md`</span>.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>**Status: work in progress.** Sections 1-5 are complete; a synthesis section remains to be finalised. Analysis scripts are in <span class="in">`calibration/enso/`</span> (numbered <span class="in">`00`</span>-<span class="in">`07`</span>), with working notes <span class="in">`NOTE_enso_met.md`</span> and <span class="in">`NOTE_enso_lake.md`</span>.</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Approach and data</span></span>
@@ -1399,18 +1848,62 @@ Note
 <span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. AEME counterfactual hindcast {#sec-hindcast}</span></span>
 <span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>*Not yet run.* Plan: run the latest calibrated model (<span class="in">`calibration/final/`</span>) over 1992-2022 with the real forcing, then with the meteorology of selected El Niño and La Niña years swapped for neutral-year composites, to separate the meteorological ENSO effect on stratification, oxygen, nutrients and chlorophyll from loads and alum.</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>The calibrated AEME model (alum refit member H1b_B143, alum on, 2005-2022) was run with the actual meteorology and then four times with the meteorology of every El Niño/La Niña year replaced by a randomly drawn neutral year (hourly, same calendar day). Inflows, alum dosing and parameters were unchanged, so the difference isolates the **meteorological** ENSO effect. Years are classed by the October-March mean SOI (at or below -0.75 El Niño, at or above +0.75 La Niña): El Niño 2010 and 2016, La Niña 2008, 2009, 2011, 2012, 2021 and 2022.</span>
 <span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. ENSO in the downscaled CMIP6 data {#sec-cmip6}</span></span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>*Not yet run.* The data are free-running, so ENSO is judged statistically (2-7 year spectral power, interannual variability, teleconnection pattern) from the local variables. Parent-GCM Niño3.4 and pressure are out of scope.</span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Summary so far</span></span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>ENSO has a measurable but modest imprint on Rotorua: the clearest signals are wind direction, rainfall and inflow, with La Niña wetter and more easterly.</span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The temperature response is not separable from the warming trend and IPO phase with the available record.</span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>No detectable ENSO signal in lake nutrients, chlorophyll, Secchi or bottom oxygen in the observations; the record is short and noisy and alum and load changes dominate.</span>
-<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The CMIP6 evaluation and the model-based attribution (sections 4-5) will determine whether any of this can be extended to future climate.</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: hindcast</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="fu">d</span>(<span class="st">"counterfactual_effects.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"temp_surf"</span>, <span class="st">"dT"</span>, <span class="st">"oxy_bot"</span>, <span class="st">"anox_days"</span>, <span class="st">"hypox_days"</span>, <span class="st">"chl_surf"</span>, <span class="st">"tp_surf"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Variable =</span> var, <span class="st">`</span><span class="at">ENSO phase</span><span class="st">`</span> <span class="ot">=</span> type, <span class="st">`</span><span class="at">Years</span><span class="st">`</span> <span class="ot">=</span> n_years, <span class="st">`</span><span class="at">Actual minus neutral-weather (mean)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(mean_diff, <span class="dv">2</span>),</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Spread between neutral draws</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">signif</span>(sd_between_draws, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Modelled effect of actual ENSO-year weather (units: degC; mg/L; days per year; ug/L; TP in mmol/m3)."</span>)</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: hindcast-fig</span></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Reference minus neutral-weather counterfactual by flagged year (whiskers = spread between the four neutral draws)."</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="fu">include_img</span>(<span class="st">"images/enso/counterfactual_effects.png"</span>)</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>The meteorological ENSO effect on temperature, stratification, chlorophyll and phosphorus is within the year-to-year spread of neutral weather. La Niña years show somewhat more low oxygen (about 13 more days below 4 mg/L, 8 more anoxic days per year), but this comes almost entirely from the year to June 2022, when a warm November-January (1.5-2 °C above the neutral draws) pushed the modelled bottom water to about 1 mg/L; the other La Niña years show little. This is one event at a model threshold, with only 2 El Niño and 6 La Niña years, one parameter member and met-only changes (the wetter La Niña inflows are not included). Details and caveats, including a warming-trend bias in the neutral donor years, are in <span class="in">`calibration/enso/NOTE_enso_hindcast.md`</span>.</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. ENSO in the downscaled CMIP6 data {#sec-cmip6}</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>The downscaled CMIP6 data (7 GCMs, one realisation each) are free-running, hold only local variables (tas, pr, rsds, hurs, sfcWind) and no Niño3.4 or SOI, so ENSO cannot be tracked event by event. It is assessed statistically from its imprint on the local record, against ERA5 1988-2024 (GCM window 1978-2014, also 37 years). Bias-corrected versions exist only for pr and tas.</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>**Variability.** Interannual variability is realistic: the coefficient of variation of seasonal anomalies is 0.29-0.38 for rain (ERA5 0.30), 0.042-0.056 for temperature (0.046) and 0.074-0.093 for wind speed (0.065). The share of variance in the 2-7 year ENSO band (0.04-0.19) is close to ERA5 (0.07-0.16), but it is also close to what red noise gives, in observations as well as the models, so this test cannot confirm or refute ENSO.</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cmip6-var</span></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="fu">d</span>(<span class="st">"cmip6_variability_metrics.csv"</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(window <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1978-2014"</span>, <span class="st">"1988-2024"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Variable =</span> var, <span class="at">Source =</span> gcm, <span class="st">`</span><span class="at">ENSO-band variance share</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(enso_band_frac, <span class="dv">3</span>), <span class="st">`</span><span class="at">p vs AR(1) noise</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(p_vs_AR1, <span class="dv">2</span>), <span class="st">`</span><span class="at">Seasonal CV</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(cv_seas, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Variable, Source) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Interannual variability of monthly anomalies at the lake point (deseasonalised, detrended)."</span>)</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>**Co-variability.** All GCMs reproduce the main rain-radiation link and the autumn-winter rain-temperature link. In spring, when the observed ENSO imprint on temperature, wind direction and lake temperature is strongest, several GCMs differ: rain and temperature are positively related in observations (+0.3 to +0.4) but negatively in four of seven GCMs, and rain and wind speed are negatively related in observations but positively in four GCMs. With 37 years the sampling error on each correlation is about 0.3, so this is suggestive rather than conclusive.</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cmip6-cov</span></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="fu">d</span>(<span class="st">"cmip6_covariability.csv"</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(s <span class="sc">==</span> <span class="st">"SON"</span>, pair <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"pr~tas"</span>, <span class="st">"pr~sfcWind"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">r =</span> <span class="fu">round</span>(r, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> pair, <span class="at">values_from =</span> r) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>s) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">Source =</span> src) <span class="sc">|&gt;</span></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Spring (SON) interannual correlations of seasonal anomalies, observations vs GCMs, 1978-2014."</span>)</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>**Future.** The interannual standard deviation of seasonal anomalies in 2050-2099 relative to 1965-2014 has a median ratio of 0.93-1.04 for every variable and SSP, with GCM ranges that include 1 (0.8-1.35), and the ENSO-band share changes by less than 0.03. There is no robust change in local interannual variability.</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>**Conclusion.** The downscaled CMIP6 data reproduce the size and main co-variability of Rotorua's interannual weather, but they cannot show that ENSO itself is captured, and spring co-variability is not reproduced by several GCMs. They should not be used for year-by-year or ENSO-phase-conditional statements. Scoring each GCM properly would need parent-GCM Niño3.4 and pressure (out of scope here). Details are in <span class="in">`calibration/enso/NOTE_enso_cmip6.md`</span>.</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Summary so far</span></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>ENSO has a measurable but modest imprint on Rotorua: the clearest signals are wind direction, rainfall and inflow, with La Niña wetter and more easterly.</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>The temperature response is not separable from the warming trend and IPO phase with the available record.</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>No detectable ENSO signal in lake nutrients, chlorophyll, Secchi or bottom oxygen in the observations; the record is short and noisy and alum and load changes dominate.</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>The AEME hindcast shows the meteorological ENSO effect on stratification, chlorophyll and phosphorus is within normal weather variability; the only notable effect is more low oxygen in the La Niña year to June 2022.</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>The downscaled CMIP6 data match Rotorua's interannual variability but cannot show that ENSO is captured (and spring co-variability is not reproduced by several GCMs), so they do not support ENSO-conditioned future statements. Future ENSO change is unquantified.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -277,12 +277,50 @@ Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before
 <div>
 
 <pre class="mermaid mermaid-js">flowchart LR
-  A[Alum in treated inflow] --&gt; B[Reactive Al floc&lt;br/&gt;in water column]
-  B -- "kinetic P uptake&lt;br/&gt;f(T, pH)" --&gt; C[Al-bound P]
-  B -- "ageing&lt;br/&gt;(loss of reactivity)" --&gt; X[Inert Al]
-  B -- settling --&gt; D[Floc on lake bed]
-  C -- settling --&gt; D
-  D -- "continued P binding&lt;br/&gt;at sediment-water interface" --&gt; E[Buried / resuspended]
+  DOSE(["Alum dosed&lt;br/&gt;to stream"])
+
+  subgraph LAKE["Lake"]
+    direction TB
+
+    subgraph WC["Water column"]
+      direction LR
+      WR["Reactive Al"]
+      WB["Al-bound P"]
+      WR -- "P binding&lt;br/&gt;f(T, pH)" --&gt; WB
+      WR -- "ageing" --&gt; AA
+    end
+
+    subgraph SED["Sediment"]
+      direction LR
+      BR["Benthic reactive Al"]
+      BB["Benthic Al-bound P"]
+      BUR[("Buried")]
+      BR -- "P binding at&lt;br/&gt;sediment-water interface" --&gt; BB
+      BR -- "ageing" --&gt; AA
+      BB -- "burial" --&gt; BUR
+      BA -- "burial" --&gt; BUR
+    end
+  
+    AA["Aged Al&lt;br/&gt;(no capacity)"]
+
+    WR -- "settling" --&gt; BR
+    WB -- "settling" --&gt; BB
+    WA -- "settling" --&gt; BA
+    BR -. "resuspension" .-&gt; WR
+    BB -. "resuspension" .-&gt; WB
+  end
+
+  OUT(["Lake outflow&lt;br/&gt;(export)"])
+
+  DOSE --&gt; WC
+  WC -- "export" --&gt; OUT
+
+  classDef alum fill:#fde8c8,stroke:#d95f02,color:#222
+  classDef bound fill:#cfe3f1,stroke:#1b6ca8,color:#222
+  classDef sink fill:#e5e5e5,stroke:#666,color:#222
+  class SR,WR,BR alum
+  class SB,WB,BB bound
+  class WA,BA,BUR,OUT sink
 </pre>
 </div>
 <p></p></figure><p></p>
