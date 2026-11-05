@@ -50,6 +50,29 @@ The model is a GLM-AED lake model of Lake Rotorua with the AED alum module, cali
 - The alum fluxes need to be written by the module (`aed_alum.F90`) to close the alum and P budget.
 - The climate scenarios are not yet rerun with the Joint ensemble (@sec-sequence, step 8).
 
+## Method {#sec-method}
+
+How the inflows, the alum module and the calibration sequence were set up. The stage-by-stage record of how the calibration got here is on the [stage history page](alum-calibration-history.qmd).
+
+### Summary {#sec-summary}
+
+The GLM-AED model has been calibrated with an alum setup that mixes treated and untreated inflow phosphorus (P) and leaves the stream reaction out. This page sets out what to change and in what order. It builds on [the inflow and alum report summaries](rotorua-inflows-alum.qmd), which describe the reports and the inflow files.
+
+**What is wrong with the current setup**
+
+- **Utuhina is already treated.** Its inflow P was measured downstream of the dosing point, but the alum module also acts on it in the lake, so part of the Utuhina removal is counted twice. The Puarenga inflow is untreated (sampled upstream). The "no alum" scenario runs also kept the Utuhina treatment.
+- **The stream reaction is missing.** Alum reacts with stream DRP in the 680 m (Puarenga) to 1360 m (Utuhina) of stream reach before the lake. Hamilton et al. (2015) found more than 80% removal in the Puarenga above 75 kg Al/d. The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.
+- **The effect on the lake fit is small.** Steps 1 and 2 (below) show that making the inflows consistent and adding the stream reaction changes surface TP by about 2% or less. The treatment is a fix for physical consistency and for clean scenarios, not for the fit. Once the refractory DOP (0.0046 g/m³, added to the model TP in the calibration objective) is included, the mean TP bias is within 3% for every variant and efficiency scale 0.85 to 1.0. An earlier efficiency sensitivity that left the offset out wrongly suggested a bias of about 23%.
+- **The remaining misfit is elsewhere.** Surface FRP is about 50% low (with the high-FRP episodes of 2005 to 2008 and 2020 to 2022 missed), chlorophyll is about 16% high, and TP is about 80% too high in 2017 to 2019 and too low in 2021 to 2022.
+
+**What to do**
+
+1. Use the **no-alum inflow file for both streams**, with the alum module on.
+2. Add an **in-stream reaction step** in the inflow preparation: a fraction of the inflow FRP becomes suspended alum-bound P (`ALU_alp`) and the dosed capacity (`ALU_ala`) falls by the same amount.
+3. Scale `k_w` and `k_s` by the mean **pH efficiency (0.85)** from the buoy pH record, and refit the rest of the alum parameters on the new inflows.
+4. Compare the resulting in-lake removal with the **independent evidence**: the sediment aluminium survey (ERI 178) and the roughly 50% internal-load reduction found by Hamilton et al. and ERI 128.
+5. Rerun the **climate scenarios** with the clean alum-on and alum-off inflows.
+
 ### Stage names {#sec-stage-names}
 
 Calibration stages are called by what they fit. The older one-letter codes still appear in file names, in the folders under `calibration/`, and on the axes of figures made before the rename, so both are given.
@@ -106,90 +129,9 @@ flowchart TD
 8. **Joint stage.** The nutrient and oxygen parameters are correlated (production feeds oxygen demand, and sediment P release depends on bottom oxygen), but they had been fitted one after the other, each conditional on the last. The joint stage frees 40 of them together and adds targets that measure the remaining misfits directly (anoxia, annual TN, thermocline depth). Combining the separate ensembles would not be valid, because the two are correlated.
 9. **Ensemble, validation and checks.** Most parameters stay close to their prior, so a single best member is not a good description of the result. The final Joint ensemble (50 members) is run with and without alum over 2005 to 2022 to give the alum effect with its uncertainty, scored on the validation period (2018 to 2022), and checked against the P budget, the outlet data and the alum fate. A sensitivity screen of the setup then shows which parameters matter and were not free, and sets the next calibration.
 
-**Two principles run through the sequence.** First, each stage starts from the previous best member and changes one group, so the effect of each group on the fit is visible and the sequence can be reread as a story of which misfit led to which fix (@sec-glance). Second, the stages are sequential and therefore conditional on each other: the Joint stage exists because sequential fitting of correlated parameters leaves each group tuned to the last one's mistakes. The consequence is that the final parameters are one consistent set, not a set of independently identified values.
+**Two principles run through the sequence.** First, each stage starts from the previous best member and changes one group, so the effect of each group on the fit is visible and the sequence can be reread as a story of which misfit led to which fix ([the calibration at a glance](alum-calibration-history.qmd#sec-glance)). Second, the stages are sequential and therefore conditional on each other: the Joint stage exists because sequential fitting of correlated parameters leaves each group tuned to the last one's mistakes. The consequence is that the final parameters are one consistent set, not a set of independently identified values.
 
-## Alum diagnostics from the model {#sec-alum-diag}
-
-These are the alum module's state variables and the fluxes reconstructed from them for the best Joint member (member 46, 2006 to June 2022). They are collected here from the sections on the budget and the fate of alum (@sec-alum-fate, @sec-budget-pair); the detail and the caveats are in those sections.
-
-### What the alum is bound to, and the pools
-
-The module carries four alum pools: free capacity and bound P in the water column (`ALU_ala`, `ALU_alp`), and the same two settled on the bed (`ben_ala`, `ben_alp`). A fifth state (`ALU_fpH`) is the pH modifier, switched off. Capacity is in mmol Al/m³ because the capacity ratio is 1.
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: tbl-alum-pools
-#| tbl-cap: "Whole-lake alum pools in the best member: mean, maximum and value at the end of the run (29 June 2022), in tonnes. Capacity is tonnes Al; bound P is tonnes P. Pools are small because uptake, ageing and burial turn them over within days."
-p <- read.csv("data/alumfate/pools.csv")
-isP <- grepl("bound P", p$pool); w <- ifelse(isP, 30.974e-9, 26.98e-9)
-knitr::kable(data.frame(Pool = p$pool, Unit = ifelse(isP, "t P", "t Al"), Mean = sprintf("%.2f", p$mean_mmol * w), Maximum = sprintf("%.1f", p$max_mmol * w), `End of run` = sprintf("%.2f", p$end_mmol * w), check.names = FALSE))
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-diag-pools-ts
-#| fig-cap: "Lake-mean free alum capacity, alum-bound P and the daily P bound by water-column uptake, 2006 to 2022. Values are mmol per m³ (µmol/L); 0.01 µmol Al/L is about 0.3 µg Al/L."
-include_img("images/alumfate/diag_pools_ts.png")
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-diag-year-pools
-#| fig-cap: "Alum pools at the end of each year: free capacity and bound P in the water column, and the settled (benthic) capacity and bound P."
-include_img("images/alumfate/diag_year_end_pools.png")
-```
-
-- **The water column holds a few tonnes of alum at most.** The bound P is cleared in days (see @tbl-alum-pools for the mean and maximum). Free capacity follows the dosing: it peaks in 2010 to 2011 after the Puarenga dosing starts and settles to a lower, steadier level from 2013.
-- **The settled pools are small and variable.** They are set by the burial and ageing rates (`k_bur` 0.129 d⁻¹, `k_age_s` 0.063 d⁻¹), which the data do not constrain.
-
-### Where the P that alum binds goes
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-diag-annual-p
-#| fig-cap: "P bound by alum and where it goes, by year (full years only): bound in the streams, in the water column and at the bed, and the buried and outlet amounts. Burial is rate times pool and exceeds the binding in several years, which is the closure problem described in @sec-alum-fate-p."
-include_img("images/alumfate/diag_annual_p.png")
-```
-
-- **Over the run 12.4 t P/yr is bound** (82% in the water column, 16% in the streams, under 2% at the bed) and 97% of it ends buried; 2% leaves through the outlet as bound P (@tbl-fate-p).
-- **The sediment is a sink for alum-bound P, not a source.** Resuspension returns about 8% of settled bound P to the water, where it settles again. The module does not release bound P back to FRP, so the alum effect in the model is permanent.
-- **Sediment P release is a separate, weakly constrained process.** The zone sediment P release parameters (`fsed_frp`, `ksed_frp`) did not narrow in either the alum refit or the Joint stage (@sec-param-phosphorus), so the model cannot say how much internal load alum removed beyond what the P budget shows (a 61% fall in export).
-
-### Efficiency: aluminium per phosphorus removed
-
-| Where | Al applied per P removed (mol/mol) | Basis |
-|---|---|---|
-| Streams (stream step) | 30 | Stream rule; the observed DRP removal gives 29 |
-| Lake | 5.5 | Free capacity delivered per P bound by uptake |
-| Whole system | 3.5 to 5 | Uptake diagnostics 4.8; reduction in P export 4.0; unexplained P 3.5 |
-| Thesis, field dosing / jar test | 7 / 0.7 | Sanila thesis |
-
-The three whole-system estimates differ by about 40%. The efficiency in the streams is low because most Al is dosed on days with a high dose ratio, where each extra mol of Al removes less P; the lake is about five times more efficient per mol Al (@sec-alum-fate-streams, @sec-alum-fate-lake).
-
-## Summary {#sec-summary}
-
-The GLM-AED model has been calibrated with an alum setup that mixes treated and untreated inflow phosphorus (P) and leaves the stream reaction out. This page sets out what to change and in what order. It builds on [the inflow and alum report summaries](rotorua-inflows-alum.qmd), which describe the reports and the inflow files.
-
-**What is wrong with the current setup**
-
-- **Utuhina is already treated.** Its inflow P was measured downstream of the dosing point, but the alum module also acts on it in the lake, so part of the Utuhina removal is counted twice. The Puarenga inflow is untreated (sampled upstream). The "no alum" scenario runs also kept the Utuhina treatment.
-- **The stream reaction is missing.** Alum reacts with stream DRP in the 680 m (Puarenga) to 1360 m (Utuhina) of stream reach before the lake. Hamilton et al. (2015) found more than 80% removal in the Puarenga above 75 kg Al/d. The model sends the full upstream DRP into the lake and lets the lake kinetics do all of it.
-- **The effect on the lake fit is small.** Steps 1 and 2 (below) show that making the inflows consistent and adding the stream reaction changes surface TP by about 2% or less. The treatment is a fix for physical consistency and for clean scenarios, not for the fit. Once the refractory DOP (0.0046 g/m³, added to the model TP in the calibration objective) is included, the mean TP bias is within 3% for every variant and efficiency scale 0.85 to 1.0. An earlier efficiency sensitivity that left the offset out wrongly suggested a bias of about 23%.
-- **The remaining misfit is elsewhere.** Surface FRP is about 50% low (with the high-FRP episodes of 2005 to 2008 and 2020 to 2022 missed), chlorophyll is about 16% high, and TP is about 80% too high in 2017 to 2019 and too low in 2021 to 2022.
-
-**What to do**
-
-1. Use the **no-alum inflow file for both streams**, with the alum module on.
-2. Add an **in-stream reaction step** in the inflow preparation: a fraction of the inflow FRP becomes suspended alum-bound P (`ALU_alp`) and the dosed capacity (`ALU_ala`) falls by the same amount.
-3. Scale `k_w` and `k_s` by the mean **pH efficiency (0.85)** from the buoy pH record, and refit the rest of the alum parameters on the new inflows.
-4. Compare the resulting in-lake removal with the **independent evidence**: the sediment aluminium survey (ERI 178) and the roughly 50% internal-load reduction found by Hamilton et al. and ERI 128.
-5. Rerun the **climate scenarios** with the clean alum-on and alum-off inflows.
-
-## Inflow choice {#sec-inflows}
+### Inflow choice {#sec-inflows}
 
 | Question | Decision | Reason |
 |---|---|---|
@@ -198,9 +140,9 @@ The GLM-AED model has been calibrated with an alum setup that mixes treated and 
 | Do the biology and oxygen stages need redoing? | No | The two files are identical before 2006, and the oxygen and biology stages were fitted on the earlier record |
 | What do I need from the file author? | How the Utuhina reconstruction was made | It gives about 14% less untreated DRP than Hamilton's pre-alum monthly DRP:TP method |
 
-## Handling alum {#sec-alum}
+### Handling alum {#sec-alum}
 
-### In-stream reaction
+#### In-stream reaction
 
 Applied each day to the dosed streams before the inflow reaches the lake. With `R` the Al:DRP ratio (dosed capacity over inflow FRP, mol/mol):
 
@@ -211,18 +153,18 @@ Applied each day to the dosed streams before the inflow reaches the lake. With `
 
 The bound P (`f` times FRP) enters the lake as `ALU_alp`, and the capacity `ALU_ala` is reduced by the same amount. Total P is conserved. The calibration build omits `ALU_alp` from the inflow variables (AEME calls it `ALU_alap`), so the column and the namelist entry are added by hand after the build.
 
-### Alum module in the lake
+#### Alum module in the lake
 
 - **Efficiency.** Scale `k_w` and `k_s` by 0.85, the mean pH efficiency from the buoy record (median pH 7.0, `pH_opt` 7, `sigma_pH` 1: about 0.88 in the water column, 0.77 in the bottom water in summer). A prescribed-pH `fpH` would need a libaed rebuild and changes little on average.
 - **Parameters to refit** (priors from the thesis): `w_ala` (settling, 0.3 to 1.5 m/d in the thesis, 2.8 fitted so far), `K_P` (about 0.3), `k_w`, `k_s`, `k_age_w`, `k_age_s`, `k_bur`, `k_res`.
 - **Total P in the comparison.** The model's TP leaves out the suspended alum-bound pool, but observed TP includes floc-bound P. Include `ALU_alp` in the model TP when comparing, and test how much of the TP bias this explains.
 - **In-lake effects.** Hamilton et al. and ERI 128 both needed an additional effect after 2010: about 50% less sediment P release (about 16 t P/yr) and more flocculation of organic matter. Check whether the module's settled-alum uptake already supplies this. If it does not, free the sediment P flux after dosing as its own stage.
 
-## Alum setup {#sec-alum-setup}
+### Alum setup {#sec-alum-setup}
 
 This section sets out how alum enters the model, what the stream step does to the inflow, what each module parameter controls, and how the values compare with the Sanila (2026) thesis ([thesis summary](alum-dosing-sanila-msc-thesis.qmd); the module equations are in the [module description](alum-model.qmd)). The model carries alum as a phosphorus-binding capacity, not as aluminium mass.
 
-### From dose to binding capacity
+#### From dose to binding capacity
 
 Only the two dosed streams (Utuhina from 2006, Puarenga from 2010) carry alum. The daily liquid-alum volume `V` (L/d) becomes a capacity concentration in the inflow, `ALU_ala` (mmol P-binding capacity per m³ of inflow), in `calc_alum_inflow()`:
 
@@ -232,7 +174,7 @@ $$
 
 with `Q` the stream flow (m³/d) and 4.263% Al by weight. The capacity ratio `r_Al:P` of 1 means 1 mmol of aluminium can bind 1 mmol of P at most. This is a ceiling, not an efficiency: the thesis gives 0.7:1 in the lake-water jar test and about 7:1 for field dosing in the streams (McDowell and Hawke, 2006), so the real binding is below the ceiling and the module kinetics (`k_w`, `K_P`, ageing) set how much of the capacity is used. The module's direct surface dose `S_ala` is zero; the thesis-equivalent whole-lake dose of about 0.10 mmol P m⁻² d⁻¹ is delivered through the inflows instead.
 
-### Stream fractionation {#sec-fractionation}
+#### Stream fractionation {#sec-fractionation}
 
 Alum reacts with stream DRP in the stream reach between the dosing point and the lake (about 680 m on the Puarenga, 1360 m on the Utuhina). The model cannot resolve this reach, so the inflow is split into three pools before it enters the lake. Each day, for each dosed stream, a fraction `f` of the inflow FRP is bound to the dosed alum:
 
@@ -255,7 +197,7 @@ Three points matter when reading the numbers:
 - **Variants.** A multiplier `m` on `f` gives the three baseline variants: V0 (`m = 0`, no stream reaction), V1 (`m = 1`, as above) and V2 (`m = 0.5`). The lake data cannot separate them (@sec-sequence, step 2), so V1 is kept on physical grounds. In V1 the bound P load is 1.15 t P/yr (Utuhina) and 1.75 t P/yr (Puarenga) over 2011 to 2017, and the suspended `ALU_alp` pool is only about 0.5% of lake TP.
 - **Inflow P is the untreated series for both streams** (the no-alum file; see @sec-inflows). The stream step is therefore the only place where dosing lowers the inflow FRP, and the lake module acts only on what is left.
 
-### Alum in the lake
+#### Alum in the lake
 
 The module carries four pools: suspended capacity `ala` and suspended bound P `alp` (mmol P m⁻³, every layer), and the settled equivalents `ben_ala` and `ben_alp` (mmol P m⁻², bottom layer). The processes are:
 
@@ -266,7 +208,7 @@ The module carries four pools: suspended capacity `ala` and suspended bound P `a
 - **Resuspension and burial.** With `simResuspension` on, settled pools return to the bottom water at `k_res`. Burial at `k_bur` is the only process that removes P from the model for good.
 - **pH.** `ads_use_pH` is off, so `f_pH` is not computed. The mean pH efficiency (0.85, from the buoy pH record) is applied as a factor on `k_w` and `k_s` instead, and `pH_opt = 7` and `sigma_pH = 1` are recorded but inactive.
 
-### Parameters, thesis values and fitted values {#sec-alum-params}
+#### Parameters, thesis values and fitted values {#sec-alum-params}
 
 ```{r}
 #| eval: true
@@ -297,22 +239,22 @@ How the fitted values sit against the thesis:
 - **`k_s` (0.029 d⁻¹)** is at the bottom of its range and below the 0.1 default, while the ensemble median is three times higher (0.092 d⁻¹): the best member and the ensemble disagree, so benthic uptake is not identified.
 - **`k_res` (0.011 d⁻¹)** is inside the 0.001 to 0.1 range of that table and consistent with the qualitative support for resuspension.
 
-## Calibration sequence {#sec-sequence}
+### Calibration sequence {#sec-sequence}
 
 | Step | What | Output | Status |
 |---|---|---|---|
 | 1 | Test the `ALU_alp` delivery on a short run: the column reaches the inflow files, the lake pool grows, and the P budget closes | Pass or fail, with the patch | **Done.** The column and the namelist entry are in place, the pool fills (top 5 m mean 0.004 to 0.006 mmol P/m³) and the bound P load matches the with-alum file (1.15 t P/yr Utuhina, 1.75 t P/yr Puarenga, 2011 to 2017) |
 | 2 | Three baseline variants (2005 to 2022, O member, `k_w` and `k_s` × 0.85): V0 no stream reaction, V1 full reaction, V2 half. Compare TP (with and without `ALU_alp`), FRP, chlorophyll and anoxia against observations and the old base | Preferred in-stream fraction | **Done.** The variants are not distinguishable in the lake data (TP bias +0.2%, -2.2%, -1.1%; FRP -47% to -50%; chlorophyll +16% to +17%; anoxic days 240, 268, 239 against 239 observed). The suspended alum-bound P is only about 0.5% of TP. V1 is kept on physical grounds (the reports) |
-| 2b | Check how lake TP follows the inflow P loads, and test the sensitivity to flood-day particulate P (F50, F0) | Cause of the wet-year TP error | **Done** (@sec-results): the TP error follows the load, driven by storm particulate P that the lake holds too long |
-| 3 | **Particulate P stage (Particulate-P)**: free `w_pom`, `rpop_hydrol` and `w_po4ads` with the alum objective plus annual-TP terms (wet-year bias, year-to-year correlation); alum parameters fixed (`k_w`, `k_s` × 0.85); 48 members, 4 iterations, V1 inflows | New particulate settling and hydrolysis parameters | **Done** (@sec-qresult): a modest gain in the wet-year TP error, at the cost of total N |
-| 4 | Test the flood-day particulate scaling at the Particulate-P parameters (× 1, 0.75, 0.5) as discrete runs, not a free parameter | Whether any input correction is still needed | **Done** (@sec-qresult) |
-| 5 | Refit the eight alum parameters on V1 and the Particulate-P member (calibrate 2006 to 2018, validate 2018 to 2022); keep the top 20 members | Alum parameter ensemble | **Done** (@sec-refit): stages Alum-1, Alum+SedP, Half-flood, Final-alum; Final-alum is the working member |
-| 5b | **Phytoplankton P stage (Phyto-P)**: free `K_P`, `X_pmin`, `X_pmax` and `R_resp` of the three groups (12 parameters) on the flood × 0.5 base, from the Final-alum member (@sec-stage-s) | Better surface FRP and chlorophyll | **Done**: FRP -34% to -6%, chlorophyll +25% to +3%; anoxic days rose to 287 |
-| 5c | **Oxygen refit (Oxygen-2)** on the Phyto-P member (@sec-stage-s) | Anoxia restored without losing the P and chlorophyll fit | **Done**: FRP -8.5%, chlorophyll +4.9%, TP -6%, anoxic days 275 |
-| 5d | **Historical ensemble run** (2005 to 2022), top 20 members of the Oxygen-2 ensemble (@sec-hist) | Ensemble envelopes against the observations | **Done** |
+| 2b | Check how lake TP follows the inflow P loads, and test the sensitivity to flood-day particulate P (F50, F0) | Cause of the wet-year TP error | **Done** ([stage history](alum-calibration-history.qmd#sec-glance)): the TP error follows the load, driven by storm particulate P that the lake holds too long |
+| 3 | **Particulate P stage (Particulate-P)**: free `w_pom`, `rpop_hydrol` and `w_po4ads` with the alum objective plus annual-TP terms (wet-year bias, year-to-year correlation); alum parameters fixed (`k_w`, `k_s` × 0.85); 48 members, 4 iterations, V1 inflows | New particulate settling and hydrolysis parameters | **Done** ([Particulate-P result](alum-calibration-history.qmd#sec-qresult)): a modest gain in the wet-year TP error, at the cost of total N |
+| 4 | Test the flood-day particulate scaling at the Particulate-P parameters (× 1, 0.75, 0.5) as discrete runs, not a free parameter | Whether any input correction is still needed | **Done** ([Particulate-P result](alum-calibration-history.qmd#sec-qresult)) |
+| 5 | Refit the eight alum parameters on V1 and the Particulate-P member (calibrate 2006 to 2018, validate 2018 to 2022); keep the top 20 members | Alum parameter ensemble | **Done** ([refits after Particulate-P](alum-calibration-history.qmd#sec-refit)): stages Alum-1, Alum+SedP, Half-flood, Final-alum; Final-alum is the working member |
+| 5b | **Phytoplankton P stage (Phyto-P)**: free `K_P`, `X_pmin`, `X_pmax` and `R_resp` of the three groups (12 parameters) on the flood × 0.5 base, from the Final-alum member ([Phyto-P stage](alum-calibration-history.qmd#sec-stage-s)) | Better surface FRP and chlorophyll | **Done**: FRP -34% to -6%, chlorophyll +25% to +3%; anoxic days rose to 287 |
+| 5c | **Oxygen refit (Oxygen-2)** on the Phyto-P member ([Phyto-P stage](alum-calibration-history.qmd#sec-stage-s)) | Anoxia restored without losing the P and chlorophyll fit | **Done**: FRP -8.5%, chlorophyll +4.9%, TP -6%, anoxic days 275 |
+| 5d | **Historical ensemble run** (2005 to 2022), top 20 members of the Oxygen-2 ensemble ([historical ensemble (Oxygen-2)](alum-calibration-history.qmd#sec-hist)) | Ensemble envelopes against the observations | **Done** |
 | 5e | **Joint stage**: phytoplankton, oxygen, sediment P and nitrogen parameters (40) freed together, with anoxia, annual TN and thermocline targets added (@sec-joint) | A consistent posterior ensemble | **Done** (@sec-joint-results): FRP -0.3%, chlorophyll -6.0%, TP -4.3%, anoxic days 257; most parameters remain weakly constrained |
 | 5f | Historical ensemble from the final Joint ensemble | Envelopes against the observations, with the full parameter uncertainty | **Done** for 50 members (@sec-hist-j) and with and without alum (@sec-alum-impact) |
-| 6 | Recheck bottom anoxia with the new parameters | Anoxia metrics per member | **Partly done.** Oxygen-2 gives 275 anoxic days against 239 observed and the timing is wrong in several years (@fig-anox-stage); to be rechecked with the Joint ensemble |
+| 6 | Recheck bottom anoxia with the new parameters | Anoxia metrics per member | **Partly done.** Oxygen-2 gives 275 anoxic days against 239 observed and the timing is wrong in several years ([anoxia by stage figure](alum-calibration-history.qmd#fig-anox-stage)); to be rechecked with the Joint ensemble |
 | 7 | Floc-fate and internal-load checks (ERI 178 and Hamilton et al.) | Al exported, settled and bound, and the P removed in the lake | **P side done** (@sec-alum-impact): alum retains 15 t P/yr (members 9 to 23) against about 16 t P/yr in the reports. The aluminium fate (ERI 178) is not checked |
 | 8 | Rerun the climate scenarios (baseline, NZESM matrix, ensemble) with clean inflows | Scenario summaries | Not started; to use the Joint ensemble on the flood × 0.5 base (placeholder below) |
 
@@ -322,11 +264,11 @@ Rerun `calibration/uncertainty2/run_all.R` with the Joint ensemble and the flood
 
 Time estimates: steps 1 and 2 about an hour, step 3 about two hours, steps 5 and 8 a few hours each at four to six workers.
 
-## Calibrated parameters and ranges {#sec-calib-params}
+### Calibrated parameters and ranges {#sec-calib-params}
 
 All parameters that were freed in the calibration, with the range they were allowed to take and the final value. The physics parameters were fitted in stages 1 and 2 (water balance, then temperature); the biogeochemical parameters in the joint stage Joint; the alum and sediment P release parameters in the refit Final-alum. The "final" column is the best member; for Joint and Final-alum the ensemble median and its 10 to 90% range are also given, because the best member is one draw and most of these parameters are not identified (@sec-param-summary). Parameters that sit at a bound (within 5% of the range end) are flagged: they are compensating for something else or the range is limiting. Parameters held fixed are listed in @tbl-param-fixed.
 
-### Physics (stages 1 and 2)
+#### Physics (stages 1 and 2)
 
 ```{r}
 #| eval: true
@@ -354,7 +296,7 @@ knitr::kable(data.frame(Parameter = paste0("`", p$parameter, "`"), Meaning = p$m
 
 Water balance is set by the weir rating (`crest_elev`, `crest_factor`) and `rh_factor` and `ce`, with seepage fixed at 0 and no outflow multiplier. Wind is measured and not scaled; the mixing and heat-flux coefficients carry the compensation. Several mixing and sediment parameters end at a bound (see the "At bound" column), so the temperature fit is partly bought with compensating physics.
 
-### Biogeochemistry (Joint stage) and alum (Final-alum stage)
+#### Biogeochemistry (Joint stage) and alum (Final-alum stage)
 
 ```{r}
 #| eval: true
@@ -372,7 +314,11 @@ knitr::kable(data.frame(Group = d$group, Parameter = paste0("`", d$parameter, "`
                         `At bound` = ifelse(is.na(d$at_bound) | d$at_bound == "", "", d$at_bound), check.names = FALSE), row.names = FALSE)
 ```
 
-## Model fit in the calibration and validation periods {#sec-fit}
+## Results {#sec-results-final}
+
+Results from the final Joint ensemble: the fit, the alum effect with and without alum, the P and alum budgets, and the phytoplankton succession.
+
+### Model fit in the calibration and validation periods {#sec-fit}
 
 ::: {.callout-important title="The biology was calibrated on the period with no alum"}
 Phytoplankton, nitrogen and phosphorus parameters were first fitted on the **pre-alum record, with alum off** (stages 2b to g: calibration to 31 December 2003, hold-out January 2004 to May 2006; dosing began on 15 June 2006). The lake observations used start in March 2003, so the pre-alum calibration period holds about ten months of data and the hold-out about 29 months. The alum parameters, sediment P release and the joint-stage ensemble were then fitted **with alum on** (calibration June 2006 to June 2018, validation July 2018 to June 2022). The two sets of fit statistics below are therefore not comparable: the first tests the lake without treatment, the second the lake with dosing and the alum module.
@@ -402,7 +348,7 @@ How to read it:
 - **Alum-era validation.** The best-member fit is worse than in calibration for every nutrient: TP -16%, FRP -50%, chlorophyll +28% and TN +36%, with negative correlations for TP, FRP and TN. The TP and FRP rebound of 2021 to 2022 is not reproduced (@fig-fit-series-alum), and TN rises in the winter peaks of 2018 to 2019. Temperature and bottom DO hold up (r 0.997 and 0.84).
 - **No variable has a nutrient or chlorophyll fit that should be called validated.** Level biases in the calibration period are small, but the validation period shows that the nutrient parameters do not transfer through the 2018 to 2022 change in conditions.
 
-### Observed against modelled
+#### Observed against modelled
 
 ```{r}
 #| eval: true
@@ -420,7 +366,7 @@ include_img("images/calibration/fit_scatter_prealum.png")
 include_img("images/calibration/fit_scatter_alum.png")
 ```
 
-### Through time
+#### Through time
 
 ```{r}
 #| eval: true
@@ -439,220 +385,6 @@ include_img("images/calibration/fit_series_alum.png")
 ```
 
 The code is `calibration/fit_tables.R`; it reads `calibration/step2/forward/g_full/forward_pairs.rds` and `forward_aeme.rds` (pre-alum member) and the 50 members in `calibration/historical/out_j50x/`.
-
-## Results so far {#sec-results}
-
-All runs below are 2005 to 2022, alum on, from the Oxygen-1 member, with surface (0 to 5 m) TP including the refractory DOP offset of 0.0046 g/m³ that the calibration objective adds (the model's TP leaves out that pool).
-
-```{r}
-#| eval: true
-#| label: tbl-runs
-#| tbl-cap: "Mean bias of the surface fit and bottom anoxia for each run."
-knitr::kable(read.csv("data/inflows/run_summary.csv"), col.names = c("Run", "TP bias (%)", "FRP bias (%)", "Chlorophyll bias (%)", "Anoxic days", "Observed anoxic days"))
-```
-
-### The calibration at a glance {#sec-glance}
-
-@fig-score follows the surface fit and bottom anoxia through every stage, from the Oxygen-1 member on the V1 inflows (the starting point) to the oxygen refit Oxygen-2. The stages are described one by one in the sections below; this table says what each one was designed to fix and why the next followed.
-
-| Stage | Targeted misfit | What it showed | Why the next stage |
-|---|---|---|---|
-| V1 (start) | Alum module fitted on hybrid inflows | FRP -50%, chlorophyll +16%, TP wet years +66 to +113% | The TP error followed the inflow P load, so the storm particulate P was the first suspect |
-| Particulate-P, Particulate-P 2 | Particulate settling and hydrolysis (`w_pom`, `rpop_hydrol`, `w_po4ads`) | Wet-year error fell a little, FRP improved (to -16% in Particulate-P 2), but chlorophyll rose (+29%) | The wet-year excess was mostly dissolved P, so the alum and sediment P were refitted |
-| Alum-1, Alum+SedP | Alum parameters, then alum plus sediment P release | Better wet years and year-to-year correlation, but overall TP fell to -19% | Lake parameters could not fix wet years and low years together: halve the flood-day particulate P as an input assumption and refit |
-| Half-flood, Final-alum | Same joint refit on the flood × 0.5 base | Best annual TP so far; Final-alum converged | FRP (-34%) and chlorophyll (+25%) had not moved: the phytoplankton P kinetics were untouched since the early biology stages |
-| Phyto-P | `K_P`, `X_pmin`, `X_pmax`, `R_resp` (12 parameters) | FRP -6%, chlorophyll +3%, but anoxic days up to 287 | More production meant more oxygen demand: the oxygen parameters were fitted under the old biology |
-| Oxygen-2 | Sediment oxygen demand and organic-matter oxygen consumption | Anoxia only 287 to 275, nutrient fit held | The nutrient and oxygen parameters are correlated and were fitted in sequence, so they have to be estimated together, with nitrogen and the thermocline added as targets (@sec-joint) |
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-score
-#| fig-cap: "Surface (0 to 5 m) fit and bottom anoxia for the best member of each stage, in the order the stages were run. Dashed lines mark a perfect fit."
-include_img("images/calibration/scorecard.png")
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-phi
-#| fig-cap: "Objective by iteration for each stage (best member and ensemble median; free y-axis, so levels are not comparable across stages). Most stages gain little after the first or second iteration; the Phyto-P stage gains most because its prior ensemble was wide."
-include_img("images/calibration/objective_trajectories.png")
-```
-
-### Efficiency sensitivity (old inflows) {#sec-eff}
-
-The first sensitivity scaled `k_w` and `k_s` on the old (hybrid) inflows. Without the refractory DOP offset it suggested the alum was too efficient (best scale 0.3 to 0.4); that was an artefact. With the offset, the TP bias is -3% at the fitted efficiency and +5% at 0.7, so the fitted efficiency is about right for TP (@fig-eff). Lower scales improve FRP (-51% to -20% from 1 to 0.3) but worsen TP (+25%) and chlorophyll, so FRP and TP pull in different directions.
-
-![Mean bias against the efficiency scale on `k_w` and `k_s` (old base).](images/inflows/efficiency_bias.png){#fig-eff}
-
-### In-stream reaction variants {#sec-variants}
-
-V0 (no stream reaction), V1 (full: Puarenga ramp, Utuhina 0.45) and V2 (half) on the no-alum inflows, with `k_w` and `k_s` × 0.85, all fit about equally (@tbl-runs and @fig-period): the stream reaction changes surface TP by 2% or less, because total P is conserved and the lake module already removes the FRP quickly. The suspended alum-bound pool is only about 0.5% of TP, so adding it to the model TP changes nothing. The lake data therefore cannot identify the stream fractions; V1 is kept because it follows the reports. The ALU_alp delivery works: the column and namelist entry survive the run, the lake pool fills, and the bound P load matches the with-alum file (1.15 t P/yr Utuhina, 1.75 t P/yr Puarenga, 2011 to 2017).
-
-![Mean surface TP by period (observed: diamonds) for the old base and the three variants.](images/inflows/tp_by_period.png){#fig-period}
-
-### Lake TP follows the inflow load, the observations do not {#sec-load}
-
-The variants share a structured TP error. Across 2006 to 2021 the simulated annual TP is positively correlated with the annual inflow TP load (r = 0.56) while the observed TP is negatively correlated (r = -0.52); the error correlates with the load at r = 0.77 (@fig-load2). The four wet years (2011, 2012, 2017, 2018; inflow volume above 580 hm³/yr and TP loads of 69 to 90 t against about 46 t in other years) are overestimated by 66% to 113%, while the observed TP is at its lowest. The extra load in wet years is mostly particulate P (about 37 t PIP and 10 t POP, against 13 and 3.5 t), and flood days (3 to 6% of days) carry 36% to 66% of the particulate P of the gauged streams. The 2021 to 2022 observed TP rebound occurs with low loads and is a separate, unexplained effect.
-
-![Left: simulated minus observed annual TP against the annual inflow TP load (V1). Right: annual TP, observed and simulated with flood-day particulate P scaled.](images/inflows/tp_vs_load.png){#fig-load2}
-
-### Flood-day particulate P sensitivity {#sec-flood}
-
-Scaling the POP and PIP delivered on flood days (the `isFlood` flag of the file) by 0.5 (F50) and 0 (F0) shows the sensitivity:
-
-```{r}
-#| eval: true
-#| label: tbl-flood
-#| tbl-cap: "Annual TP error (sim minus obs, g/m3), 2006 to 2021, with flood-day particulate P scaled."
-knitr::kable(read.csv("data/inflows/flood_scaling_summary.csv"), col.names = c("Run", "Wet-year error", "Other-year error", "Annual RMSE", "Year-to-year r", "FRP bias (%)", "Chlorophyll bias (%)", "Anoxic days"))
-```
-
-Removing the flood particulate P brings the wet years much closer (error +0.013 to +0.004 g/m³, year-to-year r 0.06 to 0.44) but lowers TP in the other years and worsens FRP (the particulate organic P is a source of FRP through hydrolysis). The fix is therefore how fast the event P leaves the water column, not removing the load. In the calibrated 2O member the particulate organic matter settles at only -0.019 m/d (about 580 days to settle across the mean depth) and these parameters were fixed in earlier stages, so event particulate P stays until the outflow flushes it (about 1.4 years).
-
-### What Particulate-P calibrates {#sec-q}
-
-Particulate-P frees three lake-process parameters, not event-specific ones: the particulate organic matter settling velocity `w_pom` (range -1 to -0.005 m/d, now -0.019), the particulate organic P hydrolysis rate `rpop_hydrol` (0.002 to 0.3 /d, now 0.016) and the settling velocity of adsorbed P `w_po4ads` (-3 to -0.02 m/d, now -0.29). The wet years are where these rates can be identified because that is where the particulate load is large. The objective is the alum-stage objective (TP, FRP, chlorophyll, aluminium, temperature, oxygen guards, with calibration 2006 to 2018 and validation 2018 to 2022) plus two annual-TP terms: the mean wet-year bias (scale 0.005 g/m³) and the year-to-year correlation. The inflow flood scaling is not a free parameter, because it is an input correction that would trade off against settling; it is tested afterwards at fixed values (step 4). Parameters that influence oxygen (`w_pom` also settles the particulate carbon) are guarded by the oxygen and anoxia terms of the objective.
-
-### Particulate-P result {#sec-qresult}
-
-All 48 members ran in every iteration and the objective fell from 1.10 (start) to 0.95 (best). The best member has faster settling and hydrolysis: `w_pom` -0.019 to -0.105 m/d, `rpop_hydrol` 0.016 to 0.10 /d, `w_po4ads` -0.29 to -0.92 m/d. The top quarter of the final ensemble is tight on `w_pom` (-0.13 to -0.06) and `rpop_hydrol` (0.04 to 0.24) and wide on `w_po4ads`.
-
-| Run (2006 to 2021 surface TP, Particulate-P parameters unless stated) | Wet-year error (g/m³) | Other-year error | Year-to-year r | FRP bias | Total N bias (no offset) |
-|---|---|---|---|---|---|
-| V1, Oxygen-1 parameters | +0.013 | -0.004 | 0.06 | -50% | -38% |
-| Particulate-P, flood particulate P × 1 | +0.010 | -0.006 | 0.12 | -37% | -61% |
-| Particulate-P, × 0.75 | +0.008 | -0.006 | 0.20 | -43% | -63% |
-| Particulate-P, × 0.5 | +0.006 | -0.007 | 0.29 | -50% | -64% |
-
-- **A modest gain.** Faster particulate settling and hydrolysis cut the wet-year error from +0.013 to +0.010 g/m³ and lift the year-to-year correlation from 0.06 to 0.12. Scaling the flood particulate P as well brings it to +0.006 (× 0.5), but the other years then run low (-0.007) and the overall TP bias is about -17%.
-- **Total N pays for it.** Faster particulate settling also removes particulate N (`w_pom` settles carbon, nitrogen and phosphorus together), and the total N bias gets worse (the guard term went from -0.19 to -1.01 tolerance units). Chlorophyll is slightly worse and anoxic days are unchanged (243 to 255 against 239).
-- **The wet-year excess is mostly dissolved P, not particulate.** In the Particulate-P run the top 5 m pools are higher in the wet years by about 0.0022 g/m³ for FRP (0.0022 to 0.0044), 0.0020 for dissolved organic P (0.0067 to 0.0087) and 0.0010 for diatom internal P, but only 0.0003 for particulate organic P. FRP reaches 0.009 g/m³ in 2017 against an observed 0.0015. Settling the particulates faster does not remove that: the event P is hydrolysed and mineralised to dissolved forms, and the alum capacity per unit of flow is smaller in wet years.
-
-**What this means.** Particulate settling and hydrolysis are not the main lever for the wet-year TP error, and the parameters that help P hurt N. The better targets are the dissolved P pools in the wet years (FRP removal by the alum, DOP mineralisation) and, as an input uncertainty, the flood-day particulate load.
-
-### Refits after Particulate-P {#sec-refit}
-
-Four further stages followed, all on the V1 inflows (no-alum files, in-stream bound P) with 48 members and 4 iterations each. The alum-stage objective is used throughout, with the wet-year TP bias and year-to-year correlation terms added (`S2_TPTERMS=1`).
-
-- **Particulate-P 2.** Intended as a narrower Particulate-P (`w_pom` fixed), but a range helper in `step2_common.R` reset the limits after the freeze and left `w_pom` free, so it is Particulate-P plus `rdom_minerl` (0.5 to 2 ×). Best member: `w_pom` -0.051, `rpop_hydrol` 0.21, `w_po4ads` -0.58, `rdom_minerl` 0.033. Total N is no worse than V1 this time.
-- **Alum-1.** The eight alum parameters freed again (wide ranges), holding the Oxygen-1 and Particulate-P 2 members.
-- **Stage Alum+SedP.** The alum parameters plus the sediment P release (`fsed_frp` by zone, `ksed_frp`, `theta_sed_frp`). No improvement on Alum-1: objective 0.766 to 0.778.
-- **Stages Half-flood and Final-alum.** The same joint refit on the base with flood-day particulate P × 0.5 (the input correction from step 4), so the wet years are handled by the input and the sediment P and alum parameters fit the other years. The objective fell from 0.73 to 0.58 in Half-flood. Final-alum continued from it and changed nothing (0.580 to 0.577), so the ensemble has converged.
-
-| Run (2006 to 2021 surface 0 to 5 m) | Wet-year error (g/m³) | Other-year error | Annual RMSE | Year-to-year r | FRP bias | Chlorophyll bias | Total N bias (no offset) | Anoxic days (obs 239) |
-|---|---|---|---|---|---|---|---|---|
-| V1, Oxygen-1 | +0.0130 | -0.0036 | 0.0089 | 0.06 | -50% | +16% | -38% | 268 |
-| Particulate-P 2 | +0.0102 | -0.0052 | 0.0085 | 0.22 | -16% | +29% | -38% | 245 |
-| Alum-1 | +0.0073 | -0.0072 | 0.0086 | 0.29 | -29% | +24% | -45% | 270 |
-| Alum+SedP | +0.0068 | -0.0078 | 0.0089 | 0.31 | -32% | +21% | -48% | 245 |
-| Half-flood (flood × 0.5) | +0.0050 | -0.0067 | 0.0078 | 0.42 | -36% | +25% | -43% | 250 |
-| **Final-alum (flood × 0.5)** | +0.0051 | -0.0067 | **0.0078** | **0.43** | -34% | +25% | -44% | **242** |
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-annual-stage
-#| fig-cap: "Annual mean surface TP by year for the Oxygen-1 start member, the particulate stages and the flood × 0.5 refits, against the observations (grey: wet years)."
-include_img("images/calibration/annual_tp_by_stage.png")
-```
-
-**Why these stages were designed this way.** @fig-annual-stage shows the problem that drove them: in the wet years (2011, 2012, 2017, 2018) the model's annual TP is well above the observations, while in dry years it is slightly low, and the observations fall in wet years. Lake processes alone (Particulate-P, Particulate-P 2, Alum-1, Alum+SedP) reduced the overshoot but pushed the dry years lower. Halving the flood-day particulate P in the inflows (Half-flood, Final-alum) is an input correction that lets the lake parameters fit the dry years while the storm load is damped, which is why the refits were repeated on that base.
-
-**Result.** Final-alum has the lowest annual TP error, the best year-to-year correlation and anoxic days within 3 of the observed 239. It keeps three misfits: surface TP about 17% low overall, FRP about 34% low and chlorophyll about 25% high. Particulate-P 2 fits FRP and the overall TP bias better (-16% and -6%) but at the price of a larger wet-year error and chlorophyll +29%. The two are the candidates for the scenarios; Final-alum is the working choice because the year-to-year behaviour is what drives the scenario contrasts, with Particulate-P 2 kept as a sensitivity member. The Final-alum parameters are in `calibration/step2p4/runs/step2_best.rds`, and the final ensemble is in `step2_ies.rds` in the same folder.
-
-**Caveats.** The Final-alum best member rests on the flood-day particulate P × 0.5 correction, which is an input assumption and not a calibrated quantity; it must be carried into the scenario runs (build with `STR_FLOODSCALE=0.5`, as in `calibration/alum/stream_variant.R`). The alum parameters are poorly constrained across the top quarter of the ensemble (for example `k_res` 0.001 to 0.5 in Alum-1), so the scenario ensemble should draw members rather than use the best member alone. The surface FRP and chlorophyll misfits did not respond to any of these stages, which points at the phytoplankton uptake and the dissolved P cycling and not at the alum.
-
-### Phyto-P stage {#sec-stage-s}
-
-**Why this stage.** After Final-alum converged, the misfits that remain (surface FRP about 34% low, chlorophyll about 25% high, TP about 17% low) did not respond to the alum, sediment P or particulate parameters. The seasonal cycle in @fig-seasonal shows what was wrong: in Final-alum surface FRP is far too low from February to June (it is nearly zero in March and April against 0.003 to 0.006 g/m³ observed), and the summer chlorophyll peak is 5 to 6 µg/L too high (February to March), so the phytoplankton were taking up more P than the lake data allow. The phytoplankton P kinetics have not been touched since the early biology stages, which predate the alum module and the current inflows, so the Phyto-P stage frees them: the half-saturation constant for P uptake `K_P`, the minimum and maximum internal P quotas `X_pmin` and `X_pmax`, and the respiration rate `R_resp`, for each of the cyano, green and diatom groups (12 parameters).
-
-| Parameter | Start (Final-alum; cyano, green, diatom) | Range |
-|---|---|---|
-| `K_P` (g/m³) | 0.21, 0.29, 0.056 | 0.3 to 3 × start |
-| `X_pmin` | 0.0007, 0.001, 0.0012 | 0.5 to 2 × start |
-| `X_pmax` | 0.009, 0.005, 0.0038 | 0.5 to 2 × start |
-| `R_resp` (/d) | 0.105, 0.25, 0.01 | 0.01 to 0.4 |
-
-The alum, sediment P, particulate and oxygen parameters are held at the Final-alum and earlier members, and the objective is the same as in Final-alum stage (alum-stage objective plus the wet-year TP terms). The green group's `R_resp` sat on its previous upper bound (0.25), so the range is widened. The run uses 48 members and 4 iterations, and the best member is evaluated on the flood × 0.5 base (run name `S1`).
-
-**Result.** The objective fell from 0.58 to 0.48. Surface FRP moved from -34% to -6%, chlorophyll from +25% to +3% and the overall TP bias from -17% to -8%; the annual TP RMSE fell from 0.0078 to 0.0068 g/m³ and the year-to-year correlation rose from 0.43 to 0.52. The cost was bottom oxygen: with more production the model had 287 days below 2 g/m³ against 239 observed (242 for Final-alum). The best member lowers the green group's `R_resp` to its lower bound (0.0102), and the top quarter of the ensemble is wide for `K_P` and `X_pmin`, so these parameters are weakly constrained.
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-seasonal
-#| fig-cap: "Mean annual cycle of surface FRP and chlorophyll-a, 2006 to 2021, for Final-alum and Phyto-P against the observations."
-include_img("images/calibration/seasonal_frp_chl.png")
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-pos
-#| fig-cap: "Position of the start member (arrow tail) and best member (point) inside each parameter's allowed range, for the Phyto-P and Oxygen-2 stages. Red points sit at a bound."
-include_img("images/calibration/parameter_positions.png")
-```
-
-In @fig-seasonal the Phyto-P stage lifts summer FRP back to the observed level (January) and lowers the summer chlorophyll peak, but it still leaves FRP near zero in March to April, over-predicts FRP from August to December (0.005 to 0.008 g/m³ against 0.0025 to 0.004), and under-predicts chlorophyll from June to December. The remaining seasonal errors are one reason for the joint stage (@sec-joint).
-
-@fig-pos shows how far the stage moved: most Phyto-P parameters moved by a modest fraction of their range, with the green group's `R_resp` running to its lower bound. Most parameters end well inside their ranges, so the ranges were not what limited the fit.
-
-**Why the next stage.** Stage Phyto-P fixed the nutrient and chlorophyll fit, but more production delivers more organic matter to the bottom, and anoxic days rose from 242 to 287. The oxygen parameters had been fitted when production was lower, so they were refitted next (Oxygen-2).
-
-### Oxygen-2 stage (oxygen refit) {#sec-o3}
-
-Because the Oxygen-1 oxygen parameters were fitted under the earlier, less productive biology, they were refitted on top of the Phyto-P stage member: the four zone `fsed_oxy` values, `ksed_oxy`, `theta_sed_oxy`, `rdom_minerl`, `rpoc_hydrol` and `theta_minerl` (9 parameters), with the calibration window ending 2017-06-30 as in the original Oxygen-1. The concern was equifinality, that the oxygen parameters would restore anoxia by shifting the nutrient fit back. They did not: the best member keeps FRP at -8.5%, chlorophyll at +4.9%, total TP at -6% (annual TP RMSE 0.0067 g/m³, year correlation 0.51) and total N at -34%. Anoxia improved only modestly, to 275 days against 239 observed. Calibration-period anoxia is on target, but the 2018 to 2022 validation period is over-predicted, and the strongest sediment oxygen demand moved to the deep zone 4 (-176 to -296 mg/m²/d). The Oxygen-2 member is the best member of this stage.
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-anox-stage
-#| fig-cap: "Days per year with bottom DO (mean of the 17 m and deeper samples) below 2 g/m³, on the sampled days, for the observations and the Final-alum, Phyto-P and Oxygen-2 members."
-include_img("images/calibration/anoxic_days_stages.png")
-```
-
-@fig-anox-stage shows that the anoxia count hides a timing problem. The observations have most low-oxygen days in 2008 to 2010 (27, 34 and 42 days) and in 2015 (31); the model misses 2008 and 2009 (about 9 and 8 to 16 days) and overshoots 2017 (37 days against 18) and 2018 to 2019. Stage Phyto-P also creates a spurious anoxic year in 2013 (29 days against 4), which Oxygen-2 removes. Since the early years are under-predicted and the late years over-predicted, a single sediment oxygen demand per zone cannot fix it: the oxygen demand and the production supply have to be adjusted together.
-
-**Why a joint stage next.** The oxygen and nutrient parameters are correlated (production supplies the organic matter that the oxygen parameters consume, and sediment P release depends on bottom oxygen), but they were fitted one after the other, so each stage was conditional on the last. The remaining misfits (summer FRP and chlorophyll timing, TN about 34% low, anoxia timing) cross those groups. The next stage therefore frees them together and adds targets that measure them directly (@sec-joint).
-
-Two problems cost compute time and are worth recording. A first Oxygen-2 run optimised nothing because the calibration end date (`S2_CALEND`, default 2003) left no data in the window, so every residual was zero. A second attempt was contaminated when a watchdog killed model runs that had stalled while the laptop went into standby; the truncated runs scored zero and looked like perfect members. The ensemble code now treats an all-zero residual vector as a failed run, and sleep was disabled for the long runs.
-
-### Historical ensemble {#sec-hist}
-
-The 20 lowest-objective members of the final Oxygen-2 ensemble were run over 2005 to 2022 on the flood × 0.5 base with the alum module on (`calibration/historical/run_hist.R`). Only the nine oxygen parameters differ between members, so the envelope shows the oxygen uncertainty and not the uncertainty in the phytoplankton or alum parameters.
-
-```{r}
-#| eval: true
-#| echo: false
-include_img("images/historical/envelopes.png")
-```
-
-Monthly means of the daily surface (0 to 5 m) and bottom values; the dark band is the interquartile range, the light band the full ensemble, and the points are the observations.
-
-```{r}
-#| eval: true
-#| echo: false
-m <- read.csv("data/historical/member_metrics.csv")
-s <- data.frame(Metric = c("Objective", "Surface TP bias (%)", "Surface FRP bias (%)", "Surface chlorophyll bias (%)", "Annual TP RMSE (g/m³)", "Year-to-year TP correlation", "Anoxic days (observed 239)", "Bottom DO bias (g/m³)"),
-  Mean = c(mean(m$phi), mean(m$TP_bias), mean(m$FRP_bias), mean(m$chl_bias), mean(m$TP_annual_rmse), mean(m$TP_year_r), mean(m$anoxic_days), mean(m$DO_bottom_bias)),
-  Min = c(min(m$phi), min(m$TP_bias), min(m$FRP_bias), min(m$chl_bias), min(m$TP_annual_rmse), min(m$TP_year_r), min(m$anoxic_days), min(m$DO_bottom_bias)),
-  Max = c(max(m$phi), max(m$TP_bias), max(m$FRP_bias), max(m$chl_bias), max(m$TP_annual_rmse), max(m$TP_year_r), max(m$anoxic_days), max(m$DO_bottom_bias)))
-knitr::kable(s, digits = 3)
-```
-
-- **The ensemble brackets the observations for the main variables.** Mean surface TP bias is about -12% (range -22% to +7%), FRP is within ±12% for 16 of the 20 members and chlorophyll is within +11%. The mean number of anoxic days (252) is close to the observed 239, with a wide spread (170 to 337).
-- **Known misses.** FRP and TP are too high in 2005 to 2006, which is spin-up and initial-condition influence; the 2017 to 2019 TP peak is over-predicted; and the TP and FRP rebound of 2021 to 2022 is missed by every member. Summer chlorophyll peaks in 2009 and 2018 to 2019 are higher than observed.
-- **Bottom DO.** The ensemble follows the seasonal cycle but the deepest observed drawdowns (below 2 g/m³ at times) are not reached in every year, which is what the anoxia comparison by year shows (`images/historical/anoxia_by_year.png`, `data/historical/anoxic_days_by_year.csv`).
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-hist-anox
-#| fig-cap: "Days per year with bottom DO below 2 g/m³: the Oxygen-2 ensemble (band: min to max, line: median, all model days) and the observed days (bars, sampled days only, so they are lower bounds)."
-include_img("images/historical/anoxia_by_year.png")
-```
 
 ### Joint stage {#sec-joint}
 
@@ -1145,6 +877,68 @@ knitr::kable(tb)
 
 **To close it:** add diagnostics for deposition, ageing, burial and resuspension (fluxes in mmol per m² per day) to `aed_alum.F90` (`libaed-dev`), rebuild GLM and rerun the best member. That gives a closed alum and P budget for the lake and settles the three explanations above.
 
+### Alum diagnostics from the model {#sec-alum-diag}
+
+These are the alum module's state variables and the fluxes reconstructed from them for the best Joint member (member 46, 2006 to June 2022). They are collected here from the sections on the budget and the fate of alum (@sec-alum-fate, @sec-budget-pair); the detail and the caveats are in those sections.
+
+#### What the alum is bound to, and the pools
+
+The module carries four alum pools: free capacity and bound P in the water column (`ALU_ala`, `ALU_alp`), and the same two settled on the bed (`ben_ala`, `ben_alp`). A fifth state (`ALU_fpH`) is the pH modifier, switched off. Capacity is in mmol Al/m³ because the capacity ratio is 1.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: tbl-alum-pools
+#| tbl-cap: "Whole-lake alum pools in the best member: mean, maximum and value at the end of the run (29 June 2022), in tonnes. Capacity is tonnes Al; bound P is tonnes P. Pools are small because uptake, ageing and burial turn them over within days."
+p <- read.csv("data/alumfate/pools.csv")
+isP <- grepl("bound P", p$pool); w <- ifelse(isP, 30.974e-9, 26.98e-9)
+knitr::kable(data.frame(Pool = p$pool, Unit = ifelse(isP, "t P", "t Al"), Mean = sprintf("%.2f", p$mean_mmol * w), Maximum = sprintf("%.1f", p$max_mmol * w), `End of run` = sprintf("%.2f", p$end_mmol * w), check.names = FALSE))
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-diag-pools-ts
+#| fig-cap: "Lake-mean free alum capacity, alum-bound P and the daily P bound by water-column uptake, 2006 to 2022. Values are mmol per m³ (µmol/L); 0.01 µmol Al/L is about 0.3 µg Al/L."
+include_img("images/alumfate/diag_pools_ts.png")
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-diag-year-pools
+#| fig-cap: "Alum pools at the end of each year: free capacity and bound P in the water column, and the settled (benthic) capacity and bound P."
+include_img("images/alumfate/diag_year_end_pools.png")
+```
+
+- **The water column holds a few tonnes of alum at most.** The bound P is cleared in days (see @tbl-alum-pools for the mean and maximum). Free capacity follows the dosing: it peaks in 2010 to 2011 after the Puarenga dosing starts and settles to a lower, steadier level from 2013.
+- **The settled pools are small and variable.** They are set by the burial and ageing rates (`k_bur` 0.129 d⁻¹, `k_age_s` 0.063 d⁻¹), which the data do not constrain.
+
+#### Where the P that alum binds goes
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-diag-annual-p
+#| fig-cap: "P bound by alum and where it goes, by year (full years only): bound in the streams, in the water column and at the bed, and the buried and outlet amounts. Burial is rate times pool and exceeds the binding in several years, which is the closure problem described in @sec-alum-fate-p."
+include_img("images/alumfate/diag_annual_p.png")
+```
+
+- **Over the run 12.4 t P/yr is bound** (82% in the water column, 16% in the streams, under 2% at the bed) and 97% of it ends buried; 2% leaves through the outlet as bound P (@tbl-fate-p).
+- **The sediment is a sink for alum-bound P, not a source.** Resuspension returns about 8% of settled bound P to the water, where it settles again. The module does not release bound P back to FRP, so the alum effect in the model is permanent.
+- **Sediment P release is a separate, weakly constrained process.** The zone sediment P release parameters (`fsed_frp`, `ksed_frp`) did not narrow in either the alum refit or the Joint stage (@sec-param-phosphorus), so the model cannot say how much internal load alum removed beyond what the P budget shows (a 61% fall in export).
+
+#### Efficiency: aluminium per phosphorus removed
+
+| Where | Al applied per P removed (mol/mol) | Basis |
+|---|---|---|
+| Streams (stream step) | 30 | Stream rule; the observed DRP removal gives 29 |
+| Lake | 5.5 | Free capacity delivered per P bound by uptake |
+| Whole system | 3.5 to 5 | Uptake diagnostics 4.8; reduction in P export 4.0; unexplained P 3.5 |
+| Thesis, field dosing / jar test | 7 / 0.7 | Sanila thesis |
+
+The three whole-system estimates differ by about 40%. The efficiency in the streams is low because most Al is dosed on days with a high dose ratio, where each extra mol of Al removes less P; the lake is about five times more efficient per mol Al (@sec-alum-fate-streams, @sec-alum-fate-lake).
+
 ### Phytoplankton succession in the best member {#sec-succession}
 
 Surface (0 to 5 m) biomass of the three groups from the best member (Joint-stage member 46, alum on, 2006 to 2022; `calibration/historical/phyto_succession.R`, data in `data/phyto/`). Biomass is in mmol C/m³. These are model outputs only: there are no group-level observations in the calibration, which uses total chlorophyll-a.
@@ -1189,10 +983,6 @@ include_img("images/phyto/limitation_seasonal.png")
 
 - **Cyanobacteria are limited by light and temperature in winter and by phosphorus in summer.** Nitrogen does not limit them at all (the group can fix N), and the phosphorus factor falls from 1 to about 0.64 in February and March, when the surface FRP is lowest.
 - **Diatoms are limited by temperature and light throughout** (factors 0.3 to 0.75) and barely by nutrients (above 0.95), so their biomass is set by physics and by losses and not by P supply.
-
-### Housekeeping
-
-The run and build folders of stages Particulate-P to Final-alum were deleted after the best members and ensembles were saved (about 90 GB). Each stage keeps `step2_best.rds` (best member), `step2_ies.rds` (ensemble history and parameter table) and `step2_table.rds`. The evaluation runs keep `result_*.rds` and `base_*.rds` in `calibration/alum/stream`. The run folders are rebuilt by `step2_build` when a stage is rerun.
 
 ## Parameter calibration summary {#sec-param-summary}
 
@@ -1245,7 +1035,7 @@ param_table <- function(g) {
 }
 ```
 
-The `Start` column is the Oxygen-2 member the joint stage started from (@sec-o3) and the zones z1 to z4 are the four sediment zones of the model.
+The `Start` column is the Oxygen-2 member the joint stage started from ([Oxygen-2 stage](alum-calibration-history.qmd#sec-o3)) and the zones z1 to z4 are the four sediment zones of the model.
 
 #### Phytoplankton P kinetics {#sec-param-phyto}
 
@@ -1329,7 +1119,7 @@ Only the denitrification rate narrows (32% less spread), and the best member (0.
 
 ### Final-alum stage {#sec-param-alum}
 
-The alum refit freed 14 parameters (the 8 alum parameters and 6 sediment P release parameters) on 48 members for 4 updates, from the Particulate-P member with the V1 inflows (@sec-refit). The objective changed little: the best member went from 0.579 to 0.577 and the ensemble median from 1.16 to 0.65.
+The alum refit freed 14 parameters (the 8 alum parameters and 6 sediment P release parameters) on 48 members for 4 updates, from the Particulate-P member with the V1 inflows ([refits after Particulate-P](alum-calibration-history.qmd#sec-refit)). The objective changed little: the best member went from 0.579 to 0.577 and the ensemble median from 1.16 to 0.65.
 
 ```{r}
 #| eval: true
@@ -1444,7 +1234,7 @@ knitr::kable(data.frame(
 - **Oxygen and stratification are set by wind and sediment oxygen demand together.** Wind speed, zone 1 `fsed_oxy` and `cd` are the top three for bottom oxygen and anoxic days, and wind speed, `cd` and the stirring coefficient for the stratified fraction. The calibration holds wind at the measured value, so the anoxia targets are tied to the wind forcing and to the compensation placed in `cd`, the stirring coefficient and the mixing coefficients (@tbl-param-fixed).
 - **Nutrients and chlorophyll respond to the cyanobacteria.** Surface TP, TN and chlorophyll all respond most to cyanobacteria respiration, settling and the P half-saturation. Cyanobacteria `R_resp` is first for TN, chlorophyll and the cyanobacteria fraction. A change in how many cyanobacteria the lake supports shifts all three together.
 - **FRP and the year-to-year TP pattern depend on alum.** `k_w` is the first or second driver of FRP and of the year-to-year TP correlation, and `k_age_w` of the aluminium and of the year-to-year correlation. The alum parameters therefore matter for the targets that the alum stage is meant to fit, even though they carry only 6.5% of the objective.
-- **Wet-year TP depends on particulate organic P.** `rpop_hydrol` is the main driver of the difference between wet and dry years in TP, consistent with the wet-year misfit traced to storm particulate P in @sec-flood.
+- **Wet-year TP depends on particulate organic P.** `rpop_hydrol` is the main driver of the difference between wet and dry years in TP, consistent with the wet-year misfit traced to storm particulate P in [flood-day sensitivity](alum-calibration-history.qmd#sec-flood).
 
 136 of the 142 parameters have at least one target they affect strongly. A parameter with a small share of the objective is not necessarily irrelevant: the objective averages 27 terms, and some parameters matter for a single one.
 
@@ -1491,13 +1281,15 @@ cv <- read.csv("data/sensitivity/morris_convergence.csv")
 knitr::kable(data.frame(Trajectories = cv$trajectories, `Rank agreement, objective` = sprintf("%.2f", cv$rho_phi), `Top 10 shared` = cv$top10_overlap_phi, `Rank agreement, targets` = sprintf("%.2f", cv$rho_targets), check.names = FALSE))
 ```
 
-## Checks that decide the next step {#sec-checks}
+## Next steps {#sec-next}
+
+### Checks that decide the next step {#sec-checks}
 
 - **Step 2.** If V1 or V2 fit total P, FRP and chlorophyll better than the old base and the efficiency scale moves towards 1, the in-stream step is doing its job. If V0 fits best, the lake kinetics are absorbing the stream reaction and the step needs a different form.
 - **Step 3.** Parameters at their prior bounds (for example `w_ala` well above the thesis range) mean the module is compensating for something missing, and the cause should be sought before the scenarios are rerun.
 - **Step 5.** Settled alum in the main basin should be small (ERI 178 found no accumulation there), and the in-lake P removal should be of the same order as the 16 t P/yr implied by the reports.
 
-## Open questions {#sec-open}
+### Open questions {#sec-open}
 
 - **P removal too high** Levels of P removal were relatively high, but overall in the correct ballpark for FRP. Revisit parameter ranges and compare with thesis.
 - **Handling of pH** Currently, `aed_carbon` is not switched on, and use a simple scaling 0.85 on efficiency. Can we potentially include pH as a driver variable?

@@ -138,6 +138,8 @@ website:
           text: "Calibration Report"
         - href: alum-calibration-stage-1.qmd
           text: "Alum calibration stage 1"
+        - href: alum-calibration-history.qmd
+          text: "Alum calibration: stage history"
         - href: rotorua-phyto-investigation.qmd
           text: "Phytoplankton & Zooplankton Investigation"
     - id: climate
