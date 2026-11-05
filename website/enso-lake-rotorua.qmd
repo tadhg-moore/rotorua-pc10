@@ -18,7 +18,7 @@ d <- function(f) read_csv(file.path("data", "enso", f), show_col_types = FALSE)
 ```
 
 ::: {.callout-note}
-**Status: work in progress.** Sections 1-3 are complete. Section 4 (AEME counterfactual hindcast) and section 5 (ENSO in CMIP6) are not yet run. Analysis scripts are in `calibration/enso/` (numbered `00`-`07`), with working notes `NOTE_enso_met.md` and `NOTE_enso_lake.md`.
+**Status: work in progress.** Sections 1-5 are complete; a synthesis section remains to be finalised. Analysis scripts are in `calibration/enso/` (numbered `00`-`07`), with working notes `NOTE_enso_met.md` and `NOTE_enso_lake.md`.
 :::
 
 ## 1. Approach and data
@@ -112,15 +112,59 @@ bind_rows(
 
 ## 4. AEME counterfactual hindcast {#sec-hindcast}
 
-*Not yet run.* Plan: run the latest calibrated model (`calibration/final/`) over 1992-2022 with the real forcing, then with the meteorology of selected El Niño and La Niña years swapped for neutral-year composites, to separate the meteorological ENSO effect on stratification, oxygen, nutrients and chlorophyll from loads and alum.
+The calibrated AEME model (alum refit member H1b_B143, alum on, 2005-2022) was run with the actual meteorology and then four times with the meteorology of every El Niño/La Niña year replaced by a randomly drawn neutral year (hourly, same calendar day). Inflows, alum dosing and parameters were unchanged, so the difference isolates the **meteorological** ENSO effect. Years are classed by the October-March mean SOI (at or below -0.75 El Niño, at or above +0.75 La Niña): El Niño 2010 and 2016, La Niña 2008, 2009, 2011, 2012, 2021 and 2022.
+
+```{r}
+#| label: hindcast
+#| echo: false
+d("counterfactual_effects.csv") |>
+  filter(var %in% c("temp_surf", "dT", "oxy_bot", "anox_days", "hypox_days", "chl_surf", "tp_surf")) |>
+  transmute(Variable = var, `ENSO phase` = type, `Years` = n_years, `Actual minus neutral-weather (mean)` = signif(mean_diff, 2),
+            `Spread between neutral draws` = signif(sd_between_draws, 2)) |>
+  kable(caption = "Modelled effect of actual ENSO-year weather (units: degC; mg/L; days per year; ug/L; TP in mmol/m3).")
+```
+
+```{r}
+#| label: hindcast-fig
+#| echo: false
+#| fig-cap: "Reference minus neutral-weather counterfactual by flagged year (whiskers = spread between the four neutral draws)."
+include_img("images/enso/counterfactual_effects.png")
+```
+
+The meteorological ENSO effect on temperature, stratification, chlorophyll and phosphorus is within the year-to-year spread of neutral weather. La Niña years show somewhat more low oxygen (about 13 more days below 4 mg/L, 8 more anoxic days per year), but this comes almost entirely from the year to June 2022, when a warm November-January (1.5-2 °C above the neutral draws) pushed the modelled bottom water to about 1 mg/L; the other La Niña years show little. This is one event at a model threshold, with only 2 El Niño and 6 La Niña years, one parameter member and met-only changes (the wetter La Niña inflows are not included). Details and caveats, including a warming-trend bias in the neutral donor years, are in `calibration/enso/NOTE_enso_hindcast.md`.
 
 ## 5. ENSO in the downscaled CMIP6 data {#sec-cmip6}
 
-*Not yet run.* The data are free-running, so ENSO is judged statistically (2-7 year spectral power, interannual variability, teleconnection pattern) from the local variables. Parent-GCM Niño3.4 and pressure are out of scope.
+The downscaled CMIP6 data (7 GCMs, one realisation each) are free-running, hold only local variables (tas, pr, rsds, hurs, sfcWind) and no Niño3.4 or SOI, so ENSO cannot be tracked event by event. It is assessed statistically from its imprint on the local record, against ERA5 1988-2024 (GCM window 1978-2014, also 37 years). Bias-corrected versions exist only for pr and tas.
+
+**Variability.** Interannual variability is realistic: the coefficient of variation of seasonal anomalies is 0.29-0.38 for rain (ERA5 0.30), 0.042-0.056 for temperature (0.046) and 0.074-0.093 for wind speed (0.065). The share of variance in the 2-7 year ENSO band (0.04-0.19) is close to ERA5 (0.07-0.16), but it is also close to what red noise gives, in observations as well as the models, so this test cannot confirm or refute ENSO.
+
+```{r}
+#| label: cmip6-var
+#| echo: false
+d("cmip6_variability_metrics.csv") |> filter(window %in% c("1978-2014", "1988-2024")) |>
+  transmute(Variable = var, Source = gcm, `ENSO-band variance share` = round(enso_band_frac, 3), `p vs AR(1) noise` = round(p_vs_AR1, 2), `Seasonal CV` = round(cv_seas, 3)) |>
+  arrange(Variable, Source) |> kable(caption = "Interannual variability of monthly anomalies at the lake point (deseasonalised, detrended).")
+```
+
+**Co-variability.** All GCMs reproduce the main rain-radiation link and the autumn-winter rain-temperature link. In spring, when the observed ENSO imprint on temperature, wind direction and lake temperature is strongest, several GCMs differ: rain and temperature are positively related in observations (+0.3 to +0.4) but negatively in four of seven GCMs, and rain and wind speed are negatively related in observations but positively in four GCMs. With 37 years the sampling error on each correlation is about 0.3, so this is suggestive rather than conclusive.
+
+```{r}
+#| label: cmip6-cov
+#| echo: false
+d("cmip6_covariability.csv") |> filter(s == "SON", pair %in% c("pr~tas", "pr~sfcWind")) |> mutate(r = round(r, 2)) |>
+  tidyr::pivot_wider(names_from = pair, values_from = r) |> select(-s) |> rename(Source = src) |>
+  kable(caption = "Spring (SON) interannual correlations of seasonal anomalies, observations vs GCMs, 1978-2014.")
+```
+
+**Future.** The interannual standard deviation of seasonal anomalies in 2050-2099 relative to 1965-2014 has a median ratio of 0.93-1.04 for every variable and SSP, with GCM ranges that include 1 (0.8-1.35), and the ENSO-band share changes by less than 0.03. There is no robust change in local interannual variability.
+
+**Conclusion.** The downscaled CMIP6 data reproduce the size and main co-variability of Rotorua's interannual weather, but they cannot show that ENSO itself is captured, and spring co-variability is not reproduced by several GCMs. They should not be used for year-by-year or ENSO-phase-conditional statements. Scoring each GCM properly would need parent-GCM Niño3.4 and pressure (out of scope here). Details are in `calibration/enso/NOTE_enso_cmip6.md`.
 
 ## 6. Summary so far
 
 1. ENSO has a measurable but modest imprint on Rotorua: the clearest signals are wind direction, rainfall and inflow, with La Niña wetter and more easterly.
 2. The temperature response is not separable from the warming trend and IPO phase with the available record.
 3. No detectable ENSO signal in lake nutrients, chlorophyll, Secchi or bottom oxygen in the observations; the record is short and noisy and alum and load changes dominate.
-4. The CMIP6 evaluation and the model-based attribution (sections 4-5) will determine whether any of this can be extended to future climate.
+4. The AEME hindcast shows the meteorological ENSO effect on stratification, chlorophyll and phosphorus is within normal weather variability; the only notable effect is more low oxygen in the La Niña year to June 2022.
+5. The downscaled CMIP6 data match Rotorua's interannual variability but cannot show that ENSO is captured (and spring co-variability is not reproduced by several GCMs), so they do not support ENSO-conditioned future statements. Future ENSO change is unquantified.
