@@ -3657,98 +3657,154 @@
     "href": "nzfss-2026-alum.html#the-problem",
     "title": "From dose to decision",
     "section": "The problem",
-    "text": "The problem\n\nExcess phosphorus (P) loading still drives eutrophication in lakes worldwide\nAlum (aluminium sulfate) is widely used to reduce P availability\nThe chemistry of Al–P binding is well understood\nBut dose-to-outcome tools remain largely empirical\n\n\n\n\n\n\n\nThe gap\n\n\nExisting lake models cannot explicitly link alum dosing strategy to lake-scale P dynamics and long-term water quality.\n\n\n\n\nFrame the decision problem: managers choose dose, timing, location, not chemistry."
+    "text": "The problem\n\nExcess phosphorus (P) loading still drives eutrophication in lakes worldwide\nAlum (aluminium sulfate) is widely used to reduce P availability\nThe chemistry of Al–P binding is well understood\nBut dose-to-outcome tools remain largely empirical\n\n\n\n\n\n\n\nThe gap\n\n\nExisting lake models cannot explicitly link alum dosing strategy to lake-scale P dynamics and long-term water quality.\n\n\n\n\nFrame the decision problem: managers choose dose, timing, location, not chemistry.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#lake-rotorua-a-rare-long-record",
     "href": "nzfss-2026-alum.html#lake-rotorua-a-rare-long-record",
     "title": "From dose to decision",
     "section": "Lake Rotorua: a rare long record",
-    "text": "Lake Rotorua: a rare long record\n\n\n\nBay of Plenty, Aotearoa New Zealand\nWarm monomictic, eutrophic, history of cyanobacterial blooms and bottom-water anoxia\nContinuous alum dosing of the two main inflows (Puarenga and Utuhina streams) for over two decades\nLong monitoring record: lake, streams, outlet\n\n\n\n\n\n\nDosing in the streams, not the lake, is why we need an inflow-delivery component."
+    "text": "Lake Rotorua: a rare long record\n\n\n\nBay of Plenty, Aotearoa New Zealand\nWarm monomictic, eutrophic, history of cyanobacterial blooms and bottom-water anoxia\nContinuous alum dosing of the two main inflows (Puarenga and Utuhina streams) for over two decades\nLong monitoring record: lake, streams, outlet\n\n\n\n\n\n\nDosing in the streams, not the lake, is why we need an inflow-delivery component.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#question-and-approach",
     "href": "nzfss-2026-alum.html#question-and-approach",
     "title": "From dose to decision",
     "section": "Question and approach",
-    "text": "Question and approach\nCan we build a mechanistic, transferable representation of continuous alum treatment inside a full lake model, and use it to inform dosing decisions?\n\nDevelop an alum module for GLM-AED\nCalibrate and evaluate on 20+ years of Rotorua dosing\nUse it to test treatment scheduling and trade-offs\nScenarios: is alum alone enough?"
+    "text": "Question and approach\nCan we build a mechanistic, transferable representation of continuous alum treatment inside a full lake model, and use it to inform dosing decisions?\n\nDevelop an alum module for GLM-AED\nCalibrate and evaluate on 20+ years of Rotorua dosing\nUse it to test treatment scheduling and trade-offs\nScenarios: is alum alone enough?",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#the-glm-aed-alum-module",
     "href": "nzfss-2026-alum.html#the-glm-aed-alum-module",
     "title": "From dose to decision",
     "section": "The GLM-AED alum module",
-    "text": "The GLM-AED alum module\n\n\n\n\n\n\n\nflowchart LR\n  DOSE([\"Alum dosed&lt;br/&gt;to stream\"])\n\n  subgraph LAKE[\"Lake\"]\n    direction TB\n\n    subgraph WC[\"Water column\"]\n      direction LR\n      WR[\"Reactive Al\"]\n      WB[\"Al-bound P\"]\n      WR -- \"P binding&lt;br/&gt;f(T, pH)\" --&gt; WB\n      WR -- \"ageing\" --&gt; AA\n    end\n\n    subgraph SED[\"Sediment\"]\n      direction LR\n      BR[\"Benthic reactive Al\"]\n      BB[\"Benthic Al-bound P\"]\n      BUR[(\"Buried\")]\n      BR -- \"P binding at&lt;br/&gt;sediment-water interface\" --&gt; BB\n      BR -- \"ageing\" --&gt; AA\n      BB -- \"burial\" --&gt; BUR\n      BA -- \"burial\" --&gt; BUR\n    end\n  \n    AA[\"Aged Al&lt;br/&gt;(no capacity)\"]\n\n    WR -- \"settling\" --&gt; BR\n    WB -- \"settling\" --&gt; BB\n    WA -- \"settling\" --&gt; BA\n    BR -. \"resuspension\" .-&gt; WR\n    BB -. \"resuspension\" .-&gt; WB\n  end\n\n  OUT([\"Lake outflow&lt;br/&gt;(export)\"])\n\n  DOSE --&gt; WC\n  WC -- \"export\" --&gt; OUT\n\n  classDef alum fill:#fde8c8,stroke:#d95f02,color:#222\n  classDef bound fill:#cfe3f1,stroke:#1b6ca8,color:#222\n  classDef sink fill:#e5e5e5,stroke:#666,color:#222\n  class SR,WR,BR alum\n  class SB,WB,BB bound\n  class WA,BA,BUR,OUT sink\n\n\n\n\n\n\n\nFive processes from the abstract: delivery from inflows, kinetic uptake in the water column, settling, continued binding at the SWI, ageing."
+    "text": "The GLM-AED alum module\n\n\n\n\n\n\n\nflowchart TB\n  DOSE([\"Alum dosed&lt;br/&gt;to stream\"])\n\n  subgraph LAKE[\"Lake\"]\n    subgraph WC[\"Water column\"]\n      WR[\"Reactive Al\"]\n      WB[\"Al-bound P\"]\n      WAA[\"Aged Al&lt;br/&gt;(no capacity)\"]\n\n      WR -- \"P binding&lt;br/&gt;f(T, pH)\" --&gt; WB\n    end\n\n    subgraph SED[\"Sediment\"]\n      BR[\"Benthic reactive Al\"]\n      BB[\"Benthic Al-bound P\"]\n      BAA[\"Aged Al&lt;br/&gt;(no capacity)\"]\n      BUR[(\"Buried\")]\n\n      BR -- \"P binding at&lt;br/&gt;sediment-water interface\" --&gt; BB\n      BB -- \"burial\" --&gt; BUR\n    end\n\n    WR -- \"settling\" --&gt; BR\n    WB -- \"settling\" --&gt; BB\n    BR -. \"resuspension\" .-&gt; WR\n    BB -. \"resuspension\" .-&gt; WB\n    WR -- \"ageing\" --&gt; WAA\n    BR -- \"ageing\" --&gt; BAA\n  end\n\n  OUT([\"Lake outflow&lt;br/&gt;(export)\"])\n\n  DOSE --&gt; WR\n  WC -- \"export\" --&gt; OUT\n  SED ~~~ OUT\n\n  classDef alum fill:#fde8c8,stroke:#d95f02,color:#222\n  classDef bound fill:#cfe3f1,stroke:#1b6ca8,color:#222\n  classDef sink fill:#e5e5e5,stroke:#666,color:#222\n  class WR,BR alum\n  class WB,BB bound\n  class WAA,BAA,BUR,OUT sink\n\n  style WC fill:#d6ebf8,stroke:#1b6ca8\n  style SED fill:#e8d5b5,stroke:#8b6b3e\n\n\n\n\n\n\n\nFive processes from the abstract: delivery from inflows, kinetic uptake in the water column, settling, continued binding at the SWI, ageing.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#process-by-process",
     "href": "nzfss-2026-alum.html#process-by-process",
     "title": "From dose to decision",
     "section": "Process by process",
-    "text": "Process by process\n\n\n\n\n\n\n\nProcess\nRepresentation\n\n\n\n\nDelivery\nAlum dose carried by treated inflows (dose ratio set per stream)\n\n\nWater-column uptake\nSecond-order kinetics, Alr × PO4, temperature (Q10) scaling\n\n\nSettling\nGravitational settling of floc to the bed (wala)\n\n\nSediment binding\nContinued P uptake at the sediment–water interface\n\n\nAgeing\nFirst-order loss of reactivity (kage, water and sediment)\n\n\npH modifier\nGaussian efficiency response f(pH), peaks near neutral\n\n\n\n\\[R_{bind} = k_{20}\\,Q_{10}^{(T-20)/10}\\,f(pH)\\,Al_r\\,PO_4\\]\n\nKeep equation small. Emphasise: few parameters, each one has a physical meaning, so each can be tested."
+    "text": "Process by process\n\n\n\n\n\n\n\nProcess\nRepresentation\n\n\n\n\nDelivery\nAlum dose carried by treated inflows (dose ratio set per stream)\n\n\nWater-column uptake\nSecond-order kinetics, Alr × PO4, temperature (Q10) scaling\n\n\nSettling\nGravitational settling of floc to the bed (wala)\n\n\nSediment binding\nContinued P uptake at the sediment–water interface\n\n\nAgeing\nFirst-order loss of reactivity (kage, water and sediment)\n\n\npH modifier\nGaussian efficiency response f(pH), peaks near neutral\n\n\n\n\\[R_{bind} = k_{20}\\,Q_{10}^{(T-20)/10}\\,f(pH)\\,Al_r\\,PO_4\\]\n\nKeep equation small. Emphasise: few parameters, each one has a physical meaning, so each can be tested.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#why-ph-matters",
     "href": "nzfss-2026-alum.html#why-ph-matters",
     "title": "From dose to decision",
     "section": "Why pH matters",
-    "text": "Why pH matters\n\nBinding efficiency falls away from near-neutral pH\nRotorua pH varies substantially (summer photosynthesis raises it)\nModule includes a pH modifier; transferable to higher-pH systems"
+    "text": "Why pH matters\n\nBinding efficiency falls away from near-neutral pH\nRotorua pH varies substantially (summer photosynthesis raises it)\nModule includes a pH modifier; transferable to higher-pH systems",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#staged-calibration",
     "href": "nzfss-2026-alum.html#staged-calibration",
     "title": "From dose to decision",
     "section": "Staged calibration",
-    "text": "Staged calibration\n\n\n\nPhysics: water balance, temperature, light, oxygen\nBiogeochemistry before alum (pre-alum record, ~1990-2005)\nAlum parameters, with the pre-alum fit fixed\nOxygen / anoxia re-check with alum on\n\n\n\nWind kept as measured; compensation sits in mixing and heat-flux coefficients\nTargets: lake TP, FRP, chlorophyll, nitrate, bottom DO and anoxic days\nPre-alum period gives a clean “no treatment” baseline\n\n\n\nKey message: separating alum from biology calibration avoids the alum parameters absorbing biology error."
+    "text": "Staged calibration\n\n\n\nPhysics: water balance, temperature, light, oxygen\nBiogeochemistry before alum (pre-alum record, ~1990-2005)\nAlum parameters, with the pre-alum fit fixed\nOxygen / anoxia re-check with alum on\n\n\n\nWind kept as measured; compensation sits in mixing and heat-flux coefficients\nTargets: lake TP, FRP, chlorophyll, nitrate, bottom DO and anoxic days\nPre-alum period gives a clean “no treatment” baseline\n\n\n\nKey message: separating alum from biology calibration avoids the alum parameters absorbing biology error.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#how-well-does-it-reproduce-the-lake",
     "href": "nzfss-2026-alum.html#how-well-does-it-reproduce-the-lake",
     "title": "From dose to decision",
     "section": "How well does it reproduce the lake?",
-    "text": "How well does it reproduce the lake?\n\n\nAnoxic days: ~236 simulated vs 239 observed (O member; year-to-year r ≈ 0.74)\nBottom DO r ≈ 0.91\nTP within a few percent of observed; FRP and chl biases are the main residuals\nHonest misfit: the 2021–22 TP/FRP rebound is not reproduced (suggests event-driven external load or alum-P release)\n\n\nBe upfront about the rebound; it motivates the next-steps slide."
+    "text": "How well does it reproduce the lake?\n\n\nAnoxic days: ~236 simulated vs 239 observed (O member; year-to-year r ≈ 0.74)\nBottom DO r ≈ 0.91\nTP within a few percent of observed; FRP and chl biases are the main residuals\nHonest misfit: the 2021–22 TP/FRP rebound is not reproduced (suggests event-driven external load or alum-P release)\n\n\nBe upfront about the rebound; it motivates the next-steps slide.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#where-does-the-alum-and-p-go",
     "href": "nzfss-2026-alum.html#where-does-the-alum-and-p-go",
     "title": "From dose to decision",
     "section": "Where does the alum and P go?",
-    "text": "Where does the alum and P go?\n\n\n\n\n\n\n~52 t Al yr-1 applied, ~12–17 t P yr-1 removed\n~30 mol Al per mol P in the streams, ~5 in the lake, 3.5–5 whole system\n~97% of alum-bound P ends buried\nMost reactive capacity ages out in the water column before reaching the bed\n\n\n\nTreat absolute settling and burial as a range; module flux diagnostics are not yet output (closure issue). Say so."
+    "text": "Where does the alum and P go?\n\n\n\n\n\n\n~52 t Al yr-1 applied, ~12–17 t P yr-1 removed\n~30 mol Al per mol P in the streams, ~5 in the lake, 3.5–5 whole system\n~97% of alum-bound P ends buried\nMost reactive capacity ages out in the water column before reaching the bed\n\n\n\nTreat absolute settling and burial as a range; module flux diagnostics are not yet output (closure issue). Say so.",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#what-the-framework-lets-us-ask",
     "href": "nzfss-2026-alum.html#what-the-framework-lets-us-ask",
     "title": "From dose to decision",
     "section": "What the framework lets us ask",
-    "text": "What the framework lets us ask\n\nScheduling: frequency and timing of doses (seasonal, flow-proportional, event-based)\nWhere P is removed: water column vs sediment-based removal\nInflow conditions: how flow, temperature and pH change treatment outcomes\nEfficiency: Al applied per unit P removed"
+    "text": "What the framework lets us ask\n\nScheduling: frequency and timing of doses (seasonal, flow-proportional, event-based)\nWhere P is removed: water column vs sediment-based removal\nInflow conditions: how flow, temperature and pH change treatment outcomes\nEfficiency: Al applied per unit P removed",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#scenario-results",
     "href": "nzfss-2026-alum.html#scenario-results",
     "title": "From dose to decision",
     "section": "Scenario results",
-    "text": "Scenario results\n\n\n\nNo alum vs historical dose\nTODO: change in lake TP, chl, anoxia, P export\n\nSensitivity of outcomes to\nTODO: floc settling, capacity (Al:P), resuspension, surface vs stream dosing"
+    "text": "Scenario results\n\n\n\nNo alum vs historical dose\nTODO: change in lake TP, chl, anoxia, P export\n\nSensitivity of outcomes to\nTODO: floc settling, capacity (Al:P), resuspension, surface vs stream dosing",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#is-alum-alone-enough",
     "href": "nzfss-2026-alum.html#is-alum-alone-enough",
     "title": "From dose to decision",
     "section": "Is alum alone enough?",
-    "text": "Is alum alone enough?\n\nNext step: scenarios under alternative management\n\nAlum only\nAlum + catchment load reduction\nClimate-adjusted conditions\n\nCompare against lake water quality targets (TLI / CSPS metrics)"
+    "text": "Is alum alone enough?\n\nNext step: scenarios under alternative management\n\nAlum only\nAlum + catchment load reduction\nClimate-adjusted conditions\n\nCompare against lake water quality targets (TLI / CSPS metrics)",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#limitations-and-next-steps",
     "href": "nzfss-2026-alum.html#limitations-and-next-steps",
     "title": "From dose to decision",
     "section": "Limitations and next steps",
-    "text": "Limitations and next steps\n\npH not yet simulated (fixed efficiency in current runs); a prescribed-pH mode would allow calibrating pHopt and σpH\nProcess flux diagnostics (ageing, burial, resuspension) need to be added to the module to close the Al and P budgets\nLate-period P rebound unexplained\nTransfer tests on other coagulant-treated lakes"
+    "text": "Limitations and next steps\n\npH not yet simulated (fixed efficiency in current runs); a prescribed-pH mode would allow calibrating pHopt and σpH\nProcess flux diagnostics (ageing, burial, resuspension) need to be added to the module to close the Al and P budgets\nLate-period P rebound unexplained\nTransfer tests on other coagulant-treated lakes",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "nzfss-2026-alum.html#key-messages",
     "href": "nzfss-2026-alum.html#key-messages",
     "title": "From dose to decision",
     "section": "Key messages",
-    "text": "Key messages\n\nA process-based alum module in GLM-AED links dose → floc → P binding → lake outcomes\n20+ years of Rotorua dosing allow calibration and evaluation rarely possible elsewhere\nSupports decisions on when and how much to dose, and whether alum alone is enough\nDesigned to transfer to any lake considering alum or similar coagulants\n\n\n\n\n\n\n\nAcknowledgements and contact\n\n\nTODO: funders, partners, Bay of Plenty Regional Council, data providers, co-authors, contact details / QR code to repo or website"
+    "text": "Key messages\n\nA process-based alum module in GLM-AED links dose → floc → P binding → lake outcomes\n20+ years of Rotorua dosing allow calibration and evaluation rarely possible elsewhere\nSupports decisions on when and how much to dose, and whether alum alone is enough\nDesigned to transfer to any lake considering alum or similar coagulants\n\n\n\n\n\n\n\nAcknowledgements and contact\n\n\nTODO: funders, partners, Bay of Plenty Regional Council, data providers, co-authors, contact details / QR code to repo or website",
+    "crumbs": [
+      "Presentations",
+      "NZFSS Conference Talk"
+    ]
   },
   {
     "objectID": "ohau-channel-water-quality.html",
