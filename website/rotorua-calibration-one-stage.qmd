@@ -1,0 +1,88 @@
+---
+title: "One-stage calibration on the updated GLM-AED executable"
+subtitle: "All biogeochemical and alum parameters re-opened against every target at once"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  eval: true
+  echo: false
+  warning: false
+  message: false
+---
+
+## Summary {#sec-summary}
+
+The updated executable (`exe/alum-diag-aed-v3.0.1/glm.exe`: GLM main 2bf1a65, libaed-water v3.0.1, libaed-dev feature/alum-diag ab27e0e) changes the calibrated phytoplankton and nutrient member a lot: total phosphorus falls to 43% of the observations and the zooplankton collapse to their minimum biomass. The cause is inferred from test runs (the libaed-water v3.0.1 source was not available), most likely the organic matter and sediment changes.
+
+All biogeochemical and alum parameters were therefore re-opened in one stage and scored against every target together (ES-MDA, 96 members, 5 steps, 2002-01 to 2022-06; calibration 2006-06 to 2018-06, held out 2018-07 to 2022-06).
+
+**Result.** The recalibration recovers the skill of the old-executable member but does not exceed it. A second pass with wider alum ranges and freed light and mixing parameters improved the calibration score and the thermocline but not the held-out score, so the first-pass member is kept as the reference.
+
+## Setup {#sec-setup}
+
+- **Free parameters (67 in the first pass).** 36 phytoplankton and zooplankton parameters (including `theta_grz_zoo`, which also sets zooplankton respiration and mortality in the AED code), 9 multipliers on the sediment N and P fluxes, nitrification, denitrification, organic matter hydrolysis and PO4 sorption, and 22 table parameters (8 alum, sediment oxygen demand and organic matter oxygen use, sediment P and N kinetics, POM and sorbed-P settling).
+- **Targets (one residual vector, 0 = perfect).** The 27 terms of the joint alum objective (TP, FRP, chlorophyll-a, TN, Al, temperature, oxygen, anoxia, annual TN and TP, thermocline), phytoplankton succession against the seasonal group shares, the CSPS terms (chlorophyll-a, nutrients, internal loading, trophic state, alum response), zooplankton biomass and a prior that rotifers avoid cyanobacteria. The extra terms carry weight 2.
+- **Prior.** Centred on the old-executable member (invest3 `r45_s3_02`) with neutral nutrient multipliers and `Cmin_grz_zoo` = 5. The old multipliers and `Cmin_grz_zoo` = 18 give TP −57% and a zooplankton collapse on the new executable.
+- **Score.** Mean squared residual, lower is better.
+
+## Result of the first pass {#sec-first}
+
+| Case | Calibration | Held out |
+|---|---|---|
+| Old executable, stage j member | 1.59 | 2.41 |
+| New executable, start of the run (neutral multipliers) | 4.85 | 7.28 |
+| New executable, best member of the first pass | 1.41 | 2.53 |
+
+Compared with the old-executable member (2006-2018 means): surface chlorophyll-a is 8.7 (old 10.7) mg/m³, zooplankton 2.6 (old 4.0) mmol C/m³, nitrate 3.2 (old 2.0) and ammonium 1.9 (old 1.5) mmol/m³ are higher, FRP 0.12 (old 0.15) is lower. Better than the old member: wet-year TP bias (0.9 vs 2.3), interannual TN correlation (1.6 vs 2.1), the alum term (0.72 vs 0.95) and the prey-order prior. Worse: succession, the trophic-state term (1.6 vs 0.65) and the anoxia bias.
+
+Parameters at their bounds in the first pass: alum `k_w` (20) and `k_bur` (0.189 of 0.2), `z_assim` and `gr_To`.
+
+```{r}
+bp <- read.csv("data/onestage/best_params.csv")
+bp$change <- ifelse(bp$start != 0, bp$best / bp$start, NA)
+ch <- bp[order(-abs(log(bp$change))), ][1:12, ]
+ch[, c("start", "best", "change")] <- lapply(ch[, c("start", "best", "change")], signif, 3)
+knitr::kable(ch[, c("param", "kind", "start", "best", "change", "at_bound")], row.names = FALSE, caption = "The 12 parameters that moved most (best / start), first pass. The full table is in `data/onestage/best_params.csv`.")
+```
+
+## Second pass: wider alum ranges and physics freed {#sec-second}
+
+The alum `k_w` upper limit was raised from 20 to 100 and `k_bur` from 0.2 to 1. Seven physics parameters were freed: light `Kw` (0.2-1), `coef_mix_hyp`, `coef_wind_stir`, `coef_mix_conv`, `coef_mix_turb`, `coef_mix_shear` and the shortwave factor `MET_radswd`, 74 parameters in all, centred on the first-pass best member.
+
+| Case | Calibration | Held out |
+|---|---|---|
+| First-pass best | 1.41 | 2.53 |
+| Second-pass best on calibration | 1.30 | 2.74 |
+
+The thermocline improved (bias −1.7 to −1.0, RMSE 1.67 to 1.33), as did succession (3.9 to 2.9), the TP bias and the anoxia error. The chlorophyll-a (1.5 to 2.5), zooplankton (0.4 to 0.9) and nutrient (2.0 to 2.3) terms got worse. Best-member values: `k_w` 31.6, `k_bur` 0.17 (below the new limit), `Kw` 0.38, `coef_mix_hyp` 2.3, `coef_mix_conv` 0.23, `coef_mix_turb` 0.53, `coef_mix_shear` 0.21, `coef_wind_stir` 0.65, `MET_radswd` 0.94.
+
+## Choosing the member {#sec-choice}
+
+The responses of all 1,152 members of both runs (calibration and held-out residuals are stored for every member) were scored on both periods.
+
+```{r}
+#| fig-height: 4.5
+#| fig-width: 6.5
+D <- read.csv("data/onestage/member_scores.csv")
+p1 <- D[D$run == "out_main", ]; p2 <- D[D$run == "out_pass2", ]
+plot(p1$cal, p1$val, pch = 16, cex = 0.5, col = adjustcolor("grey40", 0.5), xlim = c(1.2, 4), ylim = c(2.3, 5), xlab = "Calibration score", ylab = "Held-out score")
+points(p2$cal, p2$val, pch = 16, cex = 0.5, col = adjustcolor("firebrick", 0.5))
+abline(h = 2.41, v = 1.59, lty = 3)
+points(1.4127, 2.5274, pch = 1, cex = 2, lwd = 2)
+legend("topright", c("first pass", "second pass", "first-pass best", "old executable (dotted)"), pch = c(16, 16, 1, NA), lty = c(NA, NA, NA, 3), col = c("grey40", "firebrick", "black", "black"), bty = "n")
+```
+
+No member improves on the first-pass best on both periods (calibration 1.41 plus held out 2.53 = 3.94). In the second pass the calibration and held-out scores of the final iteration are only weakly correlated (0.33, against 0.77 in the first pass), so freeing the physics let members fit the calibration years without carrying that over. The lowest held-out score of any second-pass member is 2.42, with a calibration score of 1.84. The first-pass member is kept as the reference.
+
+## Still open {#sec-open}
+
+- Interannual TP (slope and correlation) on the held-out years, the nutrient CSPS term and phytoplankton succession are not improved by the new executable or the extra freedom.
+- The alum fate budget still does not close: water-column P outflows exceed inflows by about 10.3 t P/yr, because settling is still computed by closure. The diagrams from the new diagnostics are in `images/alumfate_diag/`.
+- Possible next steps: a third pass with a small penalty on the held-out window, taking the best 10 members as a reference set instead of a single member, a P-export sensitivity rerun, and asking the AED developers about the /31 and /14 factors.
+
+Scripts and outputs: `calibration/all_stage/` (`lib_all.R`, `coord_all.R`, `worker_all.R`, `eval_member.R`, `rank_members.R`, `out_main/`, `out_pass2/`, `RESULTS.md`, `NOTE_new_exe.md`, `NOTE_zooplankton_from_papers.md`).

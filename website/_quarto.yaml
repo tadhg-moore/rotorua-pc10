@@ -142,6 +142,8 @@ website:
           text: "Alum calibration: stage history"
         - href: rotorua-phyto-investigation.qmd
           text: "Phytoplankton & Zooplankton Investigation"
+        - href: rotorua-calibration-one-stage.qmd
+          text: "One-stage calibration (updated exe)"
     - id: climate
       title: "Climate Change Impacts"
       style: docked
