@@ -203,29 +203,47 @@ Key message: separating alum from biology calibration avoids the alum parameters
 
 ## How well does it reproduce the lake?
 
-<!-- TODO: time series figure, observed vs simulated TP / FRP / chl with alum era shaded. Source: calibration/final, website/calibration-* pages -->
+![](figures/calib_timeseries.png){fig-alt="Observed and simulated surface total phosphorus, filterable reactive phosphorus and chlorophyll-a, 2003 to 2022" width="88%" fig-align="center"}
 
-- Anoxic days: **~236 simulated vs 239 observed** (O member; year-to-year r ≈ 0.74)
-- Bottom DO r ≈ 0.91
-- TP within a few percent of observed; FRP and chl biases are the main residuals
+- Calibrated on 2006–2018, evaluated on **2018–2022 (held out)**
+- TP tracks the long decline after dosing began; chlorophyll-a is simulated at the right level
 - Honest misfit: the 2021–22 TP/FRP rebound is **not** reproduced (suggests event-driven external load or alum-P release)
 
 ::: {.notes}
-Be upfront about the rebound; it motivates the next-steps slide.
+Figure: calibration/all_stage/nzfss_figs.R (member from calibration/all_stage/out_main/best.rds, updated GLM-AED exe).
+Be upfront about the rebound; it motivates the next-steps slide. FRP is over-predicted before about 2007.
+:::
+
+## Annual TP and bottom-water anoxia {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+![](figures/calib_annual_tp.png){fig-alt="Annual mean surface TP, observed and simulated"}
+:::
+::: {.column width="50%"}
+![](figures/calib_anoxia.png){fig-alt="Days per year with bottom oxygen below 2 g per cubic metre, observed and simulated"}
+:::
+::::
+
+- Annual TP: r = 0.58, RMSE 0.009 g P/m³; the post-2016 rise and the 2021–22 rebound are missed
+- Bottom DO r = 0.90; anoxic sampling days **167 simulated vs 240 observed**, with the wet years 2008–2011 under-predicted
+
+::: {.notes}
+Numbers from calibration/all_stage/nzfss_figs.R (printed at the end of the run). The earlier "236 vs 239" was the old-exe O member.
 :::
 
 ## Where does the alum and P go? {.smaller}
 
 :::: {.columns}
 ::: {.column width="55%"}
-<!-- TODO: Sankey or stacked-bar of alum/P fate. Source: website/rotorua-alum-next-steps.qmd (sec-alum-fate), calibration/alum/50_alum_fate.R -->
-![](figures/alum_fate.png){fig-alt="Fate of alum and bound phosphorus"}
+![](figures/alum_fate_P_updated.png){fig-alt="Fate of alum-bound phosphorus: binding, settling, resuspension, burial and outflow"}
 :::
 ::: {.column width="45%"}
 - ~52 t Al yr^-1^ applied, ~12–17 t P yr^-1^ removed
 - ~30 mol Al per mol P in the **streams**, ~5 in the lake, 3.5–5 whole system
 - ~97% of alum-bound P ends buried
 - Most reactive capacity ages out in the water column before reaching the bed
+- New module diagnostics: binding ~10, burial ~22 t P yr^-1^, so the reconstruction does **not** yet close (gap ~10 t P yr^-1^)
 :::
 ::::
 
@@ -241,6 +259,25 @@ Treat absolute settling and burial as a range; module flux diagnostics are not y
 - **Where P is removed**: water column vs sediment-based removal
 - **Inflow conditions**: how flow, temperature and pH change treatment outcomes
 - **Efficiency**: Al applied per unit P removed
+
+## What does the alum do? On versus off {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+![](figures/alum_on_off.png){fig-alt="Annual mean surface TP and chlorophyll-a with alum as dosed and with no alum, against observations"}
+:::
+::: {.column width="45%"}
+- Same calibrated model, alum dose set to zero in every inflow
+- 2007–2022 mean surface TP: **0.017 vs 0.050 g P/m³ (−65%)**
+- Chlorophyll-a: 8.7 vs 10.0 mg/m³ (−13%), with the largest effect in some years
+- Bottom-water anoxia: 167 vs 178 sampling days, a small difference
+- Model-based: the lake was dosed, so the "no alum" run has no observations to check against
+:::
+::::
+
+::: {.notes}
+S0 vs S1 of rotorua-alum-scenarios.qmd, rerun on the one-stage member and the updated exe (calibration/all_stage/nzfss_pairs.R with NZ_NOALUM=1). The anoxia on/off bars are in figures/alum_on_off_anoxia.png if a separate slide is wanted.
+:::
 
 ## Scenario results {.smaller}
 
