@@ -1,0 +1,194 @@
+---
+title: "Transient (Continuous) Lake Runs Under a Changing Climate"
+format: html
+editor: visual
+warning: false
+message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(dplyr)
+library(ggplot2)
+runs_dir <- here::here("calibration", "transient", "runs")
+have_runs <- all(file.exists(file.path(runs_dir, c("daily_none_control.rds",
+                                                   "daily_ACCESS-CM2_ssp126.rds",
+                                                   "daily_ACCESS-CM2_ssp585.rds"))))
+```
+
+[`climate-scenario-workflow.qmd`](climate-scenario-workflow.qmd) builds the meteorological forcing. This page describes how that forcing is turned into **continuous 2015--2099 lake simulations** that carry the lake's memory (sediment P, alum, thermal inertia) through the whole period, instead of three fixed time slices. It records the design decisions, the pipeline, the first test results, and what is still open before the parameter-ensemble runs.
+
+## 1. Why continuous runs, and the design decisions
+
+Fixed-window delta-change runs answer "what does the lake look like in a 2071--2100 climate?". They cannot answer path-dependent questions (a nutrient cut from 2032, alum legacy, sediment flushing), and joining the windows would put steps in the forcing. The continuous runs instead use one uninterrupted simulation per GCM/SSP.
+
+| Decision | Choice | Reason |
+|----|----|----|
+| Run structure | One run per GCM × SSP plus a `control`, single spin-up, no restarts | Sediment, alum and thermal memory carry through |
+| Reporting | Scenario **minus control**, never absolute values | The lake drifts under constant forcing; the control isolates the climate effect |
+| Weather | Shuffled real ERA5 years (identical for every branch), plus year-evolving monthly GCM deltas | Keeps real storm/wind/diurnal structure; the GCM supplies only its change signal |
+| GCM bias correction | None needed | A delta is future minus the same model's reference period, so the model's mean bias cancels. The only bias correction is ERA5 against the buoy |
+| Historical period | Not driven by raw GCM historical weather | A free-running GCM historical run is not the real weather and cannot be validated; its information already enters through the deltas |
+| Weather-seed replication | Optional | Weather is shared across branches, so it cancels in scenario − control |
+
+: Design decisions for the continuous runs.
+
+**What the control is.** The control is the same 2015--2099 run on the same weather sequence with **no climate deltas**, i.e. a stationary baseline climate. Any trend, drift or step it shows comes from the lake itself (spin-up, legacy stores), not from climate. Each scenario is therefore reported as its difference from the control.
+
+**What this design does not do.** Delta-change leaves day-to-day variability unchanged, so storm and heatwave *frequency* does not change. If changing variability is the question, a trend-preserving bias-corrected GCM-direct run (e.g. quantile delta mapping) would be needed as a side test.
+
+## 2. The pipeline
+
+```
+ERA5-Land ──bias-correct (buoy)──▶ era5_corrected_daily_baseline / _hourly
+                                         │
+transient_year_map (seeded shuffle) ─────┤  weather: real ERA5 year per simulated year
+gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by year
+                                         ▼
+              scenario_transient_hourly_met   (one branch per transient_delta_grid row)
+                                         │
+ rotorua_inflow_list_matrix ──build_transient_inflows()──▶ paired inflows
+                                         ▼
+          run_one_transient.R  ──▶  GLM-AED (step-3 calibrated model)
+                                         ▼
+        daily_<run>.rds  +  glm_csv_<run>/{lake.csv, mass_balance.csv}
+```
+
+The meteorology half is documented in section 5 of the [scenario workflow](climate-scenario-workflow.qmd). The new pieces are the inflows and the run driver.
+
+### 2.1 Inflows that follow the weather (`R/transient_inflows.R`)
+
+`build_transient_inflows()` gives each simulated date the inflow of the same calendar day in the ERA5 source year that supplied its weather, so flow and rainfall stay physically paired. Then, when a scenario's deltas are supplied (and not for the control):
+
+-   **Flow** is multiplied by the monthly rainfall ratio (`MET_pprain`) for that year and month. Concentrations are held, so loads scale with flow.
+-   **Stream temperature** is shifted by `temp_damp` (default 0.5) × the monthly air-temperature delta, the same damping used in `calibration/scenarios30`. Streams warm less than air.
+-   **Fixed inflows** (geothermal, wastewater) are not scaled.
+-   **Alum** dose *load* (`ALU_ala` × flow) on Puarenga and Utuhina is replaced by its mean by day of year over 2016-07-01 to 2022-06-30, then divided by the new flow. This avoids a pre-dosing weather year receiving zero alum.
+
+**Known limitations.**
+
+-   The inflow records end 2022-06-30, but 9 of the 95 simulated years take weather from 2022--2025. Those years use a seeded substitute source year with a flow record, so their flow is not paired with that year's weather.
+-   Nutrient concentrations are carried over from the source year, so they reflect *that year's historical loading*, not present-day loading.
+-   Alum dosing after the calibration period is assumed constant at its recent mean (no future dosing policy yet).
+-   No future nutrient-reduction pathway (e.g. an N cut from 2032) is applied; this is a climate-only run.
+
+### 2.2 The run driver (`calibration/transient/run_one_transient.R`)
+
+``` bash
+Rscript calibration/transient/run_one_transient.R <gcm|none> <scenario|control> [start] [stop]
+```
+
+It reads the branch's hourly met from the `scenario_transient_hourly_met` target, builds the paired inflows, drops both into the step-3 calibrated base model (`calibration/step3/aeme_base_2005_alum.rds`, parameters `step3_best`), and runs GLM-AED once with a 540-day spin-up. Defaults are the short 2015-07-01 to 2040-06-30 stability test; the full period is `2015-07-01` to `2099-06-29`.
+
+**Disk use.** The model's `output.nc` is about 11.6 GB for the 84-year run (roughly 380 KB per simulated day) because it stores every variable at every depth. After the run the script saves
+
+-   `daily_<run>.rds`: a daily lake summary (surface and bottom temperature, surface and bottom oxygen, surface chlorophyll-a, phosphorus, FRP, total nitrogen), and
+-   `glm_csv_<run>/lake.csv` and `mass_balance.csv`: lake level and the water balance (about 45 MB),
+
+then **deletes the model folder**. A full run therefore leaves about 50 MB. (An earlier version did not clean up and three simultaneous runs filled the disk.)
+
+**Running more than one at a time.** Each branch writes only to its own folder, so branches can run in parallel, but a branch must never be launched twice: duplicate copies share one folder, corrupt the forcing files and fail with "Day not found".
+
+## 3. First test results (ACCESS-CM2, one parameter set)
+
+Three full-length runs: `control`, `ssp126` and `ssp585`, all with the step-3 best parameters. All values are decadal means.
+
+```{r}
+#| label: results
+#| eval: !expr have_runs
+#| echo: false
+f <- c(control = "none_control", ssp126 = "ACCESS-CM2_ssp126", ssp585 = "ACCESS-CM2_ssp585")
+d <- bind_rows(lapply(names(f), function(n) {
+  r <- readRDS(file.path(runs_dir, paste0("daily_", f[n], ".rds"))); r$run <- n; r
+})) |>
+  mutate(decade = 10 * (as.integer(format(Date, "%Y")) %/% 10))
+
+vars <- c(temp_surf = "Surface temperature (°C)", temp_bot = "Bottom temperature (°C)",
+          oxy_bot = "Bottom oxygen (mg/L)", chl_surf = "Surface chl-a (mg/m³)",
+          tp_surf = "Surface TP (mg/L)")
+
+dec <- d |>
+  group_by(run, decade) |>
+  summarise(across(all_of(names(vars)), \(x) mean(x, na.rm = TRUE)), .groups = "drop")
+
+diff <- dec |>
+  tidyr::pivot_longer(all_of(names(vars)), names_to = "var", values_to = "value") |>
+  tidyr::pivot_wider(names_from = run, values_from = value) |>
+  mutate(ssp126 = ssp126 - control, ssp585 = ssp585 - control) |>
+  tidyr::pivot_longer(c(ssp126, ssp585), names_to = "scenario", values_to = "diff") |>
+  mutate(var = factor(vars[var], unname(vars)))
+
+ggplot(diff, aes(decade, diff, colour = scenario)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line(linewidth = 0.9) + geom_point() +
+  facet_wrap(~var, scales = "free_y") +
+  labs(x = NULL, y = "Scenario minus control (decadal mean)", colour = NULL) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r}
+#| label: results-table
+#| eval: !expr have_runs
+#| echo: false
+diff |>
+  filter(var %in% vars[c("temp_surf", "oxy_bot")], decade %in% c(2020, 2040, 2060, 2080, 2090)) |>
+  mutate(diff = round(diff, 2)) |>
+  tidyr::pivot_wider(names_from = c(var, scenario), values_from = diff) |>
+  knitr::kable(caption = "Scenario minus control by decade.")
+```
+
+### Stratified and anoxic days
+
+Each run also writes `annual_<run>.rds`: per water year (July--June), the number of **stratified days** (surface 0--2 m minus bottom ≥17 m temperature ≥ 1 °C, as in `scenarios30`), **anoxic days** (bottom ≥17 m mean oxygen \< 2 mg/L, as in `calibration/anoxia`), and the longest unbroken spell of each (`R/transient_metrics.R`). The daily files carry the same flags (`strat`, `anoxic`, `wy`).
+
+```{r}
+#| label: strat-anoxia
+#| eval: !expr have_runs
+#| echo: false
+ann <- bind_rows(lapply(names(f), function(n) {
+  a <- readRDS(file.path(runs_dir, paste0("annual_", f[n], ".rds"))); a$run <- n; a
+})) |>
+  mutate(decade = 10 * ((wy - 1) %/% 10)) |>
+  group_by(run, decade) |>
+  summarise(`stratified days` = mean(strat_days), `anoxic days` = mean(anoxic_days),
+            `longest anoxic spell` = mean(longest_anoxic_spell), .groups = "drop")
+ann |>
+  tidyr::pivot_wider(names_from = run, values_from = c(`stratified days`, `anoxic days`),
+                     names_glue = "{.value} ({run})") |>
+  select(decade, ends_with("(control)"), ends_with("(ssp126)"), ends_with("(ssp585)")) |>
+  knitr::kable(digits = 1, caption = "Mean stratified and anoxic days per water year, by decade.")
+```
+
+```{r}
+#| label: no-results
+#| eval: !expr (!have_runs)
+#| echo: false
+cat("The run summaries (`calibration/transient/runs/daily_*.rds`) are not present in this build, so the figure and table are omitted. Re-run `run_one_transient.R` for the three branches to regenerate them.")
+```
+
+What the first runs show:
+
+-   **Control stays flat.** Decadal surface temperature is 14.7--15.2 °C and bottom oxygen about 9 mg/L with no trend, so the differences are climate signal and not drift.
+-   **Temperature.** ssp126 warms the surface by about 1.5 °C and plateaus after the 2050s; ssp585 keeps warming to about +4.3 °C by the 2090s. Bottom water follows the surface about 0.3 °C behind.
+-   **Oxygen.** Bottom oxygen falls by about 0.5 mg/L (ssp126) and about 1.7 mg/L (ssp585) by the 2090s.
+-   **Water balance and level.** Lake level stays within 21.2--22.2 m in all three runs, and the water-balance residual is 0.08--0.1% of throughput (a constant bookkeeping offset, not a climate effect; its source, probably ice/snow volume or the runoff term, is not yet identified).
+-   **Chlorophyll-a and phosphorus rise in the scenarios**, but treat this as provisional. The control itself swings between decades (surface chl-a about 7.5 mg/m³ in the 2040s and 4.5 in the 2050s) because of weather sampling and carried-over source-year nutrient concentrations, and only one parameter set has been run.
+
+## 4. What is still open
+
+1.  **Parameter uncertainty (next).** Run a thinned subset (about 10--20 members) of the calibration posterior ensemble for the same three branches, **paired by member** (the same member for control and scenario), and report scenario − control within each member. This separates uncertainty in the lake's absolute state from uncertainty in its *climate response*, and shows whether the chl-a and phosphorus changes are robust. One GCM is enough for this comparison; compare the resulting spread with the GCM and SSP spread.
+2.  **More GCMs.** The three runs use ACCESS-CM2 only (the warmest model). `NorESM2-MM` sits at the cool end; both are needed to bracket the GCM spread. Extending to all 28 branches is feasible now that each run leaves about 50 MB.
+3. **Forcing beyond climate.** Future nutrient loads (including an N-reduction pathway), a defined post-calibration alum policy, and lake-level/outflow rules.
+4.  **Optional hindcast.** A 1960-to-present run on real bias-corrected ERA5 (no deltas), followed by the transient period with deltas measured against a recent-observation baseline, would give a validatable historical period. It needs inflows, loads and alum back to 1960.
+5.  **Variability change.** Delta-change keeps variability fixed; a bias-corrected GCM-direct side test is the route if storm or heatwave frequency matters.
+
+## 5. Files
+
+| File | Role |
+|-----------------------------------|-------------------------------------|
+| `R/scenario_climate_workflow.R` | Transient weather and delta builders |
+| `R/transient_inflows.R` | `build_transient_inflows()`: weather-paired, climate-scaled inflows |
+| `calibration/transient/run_one_transient.R` | One-branch driver; saves summaries and deletes the model folder |
+| `calibration/transient/runs/daily_<run>.rds` | Daily lake summary per run |
+| `calibration/transient/runs/glm_csv_<run>/` | `lake.csv` and `mass_balance.csv` per run |
