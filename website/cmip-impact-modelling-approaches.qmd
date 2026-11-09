@@ -1,0 +1,342 @@
+---
+title: "Using CMIP GCM data in hydrological and in-lake impact studies"
+subtitle: "Approaches, issues and alternatives for a single-site study"
+date: 2026-11-09
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+    embed-resources: true
+---
+
+# Purpose and scope
+
+This document summarises how impact-model studies use GCM output from CMIP, with emphasis on **hydrological** and **in-lake** modelling. It then considers whether an ISIMIP-style pipeline is the best choice for a **single-site** study, what the alternatives are, and (in @sec-ours) **the approach we have adopted for Lake Rotorua** and how it answers the issues raised in the literature.
+
+::: {.callout-note}
+## Provenance
+The literature sections were compiled from searches in November 2026. Citations were checked against abstracts, publisher pages and preprints, not full texts. Verify details (page numbers, authorship, exact claims) before citing. Items I did not open directly are listed in @sec-verify.
+
+@sec-ours is not literature: it describes this project's own pipeline and results. The results there are preliminary (one GCM, one parameter set unless stated) and will be superseded by the parameter-ensemble runs. Detail and diagnostics are on the [climate-scenario workflow](climate-scenario-workflow.qmd) and [transient lake runs](transient-lake-runs.qmd) pages.
+:::
+
+# Pipelines at a glance
+
+| Approach | How CMIP data enter the impact model | Typical use | Main caveats |
+|---|---|---|---|
+| **ISIMIP-style** (bias-adjust + downscale, then run) | Daily GCM output adjusted to a reference dataset on a 0.5° grid, then used as direct forcing | Multi-model intercomparisons across sectors | Grid-scale reference, small GCM sample, bias-correction assumptions |
+| **Pre-downscaled public products** (NEX-GDDP-CMIP6, LOCA2) | Statistically downscaled daily fields used as forcing | Regional/national assessments | Reference data and method fixed by provider; products can differ in extremes |
+| **Delta change** | GCM *change signal* applied to observed baseline series | Catchment studies, local records | Mean-based factors can miss changes in variability |
+| **Trend-preserving quantile delta mapping (GCM-direct)** | The GCM's own daily series, mapped onto a corrected local baseline while keeping its change at each quantile (Cannon et al., 2015) | Where changes in variability and extremes matter | The GCM's daily rain, wind and extremes are its least reliable output; its weather sequence is not the real one |
+| **Local bias adjustment** | Raw GCM/RCM adjusted to station data | Site studies with long local records | Non-stationarity of biases; needs good local data |
+| **Regional/dynamical downscaling** | RCM (optionally coupled to a lake model) driven by GCM | Where local processes matter | Computationally heavy; RCM biases remain |
+| **Emulators / pattern scaling / warming levels** | GCM-derived patterns scaled by global temperature | Rapid scenario exploration | Linearity assumptions, weaker at high warming |
+| **Scenario-neutral (bottom-up)** | GCMs used only to contextualise a sensitivity surface | Vulnerability screening, planning | Temporal structure under-represented |
+
+# The ISIMIP-style approach
+
+## What it is
+
+- **Lange (2019)** introduced ISIMIP3BASD, a trend-preserving bias-adjustment and statistical-downscaling method for ISIMIP phase 3 that preserves trends across quantiles and separates bias adjustment from downscaling.
+- **Frieler et al. (2017)** describe the ISIMIP2b protocol, designed for consistent impact projections from many sectoral models, with pre-industrial and historical runs to separate historical warming from other drivers.
+- **ISIMIP3b** supplies bias-corrected CMIP6 forcing for pre-industrial, historical, SSP1-2.6, SSP3-7.0 and SSP5-8.5, adjusted towards the W5E5 observational dataset. Five primary GCMs (GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, MRI-ESM2-0, UKESM1-0-LL) were chosen on variable availability, historical performance and coverage of CMIP6 climate sensitivity.
+- A **secondary** ISIMIP3b dataset adds further bias-adjusted GCMs (CNRM-CM6-1, CNRM-ESM2-1, CanESM5, EC-Earth3, MIROC6, plus four more for a reduced variable set), which is useful for widening the ensemble.
+- **Bechtold et al. (2026)** temporally disaggregate ISIMIP3 daily data to hourly, because many processes respond non-linearly to intra-day variability.
+
+## Lake sector
+
+**Golub et al. (2022)** describe the ISIMIP Lake Sector protocol: lake models driven by gridded observations and bias-corrected ESM output, with uncertainty from GCMs, lake model structure and lake characteristics. In phase 2, 11 lake models simulated 62 well-studied lakes with calibration data, plus uncalibrated runs for about 17,500 lakes.
+
+**Ayala et al. (2020)** tested the local-simulation strategy on Lake Erken using GOTM:
+
+- Changes in thermal indices were very similar with daily or synthetic hourly forcing, so daily ISIMIP data can be sufficient to simulate *change*.
+- Hourly input still improved the model's ability to reproduce observed behaviour, so there is a trade-off between simulating change and simulating the present well.
+
+## Hydrology and other sectors (examples)
+
+- **Krysanova et al. (2017)** and **Hattermann et al. (2017)**: nine regional hydrological models for 12 large basins, forced by five bias-corrected GCMs under four RCPs. Uncertainty in annual mean flow was apportioned 57% GCMs, 27% RCPs and 16% hydrological models.
+- **Jägermeyr et al. (2021)**: about 240 climate-crop model realisations per crop from 12 crop models and five GCM forcings.
+- **Müller et al. (2021)**: statistical crop-model emulators to explore a larger ensemble of CMIP5 and CMIP6 projections; climate and crop models contributed about equally to uncertainty, and five GCMs were judged too few to represent the underlying uncertainty.
+
+# Potential issues for a single-site study
+
+## Grid scale versus site scale
+
+ISIMIP forcing is bias-corrected on a 0.5° grid. Desgué-Itier et al. (2023) note that lakes are often smaller than the meteorological grid cell and that wind can vary strongly at local scales; wind matters for mixing and stratification. Råman Vinnå et al. (2021) note that RCM grid-cell averages misrepresent altitude-dependent forcing in mountain regions.
+
+## The reference dataset becomes the "truth"
+
+ISIMIP3b adjusts towards W5E5 (reanalysis-based), not a local station.
+
+- Tarek et al. (2021): reference datasets contributed uncertainty equal to or larger than GCM uncertainty over most of the catchments studied.
+- Probst & Mauser (2022), Danube: bias correction of ERA5 precipitation was essential, and regional climatologies outperformed global ones in the Alps.
+- Laiti et al. (2018) propose a framework (HyCoT) to test the *hydrological coherence* of gridded datasets.
+- A Himalayan study (Cranfield, 2015) found baseline data choices significantly condition the magnitude of simulated impacts.
+
+## Bias correction is not a neutral step
+
+- Maraun et al. (2017): bias correction cannot overcome major model errors, a typical cross-validation cannot detect its improper use, and it can produce implausible climate change signals.
+- Trend preservation keeps the GCM's own change signal, so GCM credibility problems carry through.
+- Teutschbein & Seibert (2013) offer a practical test: a **differential split-sample test** (e.g. cold vs warm, dry vs wet years) evaluates correction methods under conditions different from calibration.
+- Liersch et al. (2018), Upper Blue Nile: bias-corrected simulations tended to overemphasise projected change signals, and bias correction often worsened high- and low-flow representation.
+- The ISIMIP3b fact sheet mentions an option for multivariate bias adjustment; check whether it suits your model's sensitivities.
+
+## Small GCM sample and "hot models"
+
+- Five primary GCMs may under-sample structural uncertainty (Müller et al., 2021).
+- Rahimpour Asenjan et al. (2023) show that including hot models (ECS above about 4.1 °C) risks overestimating hydrological impacts; a USGS report (OFR 2024-1008) reviews ECS/TCR-based screening and weighting; Massoud et al. (2023) propose Bayesian model averaging instead of culling.
+- Counter-view (arXiv:2404.11939): filtering solely on climate sensitivity is not justified, and removing the hottest of the five ISIMIP models would discard the upper half of the low-to-medium CMIP6 spread.
+- Ruane et al. (2024): for crops, higher CO~2~ benefits from hot models can skew ensemble results.
+
+## Where the uncertainty actually sits
+
+- Wynne et al. (2023), Lake Sunapee (five 1-D lake models, four GCMs): surface metrics were driven mainly by climate-model choice, deeper-water metrics by lake-model choice.
+- Feldbauer et al. (2022), German reservoir: model-structure uncertainty dominated.
+
+Implication: a single lake model fed by ISIMIP data may understate uncertainty for bottom-water and stratification metrics.
+
+# Alternatives and why you might choose them
+
+::: {.panel-tabset}
+
+## Local bias adjustment
+
+Adjust raw CMIP data against your own station record.
+
+- Teutschbein & Seibert found all correction approaches improved on uncorrected RCM data, and recommend distribution mapping over delta change or linear transformation.
+- Risk: non-stationary biases; test with a differential split-sample design.
+- Needs a long, quality-controlled local record, including wind and radiation for lake models.
+
+## Delta change
+
+Apply GCM change factors to observed baseline series.
+
+- Preserves the observed variability and local character of the baseline.
+- Evidence is mixed: LaFond et al. (2014) found more realistic flood risk with delta change, whereas in a China irrigation study delta change missed changes in precipitation variability and understated extremes; Eisner et al. (2012) and Rasmussen et al. (2012) found methods give distinctly different results.
+- Absolute versus relative factors can matter (Das, 2022).
+
+## Reduced forcing
+
+Desgué-Itier et al. (2023) forced lake models with long-term trends in shortwave radiation and air temperature only, supplying realistic seasonal cycles for other variables (e.g. wind), because downscaled wind is often unreliable.
+
+- Pragmatic if wind projections are distrusted.
+- Excludes wind/cloud change as a driver, which ISIMIP-style forcing can examine.
+
+## Regional or local downscaling
+
+- Råman Vinnå et al. (2021) used locally downscaled RCM projections to force Simstrat for 29 Swiss lakes along an altitude gradient.
+- Xue et al. (2022): two-way coupling of an RCM with a 3-D lake model (Great Lakes) improved simulated lake temperature and ice, because many RCMs ignore lake-atmosphere interaction or use only a 1-D lake column.
+- Costly for one site, but a useful benchmark if a national or regional downscaled product exists.
+
+## Scenario-neutral
+
+Perturb temperature, precipitation (and other drivers) systematically and map the response (Prudhomme et al., 2010).
+
+- New GCM projections can be mapped onto the surface without re-running impacts.
+- Limitation: perturbation leaves the temporal structure of the input unchanged; best used as a screening tool, followed by detailed analysis of selected futures (Chan et al., 2022).
+- Storyline approaches (Chan et al., 2022) complement it.
+
+## Emulators and warming levels
+
+- Mathison et al. (2025, PRIME): simple climate model plus scaled monthly patterns from many CMIP6 ESMs to drive an impact model.
+- Evin et al. (2024): combine time sampling and pattern scaling to assess CMIP6 uncertainty at global warming levels.
+- Pattern scaling is weaker at high warming levels and does not capture changes in variability well.
+
+:::
+
+# Wider context: other ways CMIP data are used
+
+- **Pre-downscaled products.** NEX-GDDP-CMIP6 (Thrasher et al., 2022) uses a daily BCSD variant and covers 35 GCMs and four SSPs; LOCA2 (Pierce et al., 2023) gives higher extreme precipitation than LOCA-CMIP5. The reference data and method are fixed by the provider.
+- **GCM selection.** EURO-CORDEX guidance (2023) covers selecting GCMs for dynamical downscaling; Snyder et al. (2024, ESD) address uncertainty-informed subset selection.
+- **Downscaling can change ensemble members.** One study (CMIP5, 29 GCMs) found that downscaling typically preserves the ensemble's change distribution but individual models can differ dramatically, so subsets should be chosen with downscaling in mind.
+
+# Suggested hybrid design for a single site {#sec-hybrid}
+
+This was the design proposed from the literature before we built anything. @sec-ours records what we actually did and where it departs from this.
+
+```{mermaid}
+flowchart TD
+  A[Select GCMs<br/>ISIMIP primary + secondary] --> B1[Arm 1: ISIMIP3b forcing]
+  A --> B2[Arm 2: raw CMIP adjusted to local station data<br/>or delta change]
+  B1 --> C[Evaluate against observations<br/>incl. differential split-sample]
+  B2 --> C
+  C --> D[Run impact models<br/>hydrology and/or lake model; more than one if possible]
+  D --> E[Compare arms and partition uncertainty<br/>GCM, scenario, forcing pipeline, impact model]
+```
+
+1. Use ISIMIP-forced runs as the **comparable baseline**.
+2. Run a **second arm** using local bias adjustment or delta change.
+3. Evaluate both arms against observations, ideally with a **differential split-sample test**.
+4. Use **more than one impact model** where feasible, since model structure may dominate deeper-water lake metrics.
+5. Treat the **disagreement between arms** as information about how much conclusions depend on the forcing pipeline.
+
+# Our approach for Lake Rotorua {#sec-ours}
+
+## Summary
+
+We chose **delta change on locally bias-corrected weather as the primary method**, run as **continuous 2015--2099 simulations**, with **GCM-direct quantile delta mapping as a side test** of what delta change cannot represent. We did not build an ISIMIP arm. This is a judgement: there are no future observations against which either method can be tested.
+
+```{mermaid}
+flowchart TD
+  E[ERA5-Land hourly] --> BC[Bias-correct against the lake buoy<br/>metscale]
+  BC --> BASE[Corrected baseline<br/>daily and hourly]
+  G[CMIP6 daily GCM point series<br/>7 GCMs, SSP1-2.6 to SSP5-8.5] --> D[Monthly deltas vs 1995-2014<br/>30-year sliding window, evolving every year]
+  BASE --> W[Shuffled real ERA5 years<br/>same weather for every branch]
+  W --> M[Delta-changed weather<br/>disaggregated to hourly]
+  D --> M
+  M --> I[Weather-paired inflows<br/>flow scaled by rain delta, stream temperature damped]
+  M --> L[GLM-AED lake model<br/>one uninterrupted run per branch]
+  I --> L
+  BASE --> C[Control: same weather, no deltas]
+  C --> L
+  L --> R[Scenario minus control<br/>decadal and 30-year means,<br/>stratified and anoxic days]
+  G --> Q[Side test: GCM's own daily series<br/>quantile delta mapping onto the baseline]
+  BASE --> Q
+  Q --> L
+```
+
+## How it answers the issues raised above
+
+| Issue from the literature | Our response | Status |
+|---|---|---|
+| Grid scale versus site scale | ERA5-Land is bias-corrected to the **buoy on the lake**, so wind, radiation and temperature are corrected at the site, not on a 0.5° grid | Done |
+| The reference dataset becomes the "truth" | The reference is local observations, with wind kept as measured (no scaling) and compensation placed in the model's mixing and heat-flux coefficients | Done |
+| Bias correction is not neutral | The only bias correction is ERA5 against the buoy. The GCM is **not** bias-corrected in delta change, because a delta is future minus the same model's reference period and its mean bias cancels | Done; a differential split-sample test of the ERA5 correction has not been run |
+| Small GCM sample and hot models | 7 GCMs and 4 SSPs, giving 27 scenario branches plus a control (NZESM has no SSP5-8.5) from a CMIP6 set that includes both warm (ACCESS-CM2) and cool (NorESM2-MM) models. No weighting or screening applied yet | Only ACCESS-CM2 run so far |
+| Variability under delta change | Variability is unchanged by design, so storm and heatwave **frequency** is fixed. The GCM-direct side test measures how much this matters | Side test done for one GCM and SSP |
+| Where the uncertainty sits | A posterior ensemble of lake-parameter sets is run for the same branches, so parameter uncertainty can be compared with GCM, SSP and method uncertainty | Running |
+| Single lake model | Only GLM-AED is used. The Simstrat set-up in the repository has not been run for climate scenarios | Not addressed |
+
+## Design decisions
+
+- **Continuous runs, not time slices.** The lake carries memory (sediment phosphorus, alum, thermal inertia), so one uninterrupted simulation per GCM and SSP is used, with a single spin-up and no restarts. The deltas evolve year by year from a sliding 30-year window along the GCM's own historical-to-scenario trajectory, against a fixed 1995--2014 reference.
+- **A control run.** The control is the same run on the same weather with no deltas. The lake drifts under constant forcing, so every result is reported as **scenario minus control**, never as absolute values.
+- **Shared real weather.** Years of ERA5 weather are shuffled with a fixed seed and the same sequence is used in every branch, so weather noise largely cancels in scenario minus control and real storm, wind and diurnal structure is kept.
+- **Weather-paired inflows.** Each day's inflow comes from the same ERA5 source year as its weather, with flow scaled by the monthly rainfall delta and stream temperature shifted by half the air-temperature delta (an assumed damping, not fitted). Alum dosing is held at its recent mean.
+- **Outputs.** Daily surface and bottom temperature, bottom oxygen, surface chlorophyll-a and nutrients, lake level and water balance, plus **stratified days** (surface minus bottom temperature of at least 1 °C) and **anoxic days** (bottom oxygen below 2 mg/L) per water year.
+
+## The GCM-direct side test
+
+The side test uses the GCM's own daily series, mapped onto the corrected baseline with **trend-preserving quantile delta mapping** (Cannon et al., 2015), so the model's change at each quantile is kept. We use `metscale::qdm_gcm_met()`, in which the quantile of each day is read from the GCM's own sliding 30-year window. This is **not** what `method = "qdm"` in `metscale::fit_met_bias_correction()` does: that fits a training-period distribution once, and days beyond its range are clamped, which inflated temperature and rainfall variability when we tried it on SSP5-8.5 (daily temperature variability up 33% against 7% in the raw GCM). Inflows in the side test are still the delta-transient ones, so only the meteorology differs.
+
+## Preliminary results (ACCESS-CM2, SSP5-8.5, one parameter set)
+
+Scenario minus control, 30-year means:
+
+| Window | Method | Surface temp (°C) | Bottom O~2~ (mg/L) | Stratified days / yr | Anoxic days / yr |
+|---|---|---|---|---|---|
+| 2016--2045 | Delta change | +0.93 | −0.41 | +11.8 | +2.4 |
+| 2016--2045 | GCM-direct | +0.85 | −0.35 | +8.4 | +1.7 |
+| 2046--2075 | Delta change | +2.37 | −1.03 | +28.9 | +8.6 |
+| 2046--2075 | GCM-direct | +2.27 | −0.93 | +20.6 | +6.4 |
+| 2070--2099 | Delta change | +3.80 | −1.58 | +44.6 | +14.3 |
+| 2070--2099 | GCM-direct | +3.86 | −1.56 | +42.2 | +10.7 |
+
+- The two methods **agree on the main signal**: surface temperature and bottom oxygen differ by 0.1 °C and 0.1 mg/L or less in each 30-year window.
+- They differ on the **mixing indicators**. GCM-direct gives about 25% fewer anoxic days in the last two windows and fewer stratified days mid-century. Single decades differ by up to 9 anoxic days a year, so decadal counts are noisy and 30-year means are the more defensible summary.
+- This difference is **structural uncertainty** between two defensible methods and is best reported as a range, not applied as a correction.
+- The control is flat (decadal surface temperature 14.7--15.2 °C, bottom oxygen about 9 mg/L), so the changes are climate signal and not drift.
+
+## Why delta change is the primary method
+
+- **Calibration regime.** The lake model was calibrated and checked on real, bias-corrected ERA5 and buoy weather. Delta change keeps that weather's structure and moves only its monthly means.
+- **Hydrology.** Flow and loads stay physically paired with the weather that produced them. In the GCM-direct test the GCM's own rain does not reach the streams, so it cannot yet answer a nutrient-loading question.
+- **Reliability of GCM output.** Daily GCM rain, wind and extremes are its least reliable output, and quantile mapping corrects the distribution but not the physics. The change signal is the part of a GCM best trusted.
+- **Cost and clarity.** It is cheap enough to run across all 7 GCMs and simple to explain.
+
+## Departures from the proposed hybrid design
+
+- **No ISIMIP arm.** ISIMIP3b adjusts to a 0.5° reanalysis-based reference (W5E5) at daily resolution, whereas we have a local buoy record. We did not judge a second, coarser pipeline worth building, so we cannot quantify how much conclusions depend on the choice of forcing pipeline against ISIMIP. The GCM-direct side test is the second arm instead, and it varies the method of using the GCM, not the reference dataset.
+- **No differential split-sample test yet.** Teutschbein and Seibert's test of the ERA5-to-buoy correction (for example cold versus warm years) has not been done.
+- **One impact model.** Model-structure uncertainty is not sampled. The parameter ensemble covers parameter uncertainty within GLM-AED only.
+- **Climate only.** No future nutrient-reduction pathway or alum policy is applied.
+
+## Still to do
+
+1. **Parameter ensemble (running).** Posterior members run for the control, SSP1-2.6 and SSP5-8.5 of ACCESS-CM2, paired by member, reporting scenario minus control within each member and the spread across members.
+2. **More GCMs.** NorESM2-MM at the cool end, to bracket the GCM spread, and then the remaining branches. Consider the hot-model literature (Rahimpour Asenjan et al., 2023; Massoud et al., 2023) before weighting or culling.
+3. **Route the GCM's own rain into stream flow** so the GCM-direct test also covers hydrology, which needs a simple rainfall-runoff relation.
+4. **Run the GCM-direct side test for two or three GCMs** and report the stratification and anoxia range it implies.
+5. **Differential split-sample test** of the ERA5-to-buoy correction.
+
+# Open questions and items to verify {#sec-verify}
+
+- How well does ISIMIP3b wind (and radiation) perform against station data for lake applications? Not checked directly.
+- Foundational papers that appear in citation lists but were **not** opened: Warszawski et al. (2014), Hempel et al. (2013), Piani et al. (2010), Cannon et al. (2015, 2018), Rosenzweig et al. (2014), Beusch et al. (2020; MESMER), Hausfather et al. (2022; hot models).
+- Dynamical downscaling (CORDEX) is only touched on.
+- Is the catchment-lake system modelled jointly? This changes which forcing variables matter most. In our set-up the catchment is not modelled: inflows are historical records scaled by the monthly rainfall delta, with concentrations carried over from the source year. A rainfall-runoff or loading model would be needed for the GCM-direct test and for future nutrient pathways.
+- Our description of Cannon et al. (2015) is taken from the `metscale` documentation and implementation, not from the paper itself.
+
+# References
+
+Ayala, A. I., Moras, S., & Pierson, D. C. (2020). Simulations of future changes in thermal structure of Lake Erken: proof of concept for ISIMIP2b lake sector local simulation strategy. *Hydrology and Earth System Sciences*, 24, 3311.
+
+Bechtold, M., Poschlod, B., Otto, C., Volkholz, J., Büchner, M., & Zabel, F. (2026). A global hourly ISIMIP3 climate forcing dataset for impact modeling. *Earth System Science Data*, 18, 6637.
+
+Cannon, A. J., Sobie, S. R., & Murdock, T. Q. (2015). Bias correction of GCM precipitation by quantile mapping: how well do methods preserve changes in quantiles and extremes? *Journal of Climate*, 28, 6938–6959. (Citation as given in the `metscale` documentation; paper not opened.)
+
+Chan, W., et al. (2022). *Hydrology and Earth System Sciences*, 26, 1755. (Bottom-up/storyline drought assessment; check full title and author list.)
+
+Das, A. (2022). The impact of a bias-correction approach (delta change) applied directly to hydrological model output when modelling the severity of ice jam flooding under future climate scenarios. *Climatic Change*, 172(1).
+
+Desgué-Itier, O., et al. (2023). Past and future climate change effects on the thermal regime and oxygen solubility of four peri-alpine lakes. *Hydrology and Earth System Sciences*, 27, 837.
+
+Eisner, S., Voss, F., & Kynast, E. (2012). Statistical bias correction of global climate projections – consequences for large scale modeling of flood flows. *Advances in Geosciences*, 31, 75–82. doi:10.5194/adgeo-31-75-2012
+
+Evin, G., Ribes, A., & Corre, L. (2024). Assessing CMIP6 uncertainties at global warming levels. *Climate Dynamics*. doi:10.1007/s00382-024-07323-x
+
+Feldbauer, J., et al. (2022). Ensemble of models shows coherent response of a reservoir's stratification and ice cover to climate warming. *Aquatic Sciences*, 84, 50.
+
+Frieler, K., et al. (2017). Assessing the impacts of 1.5 °C global warming – simulation protocol of the Inter-Sectoral Impact Model Intercomparison Project (ISIMIP2b). *Geoscientific Model Development*, 10, 4321–4345. doi:10.5194/gmd-10-4321-2017
+
+Golub, M., et al. (2022). A framework for ensemble modelling of climate change impacts on lakes worldwide: the ISIMIP Lake Sector. *Geoscientific Model Development*, 15, 4597–4623. doi:10.5194/gmd-15-4597-2022
+
+Hattermann, F. F., et al. (2017). Cross-scale intercomparison of climate change impacts simulated by regional and global hydrological models in eleven large river basins. *Climatic Change*, 141, 561–576. (Title and pages from memory; verify.)
+
+Jägermeyr, J., et al. (2021). Climate impacts on global agriculture emerge earlier in new generation of climate and crop models. *Nature Food*, 2, 873–885. doi:10.1038/s43016-021-00400-y
+
+Krysanova, V., et al. (2017). Intercomparison of regional-scale hydrological models and climate change impacts projected for 12 large river basins worldwide—a synthesis. *Environmental Research Letters*, 12, 105002. doi:10.1088/1748-9326/aa8359
+
+LaFond, K. M., Griffis, V. W., & Spellman, P. (2014). Forcing hydrologic models with GCM output: bias correction vs. the "delta change" method. *World Environmental and Water Resources Congress 2014*, ASCE, 2146–2155. doi:10.1061/9780784413548.214
+
+Laiti, L., et al. (2018). Water Resources Research. (HyCoT framework for hydrological coherence of gridded datasets; verify full citation.)
+
+Lange, S. (2019). Trend-preserving bias adjustment and statistical downscaling with ISIMIP3BASD (v1.0). *Geoscientific Model Development*, 12, 3055–3070. doi:10.5194/gmd-12-3055-2019
+
+Liersch, S., et al. (2018). Are we using the right fuel to drive hydrological models? A climate impact study in the Upper Blue Nile. *Hydrology and Earth System Sciences*.
+
+Maraun, D., et al. (2017). Towards process-informed bias correction of climate change simulations. *Nature Climate Change*, 7, 764–773. doi:10.1038/nclimate3418
+
+Massoud, E. C., et al. (2023). Bayesian model averaging for the "hot model" problem. *Communications Earth & Environment*. doi:10.1038/s43247-023-01009-8 (verify title.)
+
+Mathison, C., et al. (2025). A rapid-application emissions-to-impacts tool for scenario assessment: Probabilistic Regional Impacts from Model patterns and Emissions (PRIME). *Geoscientific Model Development*, 18, 1785.
+
+Müller, C., et al. (2021). Exploring uncertainties in global crop yield projections in a large ensemble of crop models and CMIP5 and CMIP6 climate scenarios. *Environmental Research Letters*, 16, 034040. doi:10.1088/1748-9326/abd8fc
+
+Pierce, D. W., Cayan, D. R., Feldman, D. R., & Risser, M. D. (2023). Future increases in North American extreme precipitation in CMIP6 downscaled with LOCA. *Journal of Hydrometeorology*. doi:10.1175/JHM-D-22-0194.1
+
+Probst, E., & Mauser, W. (2022). Evaluation of ERA5 and WFDE5 forcing data for hydrological modelling and the impact of bias correction with regional climatologies: a case study in the Danube River Basin. *Journal of Hydrology: Regional Studies*.
+
+Prudhomme, C., Wilby, R. L., Crooks, S., Kay, A. L., & Reynard, N. S. (2010). Scenario-neutral approach to climate change impact studies: application to flood risk. *Journal of Hydrology*, 390(3–4), 198–209.
+
+Råman Vinnå, L., Medhaug, I., Schmid, M., & Bouffard, D. (2021). The vulnerability of lakes to climate change along an altitudinal gradient. *Communications Earth & Environment*, 2, 35. doi:10.1038/s43247-021-00106-w
+
+Rahimpour Asenjan, M., et al. (2023). Understanding the influence of "hot" models in climate impact studies: a hydrological perspective. *Hydrology and Earth System Sciences*, 27, 4355–4367. doi:10.5194/hess-27-4355-2023
+
+Rasmussen, J., Sonnenborg, T. O., Stisen, S., Seaby, L. P., Christensen, B. S. B., & Hinsby, K. (2012). Climate change effects on irrigation demands and minimum stream discharge: impact of bias-correction method. *Hydrology and Earth System Sciences*, 16, 4675.
+
+Ruane, A. C., Phillips, M., Jägermeyr, J., & Müller, C. (2024). Non-linear climate change impacts on crop yields may mislead stakeholders. *Earth's Future*. doi:10.1029/2023EF003842
+
+Tarek, M., Brissette, F., & Arsenault, R. (2021). Uncertainty of gridded precipitation and temperature reference datasets in climate change impact studies. *Hydrology and Earth System Sciences*, 25, 3331.
+
+Teutschbein, C., & Seibert, J. (2013). Is bias correction of regional climate model (RCM) simulations possible for non-stationary conditions? *Hydrology and Earth System Sciences*, 17, 5061.
+
+Thrasher, B., et al. (2022). NASA Global Daily Downscaled Projections, CMIP6. *Scientific Data*, 9. doi:10.1038/s41597-022-01393-4
+
+Wynne, J. H., Woelmer, W. M., et al. (2023). Uncertainty in projections of future lake thermal dynamics is differentially driven by lake and global climate models. *PeerJ*, 11. doi:10.7717/peerj.15445
+
+Xue, P., et al. (2022). Climate projections over the Great Lakes region: using two-way coupling of a regional climate model with a 3-D lake model. *Geoscientific Model Development*, 15, 4425.
+
+Other sources referred to: ISIMIP3b bias-adjustment fact sheet (Lange, 2021); ISIMIP3b secondary bias-adjusted input data (Lange et al., 2026, ISIMIP Repository); USGS Open-File Report 2024-1008 (hot-model approaches); EURO-CORDEX CMIP6 GCM selection guidance (Zenodo, 2023); Snyder et al. (2024), *Earth System Dynamics*, 15, 1301; arXiv:2404.11939.

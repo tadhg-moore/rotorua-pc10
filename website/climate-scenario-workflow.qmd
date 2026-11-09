@@ -259,6 +259,14 @@ For long-term nutrient-loading questions, use `scenario_transient_hourly_met`, o
 -   **Alum dosing** after the calibration period needs a defined assumption.
 -   **Lake level / outflow** handling over 95 years should be checked in a short run first.
 
+**Design choices for continuous runs:**
+
+-   **One uninterrupted run per GCM/SSP plus `control`**, with a single spin-up and no restarts, so sediment, alum and thermal memory carry through the whole period. Report each scenario as *difference from `control`* (same weather, no deltas): the lake drifts even under constant forcing, and the control isolates the climate effect from that drift.
+-   **No GCM bias correction is needed.** A delta is future minus the same model's reference period, so the model's mean bias cancels; the only bias correction is ERA5 against the buoy. GCM-direct forcing (using each GCM's own daily series) would need a trend-preserving correction such as quantile delta mapping, and would lose real weather sequencing. It is worth a single-GCM side test only if changing variability or extremes is the question, because delta-change leaves storm and heatwave frequency unchanged.
+-   **Do not use raw GCM historical weather for the past.** A free-running GCM historical run is not the real 1960-2014 weather and cannot be validated; its information is already used through the deltas. If a longer hindcast is wanted (say from 1960), use real bias-corrected ERA5 with no deltas up to the end of the observations, then shuffled ERA5 plus deltas measured against a recent-observation baseline. This needs inflows, loads and alum back to the start date.
+-   **Make inflows non-stationary too**: scale flow by the monthly rainfall ratio, shift inflow temperature by the air-temperature delta, and keep climate-only and loads-only arms so the nutrient and climate effects can be separated.
+-   Weather is shared across GCM/SSP branches, so it cancels in scenario-minus-control comparisons; extra weather seeds are an optional check, not a requirement.
+
 A sensible first set of **test simulations** is the `control` plus one GCM under a low and a high SSP (e.g. `ssp126` and `ssp585`), first over a short horizon (say 2015-2040) with loads held at the present baseline, to check the runs are stable and the climate signal comes through in the temperature and stratification output. The 2032 N-reduction step and the long-horizon runs can follow once the inflow/loads series exist. With 28 branches the same `pattern = map(transient_delta_grid)` branching extends to a per-branch `AEME::run_aeme()` target, and the GCM-variability figure above is then the basis for interpreting how much of the simulated spread is driven by GCM choice, scenario, or the nutrient pathway versus lake-model internal dynamics.
 
 ## Caveats

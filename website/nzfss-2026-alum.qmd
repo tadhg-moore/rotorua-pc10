@@ -267,16 +267,16 @@ Treat absolute settling and burial as a range; module flux diagnostics are not y
 ![](figures/alum_on_off.png){fig-alt="Annual mean surface TP and chlorophyll-a with alum as dosed and with no alum, against observations"}
 :::
 ::: {.column width="45%"}
-- Same calibrated model, alum dose set to zero in every inflow
-- 2007–2022 mean surface TP: **0.017 vs 0.050 g P/m³ (−65%)**
-- Chlorophyll-a: 8.7 vs 10.0 mg/m³ (−13%), with the largest effect in some years
-- Bottom-water anoxia: 167 vs 178 sampling days, a small difference
+- 24 calibrated ensemble members, each run with the alum dose as applied and set to zero in every inflow
+- 2007–2022 mean surface TP: **0.018 vs 0.050 g P/m³**, a **64% reduction** (5–95% range of members: 54–69%)
+- Chlorophyll-a: 7.9 vs 9.0 mg/m³, a 10% reduction, but the range spans −36% to +3%, so the effect is **not robust**
+- Bottom-water anoxia: no consistent change (members differ by −40 to +25 sampling days over 2004–2022)
 - Model-based: the lake was dosed, so the "no alum" run has no observations to check against
 :::
 ::::
 
 ::: {.notes}
-S0 vs S1 of rotorua-alum-scenarios.qmd, rerun on the one-stage member and the updated exe (calibration/all_stage/nzfss_pairs.R with NZ_NOALUM=1). The anoxia on/off bars are in figures/alum_on_off_anoxia.png if a separate slide is wanted.
+S0 vs S1 of rotorua-alum-scenarios.qmd, rerun for the best 24 members of the final one-stage ES-MDA iteration (ranked on calibration score only) on the updated exe: calibration/all_stage/nzfss_ensemble.R, figure in nzfss_figs.R. Bands are the 5-95% range over members, not a full predictive interval (parameter uncertainty only). Anoxia on/off bars are in figures/alum_on_off_anoxia.png if a separate slide is wanted.
 :::
 
 ## Scenario results {.smaller}

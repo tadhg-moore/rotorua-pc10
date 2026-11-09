@@ -153,10 +153,14 @@ website:
           text: "Climate Impact Strategy (draft)"
         - href: climate-scenario-workflow.qmd
           text: "Climate-Scenario Workflow"
+        - href: transient-lake-runs.qmd
+          text: "Transient Lake Runs"
         - href: climate-extreme-events.qmd
           text: "Extreme & Storm Events"
         - href: enso-lake-rotorua.qmd
           text: "ENSO and Lake Rotorua"
+        - href: cmip-impact-modelling-approaches.qmd
+          text: "Impact Modelling Review"
     - id: presentations
       title: "Presentations"
       style: docked
