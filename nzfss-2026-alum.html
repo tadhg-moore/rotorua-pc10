@@ -443,15 +443,40 @@ Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before
 </section>
 <section id="how-well-does-it-reproduce-the-lake" class="slide level2">
 <h2>How well does it reproduce the lake?</h2>
-<!-- TODO: time series figure, observed vs simulated TP / FRP / chl with alum era shaded. Source: calibration/final, website/calibration-* pages -->
-<ul>
-<li>Anoxic days: <strong>~236 simulated vs 239 observed</strong> (O member; year-to-year r ≈ 0.74)</li>
-<li>Bottom DO r ≈ 0.91</li>
-<li>TP within a few percent of observed; FRP and chl biases are the main residuals</li>
+
+<img data-src="figures/calib_timeseries.png" class="quarto-figure quarto-figure-center r-stretch" style="width:88.0%" alt="Observed and simulated surface total phosphorus, filterable reactive phosphorus and chlorophyll-a, 2003 to 2022"><ul>
+<li>Calibrated on 2006–2018, evaluated on <strong>2018–2022 (held out)</strong></li>
+<li>TP tracks the long decline after dosing began; chlorophyll-a is simulated at the right level</li>
 <li>Honest misfit: the 2021–22 TP/FRP rebound is <strong>not</strong> reproduced (suggests event-driven external load or alum-P release)</li>
 </ul>
 <aside class="notes">
-<p>Be upfront about the rebound; it motivates the next-steps slide.</p>
+<p>Figure: calibration/all_stage/nzfss_figs.R (member from calibration/all_stage/out_main/best.rds, updated GLM-AED exe). Be upfront about the rebound; it motivates the next-steps slide. FRP is over-predicted before about 2007.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="annual-tp-and-bottom-water-anoxia" class="slide level2 smaller">
+<h2>Annual TP and bottom-water anoxia</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="figures/calib_annual_tp.png" alt="Annual mean surface TP, observed and simulated"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="figures/calib_anoxia.png" alt="Days per year with bottom oxygen below 2 g per cubic metre, observed and simulated"></p>
+</div></div>
+<ul>
+<li>Annual TP: r = 0.58, RMSE 0.009 g P/m³; the post-2016 rise and the 2021–22 rebound are missed</li>
+<li>Bottom DO r = 0.90; anoxic sampling days <strong>167 simulated vs 240 observed</strong>, with the wet years 2008–2011 under-predicted</li>
+</ul>
+<aside class="notes">
+<p>Numbers from calibration/all_stage/nzfss_figs.R (printed at the end of the run). The earlier “236 vs 239” was the old-exe O member.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -468,14 +493,14 @@ Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before
 <h2>Where does the alum and P go?</h2>
 <div class="columns">
 <div class="column" style="width:55%;">
-<!-- TODO: Sankey or stacked-bar of alum/P fate. Source: website/rotorua-alum-next-steps.qmd (sec-alum-fate), calibration/alum/50_alum_fate.R -->
-<p><img data-src="figures/alum_fate.png" alt="Fate of alum and bound phosphorus"></p>
+<p><img data-src="figures/alum_fate_P_updated.png" alt="Fate of alum-bound phosphorus: binding, settling, resuspension, burial and outflow"></p>
 </div><div class="column" style="width:45%;">
 <ul>
 <li>~52 t Al yr<sup>-1</sup> applied, ~12–17 t P yr<sup>-1</sup> removed</li>
 <li>~30 mol Al per mol P in the <strong>streams</strong>, ~5 in the lake, 3.5–5 whole system</li>
 <li>~97% of alum-bound P ends buried</li>
 <li>Most reactive capacity ages out in the water column before reaching the bed</li>
+<li>New module diagnostics: binding ~10, burial ~22 t P yr<sup>-1</sup>, so the reconstruction does <strong>not</strong> yet close (gap ~10 t P yr<sup>-1</sup>)</li>
 </ul>
 </div></div>
 <aside class="notes">
@@ -505,6 +530,34 @@ Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before
 <li><strong>Inflow conditions</strong>: how flow, temperature and pH change treatment outcomes</li>
 <li><strong>Efficiency</strong>: Al applied per unit P removed</li>
 </ul>
+</section>
+<section id="what-does-the-alum-do-on-versus-off" class="slide level2 smaller">
+<h2>What does the alum do? On versus off</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><img data-src="figures/alum_on_off.png" alt="Annual mean surface TP and chlorophyll-a with alum as dosed and with no alum, against observations"></p>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>24 calibrated ensemble members, each run with the alum dose as applied and set to zero in every inflow</li>
+<li>2007–2022 mean surface TP: <strong>0.018 vs 0.050 g P/m³</strong>, a <strong>64% reduction</strong> (5–95% range of members: 54–69%)</li>
+<li>Chlorophyll-a: 7.9 vs 9.0 mg/m³, a 10% reduction, but the range spans −36% to +3%, so the effect is <strong>not robust</strong></li>
+<li>Bottom-water anoxia: no consistent change (members differ by −40 to +25 sampling days over 2004–2022)</li>
+<li>Model-based: the lake was dosed, so the “no alum” run has no observations to check against</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>S0 vs S1 of rotorua-alum-scenarios.qmd, rerun for the best 24 members of the final one-stage ES-MDA iteration (ranked on calibration score only) on the updated exe: calibration/all_stage/nzfss_ensemble.R, figure in nzfss_figs.R. Bands are the 5-95% range over members, not a full predictive interval (parameter uncertainty only). Anoxia on/off bars are in figures/alum_on_off_anoxia.png if a separate slide is wanted.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="scenario-results" class="slide level2 smaller">
 <h2>Scenario results</h2>

@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4cf47456d81c96c3587e2b69f30f063c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -223,6 +223,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./transient-lake-runs.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transient Lake Runs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Extreme &amp; Storm Events</span></a>
   </div>
@@ -231,6 +237,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./enso-lake-rotorua.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">ENSO and Lake Rotorua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip-impact-modelling-approaches.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Impact Modelling Review</span></a>
   </div>
 </li>
     </ul>
@@ -865,6 +877,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Inflows and loads for 2005-2099.</strong> <code>setup_aeme()</code> currently removes the inflows, so a run built that way has no catchment loading at all. A transient run needs a flow and nutrient-load series for the whole period, including the N-reduction pathway (e.g.&nbsp;a step from 2032), and a decision on how stream flows respond to the rainfall deltas (for example scaling the historical flow series by the same monthly rainfall ratio, or modelling it explicitly).</li>
 <li><strong>Alum dosing</strong> after the calibration period needs a defined assumption.</li>
 <li><strong>Lake level / outflow</strong> handling over 95 years should be checked in a short run first.</li>
+</ul>
+<p><strong>Design choices for continuous runs:</strong></p>
+<ul>
+<li><strong>One uninterrupted run per GCM/SSP plus <code>control</code></strong>, with a single spin-up and no restarts, so sediment, alum and thermal memory carry through the whole period. Report each scenario as <em>difference from <code>control</code></em> (same weather, no deltas): the lake drifts even under constant forcing, and the control isolates the climate effect from that drift.</li>
+<li><strong>No GCM bias correction is needed.</strong> A delta is future minus the same model’s reference period, so the model’s mean bias cancels; the only bias correction is ERA5 against the buoy. GCM-direct forcing (using each GCM’s own daily series) would need a trend-preserving correction such as quantile delta mapping, and would lose real weather sequencing. It is worth a single-GCM side test only if changing variability or extremes is the question, because delta-change leaves storm and heatwave frequency unchanged.</li>
+<li><strong>Do not use raw GCM historical weather for the past.</strong> A free-running GCM historical run is not the real 1960-2014 weather and cannot be validated; its information is already used through the deltas. If a longer hindcast is wanted (say from 1960), use real bias-corrected ERA5 with no deltas up to the end of the observations, then shuffled ERA5 plus deltas measured against a recent-observation baseline. This needs inflows, loads and alum back to the start date.</li>
+<li><strong>Make inflows non-stationary too</strong>: scale flow by the monthly rainfall ratio, shift inflow temperature by the air-temperature delta, and keep climate-only and loads-only arms so the nutrient and climate effects can be separated.</li>
+<li>Weather is shared across GCM/SSP branches, so it cancels in scenario-minus-control comparisons; extra weather seeds are an optional check, not a requirement.</li>
 </ul>
 <p>A sensible first set of <strong>test simulations</strong> is the <code>control</code> plus one GCM under a low and a high SSP (e.g.&nbsp;<code>ssp126</code> and <code>ssp585</code>), first over a short horizon (say 2015-2040) with loads held at the present baseline, to check the runs are stable and the climate signal comes through in the temperature and stratification output. The 2032 N-reduction step and the long-horizon runs can follow once the inflow/loads series exist. With 28 branches the same <code>pattern = map(transient_delta_grid)</code> branching extends to a per-branch <code>AEME::run_aeme()</code> target, and the GCM-variability figure above is then the basis for interpreting how much of the simulated spread is driven by GCM choice, scenario, or the nutrient pathway versus lake-model internal dynamics.</p>
 </section>
@@ -1666,11 +1686,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-281"><a href="#cb4-281" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Alum dosing** after the calibration period needs a defined assumption.</span>
 <span id="cb4-282"><a href="#cb4-282" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Lake level / outflow** handling over 95 years should be checked in a short run first.</span>
 <span id="cb4-283"><a href="#cb4-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>A sensible first set of **test simulations** is the <span class="in">`control`</span> plus one GCM under a low and a high SSP (e.g. <span class="in">`ssp126`</span> and <span class="in">`ssp585`</span>), first over a short horizon (say 2015-2040) with loads held at the present baseline, to check the runs are stable and the climate signal comes through in the temperature and stratification output. The 2032 N-reduction step and the long-horizon runs can follow once the inflow/loads series exist. With 28 branches the same <span class="in">`pattern = map(transient_delta_grid)`</span> branching extends to a per-branch <span class="in">`AEME::run_aeme()`</span> target, and the GCM-variability figure above is then the basis for interpreting how much of the simulated spread is driven by GCM choice, scenario, or the nutrient pathway versus lake-model internal dynamics.</span>
+<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>**Design choices for continuous runs:**</span>
 <span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
-<span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a>Both the bias-correction and the delta-change step assume **stationarity** -- a transfer function fitted on the ERA5/buoy overlap period is asserted to hold under a future climate, and the <span class="in">`scale`</span> method used here rescales the *observed* daily sequence rather than reshaping its day-to-day variability (see `?metscale::scenario_workflow`). The buoy overlap (2022-2026) is short relative to the vignette's recommendation of a long reanalysis record and 20-year climate windows; the ERA5-only record (2011-2026) is longer and used for the daily baseline and hourly donor, but the *fit* of the bias correction itself is necessarily anchored to the shorter buoy overlap. Treat the across-scenario spread as a lower bound on total uncertainty, and fix the <span class="in">`MET_prsttn`</span> unit issue noted in step 1 before using corrected station pressure downstream.</span>
+<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**One uninterrupted run per GCM/SSP plus `control`**, with a single spin-up and no restarts, so sediment, alum and thermal memory carry through the whole period. Report each scenario as *difference from `control`* (same weather, no deltas): the lake drifts even under constant forcing, and the control isolates the climate effect from that drift.</span>
+<span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**No GCM bias correction is needed.** A delta is future minus the same model's reference period, so the model's mean bias cancels; the only bias correction is ERA5 against the buoy. GCM-direct forcing (using each GCM's own daily series) would need a trend-preserving correction such as quantile delta mapping, and would lose real weather sequencing. It is worth a single-GCM side test only if changing variability or extremes is the question, because delta-change leaves storm and heatwave frequency unchanged.</span>
+<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Do not use raw GCM historical weather for the past.** A free-running GCM historical run is not the real 1960-2014 weather and cannot be validated; its information is already used through the deltas. If a longer hindcast is wanted (say from 1960), use real bias-corrected ERA5 with no deltas up to the end of the observations, then shuffled ERA5 plus deltas measured against a recent-observation baseline. This needs inflows, loads and alum back to the start date.</span>
+<span id="cb4-289"><a href="#cb4-289" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Make inflows non-stationary too**: scale flow by the monthly rainfall ratio, shift inflow temperature by the air-temperature delta, and keep climate-only and loads-only arms so the nutrient and climate effects can be separated.</span>
+<span id="cb4-290"><a href="#cb4-290" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Weather is shared across GCM/SSP branches, so it cancels in scenario-minus-control comparisons; extra weather seeds are an optional check, not a requirement.</span>
+<span id="cb4-291"><a href="#cb4-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a>A sensible first set of **test simulations** is the <span class="in">`control`</span> plus one GCM under a low and a high SSP (e.g. <span class="in">`ssp126`</span> and <span class="in">`ssp585`</span>), first over a short horizon (say 2015-2040) with loads held at the present baseline, to check the runs are stable and the climate signal comes through in the temperature and stratification output. The 2032 N-reduction step and the long-horizon runs can follow once the inflow/loads series exist. With 28 branches the same <span class="in">`pattern = map(transient_delta_grid)`</span> branching extends to a per-branch <span class="in">`AEME::run_aeme()`</span> target, and the GCM-variability figure above is then the basis for interpreting how much of the simulated spread is driven by GCM choice, scenario, or the nutrient pathway versus lake-model internal dynamics.</span>
+<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
+<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a>Both the bias-correction and the delta-change step assume **stationarity** -- a transfer function fitted on the ERA5/buoy overlap period is asserted to hold under a future climate, and the <span class="in">`scale`</span> method used here rescales the *observed* daily sequence rather than reshaping its day-to-day variability (see `?metscale::scenario_workflow`). The buoy overlap (2022-2026) is short relative to the vignette's recommendation of a long reanalysis record and 20-year climate windows; the ERA5-only record (2011-2026) is longer and used for the daily baseline and hourly donor, but the *fit* of the bias correction itself is necessarily anchored to the shorter buoy overlap. Treat the across-scenario spread as a lower bound on total uncertainty, and fix the <span class="in">`MET_prsttn`</span> unit issue noted in step 1 before using corrected station pressure downstream.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
