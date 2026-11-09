@@ -242,6 +242,14 @@ list(
     deployment = "main"
   ),
   tar_target(
+    rotorua_era5_50yr_hr_file,
+    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly_1976-2025.csv",
+                       here::here("data", "processed", "rotorua_era5_hourly_1976-2025.csv")),
+    format = "file",
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
+  tar_target(
     rotorua_era5_hr_file,
     sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly.csv",
                        here::here("data", "processed", "rotorua_era5_hourly.csv")),
@@ -1426,8 +1434,11 @@ list(
   #     -> disaggregation, see vignette("scenario-workflow", package = "metscale")) ----
 
   #* Reference/future windows for delta-change (matches scenario_batch_rotorua.R) ----
+  # 30-year reference (WMO normal), ending at the last CMIP6 historical year. Changed from
+  # 1995:2014 (20 years) on 2026-11-09. The ERA5 baseline only starts in 1988, so the
+  # reference-period GCM-direct (QDM) mapping, which needs both series, cannot use 1985-2014.
   tar_target(
-    scenario_ref_years, 1995:2014
+    scenario_ref_years, 1985:2014
   ),
   tar_target(
     scenario_tz, "Etc/GMT-12"
@@ -1442,7 +1453,7 @@ list(
   tar_target(
     era5_hourly_met,
     # 1988-2024 file, extended to 2025 from the older 2011-2025 file
-    read_era5_hourly_met(rotorua_era5_37yr_hr_file, lat = lake_meta$latitude,
+    read_era5_hourly_met(rotorua_era5_50yr_hr_file, lat = lake_meta$latitude,
                          lon = lake_meta$longitude, tz = scenario_tz,
                          extend_file = rotorua_era5_hr_file)
   ),
