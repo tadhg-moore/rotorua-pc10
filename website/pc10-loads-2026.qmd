@@ -1,0 +1,353 @@
+---
+title: "2026 PC10 river loads: what changed from the current inflow file"
+subtitle: "Comparison of the Limnotrack/BoPRC 2026 loads with `rotorua_inflows_populated_noalum.csv`"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+source(here::here("R", "read_pc10_loads.R"))
+source(here::here("R", "pc10_loads_helpers.R"))
+
+root <- here::here("data", "raw", "pc10_loads_2026")
+new  <- read_pc10_loads("noalum_storm_central", root = root)
+old  <- read_current_inflows()
+new_alum <- read_pc10_loads("alum_storm_central", root = root)
+new_nost <- read_pc10_loads("noalum_nostorm_central", root = root)
+
+a_new <- inflow_annual_loads(new)
+a_old <- inflow_annual_loads(old[names(old) != "Rainfall"])
+chk   <- read.csv(file.path(root, "check_annual_loads.csv"))
+
+# Comparison period: both series exist and the lake has routine data
+hy_cmp <- 1990:2022
+old_end <- max(old[[1]]$Date)
+
+pal <- c(old = "grey40", new = "#0072B2")
+theme_set(theme_bw(base_size = 11))
+```
+
+## Summary {#sec-summary}
+
+In November 2026 Limnotrack (C. G. McBride) delivered daily GLM-AED boundary-condition files for Lake Rotorua for BoPRC, 1 July 1959 to 30 June 2026. They come from *Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026*. This page compares them with the inflow file the model currently uses (`data/raw/flows/rotorua_inflows_populated_noalum.csv`, which ends 30 June 2022) and says where they differ.
+
+```{r}
+#| label: summary-numbers
+cmp <- function(a, hys) a |> filter(hy %in% hys) |> group_by(hy) |>
+  summarise(across(c(tn, tp, frp), sum), .groups = "drop") |>
+  summarise(across(c(tn, tp, frp), mean))
+c0722o <- cmp(a_old, 2007:2022); c0722n <- cmp(a_new, 2007:2022)
+wet <- c(2011, 2012, 2017, 2018)
+w_o <- a_old |> filter(hy %in% wet) |> group_by(hy) |> summarise(tp = sum(tp))
+w_n <- a_new |> filter(hy %in% wet) |> group_by(hy) |> summarise(tp = sum(tp))
+```
+
+**Key points**
+
+1. **Total P is lower in the new files, mostly in wet years.** Over 2007 to 2022 the mean TP load is `r round(c0722n$tp, 1)` t/y against `r round(c0722o$tp, 1)` t/y in the current file (`r round(100 * (c0722n$tp / c0722o$tp - 1))`%). TN is `r round(c0722n$tn)` against `r round(c0722o$tn)` t/y (`r round(100 * (c0722n$tn / c0722o$tn - 1))`%) and FRP is `r round(c0722n$frp, 1)` against `r round(c0722o$frp, 1)` t/y (`r round(100 * (c0722n$frp / c0722o$frp - 1))`%).
+2. **The wet years carry the difference.** In 2011, 2012, 2017 and 2018 the new TP loads are `r paste0(round(w_n$tp, 1), collapse = ", ")` t against `r paste0(round(w_o$tp, 1), collapse = ", ")` t. These are the years where the lake TP was overestimated by 66 to 113%, which we worked around by halving flood-day particulates (`STR_FLOODSCALE = 0.5`). The new files treat flood-day particulates explicitly instead (@sec-storm).
+3. **The record is four years longer** (to June 2026). The ERA5 forcing ends on 31 December 2025, so the new targets branch cuts the inflows there (@sec-targets).
+4. **The alum and no-alum sets give the in-stream binding rules an independent check.** Dosing lowers FRP in the Utuhina by about 42% and in the Puarenga by about 64%, with TP unchanged (@sec-alum).
+5. **The `lower` and `upper` sets** give 5th and 95th percentile load histories and `nostorm` sets give the PC10 target basis (@sec-sets).
+
+## What is in the data {#sec-sets}
+
+Twelve complete sets, one folder each, named `<alum|noalum>_<storm|nostorm>_<central|lower|upper>`.
+
+| Part | Option | Meaning |
+|---|---|---|
+| alum | `alum` / `noalum` | P as it entered the lake with alum dosing (Utuhina from June 2006, Puarenga from January 2010) / as it would have without dosing |
+| storm | `storm` / `nostorm` | with / without stormflow particulates (extra particulate N, P and sediment on flood days). `nostorm` is the basis of the PC10 targets (435 t N/y, 37 t P/y) |
+| bound | `central`, `lower`, `upper` | best estimate / 5th and 95th percentile of the annual TN and TP load uncertainty |
+
+Each folder holds nine stream files, `Geothermal`, ungauged slow and quick flow, `WWTP`, `inflow_all_combined`, `outflow_ohau` and an optional `rain_on_lake` file. Concentrations are already in AED variables and units (mmol m^-3^, flow in m^3^ s^-1^), unlike the current file (mg L^-1^, m^3^ day^-1^). The project reader `read_pc10_loads()` converts them to the current layout (@sec-targets) and reproduces `check_annual_loads.csv` to within 0.012% in all twelve sets.
+
+```{r}
+#| label: tbl-sets
+#| tbl-cap: "Mean annual load 2007 to 2022 (t/y) in each central set, from the supplied check file."
+chk |> filter(bound == "central", hy %in% 2007:2022) |>
+  group_by(alum, storm) |>
+  summarise(TN = mean(tn), TP = mean(tp), FRP = mean(frp), .groups = "drop") |>
+  kable(digits = 1)
+```
+
+## Annual loads, old and new {#sec-annual}
+
+Loads are computed from the species the model reads (ammonium, nitrate, DON, PON for N; FRP, DOP, POP, PIP for P), for both the current and the new inflows. The current file also has its own `TN` and `TP` columns, which give higher totals than the sum of its species over 2007 to 2022 (TN 575 against 550 t/y and TP 50.8 against 49.1 t/y); the difference is N and P that the old file does not allocate to a model variable. Against the `TP` column, the new TP is 19% lower.
+
+The new series used for the comparison is `noalum_storm_central`, because the current file is a no-alum file with flood-day particulates included.
+
+```{r}
+#| label: fig-annual
+#| fig-cap: "Annual TN, TP and FRP loads from all inflows, current file and 2026 loads (no-alum, with storm particulates). Years are July to June, named by the year in which they end."
+#| fig-height: 7
+tot <- bind_rows(
+  a_old |> mutate(src = "old"), a_new |> mutate(src = "new")) |>
+  filter(hy >= 1990, hy <= 2026) |>
+  group_by(src, hy) |>
+  summarise(TN = sum(tn), TP = sum(tp), FRP = sum(frp), .groups = "drop") |>
+  pivot_longer(c(TN, TP, FRP), names_to = "var", values_to = "load") |>
+  mutate(var = factor(var, c("TN", "TP", "FRP")))
+ggplot(tot, aes(hy, load, colour = src)) +
+  geom_line() + geom_point(size = 1) +
+  facet_wrap(~var, ncol = 1, scales = "free_y") +
+  scale_colour_manual(values = pal, name = NULL) +
+  labs(x = "Hydrological year", y = "Load (t/y)")
+```
+
+```{r}
+#| label: tbl-annual-diff
+#| tbl-cap: "Annual load difference, new minus old (t/y). Percent is relative to the old file."
+d <- inner_join(
+  a_old |> group_by(hy) |> summarise(tn_o = sum(tn), tp_o = sum(tp), frp_o = sum(frp)),
+  a_new |> group_by(hy) |> summarise(tn_n = sum(tn), tp_n = sum(tp), frp_n = sum(frp)),
+  by = "hy") |>
+  filter(hy %in% hy_cmp) |>
+  transmute(Year = hy,
+            `TN old` = tn_o, `TN new` = tn_n, `TN %` = 100 * (tn_n / tn_o - 1),
+            `TP old` = tp_o, `TP new` = tp_n, `TP %` = 100 * (tp_n / tp_o - 1),
+            `FRP old` = frp_o, `FRP new` = frp_n, `FRP %` = 100 * (frp_n / frp_o - 1))
+kable(d, digits = 1)
+```
+
+```{r}
+#| label: period-means
+per <- function(y) d |> filter(Year %in% y) |>
+  summarise(across(-Year, mean))
+p_early <- per(1990:2006); p_late <- per(2007:2022)
+```
+
+The percentage differences are small before about 2006 (TP `r round(p_early[["TP %"]])`% on average over 1990 to 2006) and larger afterwards (`r round(p_late[["TP %"]])`% over 2007 to 2022). TN differs by `r round(p_late[["TN %"]])`% and FRP by `r round(p_late[["FRP %"]])`% over 2007 to 2022.
+
+## Where the differences are: by inflow {#sec-byinflow}
+
+```{r}
+#| label: fig-inflow-tp
+#| fig-cap: "Mean annual TP load by inflow, 2007 to 2022."
+#| fig-height: 5
+by_in <- bind_rows(a_old |> mutate(src = "old"), a_new |> mutate(src = "new")) |>
+  filter(hy %in% 2007:2022) |>
+  group_by(src, inflow) |>
+  summarise(TN = mean(tn), TP = mean(tp), FRP = mean(frp), Flow = mean(flow), .groups = "drop")
+by_in |> mutate(inflow = reorder(inflow, TP)) |>
+  ggplot(aes(TP, inflow, fill = src)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = pal, name = NULL) +
+  labs(x = "TP load (t/y)", y = NULL)
+```
+
+```{r}
+#| label: tbl-inflow
+#| tbl-cap: "Mean annual flow (Mm^3^/y) and loads (t/y) by inflow, 2007 to 2022, old and new, with the percentage change."
+by_in |>
+  pivot_wider(names_from = src, values_from = c(Flow, TN, TP, FRP)) |>
+  transmute(Inflow = inflow,
+            `Flow old` = Flow_old, `Flow new` = Flow_new,
+            `TN old` = TN_old, `TN new` = TN_new, `TN %` = 100 * (TN_new / TN_old - 1),
+            `TP old` = TP_old, `TP new` = TP_new, `TP %` = 100 * (TP_new / TP_old - 1),
+            `FRP old` = FRP_old, `FRP new` = FRP_new,
+            `FRP %` = 100 * (FRP_new / FRP_old - 1)) |>
+  filter(Inflow != "WWTP") |>
+  arrange(desc(`TP old`)) |>
+  kable(digits = 1)
+```
+
+The largest percentage changes in TP are in the ungauged slow flow, ungauged quick flow, Ngongotaha, Waiteti and Puarenga (all lower), with a rise in the Waiowhiro. The Hamurana, Awahou, Waingaehe and the geothermal inflow hardly change. The ungauged slow flow also drops from 29.6 to 20.2 Mm^3^/y and the Waiohewa flow rises by about a quarter.
+
+Flow differs because the new files redo the lake water balance and the stream flow models (@sec-flows). Concentrations differ because the new loads are rebuilt from the monitoring samples with the storm and speciation treatment described below.
+
+## Wet years and flood-day particulates {#sec-storm}
+
+In the current file particulate P is 42% of TP, against 29% in the new files without storm particulates and 34.5% with them (@tbl-storm), and the largest TP differences are in the wet years (@tbl-annual-diff). The new report refits the particulate regressions (concentration against flow, per stream, with a common trend over time) and applies them only on flood days, defined as flow above twice the stream median. The extra material is split into particulate organic N and organic and inorganic P. On average it adds 14 t N/y and 4.0 t P/y over 2007 to 2026.
+
+```{r}
+#| label: fig-wet
+#| fig-cap: "TP load in the wet years, current file, new files without storm particulates and new files with them."
+#| fig-height: 4
+a_nost <- inflow_annual_loads(new_nost)
+wy <- bind_rows(
+  a_old  |> mutate(src = "old file"),
+  a_nost |> mutate(src = "new, no storm"),
+  a_new  |> mutate(src = "new, with storm")) |>
+  filter(hy %in% c(2007:2022)) |>
+  group_by(src, hy) |> summarise(TP = sum(tp), .groups = "drop") |>
+  mutate(src = factor(src, c("old file", "new, no storm", "new, with storm")))
+ggplot(wy, aes(hy, TP, colour = src)) +
+  geom_line() + geom_point(size = 1) +
+  geom_vline(xintercept = c(2011, 2012, 2017, 2018), linetype = 3, colour = "grey70") +
+  labs(x = "Hydrological year", y = "TP load (t/y)", colour = NULL)
+```
+
+```{r}
+#| label: tbl-storm
+#| tbl-cap: "Particulate P (organic plus inorganic) as a share of TP, 2007 to 2022, and the TP load from flood days in the new files (storm minus no-storm)."
+share <- function(a, nm) a |> filter(hy %in% 2007:2022) |>
+  summarise(pp = sum(pp), tp = sum(tp)) |> mutate(src = nm, share = 100 * pp / tp)
+bind_rows(share(a_old, "old file"), share(a_nost, "new, no storm"),
+          share(a_new, "new, with storm")) |>
+  select(Source = src, `PP share of TP (%)` = share) |>
+  kable(digits = 1)
+extra <- a_new |> group_by(hy) |> summarise(tp = sum(tp)) |>
+  inner_join(a_nost |> group_by(hy) |> summarise(tp0 = sum(tp)), by = "hy") |>
+  mutate(storm_P = tp - tp0)
+```
+
+The storm component is `r round(mean(extra$storm_P[extra$hy %in% 2007:2022]), 1)` t P/y on average (2007 to 2022) and reaches `r round(max(extra$storm_P[extra$hy %in% 2007:2022]), 1)` t in the wettest year (`r extra$hy[which.max(extra$storm_P * (extra$hy %in% 2007:2022))]`). The model has so far been run with the old particulates scaled by 0.5 on flood days; this scaling has no counterpart in the new files and should not be applied to them.
+
+## Speciation {#sec-spec}
+
+The AED state variables need organic and particulate parts that the monitoring does not measure. The new report splits them with fractions held constant over time: DON is 0.50 of non-inorganic N at base flow and 0.25 on flood days; DOP is 0.10 of non-DRP P; particulate P is the rest, split 0.20 organic and 0.80 inorganic; POC is 10 times PON by mass.
+
+```{r}
+#| label: tbl-spec
+#| tbl-cap: "Load-weighted composition of TN and TP, 2007 to 2022, all inflows. Shares are of the total in each file."
+comp <- function(a, nm) a |> filter(hy %in% 2007:2022) |>
+  summarise(across(c(tn, din, tp, frp, dop, pp), sum)) |>
+  mutate(src = nm,
+         `DIN/TN` = din / tn, `(DON+PON)/TN` = 1 - din / tn,
+         `FRP/TP` = frp / tp, `DOP/TP` = dop / tp, `PP/TP` = pp / tp) |>
+  select(src, `DIN/TN`, `(DON+PON)/TN`, ends_with("/TP"))
+bind_rows(comp(a_old, "old file"), comp(a_new, "new files")) |>
+  mutate(across(-src, \(x) 100 * x)) |>
+  rename(Source = src) |>
+  kable(digits = 1)
+```
+
+```{r}
+#| label: tbl-spec-in
+#| tbl-cap: "FRP share of TP (%), 2007 to 2022, by stream."
+by_s <- bind_rows(a_old |> mutate(src = "old"), a_new |> mutate(src = "new")) |>
+  filter(hy %in% 2007:2022, inflow != "WWTP") |>
+  group_by(src, inflow) |> summarise(f = 100 * sum(frp) / sum(tp), .groups = "drop") |>
+  pivot_wider(names_from = src, values_from = f)
+kable(by_s, digits = 0)
+```
+
+## Alum: with and without dosing {#sec-alum}
+
+In the `alum` sets part of the FRP of the Utuhina and Puarenga becomes particulate inorganic P (`PHS_frp_ads`). TP and all N are identical in the two scenarios. The Utuhina is sampled below its plant, so the `alum` set uses the measured DRP and the `noalum` set rebuilds the undosed DRP; the Puarenga is sampled above its plant, so the `noalum` set uses the measured DRP and the `alum` set estimates the dosed DRP from the daily dose and the Al:DRP binding ratio of McBride et al. (2022).
+
+```{r}
+#| label: tbl-alum
+#| tbl-cap: "Mean FRP (mmol m^-3^) in the dosed streams, 2010 to 2022 (both plants dosing). The reduction is compared with the in-stream binding fractions fixed in the model (`calibration/alum/stream_variant.R`: Utuhina 0.45, Puarenga 0.9 min(1, R/23))."
+yr <- function(l, nm) {
+  d <- l[[nm]]; d <- d[d$Date >= "2010-07-01" & d$Date <= "2022-06-30", ]
+  c(frp = mean(d$PHS_frp) / 30.974 * 1000, pip = mean(d$PHS_pip) / 30.974 * 1000)
+}
+al <- sapply(c("Utuhina", "Puarenga"), \(nm) {
+  n <- yr(new, nm); a <- yr(new_alum, nm)
+  c(`no alum` = n[["frp"]], `alum` = a[["frp"]],
+    `reduction (%)` = 100 * (1 - a[["frp"]] / n[["frp"]]),
+    `PIP gained` = a[["pip"]] - n[["pip"]])
+})
+kable(t(al), digits = 2)
+```
+
+```{r}
+#| label: fig-alum
+#| fig-cap: "Annual FRP load of the Utuhina and Puarenga with and without dosing (2026 loads)."
+#| fig-height: 4
+aa <- bind_rows(
+  inflow_annual_loads(new_alum) |> mutate(set = "alum"),
+  inflow_annual_loads(new)      |> mutate(set = "noalum")) |>
+  filter(inflow %in% c("Utuhina", "Puarenga"), hy >= 2000)
+ggplot(aa, aes(hy, frp, colour = set)) + geom_line() +
+  facet_wrap(~inflow) + labs(x = "Hydrological year", y = "FRP load (t/y)", colour = NULL)
+```
+
+The Utuhina reduction is close to the fixed 0.45 binding fraction in the model. The Puarenga reduction (about 63%) is below the 0.9 maximum of the model rule, which depends on the daily Al:FRP ratio; this table compares period means only, and a day-by-day comparison with the model rule has not been made. Because the model applies alum in-stream, the `noalum` sets are the natural inflows with the alum module on; the `alum` sets can be used to check the binding rules, not to drive the model.
+
+## Flows and the 2022 to 2026 extension {#sec-flows}
+
+```{r}
+#| label: tbl-flow
+#| tbl-cap: "Mean annual flow (m^3^ s^-1^) and total inflow volume, 2007 to 2022."
+fl <- function(a, nm) a |> filter(hy %in% 2007:2022) |> group_by(hy) |>
+  summarise(q = sum(flow) * 1e6 / 86400 / 365.25) |>
+  summarise(mean_q = mean(q)) |> mutate(src = nm)
+ohau <- read.csv(file.path(root, "noalum_storm_central", "outflow_ohau.csv"))
+ohau$Date <- as.Date(ohau$time)
+ohau_m <- mean(ohau$FLOW[ohau$Date >= "2007-07-01" & ohau$Date <= "2022-06-30"])
+bind_rows(fl(a_old, "old file"), fl(a_new, "new files")) |>
+  select(Source = src, `Inflow, all streams and ungauged (m3/s)` = mean_q) |>
+  kable(digits = 2)
+```
+
+The new mean Ōhau outflow over the same years is `r round(ohau_m, 1)` m^3^ s^-1^. In the new files the ungauged flow is the residual of the daily lake water balance (Ōhau outflow plus evaporation minus gauged streams, geothermal, rain on the lake and storage change), split into quick and slow flow. The geothermal inflow is a constant 0.6 m^3^ s^-1^.
+
+```{r}
+#| label: fig-ext
+#| fig-cap: "Annual loads of all inflows through 2026 (new files). Years beyond 2022 have no counterpart in the current file."
+#| fig-height: 5
+ext <- a_new |> filter(hy >= 2010, hy <= 2026) |> group_by(hy) |>
+  summarise(TN = sum(tn), TP = sum(tp), FRP = sum(frp)) |>
+  pivot_longer(-hy, names_to = "var", values_to = "load")
+ggplot(ext, aes(hy, load)) + geom_col(fill = "#0072B2") +
+  geom_vline(xintercept = 2022.5, linetype = 2) +
+  facet_wrap(~factor(var, c("TN", "TP", "FRP")), ncol = 1, scales = "free_y") +
+  labs(x = "Hydrological year", y = "Load (t/y)")
+```
+
+```{r}
+#| label: ext-numbers
+e23 <- ext |> filter(hy >= 2023) |> pivot_wider(names_from = var, values_from = load)
+```
+
+The four new years (2023 to 2026) have mean loads of `r round(mean(e23$TN))` t N/y, `r round(mean(e23$TP), 1)` t P/y and `r round(mean(e23$FRP), 1)` t FRP/y, compared with `r round(c0722n$tn)`, `r round(c0722n$tp, 1)` and `r round(c0722n$frp, 1)` for 2007 to 2022. Year 2026 ends in June 2026 but the forcing ends in December 2025, so a model run on this branch covers the first half of that year only.
+
+## Uncertainty bounds {#sec-bounds}
+
+```{r}
+#| label: tbl-bounds
+#| tbl-cap: "Mean annual load 2007 to 2022 (t/y) in the lower, central and upper no-alum storm sets, and the ratio to central."
+chk |> filter(scenario %in% paste0("noalum_storm_", c("lower", "central", "upper")),
+              hy %in% 2007:2022) |>
+  group_by(bound) |> summarise(TN = mean(tn), TP = mean(tp), FRP = mean(frp)) |>
+  mutate(bound = factor(bound, c("lower", "central", "upper"))) |> arrange(bound) |>
+  mutate(`TN ratio` = TN / TN[bound == "central"],
+         `TP ratio` = TP / TP[bound == "central"]) |>
+  kable(digits = 2)
+```
+
+The bounds scale concentrations only (flows are unchanged so that the water balance and lake level stay closed), so a run on a bound is a load history that is low or high in every year, not a random draw. The mean band is about 0.87 to 1.16 of central for TP (individual years range from 0.73 to 1.28). The difference between the current file and the new central set over 2007 to 2022 (@sec-summary) is of the same size as this 5 to 95% band, which is worth keeping in mind when judging calibration against either.
+
+## How the new data enter the pipeline {#sec-targets}
+
+A parallel set of targets, suffixed `_pc10`, is in `_targets.R` under *PC10 loads 2026 branch*. The existing inflow targets are not touched, and nothing in the old chain depends on the new ones.
+
+| Target | What it does |
+|---|---|
+| `pc10_loads_set` | The set to use (default `noalum_storm_central`). Change to any of the twelve names |
+| `pc10_loads_files` | The files of that set (a file target, so edits to the data re-run the chain) |
+| `pc10_loads_stop` | Last date of the corrected ERA5 forcing, used to cut the inflows |
+| `rotorua_inflow_list_pc10` | `read_pc10_loads()`: the set converted to the current list layout (mg L^-1^, m^3^ day^-1^, AEME names) |
+| `rotorua_inflow_list_matrix_pc10` | Adds `ALU_ala` and `ALU_alp` from the dosing records, as the existing matrix target does |
+| `aeme_base_pc10_file`, `aeme_baseline_pc10` | Builds `aeme_base_pc10.rds` with `build_calib_base_aeme()`, in `calibration/base_build_pc10` |
+
+Units. `read_pc10_loads()` converts the mmol m^-3^ nutrient columns back to mg L^-1^ with the molar masses used in the report so that the existing AEME conversion applies unchanged. The converted loads equal `check_annual_loads.csv` to within 0.012% in all twelve sets (script `calibration/pc10_loads/01_verify_loads.R`).
+
+Points to check before calibrating on the new base:
+
+- the rain file (`rain_on_lake_OPTIONAL.csv`) is not used, because rain enters through the meteorology file;
+- the current file holds constants for some variables in every inflow (SiO2 = 1, DIC = 10, and pH values as low as 1), whereas the new files give stream-specific silica (53 to 109 g SiO2 m^-3^), DIC from alkalinity and pH from measurements. Silica is converted to mg Si L^-1^ for consistency with `rotorua_inflow_key.csv`, so check what the AEME inflow conversion expects for `SIL_rsi` and `CAR_dic` before comparing lake silica or pH;
+- the previously fitted particulate and phosphorus parameters (`w_pom`, `rpop_hydrol`, `w_po4ads`, sediment P) were tuned against the higher old loads, so a forward run with the final member on the new base should come before any refit.
+
+## References {#sec-refs}
+
+- McBride, C. G. (2026). *Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026*. Limnotrack for Bay of Plenty Regional Council.
+- `data/raw/pc10_loads_2026/README.md` (file and column descriptions).

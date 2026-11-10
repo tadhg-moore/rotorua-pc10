@@ -72,6 +72,8 @@ website:
           text: "Utuhina Stream Flow"
         - href: rotorua-inflows.qmd
           text: "Inflows"
+        - href: pc10-loads-2026.qmd
+          text: "PC10 Loads 2026"
         - href: ohau-channel-water-quality.qmd
           text: "Ōhau Channel Water Quality"
         - href: cmip6-processing.qmd
