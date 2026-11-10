@@ -41,6 +41,8 @@ tar_source(
     here::here("R", "niwa_to_aeme_met.R"),
     here::here("R", "niwa_hourly_to_aeme_met.R"),
     here::here("R", "format_dyresm_inflow.R"),
+    here::here("R", "read_pc10_loads.R"),
+    here::here("R", "pc10_loads_helpers.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
     here::here("R", "calc_alum_inflow.R"),
@@ -824,7 +826,63 @@ list(
     pattern = map(ratio_al_p),
     iteration = "list"
   ),
-  
+
+  #* PC10 loads 2026 branch ----
+  # Parallel chain that uses the 2026 PC10 loads (data/raw/pc10_loads_2026) instead of
+  # rotorua_inflows_populated_noalum.csv. The targets above are untouched; everything
+  # here is suffixed _pc10. Change pc10_loads_set to switch among the 12 sets
+  # (<alum|noalum>_<storm|nostorm>_<central|lower|upper>); noalum_* matches the
+  # project convention (alum module on, in-stream binding handled in the model).
+  tar_target(
+    pc10_loads_set, "noalum_storm_central"
+  ),
+  tar_target(
+    pc10_loads_files,
+    list.files(here::here("data", "raw", "pc10_loads_2026", pc10_loads_set),
+               full.names = TRUE),
+    format = "file"
+  ),
+  # The loads run to 2026-06-30 but the corrected ERA5 forcing ends earlier, so the
+  # inflows are cut at the end of the forcing.
+  tar_target(
+    pc10_loads_stop, as.Date(max(era5_corrected_hourly$Date))
+  ),
+  tar_target(
+    rotorua_inflow_list_pc10, {
+      pc10_loads_files  # dependency
+      read_pc10_loads(pc10_loads_set, include_rain = FALSE, to = pc10_loads_stop)
+    }
+  ),
+  tar_target(
+    rotorua_inflow_list_matrix_pc10,
+    add_alum_to_inflows(rotorua_inflow_list_pc10, alum_dosing,
+                        dosed = inflows_alum_dosed, ratio_al_p = ratio_al_p),
+    pattern = map(ratio_al_p),
+    iteration = "list"
+  ),
+  tar_target(
+    aeme_base_pc10_file,
+    build_calib_base_aeme(
+      aeme_download_file = aeme_onedrive_rds,
+      hyps_no_hole = hyps_no_hole,
+      era5_corrected_hourly = era5_corrected_hourly,
+      inflows = rotorua_inflow_list_matrix_pc10[[1]],
+      zone_heights = zone_heights,
+      weir_params = weir_params,
+      aed_models_alum = aed_models_alum,
+      model = model,
+      ext_elev = ext_elev,
+      alum_nml_file = file.path(aeme_onedrive_lake_rotorua_dir, "aed", "aed_original.nml"),
+      out_file = here::here("aeme_base_pc10.rds"),
+      build_path = here::here("calibration", "base_build_pc10"),
+      old_buoy_wq = old_buoy_wq
+    ),
+    format = "file"
+  ),
+  tar_target(
+    aeme_baseline_pc10, readRDS(aeme_base_pc10_file)
+  ),
+
   #* Data inventory ----
   tar_target(
     data_inventory_html, {
@@ -1208,6 +1266,22 @@ list(
     }
   ),
   
+  # pH time series (old + new buoy), all values with a QC flag; used by website/ph-data.qmd
+  tar_target(
+    ph_data, {
+      dplyr::bind_rows(
+        old_buoy_wq |> dplyr::filter(var_aeme == "CHM_ph") |>
+          dplyr::transmute(datetime = Date, depth_m = depth, ph = value, source = "old buoy"),
+        aeme_buoy_data |> dplyr::filter(var_aeme == "CHM_ph") |>
+          dplyr::transmute(datetime = Date, depth_m = depth, ph = value, source = "new buoy")
+      ) |>
+        dplyr::filter(is.finite(ph)) |>
+        dplyr::arrange(source, datetime, depth_m) |>
+        dplyr::mutate(date = as.Date(datetime), qc_in_range = ph > 4 & ph < 11) |>
+        dplyr::select(datetime, date, depth_m, ph, source, qc_in_range)
+    }
+  ),
+
   # CTD data
   
   # Add buoy data to AEME
