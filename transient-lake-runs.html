@@ -262,8 +262,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#stratified-and-anoxic-days" id="toc-stratified-and-anoxic-days" class="nav-link" data-scroll-target="#stratified-and-anoxic-days">Stratified and anoxic days</a></li>
   </ul></li>
-  <li><a href="#what-is-still-open" id="toc-what-is-still-open" class="nav-link" data-scroll-target="#what-is-still-open">4. What is still open</a></li>
-  <li><a href="#files" id="toc-files" class="nav-link" data-scroll-target="#files">5. Files</a></li>
+  <li><a href="#parameter-ensemble-access-cm2-8-posterior-members" id="toc-parameter-ensemble-access-cm2-8-posterior-members" class="nav-link" data-scroll-target="#parameter-ensemble-access-cm2-8-posterior-members">4. Parameter ensemble (ACCESS-CM2, 8 posterior members)</a></li>
+  <li><a href="#what-is-still-open" id="toc-what-is-still-open" class="nav-link" data-scroll-target="#what-is-still-open">5. What is still open</a></li>
+  <li><a href="#files" id="toc-files" class="nav-link" data-scroll-target="#files">6. Files</a></li>
   </ul>
 </nav>
     </div>
@@ -385,6 +386,7 @@ gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by 
 <li><code>glm_csv_&lt;run&gt;/lake.csv</code> and <code>mass_balance.csv</code>: lake level and the water balance (about 45 MB),</li>
 </ul>
 <p>then <strong>deletes the model folder</strong>. A full run therefore leaves about 50 MB. (An earlier version did not clean up and three simultaneous runs filled the disk.)</p>
+<p><strong>Posterior members.</strong> <code>MEMBER=&lt;k&gt;</code> (environment variable) replaces the step-3 best parameters with joint posterior member <em>k</em> of <code>calibration/posterior/members.rds</code> (40 members, each a full 138-parameter table built from the step-2b and step-3 ensembles). <code>MEMBER=0</code>, the default, is the best-parameter run. Outputs get an <code>_m&lt;k&gt;</code> suffix. <code>calibration/transient/run_ensemble.ps1</code> queues members x branches with a cap on concurrent jobs and skips jobs whose summary already exists, so it can be restarted.</p>
 <p><strong>Running more than one at a time.</strong> Each branch writes only to its own folder, so branches can run in parallel, but a branch must never be launched twice: duplicate copies share one folder, corrupt the forcing files and fail with “Day not found”.</p>
 </section>
 </section>
@@ -409,10 +411,113 @@ gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by 
 </ul>
 </section>
 </section>
+<section id="parameter-ensemble-access-cm2-8-posterior-members" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-ensemble-access-cm2-8-posterior-members">4. Parameter ensemble (ACCESS-CM2, 8 posterior members)</h2>
+<p>The control, ssp126 and ssp585 branches were each run with 8 posterior parameter sets. The same member is used for a scenario and its control, and the result is <strong>scenario minus control within each member</strong>, so differences in the lake’s absolute state between members cancel and only the spread in the <em>climate response</em> remains. Each cell is the median across members with the minimum and maximum in brackets (8 members, so this is a range, not a 5–95% interval).</p>
+<table class="caption-top table">
+<caption>Scenario minus control across 8 posterior members, 30-year means.</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric (scenario minus control)</th>
+<th>Scenario</th>
+<th>2016–2045</th>
+<th>2046–2075</th>
+<th>2070–2099</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Surface temperature (°C)</td>
+<td>ssp126</td>
+<td>0.74 [0.74, 0.74]</td>
+<td>1.37 [1.37, 1.37]</td>
+<td>1.45 [1.45, 1.45]</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>ssp585</td>
+<td>0.93 [0.93, 0.93]</td>
+<td>2.37 [2.37, 2.37]</td>
+<td>3.80 [3.80, 3.80]</td>
+</tr>
+<tr class="odd">
+<td>Bottom oxygen (mg/L)</td>
+<td>ssp126</td>
+<td>−0.29 [−0.33, −0.28]</td>
+<td>−0.57 [−0.59, −0.54]</td>
+<td>−0.56 [−0.58, −0.52]</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>ssp585</td>
+<td>−0.40 [−0.41, −0.37]</td>
+<td>−1.02 [−1.04, −1.00]</td>
+<td>−1.59 [−1.64, −1.56]</td>
+</tr>
+<tr class="odd">
+<td>Stratified days / yr</td>
+<td>ssp126</td>
+<td>9.7 [7.7, 11.2]</td>
+<td>17.3 [15.8, 18.3]</td>
+<td>15.5 [14.8, 17.3]</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>ssp585</td>
+<td>10.4 [8.4, 11.0]</td>
+<td>27.8 [26.5, 28.8]</td>
+<td>44.5 [42.8, 46.4]</td>
+</tr>
+<tr class="odd">
+<td>Anoxic days / yr</td>
+<td>ssp126</td>
+<td>0.95 [0.13, 1.53]</td>
+<td>3.60 [1.87, 3.80]</td>
+<td>1.67 [1.43, 3.10]</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>ssp585</td>
+<td>2.50 [1.33, 2.83]</td>
+<td>9.07 [7.70, 10.13]</td>
+<td>15.02 [14.03, 17.57]</td>
+</tr>
+<tr class="odd">
+<td>Surface chl-a (mg/m³)</td>
+<td>ssp126</td>
+<td>1.42 [0.49, 3.02]</td>
+<td>2.22 [0.87, 4.73]</td>
+<td>1.69 [0.61, 4.25]</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>ssp585</td>
+<td>1.28 [0.50, 2.95]</td>
+<td>2.42 [0.77, 5.72]</td>
+<td>3.83 [1.42, 8.73]</td>
+</tr>
+</tbody>
+</table>
+<p>What the ensemble shows:</p>
+<ul>
+<li><strong>The physical response is not sensitive to the sampled parameters.</strong> The surface-warming response is identical across members to within 0.001 °C, even though absolute daily surface temperature differs between members by up to 0.6 °C (bottom temperature by up to 2.3 °C, bottom oxygen by up to 5.8 mg/L). Bottom oxygen and stratified days vary little in response.</li>
+<li><strong>Anoxic days are fairly robust.</strong> For ssp585 in 2070–2099 the range is 14–18 days a year, and ssp126 is far lower. The best-parameter run (14.3 days) sits inside the range.</li>
+<li><strong>Chlorophyll-a is the uncertain result.</strong> The ssp585 increase in 2070–2099 ranges from +1.4 to +8.7 mg/m³, a factor of about six. It is positive in every member and window, so the direction is robust and the size is not.</li>
+<li><strong>Compared with the other sources of uncertainty</strong> (2070–2099, ssp585 anoxic days): the parameter range is about 3.6 days; the GCM-direct side test differs from delta change by about 3.6 days (see the <a href="./cmip-impact-modelling-approaches.html">CMIP approaches page</a>); the difference between ssp126 and ssp585 is about 13 days.</li>
+</ul>
+<p><strong>Limits of this ensemble.</strong> The posterior members come from the biogeochemical and alum calibration steps, so they vary mostly biogeochemistry. Only about 11 of the 138 parameters that differ between members look physical (mixing, light, meteorological scaling), so physical-parameter uncertainty is barely sampled. The near-identical temperature response should not be read as precise. There are only 8 members, one GCM and two scenarios.</p>
+</section>
 <section id="what-is-still-open" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-still-open">4. What is still open</h2>
+<h2 class="anchored" data-anchor-id="what-is-still-open">5. What is still open</h2>
 <ol type="1">
-<li><strong>Parameter uncertainty (next).</strong> Run a thinned subset (about 10–20 members) of the calibration posterior ensemble for the same three branches, <strong>paired by member</strong> (the same member for control and scenario), and report scenario − control within each member. This separates uncertainty in the lake’s absolute state from uncertainty in its <em>climate response</em>, and shows whether the chl-a and phosphorus changes are robust. One GCM is enough for this comparison; compare the resulting spread with the GCM and SSP spread.</li>
+<li><strong>Parameter uncertainty (done for 8 members).</strong> See section 4. Remaining: more members if the chlorophyll range needs tightening, and a physics-parameter ensemble, since the posterior members barely vary the physics.</li>
 <li><strong>More GCMs.</strong> The three runs use ACCESS-CM2 only (the warmest model). <code>NorESM2-MM</code> sits at the cool end; both are needed to bracket the GCM spread. Extending to all 28 branches is feasible now that each run leaves about 50 MB.</li>
 <li><strong>Forcing beyond climate.</strong> Future nutrient loads (including an N-reduction pathway), a defined post-calibration alum policy, and lake-level/outflow rules.</li>
 <li><strong>Optional hindcast.</strong> A 1960-to-present run on real bias-corrected ERA5 (no deltas), followed by the transient period with deltas measured against a recent-observation baseline, would give a validatable historical period. It needs inflows, loads and alum back to 1960.</li>
@@ -420,7 +525,7 @@ gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by 
 </ol>
 </section>
 <section id="files" class="level2">
-<h2 class="anchored" data-anchor-id="files">5. Files</h2>
+<h2 class="anchored" data-anchor-id="files">6. Files</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 48%">
@@ -452,6 +557,14 @@ gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by 
 <tr class="odd">
 <td><code>calibration/transient/runs/glm_csv_&lt;run&gt;/</code></td>
 <td><code>lake.csv</code> and <code>mass_balance.csv</code> per run</td>
+</tr>
+<tr class="even">
+<td><code>calibration/transient/run_ensemble.ps1</code></td>
+<td>Queue of posterior-member runs with a concurrency cap; resumable</td>
+</tr>
+<tr class="odd">
+<td><code>calibration/transient/runs/ensemble_scenario_minus_control.rds</code></td>
+<td>Scenario minus control per member and 30-year window</td>
 </tr>
 </tbody>
 </table>
@@ -1079,110 +1192,163 @@ gcm_transient_deltas_df (30-yr sliding) ─┤  deltas: monthly, evolve year by 
 <span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>then **deletes the model folder**. A full run therefore leaves about 50 MB. (An earlier version did not clean up and three simultaneous runs filled the disk.)</span>
 <span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>**Running more than one at a time.** Each branch writes only to its own folder, so branches can run in parallel, but a branch must never be launched twice: duplicate copies share one folder, corrupt the forcing files and fail with "Day not found".</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>**Posterior members.** <span class="in">`MEMBER=&lt;k&gt;`</span> (environment variable) replaces the step-3 best parameters with joint posterior member *k* of <span class="in">`calibration/posterior/members.rds`</span> (40 members, each a full 138-parameter table built from the step-2b and step-3 ensembles). <span class="in">`MEMBER=0`</span>, the default, is the best-parameter run. Outputs get an <span class="in">`_m&lt;k&gt;`</span> suffix. <span class="in">`calibration/transient/run_ensemble.ps1`</span> queues members x branches with a cap on concurrent jobs and skips jobs whose summary already exists, so it can be restarted.</span>
 <span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. First test results (ACCESS-CM2, one parameter set)</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>**Running more than one at a time.** Each branch writes only to its own folder, so branches can run in parallel, but a branch must never be launched twice: duplicate copies share one folder, corrupt the forcing files and fail with "Day not found".</span>
 <span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>Three full-length runs: <span class="in">`control`</span>, <span class="in">`ssp126`</span> and <span class="in">`ssp585`</span>, all with the step-3 best parameters. All values are decadal means.</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. First test results (ACCESS-CM2, one parameter set)</span></span>
 <span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: results</span></span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">control =</span> <span class="st">"none_control"</span>, <span class="at">ssp126 =</span> <span class="st">"ACCESS-CM2_ssp126"</span>, <span class="at">ssp585 =</span> <span class="st">"ACCESS-CM2_ssp585"</span>)</span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(f), <span class="cf">function</span>(n) {</span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(runs_dir, <span class="fu">paste0</span>(<span class="st">"daily_"</span>, f[n], <span class="st">".rds"</span>))); r<span class="sc">$</span>run <span class="ot">&lt;-</span> n; r</span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>})) <span class="sc">|&gt;</span></span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">decade =</span> <span class="dv">10</span> <span class="sc">*</span> (<span class="fu">as.integer</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>)) <span class="sc">%/%</span> <span class="dv">10</span>))</span>
-<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">temp_surf =</span> <span class="st">"Surface temperature (°C)"</span>, <span class="at">temp_bot =</span> <span class="st">"Bottom temperature (°C)"</span>,</span>
-<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>          <span class="at">oxy_bot =</span> <span class="st">"Bottom oxygen (mg/L)"</span>, <span class="at">chl_surf =</span> <span class="st">"Surface chl-a (mg/m³)"</span>,</span>
-<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>          <span class="at">tp_surf =</span> <span class="st">"Surface TP (mg/L)"</span>)</span>
-<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>dec <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
-<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(run, decade) <span class="sc">|&gt;</span></span>
-<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(vars)), \(x) <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>diff <span class="ot">&lt;-</span> dec <span class="sc">|&gt;</span></span>
-<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(vars)), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> run, <span class="at">values_from =</span> value) <span class="sc">|&gt;</span></span>
-<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ssp126 =</span> ssp126 <span class="sc">-</span> control, <span class="at">ssp585 =</span> ssp585 <span class="sc">-</span> control) <span class="sc">|&gt;</span></span>
-<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(ssp126, ssp585), <span class="at">names_to =</span> <span class="st">"scenario"</span>, <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(vars[var], <span class="fu">unname</span>(vars)))</span>
-<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diff, <span class="fu">aes</span>(decade, diff, <span class="at">colour =</span> scenario)) <span class="sc">+</span></span>
-<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
-<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Scenario minus control (decadal mean)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: results-table</span></span>
-<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
-<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>diff <span class="sc">|&gt;</span></span>
-<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">%in%</span> vars[<span class="fu">c</span>(<span class="st">"temp_surf"</span>, <span class="st">"oxy_bot"</span>)], decade <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2020</span>, <span class="dv">2040</span>, <span class="dv">2060</span>, <span class="dv">2080</span>, <span class="dv">2090</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">round</span>(diff, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="fu">c</span>(var, scenario), <span class="at">values_from =</span> diff) <span class="sc">|&gt;</span></span>
-<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Scenario minus control by decade."</span>)</span>
-<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stratified and anoxic days</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>Three full-length runs: <span class="in">`control`</span>, <span class="in">`ssp126`</span> and <span class="in">`ssp585`</span>, all with the step-3 best parameters. All values are decadal means.</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: results</span></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">control =</span> <span class="st">"none_control"</span>, <span class="at">ssp126 =</span> <span class="st">"ACCESS-CM2_ssp126"</span>, <span class="at">ssp585 =</span> <span class="st">"ACCESS-CM2_ssp585"</span>)</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(f), <span class="cf">function</span>(n) {</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(runs_dir, <span class="fu">paste0</span>(<span class="st">"daily_"</span>, f[n], <span class="st">".rds"</span>))); r<span class="sc">$</span>run <span class="ot">&lt;-</span> n; r</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>})) <span class="sc">|&gt;</span></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">decade =</span> <span class="dv">10</span> <span class="sc">*</span> (<span class="fu">as.integer</span>(<span class="fu">format</span>(Date, <span class="st">"%Y"</span>)) <span class="sc">%/%</span> <span class="dv">10</span>))</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">temp_surf =</span> <span class="st">"Surface temperature (°C)"</span>, <span class="at">temp_bot =</span> <span class="st">"Bottom temperature (°C)"</span>,</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>          <span class="at">oxy_bot =</span> <span class="st">"Bottom oxygen (mg/L)"</span>, <span class="at">chl_surf =</span> <span class="st">"Surface chl-a (mg/m³)"</span>,</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>          <span class="at">tp_surf =</span> <span class="st">"Surface TP (mg/L)"</span>)</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>dec <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span></span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(run, decade) <span class="sc">|&gt;</span></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(vars)), \(x) <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>diff <span class="ot">&lt;-</span> dec <span class="sc">|&gt;</span></span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(vars)), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> run, <span class="at">values_from =</span> value) <span class="sc">|&gt;</span></span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ssp126 =</span> ssp126 <span class="sc">-</span> control, <span class="at">ssp585 =</span> ssp585 <span class="sc">-</span> control) <span class="sc">|&gt;</span></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(ssp126, ssp585), <span class="at">names_to =</span> <span class="st">"scenario"</span>, <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(vars[var], <span class="fu">unname</span>(vars)))</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diff, <span class="fu">aes</span>(decade, diff, <span class="at">colour =</span> scenario)) <span class="sc">+</span></span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Scenario minus control (decadal mean)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: results-table</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>diff <span class="sc">|&gt;</span></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(var <span class="sc">%in%</span> vars[<span class="fu">c</span>(<span class="st">"temp_surf"</span>, <span class="st">"oxy_bot"</span>)], decade <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2020</span>, <span class="dv">2040</span>, <span class="dv">2060</span>, <span class="dv">2080</span>, <span class="dv">2090</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">round</span>(diff, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="fu">c</span>(var, scenario), <span class="at">values_from =</span> diff) <span class="sc">|&gt;</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Scenario minus control by decade."</span>)</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>Each run also writes <span class="in">`annual_&lt;run&gt;.rds`</span>: per water year (July--June), the number of **stratified days** (surface 0--2 m minus bottom ≥17 m temperature ≥ 1 °C, as in `scenarios30`), **anoxic days** (bottom ≥17 m mean oxygen <span class="sc">\&lt;</span> 2 mg/L, as in <span class="in">`calibration/anoxia`</span>), and the longest unbroken spell of each (<span class="in">`R/transient_metrics.R`</span>). The daily files carry the same flags (<span class="in">`strat`</span>, <span class="in">`anoxic`</span>, <span class="in">`wy`</span>).</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stratified and anoxic days</span></span>
 <span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: strat-anoxia</span></span>
-<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
-<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a>ann <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(f), <span class="cf">function</span>(n) {</span>
-<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(runs_dir, <span class="fu">paste0</span>(<span class="st">"annual_"</span>, f[n], <span class="st">".rds"</span>))); a<span class="sc">$</span>run <span class="ot">&lt;-</span> n; a</span>
-<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>})) <span class="sc">|&gt;</span></span>
-<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">decade =</span> <span class="dv">10</span> <span class="sc">*</span> ((wy <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%/%</span> <span class="dv">10</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(run, decade) <span class="sc">|&gt;</span></span>
-<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">stratified days</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(strat_days), <span class="st">`</span><span class="at">anoxic days</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(anoxic_days),</span>
-<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">longest anoxic spell</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(longest_anoxic_spell), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>ann <span class="sc">|&gt;</span></span>
-<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> run, <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">stratified days</span><span class="st">`</span>, <span class="st">`</span><span class="at">anoxic days</span><span class="st">`</span>),</span>
-<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>                     <span class="at">names_glue =</span> <span class="st">"{.value} ({run})"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(decade, <span class="fu">ends_with</span>(<span class="st">"(control)"</span>), <span class="fu">ends_with</span>(<span class="st">"(ssp126)"</span>), <span class="fu">ends_with</span>(<span class="st">"(ssp585)"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">"Mean stratified and anoxic days per water year, by decade."</span>)</span>
-<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: no-results</span></span>
-<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr (!have_runs)</span></span>
-<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The run summaries (`calibration/transient/runs/daily_*.rds`) are not present in this build, so the figure and table are omitted. Re-run `run_one_transient.R` for the three branches to regenerate them."</span>)</span>
-<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>What the first runs show:</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>Each run also writes <span class="in">`annual_&lt;run&gt;.rds`</span>: per water year (July--June), the number of **stratified days** (surface 0--2 m minus bottom ≥17 m temperature ≥ 1 °C, as in `scenarios30`), **anoxic days** (bottom ≥17 m mean oxygen <span class="sc">\&lt;</span> 2 mg/L, as in <span class="in">`calibration/anoxia`</span>), and the longest unbroken spell of each (<span class="in">`R/transient_metrics.R`</span>). The daily files carry the same flags (<span class="in">`strat`</span>, <span class="in">`anoxic`</span>, <span class="in">`wy`</span>).</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: strat-anoxia</span></span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr have_runs</span></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>ann <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(f), <span class="cf">function</span>(n) {</span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(runs_dir, <span class="fu">paste0</span>(<span class="st">"annual_"</span>, f[n], <span class="st">".rds"</span>))); a<span class="sc">$</span>run <span class="ot">&lt;-</span> n; a</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>})) <span class="sc">|&gt;</span></span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">decade =</span> <span class="dv">10</span> <span class="sc">*</span> ((wy <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%/%</span> <span class="dv">10</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(run, decade) <span class="sc">|&gt;</span></span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">stratified days</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(strat_days), <span class="st">`</span><span class="at">anoxic days</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(anoxic_days),</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">longest anoxic spell</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(longest_anoxic_spell), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>ann <span class="sc">|&gt;</span></span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> run, <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">stratified days</span><span class="st">`</span>, <span class="st">`</span><span class="at">anoxic days</span><span class="st">`</span>),</span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>                     <span class="at">names_glue =</span> <span class="st">"{.value} ({run})"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(decade, <span class="fu">ends_with</span>(<span class="st">"(control)"</span>), <span class="fu">ends_with</span>(<span class="st">"(ssp126)"</span>), <span class="fu">ends_with</span>(<span class="st">"(ssp585)"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">"Mean stratified and anoxic days per water year, by decade."</span>)</span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: no-results</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr (!have_runs)</span></span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The run summaries (`calibration/transient/runs/daily_*.rds`) are not present in this build, so the figure and table are omitted. Re-run `run_one_transient.R` for the three branches to regenerate them."</span>)</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Control stays flat.** Decadal surface temperature is 14.7--15.2 °C and bottom oxygen about 9 mg/L with no trend, so the differences are climate signal and not drift.</span>
-<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Temperature.** ssp126 warms the surface by about 1.5 °C and plateaus after the 2050s; ssp585 keeps warming to about +4.3 °C by the 2090s. Bottom water follows the surface about 0.3 °C behind.</span>
-<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Oxygen.** Bottom oxygen falls by about 0.5 mg/L (ssp126) and about 1.7 mg/L (ssp585) by the 2090s.</span>
-<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Water balance and level.** Lake level stays within 21.2--22.2 m in all three runs, and the water-balance residual is 0.08--0.1% of throughput (a constant bookkeeping offset, not a climate effect; its source, probably ice/snow volume or the runoff term, is not yet identified).</span>
-<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a and phosphorus rise in the scenarios**, but treat this as provisional. The control itself swings between decades (surface chl-a about 7.5 mg/m³ in the 2040s and 4.5 in the 2050s) because of weather sampling and carried-over source-year nutrient concentrations, and only one parameter set has been run.</span>
-<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. What is still open</span></span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>What the first runs show:</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Control stays flat.** Decadal surface temperature is 14.7--15.2 °C and bottom oxygen about 9 mg/L with no trend, so the differences are climate signal and not drift.</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Temperature.** ssp126 warms the surface by about 1.5 °C and plateaus after the 2050s; ssp585 keeps warming to about +4.3 °C by the 2090s. Bottom water follows the surface about 0.3 °C behind.</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Oxygen.** Bottom oxygen falls by about 0.5 mg/L (ssp126) and about 1.7 mg/L (ssp585) by the 2090s.</span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Water balance and level.** Lake level stays within 21.2--22.2 m in all three runs, and the water-balance residual is 0.08--0.1% of throughput (a constant bookkeeping offset, not a climate effect; its source, probably ice/snow volume or the runoff term, is not yet identified).</span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a and phosphorus rise in the scenarios**, but treat this as provisional. The control itself swings between decades (surface chl-a about 7.5 mg/m³ in the 2040s and 4.5 in the 2050s) because of weather sampling and carried-over source-year nutrient concentrations, and only one parameter set has been run.</span>
 <span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Parameter uncertainty (next).** Run a thinned subset (about 10--20 members) of the calibration posterior ensemble for the same three branches, **paired by member** (the same member for control and scenario), and report scenario − control within each member. This separates uncertainty in the lake's absolute state from uncertainty in its *climate response*, and shows whether the chl-a and phosphorus changes are robust. One GCM is enough for this comparison; compare the resulting spread with the GCM and SSP spread.</span>
-<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**More GCMs.** The three runs use ACCESS-CM2 only (the warmest model). <span class="in">`NorESM2-MM`</span> sits at the cool end; both are needed to bracket the GCM spread. Extending to all 28 branches is feasible now that each run leaves about 50 MB.</span>
-<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Forcing beyond climate.** Future nutrient loads (including an N-reduction pathway), a defined post-calibration alum policy, and lake-level/outflow rules.</span>
-<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Optional hindcast.** A 1960-to-present run on real bias-corrected ERA5 (no deltas), followed by the transient period with deltas measured against a recent-observation baseline, would give a validatable historical period. It needs inflows, loads and alum back to 1960.</span>
-<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Variability change.** Delta-change keeps variability fixed; a bias-corrected GCM-direct side test is the route if storm or heatwave frequency matters.</span>
-<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Files</span></span>
-<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> File <span class="pp">|</span> Role <span class="pp">|</span></span>
-<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----------------------------------|-------------------------------------|</span></span>
-<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/scenario_climate_workflow.R`</span> <span class="pp">|</span> Transient weather and delta builders <span class="pp">|</span></span>
-<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/transient_inflows.R`</span> <span class="pp">|</span> <span class="in">`build_transient_inflows()`</span>: weather-paired, climate-scaled inflows <span class="pp">|</span></span>
-<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/run_one_transient.R`</span> <span class="pp">|</span> One-branch driver; saves summaries and deletes the model folder <span class="pp">|</span></span>
-<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/runs/daily_&lt;run&gt;.rds`</span> <span class="pp">|</span> Daily lake summary per run <span class="pp">|</span></span>
-<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/runs/glm_csv_&lt;run&gt;/`</span> <span class="pp">|</span> <span class="in">`lake.csv`</span> and <span class="in">`mass_balance.csv`</span> per run <span class="pp">|</span></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Parameter ensemble (ACCESS-CM2, 8 posterior members)</span></span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>The control, ssp126 and ssp585 branches were each run with 8 posterior parameter sets. The same member is used for a scenario and its control, and the result is **scenario minus control within each member**, so differences in the lake's absolute state between members cancel and only the spread in the *climate response* remains. Each cell is the median across members with the minimum and maximum in brackets (8 members, so this is a range, not a 5--95% interval).</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Metric (scenario minus control) <span class="pp">|</span> Scenario <span class="pp">|</span> 2016--2045 <span class="pp">|</span> 2046--2075 <span class="pp">|</span> 2070--2099 <span class="pp">|</span></span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Surface temperature (°C) <span class="pp">|</span> ssp126 <span class="pp">|</span> 0.74 <span class="co">[</span><span class="ot">0.74, 0.74</span><span class="co">]</span> <span class="pp">|</span> 1.37 <span class="co">[</span><span class="ot">1.37, 1.37</span><span class="co">]</span> <span class="pp">|</span> 1.45 <span class="co">[</span><span class="ot">1.45, 1.45</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> ssp585 <span class="pp">|</span> 0.93 <span class="co">[</span><span class="ot">0.93, 0.93</span><span class="co">]</span> <span class="pp">|</span> 2.37 <span class="co">[</span><span class="ot">2.37, 2.37</span><span class="co">]</span> <span class="pp">|</span> 3.80 <span class="co">[</span><span class="ot">3.80, 3.80</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bottom oxygen (mg/L) <span class="pp">|</span> ssp126 <span class="pp">|</span> −0.29 <span class="co">[</span><span class="ot">−0.33, −0.28</span><span class="co">]</span> <span class="pp">|</span> −0.57 <span class="co">[</span><span class="ot">−0.59, −0.54</span><span class="co">]</span> <span class="pp">|</span> −0.56 <span class="co">[</span><span class="ot">−0.58, −0.52</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> ssp585 <span class="pp">|</span> −0.40 <span class="co">[</span><span class="ot">−0.41, −0.37</span><span class="co">]</span> <span class="pp">|</span> −1.02 <span class="co">[</span><span class="ot">−1.04, −1.00</span><span class="co">]</span> <span class="pp">|</span> −1.59 <span class="co">[</span><span class="ot">−1.64, −1.56</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stratified days / yr <span class="pp">|</span> ssp126 <span class="pp">|</span> 9.7 <span class="co">[</span><span class="ot">7.7, 11.2</span><span class="co">]</span> <span class="pp">|</span> 17.3 <span class="co">[</span><span class="ot">15.8, 18.3</span><span class="co">]</span> <span class="pp">|</span> 15.5 <span class="co">[</span><span class="ot">14.8, 17.3</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> ssp585 <span class="pp">|</span> 10.4 <span class="co">[</span><span class="ot">8.4, 11.0</span><span class="co">]</span> <span class="pp">|</span> 27.8 <span class="co">[</span><span class="ot">26.5, 28.8</span><span class="co">]</span> <span class="pp">|</span> 44.5 <span class="co">[</span><span class="ot">42.8, 46.4</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Anoxic days / yr <span class="pp">|</span> ssp126 <span class="pp">|</span> 0.95 <span class="co">[</span><span class="ot">0.13, 1.53</span><span class="co">]</span> <span class="pp">|</span> 3.60 <span class="co">[</span><span class="ot">1.87, 3.80</span><span class="co">]</span> <span class="pp">|</span> 1.67 <span class="co">[</span><span class="ot">1.43, 3.10</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> ssp585 <span class="pp">|</span> 2.50 <span class="co">[</span><span class="ot">1.33, 2.83</span><span class="co">]</span> <span class="pp">|</span> 9.07 <span class="co">[</span><span class="ot">7.70, 10.13</span><span class="co">]</span> <span class="pp">|</span> 15.02 <span class="co">[</span><span class="ot">14.03, 17.57</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Surface chl-a (mg/m³) <span class="pp">|</span> ssp126 <span class="pp">|</span> 1.42 <span class="co">[</span><span class="ot">0.49, 3.02</span><span class="co">]</span> <span class="pp">|</span> 2.22 <span class="co">[</span><span class="ot">0.87, 4.73</span><span class="co">]</span> <span class="pp">|</span> 1.69 <span class="co">[</span><span class="ot">0.61, 4.25</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> ssp585 <span class="pp">|</span> 1.28 <span class="co">[</span><span class="ot">0.50, 2.95</span><span class="co">]</span> <span class="pp">|</span> 2.42 <span class="co">[</span><span class="ot">0.77, 5.72</span><span class="co">]</span> <span class="pp">|</span> 3.83 <span class="co">[</span><span class="ot">1.42, 8.73</span><span class="co">]</span> <span class="pp">|</span></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a>: Scenario minus control across 8 posterior members, 30-year means.</span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ensemble-fig</span></span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: !expr file.exists(file.path(runs_dir, "ensemble_scenario_minus_control.rds"))</span></span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a>ens <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(runs_dir, <span class="st">"ensemble_scenario_minus_control.rds"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(member <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(oxy_bot, strat_days, anoxic_days, chl_surf), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-219"><a href="#cb4-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(var, <span class="fu">c</span>(<span class="st">"oxy_bot"</span>, <span class="st">"strat_days"</span>, <span class="st">"anoxic_days"</span>, <span class="st">"chl_surf"</span>),</span>
+<span id="cb4-220"><a href="#cb4-220" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">c</span>(<span class="st">"Bottom oxygen (mg/L)"</span>, <span class="st">"Stratified days / yr"</span>, <span class="st">"Anoxic days / yr"</span>, <span class="st">"Surface chl-a (mg/m³)"</span>)))</span>
+<span id="cb4-221"><a href="#cb4-221" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ens, <span class="fu">aes</span>(window, diff, <span class="at">colour =</span> scen)) <span class="sc">+</span></span>
+<span id="cb4-222"><a href="#cb4-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
+<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width =</span> <span class="fl">0.15</span>, <span class="at">dodge.width =</span> <span class="fl">0.6</span>), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> scen), <span class="at">fun =</span> median, <span class="at">geom =</span> <span class="st">"crossbar"</span>, <span class="at">width =</span> <span class="fl">0.5</span>,</span>
+<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.6</span>), <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Scenario minus control (30-year mean)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>,</span>
+<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Each point is one posterior member; the bar is the median."</span>) <span class="sc">+</span></span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a>What the ensemble shows:</span>
+<span id="cb4-233"><a href="#cb4-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**The physical response is not sensitive to the sampled parameters.** The surface-warming response is identical across members to within 0.001 °C, even though absolute daily surface temperature differs between members by up to 0.6 °C (bottom temperature by up to 2.3 °C, bottom oxygen by up to 5.8 mg/L). Bottom oxygen and stratified days vary little in response.</span>
+<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Anoxic days are fairly robust.** For ssp585 in 2070--2099 the range is 14--18 days a year, and ssp126 is far lower. The best-parameter run (14.3 days) sits inside the range.</span>
+<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Chlorophyll-a is the uncertain result.** The ssp585 increase in 2070--2099 ranges from +1.4 to +8.7 mg/m³, a factor of about six. It is positive in every member and window, so the direction is robust and the size is not.</span>
+<span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Compared with the other sources of uncertainty** (2070--2099, ssp585 anoxic days): the parameter range is about 3.6 days; the GCM-direct side test differs from delta change by about 3.6 days (see the <span class="co">[</span><span class="ot">CMIP approaches page</span><span class="co">](cmip-impact-modelling-approaches.qmd)</span>); the difference between ssp126 and ssp585 is about 13 days.</span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>**Limits of this ensemble.** The posterior members come from the biogeochemical and alum calibration steps, so they vary mostly biogeochemistry. Only about 11 of the 138 parameters that differ between members look physical (mixing, light, meteorological scaling), so physical-parameter uncertainty is barely sampled. The near-identical temperature response should not be read as precise. There are only 8 members, one GCM and two scenarios.</span>
+<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. What is still open</span></span>
+<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Parameter uncertainty (done for 8 members).** See section 4. Remaining: more members if the chlorophyll range needs tightening, and a physics-parameter ensemble, since the posterior members barely vary the physics.</span>
+<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**More GCMs.** The three runs use ACCESS-CM2 only (the warmest model). <span class="in">`NorESM2-MM`</span> sits at the cool end; both are needed to bracket the GCM spread. Extending to all 28 branches is feasible now that each run leaves about 50 MB.</span>
+<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Forcing beyond climate.** Future nutrient loads (including an N-reduction pathway), a defined post-calibration alum policy, and lake-level/outflow rules.</span>
+<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Optional hindcast.** A 1960-to-present run on real bias-corrected ERA5 (no deltas), followed by the transient period with deltas measured against a recent-observation baseline, would give a validatable historical period. It needs inflows, loads and alum back to 1960.</span>
+<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Variability change.** Delta-change keeps variability fixed; a bias-corrected GCM-direct side test is the route if storm or heatwave frequency matters.</span>
+<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Files</span></span>
+<span id="cb4-250"><a href="#cb4-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-251"><a href="#cb4-251" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> File <span class="pp">|</span> Role <span class="pp">|</span></span>
+<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a><span class="pp">|-----------------------------------|-------------------------------------|</span></span>
+<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/scenario_climate_workflow.R`</span> <span class="pp">|</span> Transient weather and delta builders <span class="pp">|</span></span>
+<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`R/transient_inflows.R`</span> <span class="pp">|</span> <span class="in">`build_transient_inflows()`</span>: weather-paired, climate-scaled inflows <span class="pp">|</span></span>
+<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/run_one_transient.R`</span> <span class="pp">|</span> One-branch driver; saves summaries and deletes the model folder <span class="pp">|</span></span>
+<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/runs/daily_&lt;run&gt;.rds`</span> <span class="pp">|</span> Daily lake summary per run <span class="pp">|</span></span>
+<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/runs/glm_csv_&lt;run&gt;/`</span> <span class="pp">|</span> <span class="in">`lake.csv`</span> and <span class="in">`mass_balance.csv`</span> per run <span class="pp">|</span></span>
+<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/run_ensemble.ps1`</span> <span class="pp">|</span> Queue of posterior-member runs with a concurrency cap; resumable <span class="pp">|</span></span>
+<span id="cb4-259"><a href="#cb4-259" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calibration/transient/runs/ensemble_scenario_minus_control.rds`</span> <span class="pp">|</span> Scenario minus control per member and 30-year window <span class="pp">|</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

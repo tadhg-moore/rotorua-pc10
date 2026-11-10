@@ -1,0 +1,6 @@
+/* NZFSS 2026 alum deck: title-slide and dark section-slide text colours */
+#title-slide, #title-slide h1, #title-slide h2, #title-slide .subtitle, #title-slide .author,
+#title-slide .quarto-title-author-name, #title-slide .date, #title-slide .quarto-title-affiliation,
+#title-slide a, #title-slide p { color: #ffffff !important; text-shadow: 0 1px 6px rgba(0,0,0,.65); }
+.reveal section[data-background-color="#1b3a4b"] h1,
+.reveal section[data-background-color="#1b3a4b"] h2 { color: #ffffff !important; }
