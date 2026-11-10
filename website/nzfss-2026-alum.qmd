@@ -15,6 +15,14 @@ author:
     orcid: 0000-0002-5442-4576
     affiliations:
       - ref: uni
+  - name: Kamilla Kurucz
+    orcid: 0000-0003-2162-8326
+    affiliations:
+      - ref: uwa
+  - name: Matthew R. Hipsey
+    orcid: 0000-0001-8386-4354
+    affiliations:
+      - ref: uwa
 affiliations:
   - id: lt
     name: LimnoTrack
@@ -22,9 +30,23 @@ affiliations:
     country: New Zealand
   - id: uni
     name: University of Waikato
+    city: Hamilton
+    country: New Zealand
+  - id: uwa
+    name: University of Western Australia
+    city: Perth
+    country: Australia
 date: 2026-11-03
+resources:
+  - figures/map_rotorua.html
 format:
   revealjs:
+    title-slide-attributes:
+      data-background-image: figures/title_bg.jpg
+      data-background-size: cover
+      data-background-position: center 60%
+      data-background-color: "#1b3a4b"
+      data-background-opacity: "0.55"
     theme: [default]
     slide-number: true
     # transition: fade
@@ -35,129 +57,97 @@ format:
     preview-links: auto
     chalkboard: false
     hash: true
-    controls: false
+    controls: true
     include-after-body: www/hub.html
-    css: www/styles.css
+    css: [www/styles.css, www/nzfss-2026-alum.css]
 execute:
   echo: false
   warning: false
   message: false
 ---
 
-<!--
-OUTLINE DRAFT. Target ~15 min / ~13 content slides (about 1 min each).
-Items marked TODO are placeholders for figures or numbers to confirm.
-Numbers quoted are from the m46 best member (Oct-Nov 2026 runs): re-check before presenting.
--->
 
 # Why alum, and why a model? {background-color="#1b3a4b"}
 
 ## The problem {.smaller}
 
+::: incremental
 - Excess phosphorus (P) loading still drives eutrophication in lakes worldwide
 - Alum (aluminium sulfate) is widely used to reduce P availability
 - The chemistry of Al–P binding is well understood
 - **But** dose-to-outcome tools remain largely empirical
+:::
 
-::: {.callout-important}
+::: {.callout-important .fragment}
 ## The gap
+
 Existing lake models cannot explicitly link *alum dosing strategy* to *lake-scale P dynamics* and *long-term water quality*.
 :::
 
-::: {.notes}
+::: notes
 Frame the decision problem: managers choose dose, timing, location, not chemistry.
 :::
 
-## Lake Rotorua: a rare long record
+## Lake Rotorua: a rare long record {.smaller}
 
-:::: {.columns}
-::: {.column width="45%"}
+::::: columns
+::: {.column width="42%"}
 - Bay of Plenty, Aotearoa New Zealand
-- Warm monomictic, eutrophic, history of cyanobacterial blooms and bottom-water anoxia
-- **Continuous alum dosing of the two main inflows (Puarenga and Utuhina streams) for over two decades**
-- Long monitoring record: lake, streams, outlet
-:::
-::: {.column width="55%"}
-<!-- TODO: map of Lake Rotorua with dosing plants, inflows, outlet (Ohau Channel), monitoring site -->
-![](figures/map_rotorua.png){fig-alt="Map of Lake Rotorua"}
-:::
-::::
-
-::: {.notes}
-Dosing in the streams, not the lake, is why we need an inflow-delivery component.
+- Warm polymictic, eutrophic, history of cyanobacterial blooms and bottom-water anoxia
+- **Continuous alum dosing of the Utuhina (since 2006) and Puarenga (since 2010) streams**
+- Long monitoring record of lake, streams and outlet
 :::
 
-## Question and approach
+::: {.column width="58%"}
+![](figures/alum_dosing.png){fig-alt="Monthly mean alum dose to the Utuhina and Puarenga streams, 2006 to 2026" fig-align="center"}
+:::
+:::::
 
-**Can we build a mechanistic, transferable representation of continuous alum treatment inside a full lake model, and use it to inform dosing decisions?**
+##  {background-iframe="figures/map_rotorua.html" background-interactive="true"}
 
-1. Develop an alum module for GLM-AED
-2. Calibrate and evaluate on 20+ years of Rotorua dosing
-3. Use it to test treatment scheduling and trade-offs
-4. Scenarios: is alum alone enough?
+::: notes
+Interactive map (website/R/make_nzfss_map.R). Animation plays on arrival: surface catchments, groundwater catchments, dosing points, then the Ohau outflow. Use Replay (top left) to restart; layers can be toggled top right. Dosing in the streams, not the lake, is why we need an inflow-delivery component.
+:::
+
+## Question and approach {background-image="figures/catchment_overview.jpg" background-opacity="0.4" background-color="#1b3a4b"}
+
+**Can we build a mechanistic representation of continuous alum treatment inside a full lake model, and use it to inform dosing decisions?**
+
+1.  Develop an alum module for GLM-AED
+2.  Calibrate and evaluate on 20+ years of Rotorua dosing
+3.  Use it to test treatment scheduling
+4.  Scenarios: is alum alone enough?
 
 # The model {background-color="#1b3a4b"}
 
 ## The GLM-AED alum module
 
-<!-- TODO: process diagram (mermaid or SVG). Boxes below. -->
+<!--
+Make bigger text
+Alum chemistry
+Add pictures of dosing plants
+Continuous dosing is rare
+Add chemistry equation for hydrolysis of Alum
+  Can't buld dose Rotorua
+    Big lake & buffering
+    Acidic
+Add MH & KK as co-authors
+1-D model 
+Remove pH - labels
 
-```{mermaid}
-flowchart TB
-  DOSE(["Alum dosed<br/>to stream"])
+-->
 
-  subgraph LAKE["Lake"]
-    subgraph WC["Water column"]
-      WR["Reactive Al"]
-      WB["Al-bound P"]
-      WAA["Aged Al<br/>(no capacity)"]
 
-      WR -- "P binding<br/>f(T, pH)" --> WB
-    end
+![Box and arrow diagram of the AED alum module.](figures/aed-alum-diagram.png){fig-align="center"}
 
-    subgraph SED["Sediment"]
-      BR["Benthic reactive Al"]
-      BB["Benthic Al-bound P"]
-      BAA["Aged Al<br/>(no capacity)"]
-      BUR[("Buried")]
-
-      BR -- "P binding at<br/>sediment-water interface" --> BB
-      BB -- "burial" --> BUR
-    end
-
-    WR -- "settling" --> BR
-    WB -- "settling" --> BB
-    BR -. "resuspension" .-> WR
-    BB -. "resuspension" .-> WB
-    WR -- "ageing" --> WAA
-    BR -- "ageing" --> BAA
-  end
-
-  OUT(["Lake outflow<br/>(export)"])
-
-  DOSE --> WR
-  WC -- "export" --> OUT
-  SED ~~~ OUT
-
-  classDef alum fill:#fde8c8,stroke:#d95f02,color:#222
-  classDef bound fill:#cfe3f1,stroke:#1b6ca8,color:#222
-  classDef sink fill:#e5e5e5,stroke:#666,color:#222
-  class WR,BR alum
-  class WB,BB bound
-  class WAA,BAA,BUR,OUT sink
-
-  style WC fill:#d6ebf8,stroke:#1b6ca8
-  style SED fill:#e8d5b5,stroke:#8b6b3e
-```
-
-::: {.notes}
+::: notes
 Five processes from the abstract: delivery from inflows, kinetic uptake in the water column, settling, continued binding at the SWI, ageing.
 :::
 
 ## Process by process {.smaller}
 
 | Process | Representation |
-|---|---|
+|------------------------------------|------------------------------------|
 | Delivery | Alum dose carried by treated inflows (dose ratio set per stream) |
 | Water-column uptake | Second-order kinetics, Al~r~ × PO~4~, temperature (Q~10~) scaling |
 | Settling | Gravitational settling of floc to the bed (w~ala~) |
@@ -167,87 +157,119 @@ Five processes from the abstract: delivery from inflows, kinetic uptake in the w
 
 $$R_{bind} = k_{20}\,Q_{10}^{(T-20)/10}\,f(pH)\,Al_r\,PO_4$$
 
-::: {.notes}
+::: notes
 Keep equation small. Emphasise: few parameters, each one has a physical meaning, so each can be tested.
 :::
 
 ## Why pH matters
 
+::::: columns
+::: {.column width="42%"}
 - Binding efficiency falls away from near-neutral pH
 - Rotorua pH varies substantially (summer photosynthesis raises it)
 - Module includes a pH modifier; transferable to higher-pH systems
+:::
 
-<!-- TODO: figure of f(pH) curve and observed Rotorua pH distribution (calibration/alum/ph_obs.rds exists). Caveat: pH not yet simulated, see Limitations. -->
+::: {.column width="58%"}
+![](figures/ph_distribution.png){fig-alt="Distribution of surface pH from the old (2014 to 2018) and new (2022 to 2026) Lake Rotorua buoys, medians near 7.0 and 7.1" fig-align="center"}
+:::
+:::::
+
+::: notes
+Surface pH (\<= 5 m) from the old buoy (2014-2018, n = 1229) and new buoy (2022-2026, n = 13024); figure from website/R/make_ph_fig.R. Medians 6.95 and 7.10; 5-95% range 6.1-7.7 (old) and 6.4-8.2 (new). New buoy has a longer high-pH tail (summer photosynthesis). Caveat: pH not yet simulated, see Limitations. TODO still open: f(pH) curve overlay.
+:::
 
 # Calibration and evaluation {background-color="#1b3a4b"}
 
 ## Staged calibration
 
-:::: {.columns}
+::::: columns
 ::: {.column width="50%"}
-1. Physics: water balance, temperature, light, oxygen
-2. Biogeochemistry **before** alum (pre-alum record, ~1990-2005)
-3. Alum parameters, with the pre-alum fit fixed
-4. Oxygen / anoxia re-check with alum on
+1.  Physics: water balance, temperature, light, oxygen
+2.  Biogeochemistry **before** alum (pre-alum record, \~1990-2005)
+3.  Alum parameters, with the pre-alum fit fixed
+4.  Oxygen / anoxia re-check with alum on
 :::
+
 ::: {.column width="50%"}
-- Wind kept as measured; compensation sits in mixing and heat-flux coefficients
 - Targets: lake TP, FRP, chlorophyll, nitrate, bottom DO and anoxic days
 - Pre-alum period gives a clean "no treatment" baseline
 :::
-::::
+:::::
+
+::: notes
+Key message: separating alum from biology calibration avoids the alum parameters absorbing biology error.
+:::
+
+## What data constrain the model? {.smaller}
+
+![](figures/calib_obs_periods.png){fig-alt="Observed lake level, surface temperature, bottom oxygen, total and filterable reactive phosphorus, nitrate and chlorophyll-a from 1990 to 2026, with the pre-alum, calibration and held-out periods shaded" fig-align="center" width="100%"}
 
 ::: {.notes}
-Key message: separating alum from biology calibration avoids the alum parameters absorbing biology error.
+Figure: website/R/make_calib_obs_fig.R. Level from the BOPRC record; nutrients and chl-a are integrated samples at Sites 2 and 5 (about 400 samples each since 1990); temperature (surface <= 3 m) and bottom oxygen (>= 17 m) are daily means from the 2003-2007 profiles, the old buoy and the new buoy. Periods: pre-alum baseline to mid-2006, alum calibration 2006-2018, held out 2018-2022; data after mid-2022 are shown but not simulated. High-frequency data start in 2007, nutrients are sparse (roughly monthly) throughout.
 :::
 
 ## How well does it reproduce the lake?
 
+::::: columns
+::: {.column width="50%"}
 ![](figures/calib_timeseries.png){fig-alt="Observed and simulated surface total phosphorus, filterable reactive phosphorus and chlorophyll-a, 2003 to 2022" width="88%" fig-align="center"}
+:::
 
+::: {.column width="50%"}
 - Calibrated on 2006–2018, evaluated on **2018–2022 (held out)**
 - TP tracks the long decline after dosing began; chlorophyll-a is simulated at the right level
 - Honest misfit: the 2021–22 TP/FRP rebound is **not** reproduced (suggests event-driven external load or alum-P release)
+:::
+:::::
 
-::: {.notes}
-Figure: calibration/all_stage/nzfss_figs.R (member from calibration/all_stage/out_main/best.rds, updated GLM-AED exe).
-Be upfront about the rebound; it motivates the next-steps slide. FRP is over-predicted before about 2007.
+::: notes
+Figure: calibration/all_stage/nzfss_figs.R (member from calibration/all_stage/out_main/best.rds, updated GLM-AED exe). Be upfront about the rebound; it motivates the next-steps slide. FRP is over-predicted before about 2007.
 :::
 
 ## Annual TP and bottom-water anoxia {.smaller}
 
-:::: {.columns}
+::::: columns
 ::: {.column width="50%"}
 ![](figures/calib_annual_tp.png){fig-alt="Annual mean surface TP, observed and simulated"}
 :::
+
 ::: {.column width="50%"}
 ![](figures/calib_anoxia.png){fig-alt="Days per year with bottom oxygen below 2 g per cubic metre, observed and simulated"}
 :::
-::::
+:::::
 
 - Annual TP: r = 0.58, RMSE 0.009 g P/m³; the post-2016 rise and the 2021–22 rebound are missed
 - Bottom DO r = 0.90; anoxic sampling days **167 simulated vs 240 observed**, with the wet years 2008–2011 under-predicted
 
-::: {.notes}
+::: notes
 Numbers from calibration/all_stage/nzfss_figs.R (printed at the end of the run). The earlier "236 vs 239" was the old-exe O member.
 :::
 
 ## Where does the alum and P go? {.smaller}
 
-:::: {.columns}
-::: {.column width="55%"}
+::::: columns
+::: {.column width="60%"}
 ![](figures/alum_fate_P_updated.png){fig-alt="Fate of alum-bound phosphorus: binding, settling, resuspension, burial and outflow"}
 :::
-::: {.column width="45%"}
-- ~52 t Al yr^-1^ applied, ~12–17 t P yr^-1^ removed
-- ~30 mol Al per mol P in the **streams**, ~5 in the lake, 3.5–5 whole system
-- ~97% of alum-bound P ends buried
-- Most reactive capacity ages out in the water column before reaching the bed
-- New module diagnostics: binding ~10, burial ~22 t P yr^-1^, so the reconstruction does **not** yet close (gap ~10 t P yr^-1^)
-:::
-::::
 
-::: {.notes}
+::: {.column width="40%"}
+- \~52 t Al yr^-1^ applied, \~12–17 t P yr^-1^ removed
+<!-- - \~30 mol Al per mol P in the **streams**, \~5 in the lake, 3.5–5 whole system -->
+- \~97% of alum-bound P ends buried
+
+::: callout-warning
+## Alum ageing
+
+Most reactive capacity ages out in the water column before reaching the bed
+
+:::
+
+<!-- - New module diagnostics: binding \~10, burial \~22 t P yr^-1^, so the reconstruction does **not** yet close (gap \~10 t P yr^-1^) -->
+:::
+:::::
+
+::: notes
 Treat absolute settling and burial as a range; module flux diagnostics are not yet output (closure issue). Say so.
 :::
 
@@ -262,10 +284,11 @@ Treat absolute settling and burial as a range; module flux diagnostics are not y
 
 ## What does the alum do? On versus off {.smaller}
 
-:::: {.columns}
+::::: columns
 ::: {.column width="55%"}
 ![](figures/alum_on_off.png){fig-alt="Annual mean surface TP and chlorophyll-a with alum as dosed and with no alum, against observations"}
 :::
+
 ::: {.column width="45%"}
 - 24 calibrated ensemble members, each run with the alum dose as applied and set to zero in every inflow
 - 2007–2022 mean surface TP: **0.018 vs 0.050 g P/m³**, a **64% reduction** (5–95% range of members: 54–69%)
@@ -273,29 +296,11 @@ Treat absolute settling and burial as a range; module flux diagnostics are not y
 - Bottom-water anoxia: no consistent change (members differ by −40 to +25 sampling days over 2004–2022)
 - Model-based: the lake was dosed, so the "no alum" run has no observations to check against
 :::
-::::
+:::::
 
-::: {.notes}
+::: notes
 S0 vs S1 of rotorua-alum-scenarios.qmd, rerun for the best 24 members of the final one-stage ES-MDA iteration (ranked on calibration score only) on the updated exe: calibration/all_stage/nzfss_ensemble.R, figure in nzfss_figs.R. Bands are the 5-95% range over members, not a full predictive interval (parameter uncertainty only). Anoxia on/off bars are in figures/alum_on_off_anoxia.png if a separate slide is wanted.
 :::
-
-## Scenario results {.smaller}
-
-<!-- TODO: pick 2-3 headline results from website/rotorua-alum-scenarios.qmd
-     (S0 no alum vs S1 historical dose; settling velocity, capacity, resuspension, surface-dose sensitivities). -->
-
-:::: {.columns}
-::: {.column width="50%"}
-**No alum vs historical dose**
-
-TODO: change in lake TP, chl, anoxia, P export
-:::
-::: {.column width="50%"}
-**Sensitivity of outcomes to**
-
-TODO: floc settling, capacity (Al:P), resuspension, surface vs stream dosing
-:::
-::::
 
 ## Is alum alone enough?
 
@@ -303,27 +308,32 @@ TODO: floc settling, capacity (Al:P), resuspension, surface vs stream dosing
   - Alum only
   - Alum + catchment load reduction
   - Climate-adjusted conditions
-- Compare against lake water quality targets (TLI / CSPS metrics)
+- Compare against lake water quality targets
 
-<!-- TODO: schematic or placeholder figure; present as ongoing work unless results are ready -->
+## Climate Scenarios (preliminary)
+
+![](figures/obs_scenarios_physics.png){fig-align="center"}
 
 # Take-home {background-color="#1b3a4b"}
 
+<!--
 ## Limitations and next steps {.smaller}
 
 - pH not yet simulated (fixed efficiency in current runs); a prescribed-pH mode would allow calibrating pH~opt~ and σ~pH~
 - Process flux diagnostics (ageing, burial, resuspension) need to be added to the module to close the Al and P budgets
 - Late-period P rebound unexplained
 - Transfer tests on other coagulant-treated lakes
+-->
 
 ## Key messages
 
-1. A process-based alum module in GLM-AED links **dose → floc → P binding → lake outcomes**
-2. 20+ years of Rotorua dosing allow calibration and evaluation rarely possible elsewhere
-3. Supports decisions on *when and how much* to dose, and *whether alum alone is enough*
-4. Designed to transfer to any lake considering alum or similar coagulants
-
-::: {.callout-tip}
-## Acknowledgements and contact
-TODO: funders, partners, Bay of Plenty Regional Council, data providers, co-authors, contact details / QR code to repo or website
+::: incremental
+1.  A process-based alum module in GLM-AED links **dose → floc → P binding → lake outcomes**
+2.  20+ years of Rotorua dosing allow calibration and evaluation rarely possible elsewhere
+3.  Supports decisions on *when and how much* to dose, and *whether alum alone is enough*
+4.  Designed to transfer to any lake considering alum or similar coagulants
 :::
+
+## Acknowledgements and contact {background-image="figures/lakeshore.jpg" background-opacity="0.4" background-color="#1b3a4b"}
+
+TODO: funders, partners, Bay of Plenty Regional Council, data providers, co-authors, contact details / QR code to repo or website

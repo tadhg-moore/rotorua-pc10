@@ -17,11 +17,14 @@ Authors:
 1. Dr Tadhg Moore
 2. Chris McBride
 3. Prof Deniz Özkundakci
+4. Dr Kamilla Kurucz
+5. Dr Matthew R. Hipsey
 
 Affiliations:
 1. University of Waikato
 2. Limnotrack
 3. University of Waikato
+4. The University of Western Australia 
 
 Abstract:
 
