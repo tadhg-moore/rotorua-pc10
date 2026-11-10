@@ -106,7 +106,7 @@ Frame the decision problem: managers choose dose, timing, location, not chemistr
 ##  {background-iframe="figures/map_rotorua.html" background-interactive="true"}
 
 ::: notes
-Interactive map (website/R/make_nzfss_map.R). Animation plays on arrival: surface catchments, groundwater catchments, dosing points, then the Ohau outflow. Use Replay (top left) to restart; layers can be toggled top right. Dosing in the streams, not the lake, is why we need an inflow-delivery component.
+Interactive map (website/scripts/nzfss/make_nzfss_map.R). Animation plays on arrival: surface catchments, groundwater catchments, dosing points, then the Ohau outflow. Use Replay (top left) to restart; layers can be toggled top right. Dosing in the streams, not the lake, is why we need an inflow-delivery component.
 :::
 
 ## Question and approach {background-image="figures/catchment_overview.jpg" background-opacity="0.4" background-color="#1b3a4b"}
@@ -176,7 +176,7 @@ Keep equation small. Emphasise: few parameters, each one has a physical meaning,
 :::::
 
 ::: notes
-Surface pH (\<= 5 m) from the old buoy (2014-2018, n = 1229) and new buoy (2022-2026, n = 13024); figure from website/R/make_ph_fig.R. Medians 6.95 and 7.10; 5-95% range 6.1-7.7 (old) and 6.4-8.2 (new). New buoy has a longer high-pH tail (summer photosynthesis). Caveat: pH not yet simulated, see Limitations. TODO still open: f(pH) curve overlay.
+Surface pH (\<= 5 m) from the old buoy (2014-2018, n = 1229) and new buoy (2022-2026, n = 13024); figure from website/scripts/nzfss/make_ph_fig.R. Medians 6.95 and 7.10; 5-95% range 6.1-7.7 (old) and 6.4-8.2 (new). New buoy has a longer high-pH tail (summer photosynthesis). Caveat: pH not yet simulated, see Limitations. TODO still open: f(pH) curve overlay.
 :::
 
 # Calibration and evaluation {background-color="#1b3a4b"}
@@ -206,7 +206,7 @@ Key message: separating alum from biology calibration avoids the alum parameters
 ![](figures/calib_obs_periods.png){fig-alt="Observed lake level, surface temperature, bottom oxygen, total and filterable reactive phosphorus, nitrate and chlorophyll-a from 1990 to 2026, with the pre-alum, calibration and held-out periods shaded" fig-align="center" width="100%"}
 
 ::: {.notes}
-Figure: website/R/make_calib_obs_fig.R. Level from the BOPRC record; nutrients and chl-a are integrated samples at Sites 2 and 5 (about 400 samples each since 1990); temperature (surface <= 3 m) and bottom oxygen (>= 17 m) are daily means from the 2003-2007 profiles, the old buoy and the new buoy. Periods: pre-alum baseline to mid-2006, alum calibration 2006-2018, held out 2018-2022; data after mid-2022 are shown but not simulated. High-frequency data start in 2007, nutrients are sparse (roughly monthly) throughout.
+Figure: website/scripts/nzfss/make_calib_obs_fig.R. Level from the BOPRC record; nutrients and chl-a are integrated samples at Sites 2 and 5 (about 400 samples each since 1990); temperature (surface <= 3 m) and bottom oxygen (>= 17 m) are daily means from the 2003-2007 profiles, the old buoy and the new buoy. Periods: pre-alum baseline to mid-2006, alum calibration 2006-2018, held out 2018-2022; data after mid-2022 are shown but not simulated. High-frequency data start in 2007, nutrients are sparse (roughly monthly) throughout.
 :::
 
 ## How well does it reproduce the lake?
