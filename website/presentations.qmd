@@ -1,0 +1,14 @@
+---
+title: "Presentations"
+format: html
+---
+
+## Lakes Research Group Meeting - 2026-10-20
+
+[Research Overview](research-overview.qmd){target="_blank"}
+
+## NZFSS 2026-12-03
+
+[Abstract](nzfss-abstract.qmd)
+
+[From dose to decision - A process-based model for continuous alum treatment in lakes](nzfss-2026-alum.qmd){target="_blank"}

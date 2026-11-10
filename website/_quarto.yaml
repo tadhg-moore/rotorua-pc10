@@ -166,14 +166,18 @@ website:
       style: docked
       search: true
       contents:
+        - href: presentations.qmd
+          text: "Presentations"
         - href: research-overview.qmd
           text: "Research Overview"
+          target: _blank
         - href: modelling-updates.qmd
           text: "Modelling Updates"
         - href: nzfss-abstract.qmd
           text: "NZFSS Abstract"
         - href: nzfss-2026-alum.qmd
           text: "NZFSS Conference Talk"
+          target: _blank
   page-footer: 
     left: 
       - text: "Rotorua Plan Change 10" 
