@@ -88,6 +88,8 @@ It reads the branch's hourly met from the `scenario_transient_hourly_met` target
 
 then **deletes the model folder**. A full run therefore leaves about 50 MB. (An earlier version did not clean up and three simultaneous runs filled the disk.)
 
+**Posterior members.** `MEMBER=<k>` (environment variable) replaces the step-3 best parameters with joint posterior member *k* of `calibration/posterior/members.rds` (40 members, each a full 138-parameter table built from the step-2b and step-3 ensembles). `MEMBER=0`, the default, is the best-parameter run. Outputs get an `_m<k>` suffix. `calibration/transient/run_ensemble.ps1` queues members x branches with a cap on concurrent jobs and skips jobs whose summary already exists, so it can be restarted.
+
 **Running more than one at a time.** Each branch writes only to its own folder, so branches can run in parallel, but a branch must never be launched twice: duplicate copies share one folder, corrupt the forcing files and fail with "Day not found".
 
 ## 3. First test results (ACCESS-CM2, one parameter set)
@@ -175,15 +177,64 @@ What the first runs show:
 -   **Water balance and level.** Lake level stays within 21.2--22.2 m in all three runs, and the water-balance residual is 0.08--0.1% of throughput (a constant bookkeeping offset, not a climate effect; its source, probably ice/snow volume or the runoff term, is not yet identified).
 -   **Chlorophyll-a and phosphorus rise in the scenarios**, but treat this as provisional. The control itself swings between decades (surface chl-a about 7.5 mg/m³ in the 2040s and 4.5 in the 2050s) because of weather sampling and carried-over source-year nutrient concentrations, and only one parameter set has been run.
 
-## 4. What is still open
+## 4. Parameter ensemble (ACCESS-CM2, 8 posterior members)
 
-1.  **Parameter uncertainty (next).** Run a thinned subset (about 10--20 members) of the calibration posterior ensemble for the same three branches, **paired by member** (the same member for control and scenario), and report scenario − control within each member. This separates uncertainty in the lake's absolute state from uncertainty in its *climate response*, and shows whether the chl-a and phosphorus changes are robust. One GCM is enough for this comparison; compare the resulting spread with the GCM and SSP spread.
+The control, ssp126 and ssp585 branches were each run with 8 posterior parameter sets. The same member is used for a scenario and its control, and the result is **scenario minus control within each member**, so differences in the lake's absolute state between members cancel and only the spread in the *climate response* remains. Each cell is the median across members with the minimum and maximum in brackets (8 members, so this is a range, not a 5--95% interval).
+
+| Metric (scenario minus control) | Scenario | 2016--2045 | 2046--2075 | 2070--2099 |
+|---|---|---|---|---|
+| Surface temperature (°C) | ssp126 | 0.74 [0.74, 0.74] | 1.37 [1.37, 1.37] | 1.45 [1.45, 1.45] |
+| | ssp585 | 0.93 [0.93, 0.93] | 2.37 [2.37, 2.37] | 3.80 [3.80, 3.80] |
+| Bottom oxygen (mg/L) | ssp126 | −0.29 [−0.33, −0.28] | −0.57 [−0.59, −0.54] | −0.56 [−0.58, −0.52] |
+| | ssp585 | −0.40 [−0.41, −0.37] | −1.02 [−1.04, −1.00] | −1.59 [−1.64, −1.56] |
+| Stratified days / yr | ssp126 | 9.7 [7.7, 11.2] | 17.3 [15.8, 18.3] | 15.5 [14.8, 17.3] |
+| | ssp585 | 10.4 [8.4, 11.0] | 27.8 [26.5, 28.8] | 44.5 [42.8, 46.4] |
+| Anoxic days / yr | ssp126 | 0.95 [0.13, 1.53] | 3.60 [1.87, 3.80] | 1.67 [1.43, 3.10] |
+| | ssp585 | 2.50 [1.33, 2.83] | 9.07 [7.70, 10.13] | 15.02 [14.03, 17.57] |
+| Surface chl-a (mg/m³) | ssp126 | 1.42 [0.49, 3.02] | 2.22 [0.87, 4.73] | 1.69 [0.61, 4.25] |
+| | ssp585 | 1.28 [0.50, 2.95] | 2.42 [0.77, 5.72] | 3.83 [1.42, 8.73] |
+
+: Scenario minus control across 8 posterior members, 30-year means.
+
+```{r}
+#| label: ensemble-fig
+#| eval: !expr file.exists(file.path(runs_dir, "ensemble_scenario_minus_control.rds"))
+#| echo: false
+#| out-width: 100%
+ens <- readRDS(file.path(runs_dir, "ensemble_scenario_minus_control.rds")) |>
+  filter(member > 0) |>
+  tidyr::pivot_longer(c(oxy_bot, strat_days, anoxic_days, chl_surf), names_to = "var", values_to = "diff") |>
+  mutate(var = factor(var, c("oxy_bot", "strat_days", "anoxic_days", "chl_surf"),
+                      c("Bottom oxygen (mg/L)", "Stratified days / yr", "Anoxic days / yr", "Surface chl-a (mg/m³)")))
+ggplot(ens, aes(window, diff, colour = scen)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_point(position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.6), alpha = 0.7) +
+  stat_summary(aes(group = scen), fun = median, geom = "crossbar", width = 0.5,
+               position = position_dodge(0.6), colour = "black", linewidth = 0.3) +
+  facet_wrap(~var, scales = "free_y") +
+  labs(x = NULL, y = "Scenario minus control (30-year mean)", colour = NULL,
+       caption = "Each point is one posterior member; the bar is the median.") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+What the ensemble shows:
+
+-   **The physical response is not sensitive to the sampled parameters.** The surface-warming response is identical across members to within 0.001 °C, even though absolute daily surface temperature differs between members by up to 0.6 °C (bottom temperature by up to 2.3 °C, bottom oxygen by up to 5.8 mg/L). Bottom oxygen and stratified days vary little in response.
+-   **Anoxic days are fairly robust.** For ssp585 in 2070--2099 the range is 14--18 days a year, and ssp126 is far lower. The best-parameter run (14.3 days) sits inside the range.
+-   **Chlorophyll-a is the uncertain result.** The ssp585 increase in 2070--2099 ranges from +1.4 to +8.7 mg/m³, a factor of about six. It is positive in every member and window, so the direction is robust and the size is not.
+-   **Compared with the other sources of uncertainty** (2070--2099, ssp585 anoxic days): the parameter range is about 3.6 days; the GCM-direct side test differs from delta change by about 3.6 days (see the [CMIP approaches page](cmip-impact-modelling-approaches.qmd)); the difference between ssp126 and ssp585 is about 13 days.
+
+**Limits of this ensemble.** The posterior members come from the biogeochemical and alum calibration steps, so they vary mostly biogeochemistry. Only about 11 of the 138 parameters that differ between members look physical (mixing, light, meteorological scaling), so physical-parameter uncertainty is barely sampled. The near-identical temperature response should not be read as precise. There are only 8 members, one GCM and two scenarios.
+
+## 5. What is still open
+
+1.  **Parameter uncertainty (done for 8 members).** See section 4. Remaining: more members if the chlorophyll range needs tightening, and a physics-parameter ensemble, since the posterior members barely vary the physics.
 2.  **More GCMs.** The three runs use ACCESS-CM2 only (the warmest model). `NorESM2-MM` sits at the cool end; both are needed to bracket the GCM spread. Extending to all 28 branches is feasible now that each run leaves about 50 MB.
 3. **Forcing beyond climate.** Future nutrient loads (including an N-reduction pathway), a defined post-calibration alum policy, and lake-level/outflow rules.
 4.  **Optional hindcast.** A 1960-to-present run on real bias-corrected ERA5 (no deltas), followed by the transient period with deltas measured against a recent-observation baseline, would give a validatable historical period. It needs inflows, loads and alum back to 1960.
 5.  **Variability change.** Delta-change keeps variability fixed; a bias-corrected GCM-direct side test is the route if storm or heatwave frequency matters.
 
-## 5. Files
+## 6. Files
 
 | File | Role |
 |-----------------------------------|-------------------------------------|
@@ -192,3 +243,5 @@ What the first runs show:
 | `calibration/transient/run_one_transient.R` | One-branch driver; saves summaries and deletes the model folder |
 | `calibration/transient/runs/daily_<run>.rds` | Daily lake summary per run |
 | `calibration/transient/runs/glm_csv_<run>/` | `lake.csv` and `mass_balance.csv` per run |
+| `calibration/transient/run_ensemble.ps1` | Queue of posterior-member runs with a concurrency cap; resumable |
+| `calibration/transient/runs/ensemble_scenario_minus_control.rds` | Scenario minus control per member and 30-year window |
