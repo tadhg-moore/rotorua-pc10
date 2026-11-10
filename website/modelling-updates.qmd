@@ -1,6 +1,7 @@
 ---
 title: "Lake Rotorua Modelling"
 subtitle: "Team Review & Planning Update"
+date: 2026-08-19
 format:
   revealjs:
     theme: default
@@ -12,10 +13,10 @@ format:
 ## Overview
 
 ::: incremental
--   Data inputs reviewed for Lake Rotorua GLM modelling
--   Calibration and validation periods defined
--   Key performance benchmarks identified
--   Sediment process trade-offs discussed
+- Data inputs reviewed for Lake Rotorua GLM modelling
+- Calibration and validation periods defined
+- Key performance benchmarks identified
+- Sediment process trade-offs discussed
 :::
 
 ------------------------------------------------------------------------
@@ -24,10 +25,10 @@ format:
 
 **Inputs reviewed:**
 
--   Hypsograph *(excluding the hole)*
--   Hourly meteorological data — NIWA, sourced from airport
--   Existing inflow data
--   PAR timeseries
+- Hypsograph *(excluding the hole)*
+- Hourly meteorological data — NIWA, sourced from airport
+- Existing inflow data
+- PAR timeseries
 
 **Modelling periods:**
 
@@ -69,7 +70,7 @@ Winter dominant
 
 **Data integration:**
 
--   Buoy data used to separate signal from noise
+- Buoy data used to separate signal from noise
 
 ------------------------------------------------------------------------
 
@@ -78,17 +79,17 @@ Winter dominant
 *Key indicators — framed for climate adaptation conversations*
 
 ::: incremental
--   **TLI & components** — TN, TP, Chlorophyll-a, Secchi depth
--   **Anoxic duration** — temperature & stratification metrics
--   **Phytoplankton timing**
--   **Outflow nutrient concentrations** — to Ohau Channel
--   **Alum dosing module** — pH effects, TLI impact, cost implications
+- **TLI & components** — TN, TP, Chlorophyll-a, Secchi depth
+- **Anoxic duration** — temperature & stratification metrics
+- **Phytoplankton timing**
+- **Outflow nutrient concentrations** — to Ohau Channel
+- **Alum dosing module** — pH effects, TLI impact, cost implications
 :::
 
 ## Calibration Benchmarks - 2
 
 | Benchmark | CSPS Level | Notes |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | TLI & components (TN, TP, Chl-a, Secchi) | Level 1a/1b | Direct state variable comparisons — core of current practice |
 | Anoxic duration | Level 1b | Derived metric from temperature/oxygen profiles |
 | Phytoplankton timing | Level 1b | Derived metric — bloom onset, peak, duration |
@@ -120,9 +121,9 @@ A dedicated module to account for:
 
 **pH ignores `pH_initial` because it's diagnostic, not prognostic**
 
--   `aed_carbon` tracks DIC as a conserved state variable; pH is *recomputed every timestep* from DIC + Total Alkalinity via `CO2SYS` — `pH_initial` is only the solver's first guess
--   Default `alk_mode = 1` hardcodes a salinity regression fit to Caboolture, QLD — no general-purpose option, no way to supply real TA data
--   `id_talk` (a TA state variable ID) is declared in `aed_carbon.F90` but never registered — the intended dynamic TA path was never finished
+- `aed_carbon` tracks DIC as a conserved state variable; pH is *recomputed every timestep* from DIC + Total Alkalinity via `CO2SYS` — `pH_initial` is only the solver's first guess
+- Default `alk_mode = 1` hardcodes a salinity regression fit to Caboolture, QLD — no general-purpose option, no way to supply real TA data
+- `id_talk` (a TA state variable ID) is declared in `aed_carbon.F90` but never registered — the intended dynamic TA path was never finished
 
 ::: notes
 alk_mode = 0 is also broken — CO2SYS calls are commented out and the solver never converges. Modes 1–5 are all site-specific Queensland regressions. Nothing in the shipped module supports user-supplied alkalinity.
@@ -139,12 +140,12 @@ alk_mode = 0 is also broken — CO2SYS calls are commented out and the solver ne
 /
 ```
 
--   `talk_fixed` defaults to `NaN` — mode 6 without it fails loudly at startup
--   Get `talk_fixed` from real TA measurements, or back-solve from (DIC, observed pH) via `PyCO2SYS`
--   Observed pH becomes a **validation target**, not a model input
--   **Higher TA → higher pH**; response is nonlinear, steepest near pKa values (\~6.3, \~10.3)
--   Verified with clean compile and full library build — not yet run end-to-end through GLM
--   If a single constant isn't sufficient, the next step is finishing `id_talk` as a real dynamic state variable with a depth-varying initial profile
+- `talk_fixed` defaults to `NaN` — mode 6 without it fails loudly at startup
+- Get `talk_fixed` from real TA measurements, or back-solve from (DIC, observed pH) via `PyCO2SYS`
+- Observed pH becomes a **validation target**, not a model input
+- **Higher TA → higher pH**; response is nonlinear, steepest near pKa values (\~6.3, \~10.3)
+- Verified with clean compile and full library build — not yet run end-to-end through GLM
+- If a single constant isn't sufficient, the next step is finishing `id_talk` as a real dynamic state variable with a depth-varying initial profile
 
 ------------------------------------------------------------------------
 
@@ -153,9 +154,9 @@ alk_mode = 0 is also broken — CO2SYS calls are commented out and the solver ne
 **Key discussion points:**
 
 ::: incremental
--   **Fixed vs. dynamic sediment loading** — trade-offs under review
--   **Spin-up period looping** — potential approach to stabilise initial conditions
--   Trade-offs between model complexity and computational cost
+- **Fixed vs. dynamic sediment loading** — trade-offs under review
+- **Spin-up period looping** — potential approach to stabilise initial conditions
+- Trade-offs between model complexity and computational cost
 :::
 
 ------------------------------------------------------------------------
