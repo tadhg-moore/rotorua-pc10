@@ -61,7 +61,8 @@ tar_source(
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
     here::here("R", "read_chem_data.R"),
-    here::here("R", "read_electro_fishing.R")
+    here::here("R", "read_electro_fishing.R"),
+    here::here("R", "download_arcgis_layer.R")
   )
 )
 # Set target options
@@ -144,8 +145,70 @@ list(
     deployment = "main"
   ),
   
+  # BOPRC Rotorua nutrient-management catchment polygons (ArcGIS Hub) ----
   tar_target(
-    rotorua_old_buoy_data_url, "https://github.com/limnotrack/f_rotorua/releases/download/v0.0.1/rotorua_data_qc.zip"
+    boprc_lake_catchments_url,
+    "https://services1.arcgis.com/TWsoAGve3wb3oFHK/arcgis/rest/services/Rotorua_Lakes_Catchment___Nutrient_Management/FeatureServer"
+  ),
+  tar_target(
+    boprc_lake_catchments_file,
+    download_arcgis_layer(
+      boprc_lake_catchments_url,
+      here::here("data", "processed", "boprc_gis", "rotorua_lakes_surface_water_catchments.geojson")
+    ),
+    format = "file"
+  ),
+  tar_target(
+    boprc_lake_catchments,
+    sf::read_sf(boprc_lake_catchments_file)
+  ),
+  tar_target(
+    boprc_gw_subcatchments_url,
+    "https://services1.arcgis.com/TWsoAGve3wb3oFHK/arcgis/rest/services/GNS___Groundwater_Sub_catchments_Rotorua/FeatureServer"
+  ),
+  tar_target(
+    boprc_gw_subcatchments_file,
+    download_arcgis_layer(
+      boprc_gw_subcatchments_url,
+      here::here("data", "processed", "boprc_gis", "rotorua_groundwater_subcatchments.geojson")
+    ),
+    format = "file"
+  ),
+  tar_target(
+    boprc_gw_subcatchments,
+    sf::read_sf(boprc_gw_subcatchments_file)
+  ),
+
+  # Puarenga and Utuhina stream centrelines (NZ River Centrelines, Topo 1:50k) ----
+  # Shapefile: all component files are tracked so edits to any of them re-run the readers.
+  tar_target(
+    stream_centrelines_files,
+    list.files(
+      file.path(data_raw_dir, "Puarenga and Utuhina streams"),
+      pattern = "^Puarenga and Utuhina[.](shp|shx|dbf|prj|cpg|sbn|sbx)$",
+      full.names = TRUE
+    ),
+    format = "file"
+  ),
+  tar_target(
+    stream_centrelines, {
+      shp <- grep("[.]shp$", stream_centrelines_files, value = TRUE)
+      x <- sf::st_cast(sf::read_sf(shp), "LINESTRING")
+      x <- sf::st_transform(sf::st_zm(x), 4326)   # drop the Z (KML export) dimension
+      # The file has no stream names: label each segment by the surface-water
+      # sub-catchment it lies in (all 34 segments fall wholly in Puarenga or Utuhina).
+      sub <- boprc_lake_catchments
+      sub$SubCatchment <- trimws(sub$SubCatchment)
+      sub <- sub[sub$SubCatchment %in% c("Puarenga", "Utuhina"), "SubCatchment"]
+      s2 <- sf::sf_use_s2(FALSE); on.exit(sf::sf_use_s2(s2), add = TRUE)
+      idx <- suppressMessages(sf::st_intersects(x, sub))
+      x$stream <- vapply(idx, function(i) if (length(i)) sub$SubCatchment[i[1]] else NA_character_, "")
+      x[!is.na(x$stream), c("stream", "geometry")]
+    }
+  ),
+
+  tar_target(
+    rotorua_old_buoy_data_url,"https://github.com/limnotrack/f_rotorua/releases/download/v0.0.1/rotorua_data_qc.zip"
   ),
   tar_target(
     rotorua_old_buoy_data_zip, {
@@ -183,7 +246,28 @@ list(
   tar_target(
     ohau_wq_data, read_bop_lab_csv_url(ohau_wq_url)
   ),
+  # Site location from the BOPRC WebPortal location summary page
+  # (https://envdata.boprc.govt.nz/Data/Location/Summary/Location/FL230406/Interval/Latest)
+  # Lat/lon (WGS84) -38.04399712, 176.33084006; NZTM 1892304 E, 5784064 N; elevation 280 m (as listed on the portal)
+  tar_target(
+    ohau_site_sf,
+    sf::st_as_sf(
+      data.frame(site_code = "FL230406", site_name = "Ohau Channel at SH33",
+                 lon = 176.33084006, lat = -38.04399712),
+      coords = c("lon", "lat"), crs = 4326
+    )
+  ),
   
+  # Ohau Channel weir (lake outflow control structure), WGS84
+  tar_target(
+    ohau_weir_sf,
+    sf::st_as_sf(
+      data.frame(site_name = "Ohau Channel weir",
+                 lon = 176.323916, lat = -38.046224),
+      coords = c("lon", "lat"), crs = 4326
+    )
+  ),
+
   tar_target(
     ohau_flow_level, {
       dplyr::left_join(rotorua_flow_data, rotorua_level_data,
@@ -587,6 +671,16 @@ list(
       sf::st_geometry(bb) <- "geometry"
       bb
     }
+  ),
+  
+  tar_target(
+    buoy_metadata, {
+      ltapi::lt_fetch("sites", filter = ltapi::lt_filter(site_id == "Rotorua"))
+    }
+  ),
+  tar_target(
+    buoy_sf, sf::st_as_sf(buoy_metadata, coords = c("longitude", "latitude"),
+                          crs = 4326)
   ),
   
   tar_target(
