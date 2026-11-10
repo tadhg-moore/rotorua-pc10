@@ -1,0 +1,198 @@
+---
+title: "Lake pH time series"
+subtitle: "Buoy pH record (2014 to 2026): summaries, seasonality, depth structure and download"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  freeze: false   # the CSVs below are written at render time, so never skip execution
+  cache: false
+---
+
+```{r}
+#| include: false
+library(targets); library(dplyr); library(ggplot2)
+ph_all <- tar_read(ph_data)
+ph <- ph_all |> filter(qc_in_range) |> mutate(year = as.integer(format(date, "%Y")), month = as.integer(format(date, "%m")))
+q <- \(x, p) quantile(x, p, names = FALSE)
+r2 <- \(x) round(x, 2)
+th <- theme_minimal(base_size = 11)
+cols <- c("old buoy" = "#8c8c8c", "new buoy" = "#1f78b4")
+
+# Download files (the website `resources` copies downloads/ into the site)
+dir.create("downloads", showWarnings = FALSE)
+ph_all |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "UTC"), date = as.character(date)) |>
+  write.csv("downloads/rotorua_ph_timeseries.csv", row.names = FALSE)
+
+alk <- tar_read(alk_data) |>
+  mutate(date = as.Date(datetime), site = ifelse(grepl("^EK", site_id), "Site 2", "Site 5"),
+         sample = c(DIS = "Discrete", INT = "Integrated", HYP = "Hypolimnion")[sub(".*_", "", site_id)])
+alk |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "UTC")) |>
+  write.csv("downloads/rotorua_alkalinity_hardness_doc.csv", row.names = FALSE)
+```
+
+## The data
+
+pH is measured by the Lake Rotorua monitoring buoy and enters the model workflow as `CHM_ph` (see `R/format_buoy_for_aeme.R`). It is used to check the pH response (`fpH`) of the alum module, and is an input to the [alum calibration](alum-calibration-stage-1.qmd). The record is two buoy deployments with different sensor set-ups:
+
+- **Old buoy** (target `old_buoy_wq`): one value per day at 1 m, 25 Feb 2014 to 7 Jan 2018 (only 4 days in 2018).
+- **New buoy** (target `aeme_buoy_data`): a daily profile at 12:00 UTC from 21 Feb 2022 to 17 Sep 2026, with values every 0.5 m between 1 and 21 m (41 depths).
+- There is **no pH record between January 2018 and February 2022**.
+
+```{r}
+#| tbl-cap: "Inventory of the pH record. The quantiles use values between 4 and 11 only."
+i <- ph_all |> group_by(source) |> summarise(n = n(), n_out = sum(!qc_in_range), first = min(date), last = max(date), days = n_distinct(date),
+  depth_min = min(depth_m), depth_max = max(depth_m), n_depths = n_distinct(depth_m), median = r2(median(ph[qc_in_range])),
+  p05 = r2(q(ph[qc_in_range], .05)), p95 = r2(q(ph[qc_in_range], .95)), min = r2(min(ph)), max = r2(max(ph))) |> arrange(desc(source))
+knitr::kable(data.frame(Source = i$source, `Values` = format(i$n, big.mark = ","), `Days` = i$days, First = i$first, Last = i$last,
+  `Depths (m)` = paste0(i$depth_min, "–", i$depth_max, " (", i$n_depths, ")"), Median = i$median, `5th–95th pct` = paste(i$p05, i$p95, sep = "–"),
+  Min = i$min, Max = i$max, `Out of range` = i$n_out, check.names = FALSE), row.names = FALSE)
+```
+
+**Quality control.** Only one value is outside the plausible range of 4 to 11 (12.7 at 14.5 m on 2024-05-28), and it is flagged `qc_in_range = FALSE` in the download rather than removed. All figures and tables on this page exclude it. The old buoy record has a minimum of 5.2 and the new buoy of 5.3 (at 20 m in February 2025); these are plausible for the anoxic hypolimnion but have not been checked against grab samples. The two sensors have not been cross-calibrated.
+
+## Time series
+
+```{r}
+#| label: fig-ph-ts
+#| fig-cap: "Daily median pH in the surface layer (<= 5 m), old and new buoy."
+#| out-width: "90%"
+ph |> filter(depth_m <= 5) |> group_by(source, date) |> summarise(ph = median(ph), .groups = "drop") |>
+  ggplot(aes(date, ph, colour = source)) + geom_point(size = .5, alpha = .5) + scale_colour_manual(values = cols) +
+  labs(x = NULL, y = "pH (daily median, <= 5 m)", colour = NULL) + th + theme(legend.position = "top")
+```
+
+```{r}
+#| tbl-cap: "Annual summaries (all depths). Fractions are of all values in the year."
+y <- ph |> group_by(source, year) |> summarise(days = n_distinct(date), median = r2(median(ph)), p05 = r2(q(ph, .05)), p95 = r2(q(ph, .95)),
+  frac_gt8 = r2(mean(ph > 8)), frac_lt65 = r2(mean(ph < 6.5)), .groups = "drop")
+knitr::kable(data.frame(Source = y$source, Year = y$year, Days = y$days, Median = y$median, `5th pct` = y$p05, `95th pct` = y$p95,
+  `Fraction > 8` = y$frac_gt8, `Fraction < 6.5` = y$frac_lt65, check.names = FALSE), row.names = FALSE)
+```
+
+- **pH is typically near neutral.** The median is 6.95 (old buoy) and 6.83 (new buoy), with 90% of values between about 6.1 and 7.8.
+- **2022 and 2023 were higher** (median 7.4) than 2024 (6.8) and 2025 (6.5). In 2025, 51% of values were below 6.5. 2026 has partly recovered (6.8, to September).
+- **Caution:** part of the 2023 to 2025 fall could be sensor drift rather than a real change. This has not been tested against independent measurements.
+
+## Depth structure
+
+```{r}
+#| label: fig-ph-depth
+#| fig-cap: "pH by depth (rounded to 1 m), by buoy."
+#| out-width: "90%"
+ggplot(ph, aes(factor(round(depth_m)), ph)) + geom_boxplot(outlier.size = .3, fill = "#b2df8a") + facet_wrap(~source, scales = "free_x") +
+  labs(x = "Depth (m)", y = "pH") + th
+```
+
+```{r}
+#| tbl-cap: "pH by depth class."
+d <- ph |> mutate(depth_class = as.character(cut(depth_m, c(-1, 2, 5, 10, 15, 25, 40)))) |> group_by(source, depth_class) |>
+  summarise(n = n(), median = r2(median(ph)), p05 = r2(q(ph, .05)), p95 = r2(q(ph, .95)), .groups = "drop")
+knitr::kable(data.frame(Source = d$source, `Depth class (m)` = d$depth_class, n = format(d$n, big.mark = ","), Median = d$median, `5th pct` = d$p05, `95th pct` = d$p95, check.names = FALSE), row.names = FALSE)
+```
+
+pH decreases with depth in the new buoy record: a median of 7.1 in the upper 5 m against 6.7 at 15 to 21 m, consistent with respiration and CO₂ accumulation in the stratified bottom water. The surface layer shows the high values (the 95th percentile is 8.2) that come with photosynthesis in summer blooms.
+
+```{r}
+#| label: fig-ph-zones
+#| fig-cap: "Monthly median pH in the surface (<= 5 m), mid (5 to 17 m) and bottom (>= 17 m) layers."
+#| out-width: "90%"
+ph |> mutate(zone = ifelse(depth_m <= 5, "Surface (<= 5 m)", ifelse(depth_m >= 17, "Bottom (>= 17 m)", "Mid (5-17 m)")),
+             ym = as.Date(format(date, "%Y-%m-01"))) |> group_by(zone, ym) |> summarise(ph = median(ph), .groups = "drop") |>
+  ggplot(aes(ym, ph, colour = zone)) + geom_line() + geom_point(size = .8) + labs(x = NULL, y = "pH (monthly median)", colour = NULL) +
+  th + theme(legend.position = "top")
+```
+
+## Seasonality
+
+```{r}
+#| label: fig-ph-seasonal
+#| fig-cap: "Monthly distributions of surface (<= 5 m) pH, both buoys combined."
+#| out-width: "70%"
+ggplot(filter(ph, depth_m <= 5), aes(factor(month), ph)) + geom_boxplot(outlier.size = .3, fill = "#a6cee3") + labs(x = "Month", y = "pH (<= 5 m)") + th
+```
+
+```{r}
+#| tbl-cap: "Surface (<= 5 m) pH by month."
+m <- ph |> filter(depth_m <= 5) |> group_by(month) |> summarise(n = n(), median = r2(median(ph)), p05 = r2(q(ph, .05)), p95 = r2(q(ph, .95)))
+knitr::kable(data.frame(Month = month.abb[m$month], n = format(m$n, big.mark = ","), Median = m$median, `5th pct` = m$p05, `95th pct` = m$p95, check.names = FALSE), row.names = FALSE)
+```
+
+The seasonal cycle of the median is weak (6.9 to 7.3). The spread is what changes: the 95th percentile exceeds 8.3 in December to March and in September (summer productivity) and the 5th percentile is lowest in February and April (6.1).
+
+```{r}
+#| label: fig-ph-hist
+#| fig-cap: "Distribution of all pH values."
+#| out-width: "60%"
+ggplot(ph, aes(ph, fill = source)) + geom_histogram(binwidth = .1, position = "identity", alpha = .6) + scale_fill_manual(values = cols) +
+  labs(x = "pH", y = "Count", fill = NULL) + th + theme(legend.position = "top")
+```
+
+## Alkalinity, hardness and dissolved organic carbon
+
+Discrete lake samples from Sites 2 and 5 (target `alk_data`, from the BOPRC file `alkalinity, tot hardness & diss org Carbon.xlsx`) give the buffering context for the pH record. Alkalinity and total hardness are in mg/L as CaCO₃; DOC is in g/m³ (the same as mg/L).
+
+```{r}
+#| tbl-cap: "Inventory of the alkalinity, total hardness and DOC samples by site and sample type."
+inv <- alk |> group_by(Site = site, `Sample type` = sample) |> summarise(
+  First = min(date), Last = max(date), `Alkalinity (n)` = sum(!is.na(alkalinity_mgl_caco3)), `Hardness (n)` = sum(!is.na(hardness_mgl_caco3)), `DOC (n)` = sum(!is.na(doc_gm3)), .groups = "drop")
+knitr::kable(inv)
+```
+
+```{r}
+#| tbl-cap: "Summary of the three variables (alkalinity and hardness in mg/L as CaCO₃, DOC in g/m³), all sites and sample types."
+sm <- \(x, nm) data.frame(Variable = nm, n = sum(!is.na(x)), Min = r2(min(x, na.rm = TRUE)), Median = r2(median(x, na.rm = TRUE)), Max = r2(max(x, na.rm = TRUE)))
+knitr::kable(rbind(sm(alk$alkalinity_mgl_caco3, "Alkalinity"), sm(alk$hardness_mgl_caco3, "Total hardness"), sm(alk$doc_gm3, "DOC")), row.names = FALSE)
+```
+
+```{r}
+#| label: fig-alk-ts
+#| fig-cap: "Alkalinity at Sites 2 and 5 (lines and filled points: integrated samples; hollow points: discrete and hypolimnion samples)."
+#| out-width: "90%"
+ggplot(alk |> filter(!is.na(alkalinity_mgl_caco3)), aes(date, alkalinity_mgl_caco3, colour = site, shape = sample == "Integrated")) +
+  geom_line(data = alk |> filter(sample == "Integrated", !is.na(alkalinity_mgl_caco3)), aes(group = site), linewidth = .4) + geom_point(size = 1.8) +
+  scale_shape_manual(values = c(`TRUE` = 16, `FALSE` = 1), guide = "none") + labs(x = NULL, y = "Alkalinity (mg/L as CaCO₃)", colour = NULL) + th + theme(legend.position = "top")
+```
+
+```{r}
+#| include: false
+int <- alk |> filter(sample == "Integrated", !is.na(alkalinity_mgl_caco3))
+ph_d <- ph |> filter(depth_m <= 2) |> group_by(date) |> summarise(ph = mean(ph))
+jj <- inner_join(filter(alk, !is.na(alkalinity_mgl_caco3)), ph_d, by = "date")
+r_pa <- cor(jj$ph, jj$alkalinity_mgl_caco3, method = "spearman")
+```
+
+- **The lake is poorly buffered.** Integrated-sample alkalinity has a median of `r r2(median(int$alkalinity_mgl_caco3))` mg/L as CaCO₃ (range `r r2(min(int$alkalinity_mgl_caco3))` to `r r2(max(int$alkalinity_mgl_caco3))`) over `r nrow(int)` monthly samples (both sites combined) between `r min(int$date)` and `r max(int$date)`. Such low alkalinity lets pH move easily with photosynthesis, respiration and alum addition.
+- **Alkalinity varies a lot from month to month**, with no regular seasonal cycle visible in about two years of monthly data.
+- **Hardness and DOC are measured about once a year** (July or August, 2011 to 2017). DOC is low (`r r2(min(alk$doc_gm3, na.rm = TRUE))` to `r r2(max(alk$doc_gm3, na.rm = TRUE))` g/m³) and hardness is steady (`r r2(min(alk$hardness_mgl_caco3, na.rm = TRUE))` to `r r2(max(alk$hardness_mgl_caco3, na.rm = TRUE))` mg/L as CaCO₃).
+- **No clear same-day link with pH.** Matching the `r nrow(jj)` alkalinity samples to the old buoy's 1 to 2 m pH on the same date gives a Spearman correlation of `r r2(r_pa)`. The sample is small, and alkalinity is only available while the old buoy was running (2015 to 2018), so it says nothing about the 2022 to 2026 pH decline.
+
+## Download
+
+The full pH record, with every value from both buoys (58,863 rows), and the alkalinity, hardness and DOC samples are available as CSV files.
+
+<a class="btn btn-primary" href="downloads/rotorua_ph_timeseries.csv" download><i class="bi bi-download"></i> pH time series CSV (3.8 MB)</a>
+<a class="btn btn-outline-primary" href="downloads/rotorua_alkalinity_hardness_doc.csv" download><i class="bi bi-download"></i> Alkalinity, hardness and DOC CSV</a>
+
+pH file columns:
+
+| Column | Description |
+|:--|:--|
+| `datetime` | Timestamp (UTC). Both buoys: one value per depth per day, stamped 12:00 |
+| `date` | Date |
+| `depth_m` | Sensor depth (m) |
+| `ph` | pH (pH units) |
+| `source` | `old buoy` or `new buoy` |
+| `qc_in_range` | `TRUE` if 4 < pH < 11 |
+
+The alkalinity file has `site_id`, `location`, `datetime`, `alkalinity_mgl_caco3`, `doc_gm3` and `hardness_mgl_caco3` (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³), one row per sample.
+
+## Reproducing
+
+The figures, summary tables and the downloads are built in this page from the `ph_data` target (made from `old_buoy_wq` and `aeme_buoy_data`) and the `alk_data` target. The CSVs are written to `downloads/` each time the page renders, so they are never committed.

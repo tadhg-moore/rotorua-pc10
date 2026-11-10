@@ -443,6 +443,23 @@ list(
     format = "file"
   ),
   
+  # Alkalinity, total hardness and DOC (discrete lake samples; used with pH on website/ph-data.qmd)
+  tar_target(
+    alk_excel_file,
+    file.path(data_raw_dir, "bop_wq", "alkalinity, tot hardness & diss org Carbon.xlsx"),
+    format = "file"
+  ),
+  tar_target(
+    alk_data, {
+      readxl::read_excel(alk_excel_file, sheet = 1) |>
+        dplyr::transmute(
+          site_id = `Site ID`, location = `Location Name`, datetime = Time,
+          alkalinity_mgl_caco3 = `Alkalinity (g/m^3)`, doc_gm3 = `DOC (g/m^3)`,
+          hardness_mgl_caco3 = `Tot Hardness (g/m^3)`
+        )
+    }
+  ),
+
   # Constants
   tar_target(
     lake_id, 11133
