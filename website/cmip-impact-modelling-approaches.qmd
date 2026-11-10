@@ -206,7 +206,7 @@ flowchart TD
 | Bias correction is not neutral | The only bias correction is ERA5 against the buoy. The GCM is **not** bias-corrected in delta change, because a delta is future minus the same model's reference period and its mean bias cancels | Done; a differential split-sample test of the ERA5 correction has not been run |
 | Small GCM sample and hot models | 7 GCMs and 4 SSPs, giving 27 scenario branches plus a control (NZESM has no SSP5-8.5) from a CMIP6 set that includes both warm (ACCESS-CM2) and cool (NorESM2-MM) models. No weighting or screening applied yet | Only ACCESS-CM2 run so far |
 | Variability under delta change | Variability is unchanged by design, so storm and heatwave **frequency** is fixed. The GCM-direct side test measures how much this matters | Side test done for one GCM and SSP |
-| Where the uncertainty sits | A posterior ensemble of lake-parameter sets is run for the same branches, so parameter uncertainty can be compared with GCM, SSP and method uncertainty | Running |
+| Where the uncertainty sits | A posterior ensemble of lake-parameter sets is run for the same branches (8 members for ACCESS-CM2), so parameter uncertainty can be compared with SSP and method uncertainty | Done for ACCESS-CM2; GCM spread still missing |
 | Single lake model | Only GLM-AED is used. The Simstrat set-up in the repository has not been run for climate scenarios | Not addressed |
 
 ## Design decisions
@@ -220,6 +220,8 @@ flowchart TD
 ## The GCM-direct side test
 
 The side test uses the GCM's own daily series, mapped onto the corrected baseline with **trend-preserving quantile delta mapping** (Cannon et al., 2015), so the model's change at each quantile is kept. We use `metscale::qdm_gcm_met()`, in which the quantile of each day is read from the GCM's own sliding 30-year window. This is **not** what `method = "qdm"` in `metscale::fit_met_bias_correction()` does: that fits a training-period distribution once, and days beyond its range are clamped, which inflated temperature and rainfall variability when we tried it on SSP5-8.5 (daily temperature variability up 33% against 7% in the raw GCM). Inflows in the side test are still the delta-transient ones, so only the meteorology differs.
+
+**NZESM is excluded from this side test.** Its source files use a 360-day calendar, which our daily-series table converts to 365/366 days by linear interpolation. That smooths the daily series: rain's day-to-day autocorrelation rises from 0.28 to 0.50, days under 0.1 mm fall from 62% to 48%, and daily rain and wind variability fall by 13% and 8%. Quantile mapping works on the shape of the daily distribution, so it would be correcting an artificially smoothed series. NZESM is unaffected in the delta-change runs, because the monthly deltas are read from the raw files with the 360-day calendar decoded correctly and depend only on monthly means. The code refuses NZESM in the GCM-direct mode (`QDM_EXCLUDED_GCMS` in `R/qdm_gcm_direct.R`).
 
 ## Preliminary results (ACCESS-CM2, SSP5-8.5, one parameter set)
 
@@ -237,6 +239,7 @@ Scenario minus control, 30-year means:
 - The two methods **agree on the main signal**: surface temperature and bottom oxygen differ by 0.1 °C and 0.1 mg/L or less in each 30-year window.
 - They differ on the **mixing indicators**. GCM-direct gives about 25% fewer anoxic days in the last two windows and fewer stratified days mid-century. Single decades differ by up to 9 anoxic days a year, so decadal counts are noisy and 30-year means are the more defensible summary.
 - This difference is **structural uncertainty** between two defensible methods and is best reported as a range, not applied as a correction.
+- **Parameter uncertainty is smaller than the scenario difference.** Across 8 posterior members, the 2070--2099 ssp585 anoxic-day increase ranges from 14 to 18 days a year, about the same size as the difference between the two methods (3.6 days) and well below the ssp126 versus ssp585 difference (about 13 days). The surface-warming response is identical across members. The size of the chlorophyll-a increase is not constrained (+1.4 to +8.7 mg/m³, positive in every member). The members vary mostly biogeochemistry, so physical-parameter uncertainty is barely sampled. Detail is on the [transient lake runs](transient-lake-runs.qmd) page.
 - The control is flat (decadal surface temperature 14.7--15.2 °C, bottom oxygen about 9 mg/L), so the changes are climate signal and not drift.
 
 ## Why delta change is the primary method
@@ -255,10 +258,10 @@ Scenario minus control, 30-year means:
 
 ## Still to do
 
-1. **Parameter ensemble (running).** Posterior members run for the control, SSP1-2.6 and SSP5-8.5 of ACCESS-CM2, paired by member, reporting scenario minus control within each member and the spread across members.
+1. **Parameter ensemble (8 members done).** A larger ensemble, and one that also varies physical parameters, since the posterior members mostly vary biogeochemistry.
 2. **More GCMs.** NorESM2-MM at the cool end, to bracket the GCM spread, and then the remaining branches. Consider the hot-model literature (Rahimpour Asenjan et al., 2023; Massoud et al., 2023) before weighting or culling.
 3. **Route the GCM's own rain into stream flow** so the GCM-direct test also covers hydrology, which needs a simple rainfall-runoff relation.
-4. **Run the GCM-direct side test for two or three GCMs** and report the stratification and anoxia range it implies.
+4. **Run the GCM-direct side test for two or three GCMs** (not NZESM, see above) and report the stratification and anoxia range it implies. Admitting NZESM would need the 360-day conversion in `R/standardise_to_gregorian.R` changed to repeat days within each month instead of interpolating, and its dropped 29/30 February source days handled.
 5. **Differential split-sample test** of the ERA5-to-buoy correction.
 
 # Open questions and items to verify {#sec-verify}
