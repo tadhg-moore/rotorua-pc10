@@ -1,0 +1,1057 @@
+---
+title: "Lake Rotorua water quality: state, trends and drivers"
+subtitle: "A synthesis of lake chemistry, CTD and buoy profiles, meteorology, alum dosing, river water quality and the 2026 PC10 loads"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    fig-width: 9
+    fig-height: 5
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: false
+  cache: false
+---
+
+```{r}
+#| label: setup
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(patchwork)
+source(here::here("R", "wq_synthesis_helpers.R"))
+source(here::here("R", "read_river_wq.R"))
+
+store <- here::here("_targets")
+tr <- function(x) targets::tar_read_raw(x, store = store)
+
+chem    <- tr("lake_chem_2026")
+lw      <- tr("wq_lake_long")
+ann     <- tr("wq_annual")
+trends  <- tr("wq_trends")
+cps     <- tr("wq_changepoints")
+tli     <- tr("lake_tli_annual")
+ctd     <- tr("lake_ctd_2026")
+ctdm    <- tr("ctd_cast_metrics")
+kd      <- tr("ctd_par")
+bpl     <- tr("buoy_profile_long")
+be      <- tr("buoy_events")
+bpd     <- tr("buoy_profile_daily")
+me      <- tr("met_events")
+mann    <- tr("met_annual_era5")
+alum    <- tr("alum_al_daily")
+alum26  <- tr("alum_dose_2026")
+pcomp   <- tr("puarenga_compliance")
+rwq     <- tr("river_wq_data")
+rann    <- tr("river_wq_annual")
+rtr     <- tr("river_wq_trends")
+loads   <- tr("pc10_check_loads")
+sl      <- tr("pc10_stream_loads")
+pflow   <- tr("pc10_daily_flow")
+dla     <- tr("driver_lake_annual")
+dcor    <- tr("driver_lake_correlations")
+airport <- tr("airport_met")
+buoymet <- tr("all_buoy_met_data")
+enso    <- readr::read_csv(here::here("data", "raw", "enso", "enso_indices_monthly.csv"),
+                           show_col_types = FALSE)
+
+theme_set(theme_bw(base_size = 11))
+pal_site <- c("Site 2" = "#0072B2", "Site 5" = "#D55E00", "Lake (mean of sites)" = "black")
+pal_layer <- c(INT = "#009E73", HYP = "#E69F00", BOT = "#CC79A7")
+var_lab <- c(tp = "TP (mg/m³)", tn = "TN (mg/m³)", drp = "DRP (mg/m³)", nh4 = "NH4-N (mg/m³)",
+             nnn = "NOx-N (mg/m³)", chla = "Chl-a (mg/m³)", secchi = "Secchi (m)",
+             pp = "TP − DRP (mg/m³)", org_n = "Organic N (mg/m³)", tn_tp = "TN:TP (molar)",
+             turb = "Turbidity (NTU)")
+
+# Alum dosing milestones
+utu_start <- as.Date("2006-06-15"); pua_start <- as.Date("2010-01-14")
+pua_pause <- run_events(alum$date, alum$date > as.Date("2012-01-01") & alum$puarenga_kg_al < 1,
+                        min_len = 60, max_gap = 10)
+pua_pause_main <- pua_pause |> slice_max(duration, n = 1)
+alum_vlines <- function(hy = TRUE) {
+  x <- if (hy) c(2006.5, 2010) else c(utu_start, pua_start)
+  geom_vline(xintercept = x, linetype = 2, colour = "grey50", linewidth = 0.4)
+}
+fmt_trend <- function(pct, p) ifelse(is.na(pct), "–",
+  paste0(ifelse(p < 0.05, ifelse(pct > 0, "▲ ", "▼ "), ""), sprintf("%+.1f", pct),
+         ifelse(p < 0.05, "*", "")))
+```
+
+## Key findings {#sec-summary}
+
+```{r}
+#| label: summary-numbers
+lake_tli <- tli |> filter(site == "Lake (mean of sites)")
+tli_last <- lake_tli |> filter(hy == max(hy))
+tli_min  <- lake_tli |> filter(hy >= 2010) |> slice_min(tli3_3yr, n = 1)
+tli_max  <- lake_tli |> slice_max(tli3_3yr, n = 1)
+mean_int <- function(v, hys) ann |> filter(layer == "INT", variable == v, hy %in% hys) |>
+  summarise(m = mean(mean)) |> pull(m)
+tp_0106 <- mean_int("tp", 2001:2006); tp_1220 <- mean_int("tp", 2012:2020)
+tp_2122 <- mean_int("tp", 2021:2022); tp_2326 <- mean_int("tp", 2023:2026)
+tn_0106 <- mean_int("tn", 2001:2006); tn_1220 <- mean_int("tn", 2012:2020); tn_2326 <- mean_int("tn", 2023:2026)
+ch_0106 <- mean_int("chla", 2001:2006); ch_1220 <- mean_int("chla", 2012:2020); ch_2326 <- mean_int("chla", 2023:2026)
+```
+
+**The lake today.** Lake Rotorua is a eutrophic, polymictic lake.
+
+- The 3-year mean TLI3 for 2024–2026 is **`r sprintf("%.2f", tli_last$tli3_3yr)`** (hydrological year `r tli_last$hy`).
+  - This is above the target of 4.2.
+  - It is well below the 2004–2006 peak of `r sprintf("%.2f", tli_max$tli3_3yr)`.
+  - It is higher than the 2014–2020 low of `r sprintf("%.2f", tli_min$tli3_3yr)`.
+- Integrated surface-water means for 2023–2026: TP ≈ `r round(tp_2326)` mg/m³, TN ≈ `r round(tn_2326)` mg/m³, chl-a ≈ `r round(ch_2326, 1)` mg/m³.
+
+**Three phases in the record.**
+
+1. **Early-2000s eutrophic peak.**
+   - TP ≈ `r round(tp_0106)`, TN ≈ `r round(tn_0106)`, chl-a ≈ `r round(ch_0106)` mg/m³ (2001–2006).
+   - Frequent bottom-water anoxia, with summer bottom NH₄ and DRP above 400 and 50 mg/m³.
+2. **Alum-era recovery, 2007 to about 2012.**
+   - TP fell by about half, to ≈ `r round(tp_1220)` mg/m³ (2012–2020).
+   - TN fell to ≈ `r round(tn_1220)` mg/m³ and chl-a roughly halved.
+   - The step changes in TP, DRP and particulate P are detected in 2007–2010. They follow Utuhina dosing (from June 2006) and Puarenga dosing (from January 2010).
+3. **A partial reversal since about 2016.** Over the last 10 years TP, TN and chl-a show significant increasing trends at both sites, and Secchi depth is decreasing at Site 5. Two things stand out:
+   - **The 2020–2022 TP excursion.** Mean TP was ≈ `r round(tp_2122)` mg/m³ in 2021–2022. Bottom TP reached 160 mg/m³ and DRP 110–120 mg/m³ in summer 2021/22. Three things coincided:
+     - a near-complete pause in Puarenga dosing (`r paste(format(pua_pause_main$start, "%b %Y"), "to", format(pua_pause_main$end, "%b %Y"))`);
+     - the strongest lake heatwave and the longest buoy-recorded stratification (70 days, Nov 2021 – Jan 2022);
+     - two low-load years (external TP ≈ 28–29 t/y).
+
+     TP returned to about 19 mg/m³ once dosing resumed and the very wet 2023 brought a well-mixed year.
+   - **Nitrogen is rising.** TN rose from about 300 to about 360 mg/m³ after 2021. This follows the high-flow 2023 and 2024 hydrological years, when modelled external TN loads were 814 and 706 t/y against the target of 435 t/y. In-lake NH₄ and NOx are also higher than in the 2010s.
+
+**Drivers.**
+
+- **Alum** is the strongest single correlate of lake TP and TLI (ρ ≈ −0.8). It is confounded with the time trend, but the 2019–2021 dosing pause acts as a natural experiment that supports a causal link.
+- **Internal loading.** Year-to-year changes in summer air temperature track bottom-water oxygen and NH₄ accumulation. Hot, calm summers produce long stratification, anoxia and internal P and N release: 2008/09, 2010/11, 2014/15, 2017/18, 2021/22 and 2023/24.
+- **External loads.** Wet years raise external loads (2011–2013, 2017–2018, 2023–2024) but tend to flush and mix the lake, so they reduce peak bottom DRP.
+- **Warming.** The bias-corrected ERA5 record warms by about 1 °C over 1977–2025. Air-heatwave days have increased from typically 5–20 per year before 2016 to mostly 25–55 per year since then.
+
+**Data-quality caveats.** These affect the interpretation of trends.
+
+- The lake DRP, NH₄, NOx and TP records show changes in reporting resolution: zeros and negatives in 2015–2020, non-integer TP in 2015–2018, and finer decimals from 2021. These point to laboratory or method changes, so the "increasing DRP" trend over the last 10 years is not reliable.
+- A synchronous TP rise and fall (2011–2019) across all streams, including spring-fed ones, is more likely analytical than catchment-driven.
+- See @sec-dq.
+
+## Data {#sec-data}
+
+```{r}
+#| label: tbl-inventory
+#| tbl-cap: "Datasets used. All are read through the targets pipeline (`_targets.R`, section 5b)."
+rng <- function(d) paste(format(min(d, na.rm = TRUE), "%Y-%m"), "to", format(max(d, na.rm = TRUE), "%Y-%m"))
+tibble::tribble(
+  ~Dataset, ~Content, ~Period, ~Target,
+  "BOPRC lake chemistry (S2 & S5, PC10 Jun-26)", "TP, TN, DRP, NH4, NOx, TKN, chl-a, Secchi, pH, turbidity; integrated (INT), hypolimnion (HYP), bottom (BOT)", rng(chem$date), "`lake_chem_2026`",
+  "BOPRC CTD profiles (S2 & S5)", "Temperature, DO, chl fluorescence, PAR, conductivity, turbidity, 1 m bins, ~monthly", rng(ctd$date), "`lake_ctd_2026`",
+  "Old buoy (2007–2022) and new LERNZmp profiler (2022–)", "Daily temperature and DO profiles, 0.5 m bins; new buoy also pH, chl, turbidity, SpC, ORP", rng(bpl$date), "`buoy_profile_long`, `buoy_profile_daily`",
+  "Buoy met (old + new)", "Air temp, RH, wind, rain, SW radiation", rng(as.Date(buoymet$Date)), "`all_buoy_met_data`",
+  "MetService Rotorua Aerodrome", "Hourly met", rng(as.Date(airport$date)), "`airport_met`",
+  "ERA5, bias-corrected to buoy/airport", "Daily air temp, rain, wind, SW, RH (continuous)", rng(me$daily$date), "`era5_corrected_daily_baseline`",
+  "Alum dosing (BOPRC)", "Daily kg Al, Utuhina and Puarenga", rng(alum$date), "`alum_al_daily`",
+  "Alum dose rates + Puarenga compliance", "L/day by plant; paired up/downstream TP, DRP, Al, pH", paste(rng(alum26$date), "; compliance", rng(pcomp$date)), "`alum_dose_2026`, `puarenga_compliance`",
+  "BOPRC river WQ (new)", "12 sites; TN, TKN, NOx, NH4, TP, DRP, TSS, DO, pH, temp, Al, discharge", rng(rwq$date), "`river_wq_data`",
+  "PC10 2026 loads (McBride 2026)", "Modelled daily flow and AED concentrations per inflow, 12 scenario sets", "1959-07 to 2026-06", "`pc10_stream_loads`, `pc10_check_loads`",
+  "ENSO indices (NOAA)", "Monthly ONI, SOI, IPO, SAM", rng(enso$date[enso$index == "ONI"]), "data/raw/enso"
+) |> kable()
+```
+
+**Notes on the data.**
+
+- **Hydrological years.** Lake summaries use July–June hydrological years, named by the year they end. For example, 2022 is July 2021 to June 2022, and its summer is December 2021 to February 2022.
+- **INT samples** are depth-integrated over the epilimnion (0 m to roughly 6–14 m).
+- **BOT samples** are taken about 1 m above the sediment, at 18–22 m.
+- **Trend tests** are seasonal Mann–Kendall tests on monthly medians with Sen slopes. They are not corrected for serial correlation, so p-values are optimistic.
+- **Change points** are binary segmentation of deseasonalised monthly anomalies, with a conservative penalty.
+
+**Known caveats.**
+
+- **Site codes.** The alkalinity file uses EL805168 for Site 5, against EL802148 here.
+- **Ōhau outlet record.** It may contain a lab or method change, which is not yet confirmed (see the Ōhau page).
+- **Buoy met.** Units changed on 2023-10-23 (fixed in the pipeline), and buoy RH drifts.
+- **Puarenga river site.** The routine site (Puarenga at FRI, EK598179) is **upstream** of the alum plant, so it does not show the effect of dosing.
+- **Utuhina river site.** The Utuhina at Lake Rd site is downstream of its plant.
+
+## In-lake nutrient chemistry {#sec-nutrients}
+
+### Long-term patterns
+
+```{r}
+#| label: fig-annual-int
+#| fig-cap: "Annual (hydrological-year) means of integrated epilimnion samples at Sites 2 and 5. Dashed lines mark the start of Utuhina (June 2006) and Puarenga (January 2010) alum dosing. Years with fewer than 6 sampled months are omitted."
+#| fig-height: 8
+v <- c("tp", "drp", "pp", "tn", "nh4", "nnn", "org_n", "chla", "secchi")
+ann |>
+  filter(layer == "INT", variable %in% v) |>
+  mutate(variable = factor(var_lab[variable], var_lab[v])) |>
+  ggplot(aes(hy, mean, colour = site)) +
+  alum_vlines() +
+  geom_line() + geom_point(size = 1.2) +
+  facet_wrap(~variable, scales = "free_y", ncol = 3) +
+  scale_colour_manual(values = pal_site) +
+  labs(x = "Hydrological year", y = NULL, colour = NULL) +
+  theme(legend.position = "bottom")
+```
+
+**Phosphorus.**
+
+- **Before alum (1990s–2006).** Integrated TP was mostly 30–48 mg/m³. A high 1993/94 (≈ 80 mg/m³) reflects very few samples in that year.
+- **Fall with dosing.** TP fell from about 40 mg/m³ in 2006 to 15–20 mg/m³ from 2011/12.
+- **Composition.** DRP dropped from 5–15 mg/m³ to mostly ≤ 2 mg/m³ in the surface water. Most of the remaining TP is particulate or organic (TP − DRP), which also halved, from about 30 to 15 mg/m³.
+- **2021–2022.** TP was clearly elevated (27–33 mg/m³), with DRP rising to 4–8 mg/m³. It then fell back to 18–21 mg/m³ in 2023–2026.
+
+**Nitrogen.**
+
+- **Peak.** TN was highest in 2000–2007 (≈ 450–575 mg/m³ at Site 2).
+- **Step down.** It stepped down around 2009/10 (change point Aug 2009 at Site 2, Feb 2008 at Site 5) to about 300 mg/m³ in 2011–2021. The drop is almost all organic N (TKN − NH₄), which follows the fall in phytoplankton biomass.
+- **Since 2022.** TN has risen to 340–365 mg/m³.
+- **Inorganic N** is more variable:
+  - NH₄ peaks in years of strong internal loading.
+  - NOx-N was close to detection before 2011 and much higher afterwards: years such as 2012–2013, 2017–2018 and 2023–2024 have annual means of 40–140 mg/m³.
+  - The NOx step in 2011 appears at both lake sites and, in part, in several streams. It may be partly analytical (@sec-dq), but high NOx after winter mixing is a real feature of the lake.
+
+**Chlorophyll-a and clarity.**
+
+- **Chl-a** peaked in 2001–2007 (20–30 mg/m³ annual means) and fell to 8–13 mg/m³ after 2012.
+- **Secchi** depth improved from about 2.5 to about 3 m.
+- **Last decade.** Both have edged back towards poorer conditions: chl-a 12–16 mg/m³ and Secchi 2.4–2.5 m in 2026.
+
+### Seasonal cycle and how it has changed
+
+```{r}
+#| label: fig-seasonal
+#| fig-cap: "Monthly median of integrated samples (both sites) for three periods: pre-alum, first decade of dosing, and the last decade."
+#| fig-height: 6
+lw |>
+  filter(layer == "INT", variable %in% c("tp", "drp", "tn", "nh4", "nnn", "chla")) |>
+  mutate(era = cut(date, as.Date(c("1980-01-01", "2006-07-01", "2016-07-01", "2030-01-01")),
+                   labels = c("1990–2006 (pre-alum)", "2006–2016", "2016–2026")),
+         month = factor(month.abb[as.integer(format(date, "%m"))], month.abb[c(7:12, 1:6)]),
+         variable = factor(var_lab[variable], var_lab[c("tp", "drp", "tn", "nh4", "nnn", "chla")])) |>
+  group_by(era, month, variable) |>
+  summarise(med = median(value), .groups = "drop") |>
+  ggplot(aes(month, med, colour = era, group = era)) +
+  geom_line() + geom_point(size = 1) +
+  facet_wrap(~variable, scales = "free_y") +
+  scale_colour_manual(values = c("grey40", "#56B4E9", "#D55E00")) +
+  labs(x = NULL, y = "Monthly median", colour = NULL) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+**The seasonal cycle.**
+
+- **Late summer and autumn (Feb–May).** After stratification breaks down, nutrients released from the sediment are mixed into the surface water. TP, DRP and NH₄ peak at this time.
+- **Winter and spring (Jul–Oct).** NOx-N peaks, as the NH₄ is nitrified and the lake stays mixed.
+
+**How the cycle has changed.**
+
+- **TP and DRP.** The late-summer and autumn TP peak (March–April) is about half of its pre-alum size (about 27 against 56 mg/m³), and similar to 2006–2016. The large autumn DRP peak of the pre-alum era (about 20 mg/m³ in March) has disappeared.
+- **Ammonium.** The autumn NH₄ peak is now the largest of the three periods (median about 50 mg/m³ in April).
+- **Nitrate.** The winter NOx peak (July–October, about 60–100 mg/m³) is much larger than before.
+- **Nitrogen overall.** Together these suggest that N released from the sediment in summer is now mixed and nitrified in winter, rather than taken up by phytoplankton.
+- **Chl-a.** It no longer shows the large summer–autumn maxima of the early 2000s, and in the last decade the seasonal range is only about 8–14 mg/m³.
+
+### Trends
+
+```{r}
+#| label: tbl-trends
+#| tbl-cap: "Seasonal Mann–Kendall trends of integrated (INT) samples, as Sen slope in % of the period median per year. ▲/▼ and * mark p < 0.05."
+v <- c("tp", "drp", "pp", "tn", "nh4", "nnn", "org_n", "chla", "secchi", "tn_tp")
+trends |>
+  filter(layer == "INT", variable %in% v) |>
+  mutate(cell = fmt_trend(pct_per_yr, p),
+         variable = factor(var_lab[variable], var_lab[v]),
+         period = factor(period, c("full", "pre_alum", "alum_era", "last_10y"),
+                         c("1990–2026", "1990–2006", "2006–2026", "2016–2026"))) |>
+  select(variable, site, period, cell) |>
+  pivot_wider(names_from = period, values_from = cell) |>
+  arrange(variable, site) |>
+  kable()
+```
+
+**What the trends show.**
+
+- **Whole record.** TP, DRP, particulate P, TN, organic N and chl-a are all decreasing, and Secchi is increasing. This reflects the alum-era recovery.
+- **Last decade (2016–2026).** The direction has reversed:
+  - TP is increasing by about 2 %/yr at both sites.
+  - TN is increasing by about 1.5–1.8 %/yr.
+  - Chl-a is increasing by about 3–4 %/yr.
+  - Secchi depth is decreasing at Site 5.
+- **DRP over the last decade.** The significant DRP increase over 2016–2026 is driven by the many zero values reported in 2015–2019 (@sec-dq). It should not be read as a real increase.
+- **TN:TP.** The ratio has risen from about 25 to about 40 (molar). P limitation has strengthened under alum dosing.
+
+### Bottom waters and internal loading
+
+```{r}
+#| label: fig-bottom
+#| fig-cap: "NH4-N, DRP and TP in integrated (INT), hypolimnion (HYP) and bottom (BOT) samples at Site 5 (Site 2 is similar). Bottom-water accumulation in stratified summers is the signature of internal loading."
+#| fig-height: 7
+lw |>
+  filter(site == "Site 5", variable %in% c("nh4", "drp", "tp"), date >= as.Date("1999-07-01")) |>
+  mutate(variable = factor(var_lab[variable], var_lab[c("tp", "drp", "nh4")]),
+         layer = factor(layer, c("INT", "HYP", "BOT"))) |>
+  ggplot(aes(date, value, colour = layer)) +
+  alum_vlines(hy = FALSE) +
+  geom_line(alpha = 0.6, linewidth = 0.3) + geom_point(size = 0.7) +
+  facet_wrap(~variable, ncol = 1, scales = "free_y") +
+  scale_colour_manual(values = pal_layer) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = NULL, colour = "Layer")
+```
+
+```{r}
+#| label: tbl-bottom-max
+#| tbl-cap: "Annual maximum bottom-water (BOT) concentrations (mg/m³), mean of the two sites. These are a proxy for the strength of summer internal loading."
+ann |>
+  filter(layer == "BOT", variable %in% c("tp", "drp", "nh4")) |>
+  group_by(hy, variable) |> summarise(max = round(mean(max)), .groups = "drop") |>
+  pivot_wider(names_from = variable, values_from = max) |>
+  select(hy, tp, drp, nh4) |>
+  kable(col.names = c("Hydrological year", "TP", "DRP", "NH₄-N"))
+```
+
+**Internal loading remains active.**
+
+- Years with strong bottom-water accumulation (two-site mean of the annual bottom maxima: DRP above 50 mg/m³ and NH₄ above 400 mg/m³) are 2004, 2010, 2015, 2022 and 2025. 2016, 2021 and 2024 are close to these thresholds.
+- Years with little accumulation are 2007, 2012–2014, 2017–2019, 2023 and 2026.
+- **Bottom-water trends:**
+  - Bottom TP and DRP have declined over the whole record, but show no decline over the last decade.
+  - Bottom NH₄ has increased over the alum era at both sites (+1.8 to +4.6 %/yr).
+- So alum has suppressed the P released from the sediment, but it has not removed it, and N release continues.
+
+### Trophic Level Index
+
+```{r}
+#| label: fig-tli
+#| fig-cap: "Annual TLI3 (chl-a, TP, TN) by site, and the lake 3-year rolling mean against the Rotorua target of 4.2. The grey line is TLI4 (including Secchi) for comparison."
+lake_tli <- tli |> filter(site == "Lake (mean of sites)")
+ggplot() +
+  geom_hline(yintercept = 4.2, linetype = 2, colour = "darkgreen") +
+  alum_vlines() +
+  geom_point(data = tli |> filter(site != "Lake (mean of sites)"),
+             aes(hy, tli3, colour = site), size = 1.5, alpha = 0.7) +
+  geom_line(data = lake_tli, aes(hy, tli3_3yr), colour = "black", linewidth = 1) +
+  geom_line(data = lake_tli, aes(hy, tli4_3yr), colour = "grey50", linewidth = 0.6) +
+  annotate("text", x = 1996, y = 4.17, label = "Target 4.2", colour = "darkgreen", hjust = 0, vjust = 1) +
+  scale_colour_manual(values = pal_site) +
+  labs(x = "Hydrological year", y = "TLI", colour = NULL)
+```
+
+**The TLI trajectory.**
+
+- **Peak.** The 3-year TLI3 peaked at 5.0 in 2004–2006.
+- **Fall.** It fell steadily with dosing, and from 2013 to 2021 it stayed close to the target (4.15–4.28).
+- **Recent years.** Since 2022 it has stayed at 4.3–4.4.
+  - 2022 was the TP excursion year.
+  - In 2024–2026 TN is higher and chl-a is creeping up.
+  - 2026 has the highest annual chl-a (≈ 16 mg/m³) since 2009.
+
+### Data quality and laboratory changes {#sec-dq}
+
+```{r}
+#| label: fig-dq
+#| fig-cap: "Reporting resolution of the integrated lake samples. Left: share of DRP values ≤ 1 mg/m³ and of zero or negative values. Right: share of TP values that are not whole numbers. Changes in either indicate method, detection-limit or laboratory changes."
+#| fig-height: 4
+dq <- lw |>
+  filter(layer == "INT", variable %in% c("drp", "tp", "nh4", "nnn")) |>
+  mutate(y = as.integer(format(date, "%Y"))) |>
+  group_by(variable, y) |>
+  summarise(low = mean(value <= 1), nonpos = mean(value <= 0),
+            nonint = mean(abs(value - round(value)) > 1e-6), .groups = "drop")
+p1 <- dq |> filter(variable == "drp") |>
+  pivot_longer(c(low, nonpos)) |>
+  ggplot(aes(y, value, fill = name)) + geom_col(position = "dodge") +
+  scale_fill_manual(values = c(low = "grey60", nonpos = "firebrick"),
+                    labels = c(low = "≤ 1 mg/m³", nonpos = "≤ 0")) +
+  labs(x = NULL, y = "Share of DRP samples", fill = NULL, title = "DRP")
+p2 <- dq |> filter(variable %in% c("tp", "drp", "nh4")) |>
+  ggplot(aes(y, nonint, colour = variable)) + geom_line() + geom_point(size = 1) +
+  labs(x = NULL, y = "Share non-integer", colour = NULL, title = "Reported precision")
+p1 + p2
+```
+
+**Lake record.** The lake record has at least three visible reporting regimes:
+
+1. **To about 2014.** Values are whole numbers in mg/m³, with detection limits of 0.5–1 mg/m³.
+2. **2015–2020.** Many DRP values are reported as 0, with occasional −1 values in DRP, NOx and NH₄. TP is reported as non-integer values (e.g. 14.159744 and 16.113176), which look like conversions from a different unit or a different instrument.
+3. **From 2021.** All nutrients are reported to 0.1 mg/m³.
+
+**Effects on trends.**
+
+- Trends in low-concentration surface DRP, NH₄ and NOx across these boundaries are unreliable.
+- TP and TN trends are less affected, because concentrations are far above detection.
+
+**River record.**
+
+- TP at every stream, including the spring-fed Hamurana and Awahou streams, rises together from about 2011 and falls from about 2019 (@fig-river-anom).
+- Spring-fed streams have stable, mainly geological P, so a shared step of about 20–30 % is much more likely to be analytical than a change in the catchment.
+- River DRP is also high at most sites in 1993–1995 and 2003–2008, which may be a further reporting boundary.
+- This matches the open question about a lab or method change in the Ōhau outlet record (labels change from "Labstar – Legacy" to "Routine" in July 2015, and grade codes change around 2020/21).
+- **Recommendation:** confirm the BOPRC lab and method history (lab provider, DRP/TP methods, detection limits, censoring rules) before any trend in DRP or river TP is used in reporting or calibration.
+
+## Buoy and CTD profiles {#sec-profiles}
+
+### Temperature and oxygen structure
+
+```{r}
+#| label: fig-buoy-heatmap
+#| fig-cap: "Weekly mean water temperature and dissolved oxygen from the old (2007–2022) and new (2022–2026) buoys, 1 m depth bins. The old buoy had thermistors at fixed depths and DO sensors only near the surface and bottom; the new profiler samples every 0.5 m. White areas are depths or periods without sensors."
+#| fig-height: 7
+hm <- bpl |>
+  mutate(week = as.Date(cut(date, "week")), depth = round(depth_m)) |>
+  group_by(week, depth) |>
+  summarise(temp_c = mean(temp_c, na.rm = TRUE), do_mgl = mean(do_mgl, na.rm = TRUE), .groups = "drop") |>
+  mutate(across(c(temp_c, do_mgl), \(x) ifelse(is.nan(x), NA, x)))
+h1 <- ggplot(hm, aes(week, depth, fill = temp_c)) + geom_raster() +
+  scale_y_reverse() + scale_fill_viridis_c(option = "C", na.value = "white") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = c(0, 0)) +
+  labs(x = NULL, y = "Depth (m)", fill = "Temp (°C)")
+h2 <- ggplot(hm, aes(week, depth, fill = do_mgl)) + geom_raster() +
+  scale_y_reverse() +
+  scale_fill_gradientn(colours = c("darkred", "orange", "lightyellow", "skyblue", "navy"),
+                       values = scales::rescale(c(0, 2, 5, 9, 13)), limits = c(0, 14),
+                       na.value = "white") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = c(0, 0)) +
+  labs(x = NULL, y = "Depth (m)", fill = "DO (g/m³)")
+h1 / h2
+```
+
+```{r}
+#| label: fig-strat-anoxia
+#| fig-cap: "Share of buoy-monitored summer days (November–March) that were stratified (surface − bottom > 1 °C), hypoxic (bottom DO < 4 g/m³) or anoxic (bottom DO < 2 g/m³), by hydrological year. Numbers are the summer days with bottom DO data."
+sm <- be$daily |>
+  filter(as.integer(format(date, "%m")) %in% c(11, 12, 1, 2, 3)) |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy) |>
+  summarise(n = sum(!is.na(do_bot)),
+            Stratified = mean(d_temp > 1, na.rm = TRUE),
+            Hypoxic = mean(do_bot < 4, na.rm = TRUE),
+            Anoxic = mean(do_bot < 2, na.rm = TRUE), .groups = "drop") |>
+  filter(n >= 30)
+sm |>
+  pivot_longer(Stratified:Anoxic) |>
+  mutate(name = factor(name, c("Stratified", "Hypoxic", "Anoxic"))) |>
+  ggplot(aes(hy, value, fill = name)) +
+  geom_col(position = "dodge") +
+  geom_text(data = sm, aes(hy, 1.03, label = n), inherit.aes = FALSE, size = 2.6) +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#D55E00")) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Hydrological year", y = "Share of summer days", fill = NULL)
+```
+
+**Stratification is intermittent.**
+
+- Rotorua stratifies for days to weeks at a time between November and March, and mixes in between.
+- The longest buoy-recorded stratified periods are listed below:
+
+| Summer | Longest stratified period |
+|---|---|
+| 2021/22 | 70 days (8 Nov 2021 – 16 Jan 2022) |
+| 2014/15 | 52 days |
+| 2008/09 | 51 days |
+| 2010/11 | 46 days |
+| 2019/20 | 42 days |
+| 2017/18 | 41 days |
+| 2023/24 | 38 days |
+
+- Bottom anoxia (DO < 2 g/m³ for at least 3 days) builds within about 1–3 weeks of stratification setting in. The longest anoxic periods are listed below:
+
+| Period | Duration of anoxia |
+|---|---|
+| Jan–Feb 2015 | 30 days |
+| Jan–Feb 2009 | 28 days |
+| Dec 2010 | 23 days |
+| Feb 2010 | 21 days |
+| Jan–Feb 2018 | 18 days |
+| Jan 2024 | 18 days |
+
+- **The record is uneven.** The 2022 gap between buoys and the sparser bottom DO in 2018–2022 mean that some events (e.g. summer 2021/22) are better captured by the CTD and bottom chemistry than by the buoy.
+
+```{r}
+#| label: fig-ctd-do
+#| fig-cap: "Bottom (≥ 18 m) DO and surface–bottom temperature difference from the monthly CTD casts, 2003–2026. The dashed line marks 2 g/m³."
+#| fig-height: 5
+c1 <- ggplot(ctdm, aes(date, do_bot, colour = site)) +
+  geom_hline(yintercept = 2, linetype = 2) +
+  geom_line(alpha = 0.5) + geom_point(size = 0.8) +
+  scale_colour_manual(values = pal_site) +
+  labs(x = NULL, y = "Bottom DO (g/m³)", colour = NULL)
+c2 <- ggplot(ctdm, aes(date, d_temp, colour = site)) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  geom_line(alpha = 0.5) + geom_point(size = 0.8) +
+  scale_colour_manual(values = pal_site) +
+  labs(x = NULL, y = "ΔT surface − bottom (°C)", colour = NULL)
+(c1 / c2) + plot_layout(guides = "collect") & theme(legend.position = "bottom")
+```
+
+**CTD casts.**
+
+- **Anoxia.** The casts confirm near-anoxic bottom water (minimum DO < 1 g/m³) in:
+  - summer 2003/04 (Site 5), 2008/09 (Site 5) and 2009/10
+  - summer 2015/16 (both sites at about 0.1 g/m³)
+  - summer 2023/24 (Site 2, 0.7 g/m³)
+- **Well-oxygenated summers.** 2011/12, 2020/21 and 2022/23 never fell below about 6 g/m³.
+- **Strongest stratification.** ΔT reached 5.6–6.7 °C in summer 2017/18 and about 4 °C in 2014/15 and 2023/24.
+
+### Light, chlorophyll and the new buoy sensors
+
+```{r}
+#| label: fig-light-chl
+#| fig-cap: "Left: light attenuation Kd from CTD PAR profiles (r² > 0.8). Right: daily surface (≤ 2 m) chlorophyll fluorescence, pH, turbidity and specific conductance from the new buoy."
+#| fig-height: 5
+k1 <- kd |>
+  ggplot(aes(Date, Kd)) + geom_point(size = 0.8, colour = "grey30") +
+  geom_smooth(method = "loess", span = 0.3, se = FALSE, colour = "#0072B2") +
+  labs(x = NULL, y = "Kd (m⁻¹)")
+k2 <- bpd |>
+  filter(depth_m <= 2) |>
+  group_by(date) |>
+  summarise(`Chl fluor. (RFU)` = mean(chl_fl, na.rm = TRUE), pH = mean(ph, na.rm = TRUE),
+            `Turbidity (NTU)` = mean(turb, na.rm = TRUE), `SpC (µS/cm)` = mean(spcond, na.rm = TRUE)) |>
+  pivot_longer(-date) |>
+  ggplot(aes(date, value)) + geom_line(linewidth = 0.3) +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = NULL)
+k1 + k2 + plot_layout(widths = c(1, 1.2))
+```
+
+**Light attenuation.** Kd from the CTD PAR profiles shifts in steps: about 0.35 m⁻¹ in 2003–2008, about 0.9 m⁻¹ in 2010–2016, back to about 0.35 m⁻¹ in 2020–2022, then rising again. Secchi depth improved over 2010–2016, when Kd suggests the water became darker, so these steps are more likely changes in the PAR sensor or in how the profiles were processed. Kd should not be used for trend analysis without checking the instrument history.
+
+**New buoy, 2022–2026.**
+
+- Surface chlorophyll fluorescence shows bloom episodes in late summer and autumn, and higher values in 2026.
+- **Sensor caveats:**
+  - **Conductance.** Specific conductance has a saw-tooth pattern of slow drift and abrupt steps, which matches sensor drift and recalibration at servicing rather than changes in the lake.
+  - **Chlorophyll.** Fluorescence decays to a flat, low level through 2024–2025, which is typical of fouling.
+  - **pH.** Surface pH drifted from about 7.5 (2022–2023) to about 6.7 (2025). This needs checking against discrete pH (see the pH page) before it is interpreted.
+  - **CTD chlorophyll.** The CTD chlorophyll series also drops sharply in 2020–2021, at the same time as the drop in Kd, which suggests a sensor or calibration change rather than a real fall.
+- The new-buoy data are most reliable for temperature and DO. They show bottom anoxia only in the summers of 2023/24 and 2024/25.
+
+### Lake heatwaves
+
+```{r}
+#| label: tbl-lake-hw
+#| tbl-cap: "Largest surface-water heatwaves from the buoy record (≥ 5 days above the day-of-year 90th percentile of 2007–2026). Intensity is relative to the day-of-year climatology."
+be$heatwaves |>
+  arrange(desc(max_anom)) |> head(12) |>
+  transmute(Start = start, End = end, Days = duration, `Max temp (°C)` = round(max_temp, 1),
+            `Max anomaly (°C)` = round(max_anom, 1), Category = category) |>
+  kable()
+```
+
+**The strongest lake heatwaves.**
+
+- December 2017 (20 days, +3.9 °C)
+- Christmas 2021 to January 2022 (19 days, "strong")
+- November 2025
+- January 2024 and January 2015 (both coinciding with long anoxic periods)
+
+The highest surface temperatures in the buoy record are 24–24.7 °C, in summer 2015/16, 2017/18, 2021/22 and 2023/24.
+
+## Sudden changes and events {#sec-events}
+
+### Detected change points
+
+```{r}
+#| label: tbl-cps
+#| tbl-cap: "Change points in the mean of deseasonalised monthly series (binary segmentation, ≥ 24-month segments), integrated samples. Values are segment means in mg/m³ (Secchi in m)."
+cps |>
+  filter(layer == "INT") |>
+  mutate(variable = var_lab[variable], cp = format(cp_date, "%b %Y"),
+         across(c(mean_before, mean_after, delta), \(x) signif(x, 3))) |>
+  select(Variable = variable, Site = site, `Change at` = cp, Before = mean_before,
+         After = mean_after, Change = delta) |>
+  arrange(Variable, Site) |>
+  kable()
+```
+
+**The change points group into a few episodes.**
+
+1. **1996–2002.** TN, chl-a and organic N increase. This is the late-1990s deterioration that led to the 2000s blooms.
+2. **2007–2010.** TP, DRP and particulate P fall, and TN, chl-a and organic N fall about a year later. This follows the start of dosing at Utuhina in 2006 and Puarenga in 2010.
+3. **2011.** A step up in NOx at both sites, with a similar step in several streams in April 2011. It may be partly analytical.
+4. **2019–2021.** A step up in TP (Jun–Nov 2020) and DRP (2019–2021), reversed in late 2022. This aligns with the Puarenga dosing pause.
+5. **2015 and 2021–2023.** Steps up in TN and NH₄ (bottom NH₄ from Jan 2015; INT NH₄ Apr 2021; TN Jul 2021 and Feb 2023).
+
+### Event timeline
+
+```{r}
+#| label: fig-timeline
+#| fig-cap: "Lake response (top: monthly mean integrated TP and bottom DRP, both sites) against events (bottom): ERA5-BC storms (3-day rain > 99th percentile; size = total), air heatwaves, lake heatwaves, buoy anoxic periods and alum dosing gaps."
+#| fig-height: 8
+x0 <- as.Date("2003-01-01")
+resp <- lw |>
+  filter(date >= x0, (layer == "INT" & variable == "tp") | (layer == "BOT" & variable == "drp")) |>
+  mutate(m = as.Date(format(date, "%Y-%m-01")),
+         series = ifelse(variable == "tp", "INT TP", "BOT DRP")) |>
+  group_by(series, m) |> summarise(value = mean(value), .groups = "drop")
+pt <- ggplot(resp, aes(m, value, colour = series)) +
+  geom_line() + geom_point(size = 0.6) +
+  scale_colour_manual(values = c("INT TP" = "#009E73", "BOT DRP" = "#CC79A7")) +
+  scale_x_date(limits = c(x0, as.Date("2026-07-01")), date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = "mg/m³", colour = NULL) + theme(legend.position = "top")
+seg <- bind_rows(
+  me$air_heatwaves |> transmute(start, end, type = "Air heatwave"),
+  be$heatwaves |> transmute(start, end, type = "Lake heatwave"),
+  be$anoxia |> transmute(start, end, type = "Bottom anoxia (buoy)"),
+  pua_pause |> transmute(start, end, type = "Puarenga dosing paused")
+) |> filter(end >= x0)
+st <- me$storms |> filter(peak_date >= x0)
+pe <- ggplot() +
+  geom_segment(data = seg, aes(x = start, xend = end + 3, y = type, yend = type, colour = type),
+               linewidth = 5) +
+  geom_point(data = st, aes(peak_date, "Storm (3-day rain)", size = total_mm),
+             colour = "#0072B2", alpha = 0.7) +
+  scale_colour_manual(values = c("Air heatwave" = "orange", "Lake heatwave" = "firebrick",
+                                 "Bottom anoxia (buoy)" = "purple",
+                                 "Puarenga dosing paused" = "grey40"), guide = "none") +
+  scale_size_area(max_size = 6) +
+  scale_x_date(limits = c(x0, as.Date("2026-07-01")), date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = NULL, size = "Rain (mm)")
+pt / pe + plot_layout(heights = c(1.3, 1))
+```
+
+### Storm events and the lake response
+
+```{r}
+#| label: tbl-storms
+#| tbl-cap: "Largest 3-day rainfall events in the bias-corrected ERA5 record since 2000, with the modelled peak total inflow (PC10 loads) within ±3 days."
+allin <- pflow |> filter(inflow == "All inflows")
+me$storms |>
+  filter(peak_date >= as.Date("2000-01-01")) |>
+  arrange(desc(total_mm)) |> head(15) |>
+  rowwise() |>
+  mutate(peak_q = max(allin$flow_m3s[abs(as.numeric(allin$date - peak_date)) <= 3])) |>
+  ungroup() |>
+  transmute(`Peak day` = peak_date, `3-day rain (mm)` = round(total_mm),
+            `Max daily rain (mm)` = round(max_day_mm), `Max daily wind (m/s)` = round(max_wind, 1),
+            `Peak inflow (m³/s)` = round(peak_q, 1)) |>
+  kable()
+```
+
+```{r}
+#| label: tbl-storm-response
+#| tbl-cap: "Lake response to large storms: anomaly (relative to the site-and-month median) of the first integrated sample within 45 days after each of the 40 largest 3-day rain events since 1995, against the anomaly of all other samples."
+int <- lw |> filter(layer == "INT", variable %in% c("tp", "drp", "tn", "nnn", "chla", "turb")) |>
+  mutate(month = as.integer(format(date, "%m"))) |>
+  group_by(site, variable, month) |> mutate(anom = value - median(value)) |> ungroup()
+big <- me$storms |> filter(peak_date >= as.Date("1995-01-01")) |> slice_max(total_mm, n = 40)
+post <- bind_rows(lapply(big$peak_date, function(d) {
+  int |> filter(date > d, date <= d + 45) |>
+    group_by(site, variable) |> slice_min(date, n = 1) |> ungroup() |> mutate(storm = d)
+}))
+resp_tab <- int |>
+  mutate(after_storm = paste(site, variable, date) %in% paste(post$site, post$variable, post$date)) |>
+  group_by(variable, after_storm) |>
+  summarise(n = n(), med_anom = median(anom), .groups = "drop") |>
+  pivot_wider(names_from = after_storm, values_from = c(n, med_anom))
+wt <- int |>
+  mutate(after_storm = paste(site, variable, date) %in% paste(post$site, post$variable, post$date)) |>
+  group_by(variable) |>
+  summarise(p = tryCatch(wilcox.test(anom[after_storm], anom[!after_storm])$p.value,
+                         error = function(e) NA_real_))
+resp_tab |> left_join(wt, by = "variable") |>
+  transmute(Variable = var_lab[variable], `n after storm` = n_TRUE,
+            `Median anomaly after storm` = signif(med_anom_TRUE, 2),
+            `Median anomaly otherwise` = signif(med_anom_FALSE, 2), `p (Wilcoxon)` = signif(p, 2)) |>
+  kable()
+```
+
+**Large storms.**
+
+- The largest storms in the continuous record are:
+  - July 2004
+  - late July 2025 (285 mm in 3 days)
+  - May 2010
+  - January 2011
+  - Cyclone Gabrielle (13–14 February 2023)
+  - April 2017 (two events)
+  - March 2016
+- **Flows.** Modelled total inflow peaked at 97 m³/s on 29 April 2018 and 83 m³/s on 28 January 2023, the highest since the 1960s.
+
+**Lake response.**
+
+- **No consistent spike.** Monthly sampling seldom catches storm effects. Across 40 large storms, the first sample after a storm was not significantly different in TP, DRP, TN or turbidity. Chl-a was slightly higher (median +1.1 mg/m³, p ≈ 0.05).
+- **Lasting effects.** These come through the annual loads and through mixing:
+  - The wet years 2011–2013, 2017–2018 and 2023–2024 carried 40–60 t/y of TP and 570–815 t/y of TN (alum_storm_central), well above the PC10 targets.
+  - The cool, windy and wet summer of 2022/23 (the Gabrielle summer) had little stratification, well-oxygenated bottom water and the lowest bottom DRP of the decade.
+  - The large N load of 2023–2024 is the most likely source of the higher TN and NOx in 2023–2026.
+
+### Case studies
+
+**2009/10 – 2010/11: the last high-internal-load period before full dosing.**
+
+- Long stratification (51 days in summer 2008/09, 46 days in 2010/11) brought repeated anoxia.
+- Bottom DRP reached 116 mg/m³ and NH₄ 732 mg/m³ at Site 5 in 2010.
+- Full dosing on both streams from 2011 (88–100 t Al/y) was followed by the lowest TP (13–17 mg/m³) and TLI on record in 2012–2013, despite the wet, high-load years 2011–2013.
+
+**2014/15 and 2015/16: hot summers under dosing.**
+
+- 2015 had the 30-day anoxic period, and bottom DRP and NH₄ returned to 56–78 and 490–670 mg/m³.
+- Surface TP stayed near 20 mg/m³.
+- Internal release persisted under dosing, but was not mixed into the epilimnion in large amounts.
+
+**2019–2022: dosing pause, heat and drought.**
+
+- **Dosing pause.** Puarenga dosing dropped to 6.5 t Al in 2018/19 and to zero in 2019/20, and resumed during 2020/21.
+- **Weather.**
+  - 2019 was very dry (794 mm), and 2019 and 2020 were warm and sunny.
+  - 2020/21 and 2021/22 had the lowest external TP loads since the 1990s (28–29 t/y).
+  - Summer 2021/22 brought an air heatwave (21 days, Dec 2021 – Jan 2022), a strong lake heatwave and 70 days of stratification.
+- **Lake response.**
+  - Bottom DRP reached 108–118 mg/m³ and TP 157–162 mg/m³.
+  - Surface DRP and TP rose to the highest values since 2010.
+- **Reading.** With external loads at a minimum, this points to an internal source. The sediment P was no longer being capped by Puarenga alum, and was then released under strong, long stratification.
+- **Recovery.** TP fell back in 2022/23, after the resumption of dosing (64 t Al from Puarenga in 2022/23) and in a cool, wet, well-mixed summer.
+
+**2023 – 2026: wet years, high N loads, rising TN and chl-a.**
+
+- 2023 was the wettest year in the ERA5 record (2478 mm), followed by an above-average 2024.
+- The 2023 TN load (814 t/y) was the highest since 1990, and 2024 (706 t/y) was also well above the target.
+- Lake TN, NH₄ and NOx rose, and in 2026 chl-a rose and Secchi depth fell.
+- TP has stayed near 19–21 mg/m³ under steady dosing (50–96 t Al/y).
+
+## Observational drivers {#sec-drivers}
+
+### Meteorology
+
+```{r}
+#| label: fig-met-compare
+#| fig-cap: "Annual (hydrological-year) mean air temperature from bias-corrected ERA5, the Rotorua Aerodrome (MetService) and the lake buoys. Years with < 85 % coverage are omitted."
+ap <- airport |>
+  mutate(hy = wq_hy(as.Date(date))) |>
+  group_by(hy) |> summarise(tair = mean(temperature_c, na.rm = TRUE), n = sum(!is.na(temperature_c))) |>
+  filter(n > 0.85 * 8760) |> mutate(source = "Aerodrome")
+bm <- buoymet |>
+  mutate(date = as.Date(Date)) |>
+  group_by(date) |> summarise(t = mean(MET_tmpair, na.rm = TRUE)) |>
+  filter(is.finite(t)) |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy) |> summarise(tair = mean(t), n = n()) |>
+  filter(n > 0.85 * 365) |> mutate(source = "Buoy")
+bind_rows(mann |> transmute(hy, tair, source = "ERA5-BC"), ap, bm) |>
+  ggplot(aes(hy, tair, colour = source)) + geom_line() + geom_point(size = 1) +
+  geom_smooth(data = \(d) filter(d, source == "ERA5-BC"), method = "lm", se = FALSE,
+              linetype = 2, linewidth = 0.5) +
+  scale_colour_manual(values = c("ERA5-BC" = "black", Aerodrome = "#E69F00", Buoy = "#0072B2")) +
+  labs(x = "Hydrological year", y = "Mean air temperature (°C)", colour = NULL)
+```
+
+```{r}
+#| label: fig-met-anom
+#| fig-cap: "Bias-corrected ERA5 anomalies relative to 1991–2020: annual air temperature, annual rain, summer (DJF) wind speed and summer shortwave radiation, and annual air-heatwave days. Shading shows the mean Oceanic Niño Index (ONI) of each hydrological year (red El Niño, blue La Niña)."
+#| fig-height: 8
+oni <- enso |> filter(index == "ONI") |> mutate(hy = wq_hy(as.Date(date))) |>
+  group_by(hy) |> summarise(oni = mean(value, na.rm = TRUE))
+base <- mann |> filter(hy %in% 1991:2020)
+hwd <- me$air_heatwaves |> mutate(hy = wq_hy(start)) |> group_by(hy) |> summarise(v = sum(duration))
+an <- mann |>
+  transmute(hy, `Air temp (°C)` = tair - mean(base$tair),
+            `Rain (% of mean)` = 100 * (rain_mm / mean(base$rain_mm) - 1),
+            `Summer wind (m/s)` = wind_djf - mean(base$wind_djf, na.rm = TRUE),
+            `Summer SW (W/m²)` = swr_djf - mean(base$swr_djf, na.rm = TRUE)) |>
+  left_join(hwd, by = "hy") |> mutate(`Air heatwave days` = coalesce(v, 0)) |> select(-v) |>
+  pivot_longer(-hy) |> left_join(oni, by = "hy") |>
+  mutate(name = factor(name, c("Air temp (°C)", "Rain (% of mean)", "Summer wind (m/s)",
+                               "Summer SW (W/m²)", "Air heatwave days")))
+ggplot(an, aes(hy, value)) +
+  geom_tile(aes(y = 0, height = Inf, fill = oni), alpha = 0.35, width = 1) +
+  geom_col(width = 0.7, fill = "grey25") +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", limits = c(-2, 2),
+                       oob = scales::squish) +
+  labs(x = "Hydrological year", y = NULL, fill = "ONI")
+```
+
+**Agreement between sources.** The buoy and aerodrome records agree with the bias-corrected ERA5 on year-to-year variability. The bias correction was fitted to them, so this is expected.
+
+**What the continuous ERA5-BC record shows.**
+
+- **Warming.** About +1 °C from the late 1970s to the 2020s. 2019–2025 are among the warmest years, and 2022 is the warmest (14.6 °C).
+- **Heatwaves.** A step-like increase in air-heatwave days after 2016, to mostly 25–55 days per hydrological year. Before then it was typically 5–20 days, with peaks in 1990, 1998–1999 and 2011.
+- **Rain.** Large swings: dry 2015 and 2019, against very wet 2010–2011, 2017 and 2022–2023.
+- **ENSO.** La Niña years (2011–2012, 2021–2023) tend to be warm and humid, sometimes wet.
+- **Calm spells.** Summer wind has no clear trend. The calmest summers (2014/15 and 2017/18) match the longest stratification and the largest surface–bottom temperature differences.
+
+### Alum dosing
+
+```{r}
+#| label: fig-alum
+#| fig-cap: "Annual aluminium dosed (t Al per hydrological year; 2026 is to February only) by stream, and daily dose rates 2022–2026 (L alum/day)."
+#| fig-height: 6
+a1 <- alum |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy) |>
+  summarise(Utuhina = sum(utuhina_kg_al) / 1000, Puarenga = sum(puarenga_kg_al) / 1000) |>
+  pivot_longer(-hy) |>
+  ggplot(aes(hy, value, fill = name)) + geom_col() +
+  scale_fill_manual(values = c(Utuhina = "#56B4E9", Puarenga = "#E69F00")) +
+  labs(x = "Hydrological year", y = "t Al", fill = NULL)
+a2 <- alum26 |>
+  select(date, Puarenga = puarenga_l_d, Utuhina = utuhina_l_d) |>
+  pivot_longer(-date) |>
+  ggplot(aes(date, value, colour = name)) + geom_line(linewidth = 0.3) +
+  scale_colour_manual(values = c(Utuhina = "#56B4E9", Puarenga = "#E69F00")) +
+  labs(x = NULL, y = "Alum (L/day)", colour = NULL)
+a1 / a2
+```
+
+```{r}
+#| label: tbl-compliance
+#| tbl-cap: "Puarenga compliance monitoring, August 2025 – July 2026: paired samples upstream (EK598179, Puarenga @ FRI) and downstream (EK637325) of the dosing plant. Medians (mg/L)."
+pcomp |>
+  group_by(Position = position) |>
+  summarise(n = n(), pH = median(ph, na.rm = TRUE), TP = median(tp, na.rm = TRUE),
+            DRP = median(drp, na.rm = TRUE), Al = median(al, na.rm = TRUE)) |>
+  mutate(across(TP:Al, \(x) signif(x, 3))) |>
+  kable()
+```
+
+**History of dosing.**
+
+- **Utuhina.** About 13–38 t Al/y since mid-2006.
+- **Puarenga.** About 40–75 t Al/y from 2011 to 2018. This was cut to 6.5 t in 2018/19 and to zero in 2019/20, then resumed part-way through 2020/21 (20 t), peaking at 64 t Al in 2022/23 (the year after the TP excursion).
+- **Total.** Dosing peaked at 101 t Al/y in 2011/12 and was 96 t Al/y in 2022/23.
+
+**Compliance monitoring (2025–2026).**
+
+- Dosing lowers Puarenga DRP by about 70 %, from a median of 0.031 to 0.009 mg/L.
+- TP is unchanged (the P is bound in particulate form).
+- Al rises by about 0.8 mg/L, and pH drops by about 0.8 units.
+- **April 2026 storm sample:** TP was 0.21–0.22 mg/L both upstream and downstream, and upstream Al was 3.3 mg/L.
+
+### River water quality
+
+```{r}
+#| label: fig-river-anom
+#| fig-cap: "Annual median river concentrations as a percentage of each site's 1992–2025 median. Synchronous changes across all streams (e.g. TP rising 2011–2016 and falling after 2019) suggest analytical rather than catchment causes."
+#| fig-height: 8
+rann |>
+  filter(variable %in% c("TP", "DRP", "TN", "NNN"), hy >= 1993, hy <= 2026) |>
+  group_by(location, variable) |>
+  mutate(anom = 100 * (median / median(median) - 1)) |>
+  ungroup() |>
+  ggplot(aes(hy, location, fill = anom)) + geom_tile() +
+  facet_wrap(~variable, ncol = 1) +
+  scale_fill_gradient2(low = "#2166AC", high = "#B2182B", limits = c(-60, 60), oob = scales::squish) +
+  labs(x = "Hydrological year", y = NULL, fill = "% vs site median")
+```
+
+```{r}
+#| label: tbl-river-trends
+#| tbl-cap: "Seasonal Mann–Kendall trends in river concentrations (% of median per year; ▲/▼ and * mark p < 0.05), full record and last 10 years, with the site median (g/m³)."
+rtr |>
+  filter(variable %in% c("TN", "NNN", "TP", "DRP"), period %in% c("full", "last_10y")) |>
+  mutate(cell = fmt_trend(pct_per_yr, p)) |>
+  select(location, variable, period, cell) |>
+  pivot_wider(names_from = c(variable, period), values_from = cell) |>
+  left_join(rtr |> filter(period == "full", variable %in% c("TN", "TP")) |>
+              select(location, variable, median) |>
+              pivot_wider(names_from = variable, values_from = median, names_prefix = "median_"),
+            by = "location") |>
+  select(Site = location, `TN median` = median_TN, TN_full, TN_last_10y, NNN_full, NNN_last_10y,
+         `TP median` = median_TP, TP_full, TP_last_10y, DRP_full, DRP_last_10y) |>
+  kable(digits = 3)
+```
+
+```{r}
+#| label: tbl-cq
+#| tbl-cap: "Concentration–discharge slopes (log–log, b) of river samples against the PC10 modelled daily stream flow on the sample day, 2000–2025. b > 0: concentration rises with flow (mobilisation, typical of particulates); b < 0: dilution (typical of groundwater-fed solutes)."
+key <- river_wq_inflow_key()
+cq <- rwq |>
+  filter(variable %in% c("TN", "NNN", "TP", "DRP", "TSS"), date >= as.Date("2000-01-01"), value > 0) |>
+  inner_join(key |> filter(!grepl("upstream", note), inflow != "Ohau outflow"), by = "location") |>
+  inner_join(pflow |> select(date, inflow, flow_m3s), by = c("date", "inflow")) |>
+  filter(flow_m3s > 0) |>
+  group_by(location, variable) |>
+  summarise(b = coef(lm(log(value) ~ log(flow_m3s)))[2], n = n(), .groups = "drop")
+cq |> select(-n) |> pivot_wider(names_from = variable, values_from = b) |>
+  select(Site = location, TN, NNN, TP, DRP, TSS) |>
+  kable(digits = 2)
+```
+
+**Stream nutrients.** The streams are groundwater-dominated, with high nitrate and mostly geological phosphorus.
+
+- **Nitrogen.**
+  - Median TN is 0.8–1.6 g/m³ at most streams and 2.6 g/m³ at the geothermally influenced Waiohewa. NOx makes up 85–95 % of the TN, except at the Waiohewa, where about half is NH₄.
+  - Over the full record, NOx and TN rose by about 0.5–1 %/yr at Awahou, Hamurana, Waingaehe, Waiteti and Utuhina. This is the slow arrival of old, nitrate-rich groundwater.
+  - Over the last decade most N trends are flat, but Hamurana TN and NOx are still rising (+1.3–1.5 %/yr).
+  - Upper Waiteti (Oturoa Rd) has fallen sharply since 2018, which suggests a land-use change.
+- **DRP.**
+  - DRP has decreased significantly at almost every site over both periods.
+  - The largest fall is at the Utuhina (−3 to −6 %/yr), which is dosed with alum.
+  - Ōhau outlet DRP is at detection limits.
+- **TP.**
+  - TP shows no full-record trend at most sites.
+  - It decreases by 3–6 %/yr over 2016–2026 at almost every site. This is part of the synchronous 2011–2019 rise and fall (@fig-river-anom, @sec-dq), so treat it with caution.
+- **Concentration and flow.** These slopes are calculated against modelled daily flow, so they are indicative only.
+  - **TSS** rises steeply with flow at every stream (b = 0.4–1.8).
+  - **TP** rises moderately at the Waiteti, Ngongotaha, Hamurana and Puarenga (b = 0.2–0.5): particulate P is mobilised in storms.
+  - **DRP** is diluted at most streams (b = −0.2 to −0.6).
+  - **TN and NOx** change little with flow (b mostly 0.1–0.4), as expected for groundwater-dominated nitrogen.
+  - This is why storm sampling, and the stormflow particulate correction in the PC10 loads, matter for TP but much less for TN.
+
+## Modelled inflows: PC10 2026 loads {#sec-loads}
+
+```{r}
+#| label: fig-loads
+#| fig-cap: "Annual external loads to Lake Rotorua from the PC10 2026 loads (central estimate): with and without stormflow particulates, against the PC10 targets (435 t N/y, 37 t P/y, on the no-storm basis); and FRP with and without alum dosing."
+#| fig-height: 7
+lc <- loads |> filter(bound == "central", hy >= 1990)
+l1 <- lc |> filter(alum == "alum") |>
+  select(storm, hy, TN = tn, TP = tp) |> pivot_longer(c(TN, TP)) |>
+  ggplot(aes(hy, value, colour = storm)) + geom_line() + geom_point(size = 1) +
+  geom_hline(data = tibble::tibble(name = c("TN", "TP"), y = c(435, 37)), aes(yintercept = y),
+             linetype = 2, colour = "darkgreen") +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  scale_colour_manual(values = c(storm = "black", nostorm = "grey60")) +
+  labs(x = NULL, y = "t/y", colour = NULL)
+l2 <- lc |> filter(storm == "storm") |>
+  ggplot(aes(hy, frp, colour = alum)) + geom_line() + geom_point(size = 1) +
+  scale_colour_manual(values = c(alum = "#E69F00", noalum = "grey40")) +
+  labs(x = "Hydrological year", y = "FRP load (t/y)", colour = NULL)
+(l1 / l2) + plot_layout(heights = c(2, 1))
+```
+
+```{r}
+#| label: fig-stream-loads
+#| fig-cap: "Annual TP and TN loads by inflow (alum_storm_central), 2000–2026."
+#| fig-height: 6
+sl |>
+  filter(hy >= 2000) |>
+  mutate(inflow = forcats::fct_lump_n(inflow, 8, w = tp, other_level = "Other")) |>
+  group_by(inflow, hy) |> summarise(TP = sum(tp), TN = sum(tn), .groups = "drop") |>
+  pivot_longer(c(TP, TN)) |>
+  ggplot(aes(hy, value, fill = inflow)) + geom_col(width = 0.9) +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(x = "Hydrological year", y = "t/y", fill = NULL)
+```
+
+```{r}
+#| label: tbl-load-share
+#| tbl-cap: "Mean annual flow and loads by inflow, 2007–2026 (alum_storm_central)."
+sl |>
+  filter(hy %in% 2007:2026, flow > 0) |>
+  group_by(Inflow = inflow) |>
+  summarise(`Flow (Mm³/y)` = mean(flow), `TN (t/y)` = mean(tn), `TP (t/y)` = mean(tp),
+            `FRP (t/y)` = mean(frp), `PP (t/y)` = mean(pp)) |>
+  arrange(desc(`TP (t/y)`)) |>
+  kable(digits = 1)
+```
+
+**Patterns in the modelled loads.** These are modelled loads (McBride 2026), so they show how flow, concentration and the interpolation between monthly samples interact, rather than independent observations.
+
+- **Year-to-year variability is driven by flow.**
+  - TN ranges from 380 to 815 t/y, and TP from 28 to 60 t/y.
+  - The highest-load years are the wettest: 2011–2012, 2018 and 2023–2024.
+  - In those years the stormflow particulate correction adds 5–13 t P/y.
+- **Against the targets.** In 2020–2022, TN loads were below the 435 t N/y target and TP was below 37 t/y. 2023 and 2024 were well above both targets. In 2025 TP was below target but TN (467 t/y) was above it.
+- **Recent sequence.**
+  - Low loads in 2020–2022 were followed by the highest N load on record in 2023.
+  - That is the opposite of the lake TP response in the same years. Lake TP rose in the low-load years and fell in the high-load year, which again points to internal processes and alum, not external load, as the control on year-to-year lake TP.
+- **Where the P comes from.**
+  - The groundwater streams Hamurana and Awahou supply most of the dissolved P, which is high-FRP and not dosed.
+  - The Puarenga and Utuhina supply most of the particulate P.
+  - In the alum scenarios, dosing removes about 2–3 t FRP/y in recent years, and up to 4 t in 2011 (alum against noalum).
+- **Lake response to N.** TN loads were high in 2023–2024, and lake TN rose by about 15 % between 2021 and 2024. Lake TN also responded to the high-load years 2011–2013, but only after a delay.
+
+### How drivers relate to the lake, year by year
+
+```{r}
+#| label: fig-cor
+#| fig-cap: "Spearman correlations between annual lake responses and drivers, hydrological years 1991–2026. 'Level' uses the annual values; 'difference' uses year-to-year changes, which removes the shared long-term trend. Lag 1 = driver in the previous year. Dots mark p < 0.05."
+#| fig-height: 8
+lab_r <- c(lake_tp = "Lake TP", lake_tn = "Lake TN", lake_drp = "Lake DRP", lake_nh4 = "Lake NH4",
+           lake_chla = "Lake chl-a", lake_secchi = "Secchi", tli3 = "TLI3",
+           bot_max_nh4 = "Bottom NH4 max", bot_max_drp = "Bottom DRP max",
+           ctd_min_do_bot = "Min bottom DO")
+lab_d <- c(tair = "Air temp", tair_djf = "Summer air temp", wind = "Wind", wind_djf = "Summer wind",
+           swr_djf = "Summer SW", rain_mm = "Rain", inflow_Mm3 = "Inflow volume",
+           load_tn = "TN load", load_tp = "TP load", load_frp = "FRP load", load_pp = "PP load",
+           alum_t_al = "Alum (t Al)")
+dcor |>
+  mutate(response = factor(lab_r[response], rev(lab_r)), driver = factor(lab_d[driver], lab_d),
+         panel = paste0(type, ", lag ", lag)) |>
+  ggplot(aes(driver, response, fill = rho)) +
+  geom_tile() +
+  geom_point(data = \(d) filter(d, p < 0.05), size = 1) +
+  facet_wrap(~panel) +
+  scale_fill_gradient2(low = "#2166AC", high = "#B2182B", limits = c(-1, 1)) +
+  labs(x = NULL, y = NULL, fill = "ρ") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| label: fig-scatter
+#| fig-cap: "Selected annual relationships: lake TP against alum dose (colour = year); bottom DRP maximum against inflow volume; year-to-year change in minimum bottom DO (CTD) against change in summer air temperature."
+#| fig-height: 4
+s1 <- ggplot(dla, aes(alum_t_al, lake_tp, colour = hy)) + geom_point() +
+  scale_colour_viridis_c() + labs(x = "Alum (t Al/y)", y = "Lake TP (mg/m³)", colour = "Year")
+s2 <- ggplot(dla, aes(inflow_Mm3, bot_max_drp, label = hy)) + geom_text(size = 2.6) +
+  labs(x = "Inflow volume (Mm³/y)", y = "Bottom DRP max (mg/m³)")
+s3 <- dla |> arrange(hy) |>
+  mutate(dT = tair_djf - lag(tair_djf), dDO = ctd_min_do_bot - lag(ctd_min_do_bot)) |>
+  ggplot(aes(dT, dDO, label = hy)) + geom_hline(yintercept = 0, colour = "grey70") +
+  geom_vline(xintercept = 0, colour = "grey70") + geom_text(size = 2.6) +
+  labs(x = "Δ summer air temp (°C)", y = "Δ min bottom DO (g/m³)")
+(s1 | s2 | s3) + plot_layout(guides = "collect")
+```
+
+**Reading the correlations.**
+
+- **Level correlations** mostly reflect the shared trend over time. Alum dose is the strongest correlate of lake TP, DRP, TN and TLI (ρ −0.6 to −0.84). Air temperature also correlates negatively with lake TP, but only because both changed over the same decades.
+- **Year-to-year (differenced) correlations** are more informative about process:
+  - Warmer summers come with lower minimum bottom DO (ρ ≈ −0.58) and higher bottom NH₄ maxima (ρ ≈ +0.57).
+  - Wetter, higher-flow years come with lower bottom DRP maxima (ρ ≈ −0.6).
+  - Higher-load years come with *lower* lake TP than the year before. External load does not drive year-to-year lake TP, while flushing and mixing in wet years appear to suppress internal loading.
+  - Windier years come with clearer water.
+- **Overall.** Climate controls the strength of internal loading from year to year, and alum and the external loads set the baseline.
+- **Caveats:** about 30 years of data, many tests, autocorrelation, and analytical changes in the record. Treat these as hypotheses for the model to test, not as attribution.
+
+## Synthesis: state of the lake {#sec-synthesis}
+
+**Past (1990s – 2006).**
+
+- Lake Rotorua moved from mesotrophic-to-eutrophic conditions to a strongly eutrophic state.
+  - TLI3 reached 5.1 in 2003–2004.
+  - There were chl-a blooms of 20–30 mg/m³ annual mean.
+  - Bottom-water anoxia was frequent, with large internal P and N loads.
+- External loads were high (TN 450–640 t/y, TP 30–60 t/y) and N loads were rising with nitrate-rich groundwater.
+
+**Recovery (2006 – about 2015).**
+
+- Alum dosing of the Utuhina (2006) and Puarenga (2010) brought a rapid, step-like improvement, and full dosing of both streams from 2011 reinforced it.
+  - TP and DRP halved.
+  - Chl-a and organic N followed within about a year.
+  - Clarity improved.
+  - The 3-year mean TLI stayed close to the target of 4.2 (4.15–4.28) from about 2013 to 2021.
+- This happened even though external loads in 2011–2013 were among the highest of the period. This is strong evidence that the in-lake P binding by alum, not external load reduction, drove the improvement.
+
+**Present (2016 – 2026).**
+
+- The lake is now in a "held" but slowly deteriorating state.
+  - TLI3 is 4.3–4.4 (above target).
+  - TP is 17–21 mg/m³, except in the 2021–2022 excursion.
+  - TN and chl-a are rising.
+  - Summer stratification and anoxia still occur in hot, calm summers.
+- **Phosphorus.** The 2019–2022 episode shows how sensitive the lake is to the continuity of dosing. When Puarenga dosing paused, a hot summer with long stratification was enough to return surface DRP and TP to pre-2011 levels within two years.
+- **Nitrogen.** The lake is drifting upwards after the large 2023–2024 loads. Stream nitrate is still rising in the groundwater-fed streams (e.g. Hamurana).
+
+**Risks and trends to watch.**
+
+1. **Warming.** About +1 °C over 50 years, with air-heatwave days roughly tripling since 2016, favours longer stratification and more internal loading.
+2. **More frequent extreme wet years.** 2011, 2017–2018 and 2023 each bring 700–800+ t N/y and 50–60 t P/y. Wet years mix the lake in the short term but add N and particulate P that is recycled later.
+3. **Dependence on alum.** The lake's P state relies on continuous dosing. Any reduction is likely to show up within 1–2 summers.
+4. **Data continuity.** Changes in lab and reporting resolution blur trends in low-level DRP and NH₄ and in river TP. The buoy pH and CTD chlorophyll sensors need checking.
+
+**What this means for modelling.**
+
+- The calibration period should include the dosing pause (2019–2021) and the 2021/22 heat and stratification. Together they are the strongest test of the alum and sediment modules.
+- Lake TN after 2022 is a test of the PC10 2026 N loads.
+- Trends in DRP and river TP across the 2015 and 2020 lab boundaries should not be calibrated to until the lab history is confirmed.
