@@ -29,6 +29,7 @@ library(knitr)
 library(patchwork)
 source(here::here("R", "wq_synthesis_helpers.R"))
 source(here::here("R", "read_river_wq.R"))
+source(here::here("R", "wq_target_metrics.R"))
 
 store <- here::here("_targets")
 tr <- function(x) targets::tar_read_raw(x, store = store)
@@ -1533,6 +1534,162 @@ s3 <- dla |> arrange(hy) |>
   - Windier years come with clearer water.
 - **Overall.** Climate controls the strength of internal loading from year to year, and alum and the external loads set the baseline.
 - **Caveats:** about 30 years of data, many tests, autocorrelation, and analytical changes in the record. Treat these as hypotheses for the model to test, not as attribution.
+
+## Targets for the model {#sec-model-targets}
+
+The patterns described above can be turned into a set of **observation-based targets**: features of the lake record that a credible model of Lake Rotorua should reproduce. Each target has five parts:
+
+- **Measure:** a precisely defined calculation (a "signature").
+- **Observed value:** the value of that measure in the monitoring record.
+- **Tolerance:** usually the year-to-year variability of the signature in the observations. Within one tolerance, the model is as close as the lake is to itself from one year to the next.
+- **Priority:**
+  1. what the model must get right for management questions: physics, oxygen and the phosphorus response to alum;
+  2. the internal-loading process, nitrogen and seasonal timing;
+  3. secondary patterns.
+- **Scoring:** the same code computes every signature from model output, and the run is scored by z = (model − observed) / tolerance.
+
+The code is in `R/wq_target_metrics.R`:
+
+- `wq_target_signatures()` computes the signatures.
+- `model_target_inputs()` builds the inputs from GLM-AED profile output, sampling the model on the observed dates and layers.
+- `score_wq_targets()` and `score_wq_summary()` score a run.
+
+The observed values are in the `wq_obs_targets` target.
+
+```{r}
+#| label: tbl-model-targets
+#| tbl-cap: "Observation-based targets for the Lake Rotorua model, by priority. Tolerance: ± one tolerance; for log-scaled targets, a factor (×/÷); for timing, ± months. n is the number of years (or events) behind the value. Hypolimnetic accumulation fluxes are lower bounds: a model at or above them meets the target."
+obs_t <- tr("wq_obs_targets")
+mabb <- function(x) month.abb[pmin(pmax(round(ifelse(is.finite(x), x, 1)), 1), 12)]
+fmt_v <- function(x) ifelse(abs(x) >= 100, sprintf("%.0f", x), ifelse(abs(x) >= 10, sprintf("%.1f", x), sprintf("%.2f", x)))
+obs_t |>
+  mutate(Tolerance = case_when(
+           metric %in% log_scale_metrics ~ sprintf("×/÷ %.1f", exp(tol)),
+           grepl("^month_max", metric) ~ "± 1 month",
+           TRUE ~ paste("±", fmt_v(tol))),
+         Observed = ifelse(grepl("^month_max", metric), mabb(value), fmt_v(value))) |>
+  arrange(priority, theme) |>
+  transmute(Priority = priority, Theme = theme, Target = label, Measure = measure, Period = period,
+            Observed, Tolerance, n = n) |>
+  kable()
+```
+
+```{r}
+#| label: tbl-pointwise-targets
+#| tbl-cap: "Paired time-series skill measures, which complement the signatures. They need the model sampled at the observed times; acceptance levels are suggested starting points."
+wq_pointwise_definitions() |>
+  transmute(Priority = priority, Theme = theme, Series = label, Measure = measure, Acceptance = acceptance) |>
+  kable()
+```
+
+**Why these priorities.**
+
+- **Priority 1** contains what the model's main uses depend on: alum-dosing scenarios, the PC10 load targets and climate projections.
+  - **Physics and oxygen:** stratification frequency and spell length, thermocline depth, summer surface temperature, and the frequency and depth of bottom anoxia. These control internal loading.
+  - **The size of the alum response:** TP before and after dosing and their ratio.
+  - **The response to the 2019–2021 Puarenga dosing pause:** about +14 mg/m³ of TP in 2021–2022. It is the only "experiment" in the record, and the strongest test that the alum and sediment modules respond for the right reasons.
+  - **The resulting chl-a and TLI under alum.**
+- **Priority 2** covers how the internal load is generated:
+  - the bottom-water maxima of NH₄ and DRP;
+  - the January–February bottom excess;
+  - the rates of oxygen depletion and nutrient accumulation;
+  - the timing of the surface peaks: TP in March, NH₄ in April, NOx in July;
+  - TN levels.
+
+  A model can match annual TP for the wrong reasons, for example with the internal load replaced by too much external P. These targets guard against that.
+- **Priority 3** covers features that are useful checks but are weakly constrained or affected by the data problems in @sec-dq: the winter NOx peak, TN:TP, Secchi depth, and the recent trends in chl-a and TP.
+
+**How to score.**
+
+- **Per target:** |z| ≤ 1 is good (within the lake's own interannual variability), 1–2 acceptable, and > 2 poor.
+- **Overall:** a priority-weighted mean of z², with weights 3, 2 and 1.
+- **Not scored:** targets the run cannot cover (e.g. 2023–2026 for a run that ends in 2022, or Secchi depth, which the model does not output) are left unscored rather than penalised.
+- **Calibration and validation:** the signatures can be used directly as calibration terms, in the same way as the CSPS terms in `calibration/csps_metrics.R`. The dosing-pause and recent-period targets are better kept for validation.
+
+### Example: the current calibrated ensemble
+
+```{r}
+#| label: ens-scores
+ens_file <- here::here("calibration", "wq_targets", "long_ensemble_scores.csv")
+have_ens <- file.exists(ens_file)
+if (have_ens) ens <- readr::read_csv(ens_file, show_col_types = FALSE)
+```
+
+```{r}
+#| label: fig-ens-scores
+#| fig-cap: "Scores (z) of the 24 posterior members of the one-stage calibration (long ensemble, 1977–2022; calibration/all_stage) against the targets. Each point is a member; the bar is the ensemble median. Shading marks |z| ≤ 1 (good) and ≤ 2 (acceptable). Targets the run cannot cover are omitted."
+#| fig-height: 8
+#| eval: !expr have_ens
+lab_o <- obs_t |> arrange(desc(priority), desc(theme)) |> pull(label)
+ens |>
+  filter(is.finite(z)) |>
+  mutate(zc = pmax(pmin(z, 6), -6),
+         label = factor(gsub("₂", "2", gsub("₄", "4", label)), unique(gsub("₂", "2", gsub("₄", "4", lab_o)))),
+         Priority = factor(priority)) |>
+  ggplot(aes(zc, label)) +
+  annotate("rect", xmin = -2, xmax = 2, ymin = -Inf, ymax = Inf, fill = "grey92") +
+  annotate("rect", xmin = -1, xmax = 1, ymin = -Inf, ymax = Inf, fill = "grey82") +
+  geom_vline(xintercept = 0, colour = "grey40") +
+  geom_point(aes(colour = Priority), alpha = 0.4, size = 1.2) +
+  stat_summary(fun = median, geom = "point", shape = 124, size = 5) +
+  scale_colour_manual(values = c(`1` = "#D55E00", `2` = "#0072B2", `3` = "grey40")) +
+  scale_x_continuous(limits = c(-6, 6), breaks = -6:6, labels = c("≤−6", -5:5, "≥6")) +
+  labs(x = "z = (model − observed) / tolerance", y = NULL)
+```
+
+```{r}
+#| label: tbl-ens-summary
+#| tbl-cap: "Ensemble scores by target: observed value, ensemble median and range of the simulated value, and median z."
+#| eval: !expr have_ens
+ens |>
+  group_by(priority, label, metric) |>
+  summarise(obs = first(obs), med = median(sim), lo = min(sim), hi = max(sim), z = median(z), .groups = "drop") |>
+  filter(is.finite(med)) |>
+  arrange(priority, -abs(z)) |>
+  transmute(Priority = priority, Target = label,
+            Observed = ifelse(grepl("^month_max", metric), mabb(obs), fmt_v(obs)),
+            `Model median (range)` = ifelse(grepl("^month_max", metric),
+                                            paste0(mabb(med), " (", mabb(lo), "–", mabb(hi), ")"),
+                                            paste0(fmt_v(med), " (", fmt_v(lo), " – ", fmt_v(hi), ")")),
+            `Median z` = sprintf("%+.1f", z),
+            Rating = case_when(abs(z) <= 1 ~ "good", abs(z) <= 2 ~ "acceptable", TRUE ~ "poor")) |>
+  kable()
+```
+
+**What the example shows.** This is the current one-stage calibrated ensemble: 24 members, run to June 2022, with the historical dosing and the PC10-era inflows. The priority-weighted mean z² of the members is 9–18 (median about 12.5).
+
+- **Physics and oxygen are good.** Every member is within one tolerance for:
+  - summer surface temperature;
+  - the share of stratified days and the longest stratified spell;
+  - the share of anoxic summer days, AHOD and the rate of bottom DO decline.
+
+  The thermocline is about 3 m too deep (14 against 11 m), and bottom water is slightly less anoxic at its annual minimum (z about +1.3).
+- **The alum response is roughly right in size, but the levels are low.**
+  - Pre-alum TP is close (39 against 41 mg/m³).
+  - Alum-era TP is too low (13 against 17 mg/m³), so the modelled alum effect is somewhat too strong (ratio 0.34 against 0.42).
+  - Chl-a and TN under alum are low by about 1.5–2 tolerances.
+- **The dosing-pause response is wrong in sign.** Every member simulates TP falling by about 6 mg/m³ from 2017–2020 to 2021–2022, where the lake rose by about 14 mg/m³ (z about −8). For the same reason the recent TP trend has the wrong sign, but the model's window ends in 2022, so that comparison is partial. This matches the step 3 finding that the model "stays low in 2020–22": in the model the dosing pause does not release enough P.
+- **Internal loading is too weak.**
+  - Bottom NH₄ maxima are about 9 times too low (34 against 311 mg/m³).
+  - The January–February bottom NH₄ excess is almost absent (4 against 120 mg/m³).
+  - Hypolimnetic NH₄ and DRP accumulation are 15–50 times below even the observed lower bounds.
+  - Yet oxygen depletion is right. So the model consumes oxygen at the bed at the right rate but releases far too little NH₄ and DRP into the bottom water, or mixes it away too quickly.
+  - The bottom DRP maximum and the January–February DRP excess score "good" only because their tolerances are very wide (DRP release is very variable from year to year). They constrain the model weakly; the accumulation flux is the more informative DRP target.
+- **The seasonal timing is wrong.**
+  - Surface TP peaks in August in the model, against March in the lake.
+  - NH₄ peaks in July–August, against April.
+  - NOx (August against July) is about right.
+  - In the lake, the autumn peaks come from the summer internal load being mixed upwards. In the model, the winter peaks come from external loads in the wet season.
+
+**What this means for the next calibration.** The weakest targets, in order, are:
+
+1. The dosing-pause response.
+2. Bottom-water NH₄ and DRP accumulation, with the related autumn timing of TP and NH₄.
+3. The alum-era TP, TN and chl-a levels.
+
+All three point to the sediment-release terms (`fsed_amm`, `fsed_frp` and their oxygen and temperature dependence) and to the alum–sediment interaction, rather than to physics. Adding the priority 1 and 2 signatures to the calibration objective would put direct weight on them.
+
+
 
 ## Synthesis: state of the lake {#sec-synthesis}
 
