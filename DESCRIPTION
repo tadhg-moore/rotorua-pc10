@@ -13,6 +13,7 @@ RoxygenNote: 7.3.3
 URL: https://tadhg-moore.github.io/rotorua-pc10/
 Imports: 
     AEME (>= 0.4.0),
+    arrow,
     bathytools (>= 0.0.0.9000),
     crew,
     DT,
@@ -29,7 +30,7 @@ Imports:
     tarchetypes,
     targets,
     visNetwork
-Remotes:  
+Remotes: 
     limnotrack/AEME,
     limnotrack/bathytools,
     limnotrack/metscale
