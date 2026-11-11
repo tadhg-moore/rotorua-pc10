@@ -2187,7 +2187,7 @@ list(
   #* Alum: daily Al dose (2006-2026), 2022-26 dose rates, Puarenga compliance ----
   tar_target(
     alum_2026_file,
-    file.path(data_raw_dir, "PC10_data_Jun26", "Alum",
+    file.path(data_raw_dir, "Alum",
               "Lake Rotorua alum dosing data Jan 2022 to Jul 2026 incl Puarenga DRP data .xlsx"),
     format = "file"
   ),
