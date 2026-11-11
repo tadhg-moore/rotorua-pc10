@@ -384,3 +384,120 @@ driver_correlations <- function(annual, responses, drivers, lags = 0:1) {
   }
   dplyr::bind_rows(res)
 }
+
+# ---- Thermal structure and internal-load fluxes ------------------------------
+
+#' Hypsograph as depth below the surface (m, positive down) and area (m2)
+#' @param hyps data frame with `depth` (m, <= 0 below the surface) and `area`.
+hyps_below_surface <- function(hyps) {
+  h <- hyps[hyps$depth <= 0, c("depth", "area")]
+  h <- data.frame(depth = -h$depth, area = h$area)
+  h[order(h$depth), ]
+}
+
+#' Area at depth z and volume below depth z from a hypsograph
+hyps_area <- function(h, z) stats::approx(h$depth, h$area, xout = z, rule = 2)$y
+hyps_vol_below <- function(h, z) {
+  vapply(z, function(zz) {
+    if (is.na(zz)) return(NA_real_)
+    d <- c(zz, h$depth[h$depth > zz]); a <- hyps_area(h, d)
+    sum(diff(d) * (utils::head(a, -1) + utils::tail(a, -1)) / 2)
+  }, numeric(1))
+}
+
+#' Thermal structure of each profile: thermocline depth, Schmidt stability,
+#' surface-bottom temperature difference
+#'
+#' @param df long profiles with group column(s), `date`, `depth_m`, `temp_c`.
+#' @param h hypsograph from [hyps_below_surface()].
+#' @param min_dt profiles with surface-bottom difference below this are "mixed"
+#'   (thermocline depth NA).
+thermal_structure <- function(df, h, ..., min_dt = 1, min_depths = 5) {
+  df |>
+    dplyr::filter(is.finite(temp_c)) |>
+    dplyr::group_by(..., date) |>
+    dplyr::filter(dplyr::n_distinct(depth_m) >= min_depths) |>
+    dplyr::group_modify(\(d, k) {
+      # 1 m bins (old buoy has paired sensors 0.5 m apart near the bottom)
+      d <- d |> dplyr::mutate(depth_m = round(depth_m)) |>
+        dplyr::group_by(depth_m) |> dplyr::summarise(t = mean(temp_c), .groups = "drop") |>
+        dplyr::arrange(depth_m)
+      dt <- d$t[1] - d$t[nrow(d)]
+      # Thermocline searched between 3 m and 2 m above the bottom, so that neither
+      # near-surface diurnal warming nor the near-bed boundary-layer gradient is
+      # taken as the (hypolimnion-bounding) thermocline
+      up <- d[d$depth_m >= 3 & d$depth_m <= max(d$depth_m) - 2, ]
+      td <- if (dt >= min_dt && nrow(up) >= 3)
+        suppressWarnings(rLakeAnalyzer::thermo.depth(up$t, up$depth_m, Smin = 0.05)) else NA_real_
+      ss <- suppressWarnings(rLakeAnalyzer::schmidt.stability(d$t, d$depth_m, h$area, h$depth))
+      tibble::tibble(t_surf = d$t[1], t_bot = d$t[nrow(d)], d_temp = dt,
+                     thermo_depth = ifelse(is.finite(td), td, NA_real_),
+                     schmidt = ss, max_depth = max(d$depth_m))
+    }) |>
+    dplyr::ungroup()
+}
+
+#' Hypolimnetic accumulation fluxes from discrete chemistry
+#'
+#' For consecutive sampling dates at a site (gap <= `max_gap` days) when the CTD
+#' shows the lake stratified on both dates, the hypolimnetic mass is
+#' C_hyp x V(z_th), with C_hyp the mean of the HYP and BOT samples and z_th the
+#' mean thermocline depth of the two casts. The flux is the change in mass over
+#' the interval per unit sediment area below the thermocline (mg/m2/d).
+#' Mixing events between samples remove mass, so positive values are lower
+#' bounds of gross release; negative values (losses) are kept for reference.
+hypolimnetic_flux <- function(chem_long, ctd_thermal, h, vars = c("nh4", "drp", "tp"),
+                              max_gap = 45) {
+  hyp <- chem_long |>
+    dplyr::filter(layer %in% c("HYP", "BOT"), variable %in% vars) |>
+    dplyr::group_by(site, date, variable) |>
+    dplyr::summarise(c_hyp = mean(value), n_layers = dplyr::n(), .groups = "drop")
+  th <- ctd_thermal |> dplyr::select(site, date, thermo_depth, d_temp, t_bot)
+  hyp |>
+    dplyr::inner_join(th, by = c("site", "date")) |>
+    dplyr::arrange(site, variable, date) |>
+    dplyr::group_by(site, variable) |>
+    dplyr::mutate(date0 = dplyr::lag(date), c0 = dplyr::lag(c_hyp),
+                  z0 = dplyr::lag(thermo_depth), strat0 = dplyr::lag(d_temp) >= 1) |>
+    dplyr::ungroup() |>
+    dplyr::filter(!is.na(date0), as.numeric(date - date0) <= max_gap,
+                  d_temp >= 1, strat0, is.finite(thermo_depth), is.finite(z0)) |>
+    dplyr::mutate(
+      days = as.numeric(date - date0),
+      z_th = (thermo_depth + z0) / 2,
+      v_hyp = hyps_vol_below(h, z_th),
+      a_sed = hyps_area(h, z_th),
+      h_mean = v_hyp / a_sed,                          # mean hypolimnion thickness (m)
+      flux = (c_hyp - c0) * h_mean / days,             # mg/m3 x m / d = mg/m2/d
+      hy = wq_hy(date)
+    )
+}
+
+#' Hypolimnetic oxygen depletion during buoy-recorded stratified periods
+#'
+#' For each stratified period (>= `min_len` days), bottom DO is regressed on
+#' time until it first falls below 1 g/m3 (DO depletion then stops being
+#' oxygen-limited). Areal depletion = slope x mean hypolimnion thickness,
+#' using the median thermocline depth of the period.
+#' @return tibble per event: start, end, days_fit, do_start, rate (g/m3/d),
+#'   z_th, h_mean, ahod (g O2/m2/d), t_bot.
+oxygen_depletion <- function(daily, thermal, events, h, min_len = 7) {
+  events <- events[events$duration >= min_len, ]
+  dplyr::bind_rows(lapply(seq_len(nrow(events)), function(i) {
+    d <- daily[daily$date >= events$start[i] & daily$date <= events$end[i] & is.finite(daily$do_bot), ]
+    if (nrow(d) < 5) return(NULL)
+    j <- which(d$do_bot < 1)
+    if (length(j)) d <- d[seq_len(max(j[1], 5)), ]
+    if (nrow(d) < 5 || d$do_bot[1] < 2) return(NULL)
+    fit <- stats::lm(do_bot ~ as.numeric(date), data = d)
+    z <- stats::median(thermal$thermo_depth[thermal$date >= events$start[i] &
+                                             thermal$date <= events$end[i]], na.rm = TRUE)
+    if (!is.finite(z)) return(NULL)
+    hm <- hyps_vol_below(h, z) / hyps_area(h, z)
+    tibble::tibble(start = events$start[i], end = events$end[i], days_fit = nrow(d),
+                   do_start = d$do_bot[1], rate = -unname(stats::coef(fit)[2]),
+                   r2 = summary(fit)$r.squared, z_th = z, h_mean = hm,
+                   ahod = -unname(stats::coef(fit)[2]) * hm,
+                   t_bot = mean(d$t_bot, na.rm = TRUE))
+  }))
+}
