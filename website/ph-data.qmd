@@ -30,6 +30,8 @@ dir.create("downloads", showWarnings = FALSE)
 ph_all |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "UTC"), date = as.character(date)) |>
   write.csv("downloads/rotorua_ph_timeseries.csv", row.names = FALSE)
 
+prof <- tar_read(buoy_profile_daily)
+
 alk <- tar_read(alk_data) |>
   mutate(date = as.Date(datetime), site = ifelse(grepl("^EK", site_id), "Site 2", "Site 5"),
          sample = c(DIS = "Discrete", INT = "Integrated", HYP = "Hypolimnion")[sub(".*_", "", site_id)])
@@ -84,20 +86,24 @@ knitr::kable(data.frame(Source = y$source, Year = y$year, Days = y$days, Median 
 
 ```{r}
 #| label: fig-ph-depth
-#| fig-cap: "pH by depth (rounded to 1 m), by buoy."
-#| out-width: "90%"
-ggplot(ph, aes(factor(round(depth_m)), ph)) + geom_boxplot(outlier.size = .3, fill = "#b2df8a") + facet_wrap(~source, scales = "free_x") +
-  labs(x = "Depth (m)", y = "pH") + th
+#| fig-cap: "Depth profile of pH, old and new buoy combined: median (line), interquartile range (dark band) and 5th to 95th percentile (light band) at each 0.5 m depth."
+#| out-width: "60%"
+#| fig-height: 5.5
+pd <- ph |> group_by(depth_m) |> summarise(med = median(ph), p05 = q(ph, .05), p25 = q(ph, .25), p75 = q(ph, .75), p95 = q(ph, .95), .groups = "drop")
+ggplot(pd, aes(y = depth_m)) +
+  geom_ribbon(aes(xmin = p05, xmax = p95), orientation = "y", fill = "#b2df8a", alpha = .5) +
+  geom_ribbon(aes(xmin = p25, xmax = p75), orientation = "y", fill = "#33a02c", alpha = .5) +
+  geom_path(aes(x = med), linewidth = .8) + scale_y_reverse() + labs(x = "pH", y = "Depth (m)") + th
 ```
 
 ```{r}
 #| tbl-cap: "pH by depth class."
-d <- ph |> mutate(depth_class = as.character(cut(depth_m, c(-1, 2, 5, 10, 15, 25, 40)))) |> group_by(source, depth_class) |>
+d <- ph |> mutate(depth_class = as.character(cut(depth_m, c(-1, 2, 5, 10, 15, 25, 40)))) |> group_by(depth_class) |>
   summarise(n = n(), median = r2(median(ph)), p05 = r2(q(ph, .05)), p95 = r2(q(ph, .95)), .groups = "drop")
-knitr::kable(data.frame(Source = d$source, `Depth class (m)` = d$depth_class, n = format(d$n, big.mark = ","), Median = d$median, `5th pct` = d$p05, `95th pct` = d$p95, check.names = FALSE), row.names = FALSE)
+knitr::kable(data.frame(`Depth class (m)` = d$depth_class, n = format(d$n, big.mark = ","), Median = d$median, `5th pct` = d$p05, `95th pct` = d$p95, check.names = FALSE), row.names = FALSE)
 ```
 
-pH decreases with depth in the new buoy record: a median of 7.1 in the upper 5 m against 6.7 at 15 to 21 m, consistent with respiration and CO₂ accumulation in the stratified bottom water. The surface layer shows the high values (the 95th percentile is 8.2) that come with photosynthesis in summer blooms.
+pH decreases with depth: a median of 7.1 in the upper 5 m against 6.7 at 15 to 21 m (only the new buoy measures below 1 m), consistent with respiration and CO₂ accumulation in the stratified bottom water. The surface layer shows the high values (the 95th percentile is 8.2) that come with photosynthesis in summer blooms.
 
 ```{r}
 #| label: fig-ph-zones
@@ -128,11 +134,55 @@ The seasonal cycle of the median is weak (6.9 to 7.3). The spread is what change
 
 ```{r}
 #| label: fig-ph-hist
-#| fig-cap: "Distribution of all pH values."
+#| fig-cap: "Density of all pH values (0.1 pH bins), by buoy."
 #| out-width: "60%"
-ggplot(ph, aes(ph, fill = source)) + geom_histogram(binwidth = .1, position = "identity", alpha = .6) + scale_fill_manual(values = cols) +
-  labs(x = "pH", y = "Count", fill = NULL) + th + theme(legend.position = "top")
+ggplot(ph, aes(ph, fill = source)) + geom_histogram(aes(y = after_stat(density)), binwidth = .1, position = "identity", alpha = .6) + scale_fill_manual(values = cols) +
+  labs(x = "pH", y = "Density", fill = NULL) + th + theme(legend.position = "top")
 ```
+
+## Relationship with other profiler variables
+
+The profiler measures temperature, fluorescence chlorophyll, dissolved oxygen, ORP, turbidity and specific conductance alongside pH (target `buoy_profile_daily`: daily means in 0.5 m bins, 2022 to 2026, so the new buoy only). The old buoy has no chlorophyll record. Chlorophyll here is in-situ fluorescence (`FlChlr`), which is not calibrated against lab chlorophyll-a, so it is a relative index of phytoplankton.
+
+```{r}
+#| include: false
+vars <- c(`Temperature` = "temp_c", `Chlorophyll (fluorescence)` = "chl_fl", `DO (mg/L)` = "do_mgl", `DO saturation (%)` = "do_sat",
+          `ORP` = "orp_mv", `Turbidity` = "turb", `Specific conductance` = "spcond", `Depth` = "depth_m")
+sp <- \(x, y) suppressWarnings(cor(x, y, method = "spearman", use = "pairwise.complete.obs"))
+prof <- prof |> mutate(zone = cut(depth_m, c(0, 5, 10, 17, 22), labels = c("0-5 m", "5-10 m", "10-17 m", "17-22 m")))
+# anomalies from the long-term mean at each depth (removes the average depth gradient)
+anom <- prof |> group_by(depth_m) |> mutate(across(c(ph, temp_c, chl_fl, do_mgl, do_sat, orp_mv, turb, spcond), \(x) x - mean(x, na.rm = TRUE))) |> ungroup()
+cr <- data.frame(Variable = names(vars),
+  All = sapply(vars, \(v) sp(prof$ph, prof[[v]])),
+  sapply(levels(prof$zone), \(z) sapply(vars, \(v) sp(prof$ph[prof$zone == z], prof[[v]][prof$zone == z]))),
+  `Anomaly from depth mean` = sapply(vars, \(v) if (v == "depth_m") NA else sp(anom$ph, anom[[v]])), check.names = FALSE)
+cr[-1] <- lapply(cr[-1], r2)
+rownames(cr) <- NULL
+g <- \(v, z) cr[cr$Variable == v, z]
+```
+
+```{r}
+#| tbl-cap: "Spearman rank correlation of daily mean pH (0.5 m bins) with the other profiler variables: all depths, by depth zone, and for anomalies from each depth's long-term mean."
+knitr::kable(cr)
+```
+
+```{r}
+#| label: fig-ph-corr
+#| fig-cap: "pH against fluorescence chlorophyll and temperature by depth zone. Points are daily means at 0.5 m (chlorophyll above its 99.5th percentile omitted); lines are linear fits."
+#| out-width: "95%"
+#| fig-height: 6
+long <- prof |> filter(chl_fl < quantile(chl_fl, .995, na.rm = TRUE)) |>
+  tidyr::pivot_longer(c(chl_fl, temp_c), names_to = "var", values_to = "x") |>
+  mutate(var = c(chl_fl = "Chlorophyll (fluorescence)", temp_c = "Temperature (°C)")[var])
+ggplot(long, aes(x, ph)) + geom_point(size = .2, alpha = .15, colour = "grey30") + geom_smooth(method = "lm", se = FALSE, colour = "#e31a1c", linewidth = .7) +
+  facet_grid(zone ~ var, scales = "free_x") + labs(x = NULL, y = "pH") + th
+```
+
+- **Oxygen is the strongest correlate** (Spearman `r g("DO saturation (%)", "All")` with saturation and `r g("DO (mg/L)", "All")` with concentration over all depths; `r g("DO saturation (%)", "0-5 m")` for saturation in the top 5 m and `r g("DO saturation (%)", "17-22 m")` at 17 to 22 m). Both pH and oxygen respond to the balance of photosynthesis and respiration, so this is expected and not independent evidence.
+- **Chlorophyll is positively correlated with pH** (`r g("Chlorophyll (fluorescence)", "All")` overall, from `r g("Chlorophyll (fluorescence)", "0-5 m")` in the top 5 m to `r g("Chlorophyll (fluorescence)", "17-22 m")` at 17 to 22 m). It stays at `r g("Chlorophyll (fluorescence)", "Anomaly from depth mean")` after removing each depth's mean, so days with more chlorophyll have higher pH at a given depth.
+- **Temperature is negatively correlated overall** (`r g("Temperature", "All")`), but the relationship changes with depth: `r g("Temperature", "0-5 m")` in the top 5 m and `r g("Temperature", "17-22 m")` at 17 to 22 m, where colder water has the higher pH.
+- **Turbidity and specific conductance** have correlations of `r g("Turbidity", "All")` and `r g("Specific conductance", "All")` with pH over all depths, and ORP (`r g("ORP", "All")`) largely follows oxygen.
+- These are rank correlations of autocorrelated daily data from one site. They show association only, and any significance test would be overstated.
 
 ## Alkalinity, hardness and dissolved organic carbon
 
@@ -173,6 +223,30 @@ r_pa <- cor(jj$ph, jj$alkalinity_mgl_caco3, method = "spearman")
 - **Hardness and DOC are measured about once a year** (July or August, 2011 to 2017). DOC is low (`r r2(min(alk$doc_gm3, na.rm = TRUE))` to `r r2(max(alk$doc_gm3, na.rm = TRUE))` g/m³) and hardness is steady (`r r2(min(alk$hardness_mgl_caco3, na.rm = TRUE))` to `r r2(max(alk$hardness_mgl_caco3, na.rm = TRUE))` mg/L as CaCO₃).
 - **No clear same-day link with pH.** Matching the `r nrow(jj)` alkalinity samples to the old buoy's 1 to 2 m pH on the same date gives a Spearman correlation of `r r2(r_pa)`. The sample is small, and alkalinity is only available while the old buoy was running (2015 to 2018), so it says nothing about the 2022 to 2026 pH decline.
 
+### Do pH values exist on the sampling dates?
+
+```{r}
+#| include: false
+chk <- alk |> mutate(has_ph = date %in% ph$date)
+cnt <- \(v) { x <- chk[!is.na(chk[[v]]), ]; c(n = nrow(x), same_day = sum(x$has_ph)) }
+cc <- sapply(c(Alkalinity = "alkalinity_mgl_caco3", Hardness = "hardness_mgl_caco3", DOC = "doc_gm3"), cnt)
+no_ph <- chk |> filter(!is.na(alkalinity_mgl_caco3), !has_ph)
+```
+
+```{r}
+#| tbl-cap: "Samples with a value for each variable, and how many have a buoy pH measurement on the same date."
+knitr::kable(data.frame(Variable = colnames(cc), Samples = cc["n", ], `With pH on the same date` = cc["same_day", ], `Without pH` = cc["n", ] - cc["same_day", ], check.names = FALSE), row.names = FALSE)
+```
+
+Mostly, yes. `r cc["same_day", "Alkalinity"]` of the `r cc["n", "Alkalinity"]` alkalinity samples have a buoy pH value on the same date, all from the old buoy (the alkalinity file ends in February 2018 and the new buoy starts in February 2022). Of the `r nrow(no_ph)` without pH, `r sum(no_ph$date < as.Date("2014-02-25"))` were taken before the old buoy started on 25 Feb 2014, `r sum(no_ph$date > as.Date("2018-01-07"))` after it stopped in January 2018, and the other `r sum(no_ph$date >= as.Date("2014-02-25") & no_ph$date <= as.Date("2018-01-07"))` fall on days within the old buoy period when it has no pH record. Only `r cc["same_day", "Hardness"]` of the `r cc["n", "Hardness"]` hardness and DOC samples have a matching pH value. The old buoy measures at 1 m only, so each match is to surface pH, while the integrated samples cover a depth range.
+
+```{r}
+#| label: fig-alk-ph
+#| fig-cap: "Same-date surface pH (old buoy, 1 to 2 m) against alkalinity at the two sites."
+#| out-width: "60%"
+ggplot(jj, aes(alkalinity_mgl_caco3, ph, colour = site)) + geom_point(size = 2) + labs(x = "Alkalinity (mg/L as CaCO₃)", y = "pH", colour = NULL) + th + theme(legend.position = "top")
+```
+
 ## Download
 
 The full pH record, with every value from both buoys (58,863 rows), and the alkalinity, hardness and DOC samples are available as CSV files.
@@ -193,6 +267,3 @@ pH file columns:
 
 The alkalinity file has `site_id`, `location`, `datetime`, `alkalinity_mgl_caco3`, `doc_gm3` and `hardness_mgl_caco3` (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³), one row per sample.
 
-## Reproducing
-
-The figures, summary tables and the downloads are built in this page from the `ph_data` target (made from `old_buoy_wq` and `aeme_buoy_data`) and the `alk_data` target. The CSVs are written to `downloads/` each time the page renders, so they are never committed.

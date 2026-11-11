@@ -1299,6 +1299,23 @@ list(
     }
   ),
 
+  # Daily mean profiler data (0.5 m depth bins) for pH and the variables measured alongside it
+  tar_target(
+    buoy_profile_daily, {
+      rotorua_buoy_pro_data |>
+        dplyr::mutate(date = as.Date(DateTime), depth_m = round(DptSns * 2) / 2) |>
+        dplyr::group_by(date, depth_m) |>
+        dplyr::summarise(
+          dplyr::across(
+            c(ph = pH, temp_c = TmpWtr, chl_fl = FlChlr, do_mgl = DOconc, do_sat = DOpsat,
+              turb = TurbRT, spcond = SpCond, orp_mv = ORP),
+            \(x) mean(x, na.rm = TRUE)),
+          .groups = "drop") |>
+        dplyr::mutate(dplyr::across(where(is.numeric), \(x) ifelse(is.nan(x), NA_real_, x))) |>
+        dplyr::filter(!is.na(ph), ph > 4, ph < 11)
+    }
+  ),
+
   # CTD data
   
   # Add buoy data to AEME
