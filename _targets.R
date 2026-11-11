@@ -68,7 +68,8 @@ tar_source(
     here::here("R", "download_arcgis_layer.R"),
     here::here("R", "read_river_wq.R"),
     here::here("R", "wq_synthesis_helpers.R"),
-    here::here("R", "wq_target_metrics.R")
+    here::here("R", "wq_target_metrics.R"),
+    here::here("R", "fill_bathy.R")
   )
 )
 # Set target options
@@ -150,6 +151,29 @@ list(
     cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
+  
+  # GNS Rotorua bathymetry - digitised from here: https://shop.gns.cri.nz/rl-rotorua-pdf/
+  
+  tar_target(
+    rotorua_gns_bathymetry_raw_file,
+    here::here("data", "raw", "bathymetry",
+               "lake_rotorua_bathymetry_2m.tif"),
+    format = "file"
+  ),
+  tar_target(
+    rotorua_gns_bathymetry_filled_file, {
+      out_file <-  here::here("data", "processed", "bathymetry",
+                   "lake_rotorua_bathymetry_2m_filled.tif")
+      outfile <- fill_bathy(rotorua_gns_bathymetry_raw_file,
+                            out_file)
+      outfile
+    },
+    format = "file"
+  ),
+  tar_target(
+    gns_hyps, get_gns_hyps(rotorua_gns_bathymetry_filled_file)
+  ),
+  
   
   # BOPRC Rotorua nutrient-management catchment polygons (ArcGIS Hub) ----
   tar_target(
