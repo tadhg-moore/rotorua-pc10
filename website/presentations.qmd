@@ -3,6 +3,10 @@ title: "Presentations"
 format: html
 ---
 
+## Modelling updates 2026-08-19
+
+[Internal update](modelling-updates.qmd)
+
 ## Lakes Research Group Meeting - 2026-10-20
 
 [Research Overview](research-overview.qmd){target="_blank"}
