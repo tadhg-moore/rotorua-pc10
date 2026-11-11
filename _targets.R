@@ -2274,6 +2274,31 @@ list(
     }
   ),
 
+  #* Thermal structure and internal-load flux estimates ----
+  tar_target(lake_hyps, hyps_below_surface(corr_hyps)),
+  tar_target(
+    ctd_thermal,
+    lake_ctd_2026 |>
+      dplyr::filter(var == "temp_c") |>
+      dplyr::transmute(site, date, depth_m, temp_c = value) |>
+      thermal_structure(lake_hyps, site)
+  ),
+  tar_target(
+    buoy_thermal,
+    buoy_profile_long |>
+      dplyr::select(source, date, depth_m, temp_c) |>
+      thermal_structure(lake_hyps, source)
+  ),
+  tar_target(hyp_flux, hypolimnetic_flux(wq_lake_long, ctd_thermal, lake_hyps)),
+  tar_target(
+    hod_events, {
+      th <- buoy_thermal |>
+        dplyr::group_by(date) |>
+        dplyr::summarise(thermo_depth = mean(thermo_depth, na.rm = TRUE), .groups = "drop")
+      oxygen_depletion(buoy_events$daily, th, buoy_events$stratified, lake_hyps)
+    }
+  ),
+
   #* Meteorology events and annual summaries (ERA5 bias-corrected, 1976-) ----
   tar_target(
     met_events, {
