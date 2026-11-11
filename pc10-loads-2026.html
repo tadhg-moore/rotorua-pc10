@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-11">
+
+<title>2026 PC10 river loads: what changed from the current inflow file – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">Project admin</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./data.html" aria-current="page"> 
+<span class="menu-text">Data preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./aed_calibration_sa_plan.html"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research-overview.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pc10-loads-2026.html">PC10 Loads 2026</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Section">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pc10-loads-2026.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">PC10 Loads 2026</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CMIP6 Processing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cmip6-visualisation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualise CMIP6</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link active" data-scroll-target="#sec-summary"><span class="header-section-number">1</span> Summary</a></li>
+  <li><a href="#sec-sets" id="toc-sec-sets" class="nav-link" data-scroll-target="#sec-sets"><span class="header-section-number">2</span> What is in the data</a></li>
+  <li><a href="#sec-annual" id="toc-sec-annual" class="nav-link" data-scroll-target="#sec-annual"><span class="header-section-number">3</span> Annual loads, old and new</a></li>
+  <li><a href="#sec-byinflow" id="toc-sec-byinflow" class="nav-link" data-scroll-target="#sec-byinflow"><span class="header-section-number">4</span> Where the differences are: by inflow</a></li>
+  <li><a href="#sec-storm" id="toc-sec-storm" class="nav-link" data-scroll-target="#sec-storm"><span class="header-section-number">5</span> Wet years and flood-day particulates</a></li>
+  <li><a href="#sec-spec" id="toc-sec-spec" class="nav-link" data-scroll-target="#sec-spec"><span class="header-section-number">6</span> Speciation</a></li>
+  <li><a href="#sec-alum" id="toc-sec-alum" class="nav-link" data-scroll-target="#sec-alum"><span class="header-section-number">7</span> Alum: with and without dosing</a></li>
+  <li><a href="#sec-flows" id="toc-sec-flows" class="nav-link" data-scroll-target="#sec-flows"><span class="header-section-number">8</span> Flows and the 2022 to 2026 extension</a></li>
+  <li><a href="#sec-bounds" id="toc-sec-bounds" class="nav-link" data-scroll-target="#sec-bounds"><span class="header-section-number">9</span> Uncertainty bounds</a></li>
+  <li><a href="#sec-targets" id="toc-sec-targets" class="nav-link" data-scroll-target="#sec-targets"><span class="header-section-number">10</span> How the new data enter the pipeline</a></li>
+  <li><a href="#sec-refs" id="toc-sec-refs" class="nav-link" data-scroll-target="#sec-refs"><span class="header-section-number">11</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">2026 PC10 river loads: what changed from the current inflow file</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Comparison of the Limnotrack/BoPRC 2026 loads with <code>rotorua_inflows_populated_noalum.csv</code></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 11, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-summary" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-summary"><span class="header-section-number">1</span> Summary</h2>
+<p>In November 2026 Limnotrack (C. G. McBride) delivered daily GLM-AED boundary-condition files for Lake Rotorua for BoPRC, 1 July 1959 to 30 June 2026. They come from <em>Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026</em>. This page compares them with the inflow file the model currently uses (<code>data/raw/flows/rotorua_inflows_populated_noalum.csv</code>, which ends 30 June 2022) and says where they differ.</p>
+<p><strong>Key points</strong></p>
+<ol type="1">
+<li><strong>Total P is lower in the new files, mostly in wet years.</strong> Over 2007 to 2022 the mean TP load is 41.1 t/y against 49.1 t/y in the current file (-16%). TN is 546 against 550 t/y (-1%) and FRP is 25.3 against 27.5 t/y (-8%).</li>
+<li><strong>The wet years carry the difference.</strong> In 2011, 2012, 2017 and 2018 the new TP loads are 56, 52.4, 51.4, 59.8 t against 69.3, 63.9, 77, 80.9 t. These are the years where the lake TP was overestimated by 66 to 113%, which we worked around by halving flood-day particulates (<code>STR_FLOODSCALE = 0.5</code>). The new files treat flood-day particulates explicitly instead (<a href="#sec-storm" class="quarto-xref">Section&nbsp;5</a>).</li>
+<li><strong>The record is four years longer</strong> (to June 2026). The ERA5 forcing ends on 31 December 2025, so the new targets branch cuts the inflows there (<a href="#sec-targets" class="quarto-xref">Section&nbsp;10</a>).</li>
+<li><strong>The alum and no-alum sets give the in-stream binding rules an independent check.</strong> Dosing lowers FRP in the Utuhina by about 42% and in the Puarenga by about 64%, with TP unchanged (<a href="#sec-alum" class="quarto-xref">Section&nbsp;7</a>).</li>
+<li><strong>The <code>lower</code> and <code>upper</code> sets</strong> give 5th and 95th percentile load histories and <code>nostorm</code> sets give the PC10 target basis (<a href="#sec-sets" class="quarto-xref">Section&nbsp;2</a>).</li>
+</ol>
+</section>
+<section id="sec-sets" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-sets"><span class="header-section-number">2</span> What is in the data</h2>
+<p>Twelve complete sets, one folder each, named <code>&lt;alum|noalum&gt;_&lt;storm|nostorm&gt;_&lt;central|lower|upper&gt;</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>alum</td>
+<td><code>alum</code> / <code>noalum</code></td>
+<td>P as it entered the lake with alum dosing (Utuhina from June 2006, Puarenga from January 2010) / as it would have without dosing</td>
+</tr>
+<tr class="even">
+<td>storm</td>
+<td><code>storm</code> / <code>nostorm</code></td>
+<td>with / without stormflow particulates (extra particulate N, P and sediment on flood days). <code>nostorm</code> is the basis of the PC10 targets (435 t N/y, 37 t P/y)</td>
+</tr>
+<tr class="odd">
+<td>bound</td>
+<td><code>central</code>, <code>lower</code>, <code>upper</code></td>
+<td>best estimate / 5th and 95th percentile of the annual TN and TP load uncertainty</td>
+</tr>
+</tbody>
+</table>
+<p>Each folder holds nine stream files, <code>Geothermal</code>, ungauged slow and quick flow, <code>WWTP</code>, <code>inflow_all_combined</code>, <code>outflow_ohau</code> and an optional <code>rain_on_lake</code> file. Concentrations are already in AED variables and units (mmol m<sup>-3</sup>, flow in m<sup>3</sup> s<sup>-1</sup>), unlike the current file (mg L<sup>-1</sup>, m<sup>3</sup> day<sup>-1</sup>). The project reader <code>read_pc10_loads()</code> converts them to the current layout (<a href="#sec-targets" class="quarto-xref">Section&nbsp;10</a>) and reproduces <code>check_annual_loads.csv</code> to within 0.012% in all twelve sets.</p>
+<div class="cell">
+<div id="tbl-sets" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Mean annual load 2007 to 2022 (t/y) in each central set, from the supplied check file.
+</figcaption>
+<div aria-describedby="tbl-sets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">alum</th>
+<th style="text-align: left;">storm</th>
+<th style="text-align: right;">TN</th>
+<th style="text-align: right;">TP</th>
+<th style="text-align: right;">FRP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">alum</td>
+<td style="text-align: left;">nostorm</td>
+<td style="text-align: right;">532.8</td>
+<td style="text-align: right;">37.4</td>
+<td style="text-align: right;">23.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">alum</td>
+<td style="text-align: left;">storm</td>
+<td style="text-align: right;">545.8</td>
+<td style="text-align: right;">41.1</td>
+<td style="text-align: right;">23.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">noalum</td>
+<td style="text-align: left;">nostorm</td>
+<td style="text-align: right;">532.8</td>
+<td style="text-align: right;">37.4</td>
+<td style="text-align: right;">25.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">noalum</td>
+<td style="text-align: left;">storm</td>
+<td style="text-align: right;">545.8</td>
+<td style="text-align: right;">41.1</td>
+<td style="text-align: right;">25.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-annual" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-annual"><span class="header-section-number">3</span> Annual loads, old and new</h2>
+<p>Loads are computed from the species the model reads (ammonium, nitrate, DON, PON for N; FRP, DOP, POP, PIP for P), for both the current and the new inflows. The current file also has its own <code>TN</code> and <code>TP</code> columns, which give higher totals than the sum of its species over 2007 to 2022 (TN 575 against 550 t/y and TP 50.8 against 49.1 t/y); the difference is N and P that the old file does not allocate to a model variable. Against the <code>TP</code> column, the new TP is 19% lower.</p>
+<p>The new series used for the comparison is <code>noalum_storm_central</code>, because the current file is a no-alum file with flood-day particulates included.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-annual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="pc10-loads-2026_files/figure-html/fig-annual-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Annual TN, TP and FRP loads from all inflows, current file and 2026 loads (no-alum, with storm particulates). Years are July to June, named by the year in which they end."><img src="pc10-loads-2026_files/figure-html/fig-annual-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Annual TN, TP and FRP loads from all inflows, current file and 2026 loads (no-alum, with storm particulates). Years are July to June, named by the year in which they end.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-annual-diff" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-annual-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Annual load difference, new minus old (t/y). Percent is relative to the old file.
+</figcaption>
+<div aria-describedby="tbl-annual-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">TN old</th>
+<th style="text-align: right;">TN new</th>
+<th style="text-align: right;">TN %</th>
+<th style="text-align: right;">TP old</th>
+<th style="text-align: right;">TP new</th>
+<th style="text-align: right;">TP %</th>
+<th style="text-align: right;">FRP old</th>
+<th style="text-align: right;">FRP new</th>
+<th style="text-align: right;">FRP %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">634.1</td>
+<td style="text-align: right;">658.4</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">64.4</td>
+<td style="text-align: right;">58.4</td>
+<td style="text-align: right;">-9.3</td>
+<td style="text-align: right;">48.1</td>
+<td style="text-align: right;">47.2</td>
+<td style="text-align: right;">-1.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1991</td>
+<td style="text-align: right;">488.2</td>
+<td style="text-align: right;">508.4</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">63.6</td>
+<td style="text-align: right;">60.7</td>
+<td style="text-align: right;">-4.5</td>
+<td style="text-align: right;">47.7</td>
+<td style="text-align: right;">47.5</td>
+<td style="text-align: right;">-0.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1992</td>
+<td style="text-align: right;">399.8</td>
+<td style="text-align: right;">420.3</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">32.8</td>
+<td style="text-align: right;">32.0</td>
+<td style="text-align: right;">-2.3</td>
+<td style="text-align: right;">23.7</td>
+<td style="text-align: right;">23.8</td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1993</td>
+<td style="text-align: right;">451.2</td>
+<td style="text-align: right;">467.9</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">41.5</td>
+<td style="text-align: right;">36.9</td>
+<td style="text-align: right;">-11.1</td>
+<td style="text-align: right;">23.7</td>
+<td style="text-align: right;">22.1</td>
+<td style="text-align: right;">-6.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1994</td>
+<td style="text-align: right;">321.4</td>
+<td style="text-align: right;">325.8</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">28.5</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1995</td>
+<td style="text-align: right;">479.8</td>
+<td style="text-align: right;">503.0</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">42.2</td>
+<td style="text-align: right;">39.4</td>
+<td style="text-align: right;">-6.7</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">26.0</td>
+<td style="text-align: right;">-1.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1996</td>
+<td style="text-align: right;">571.0</td>
+<td style="text-align: right;">631.9</td>
+<td style="text-align: right;">10.7</td>
+<td style="text-align: right;">53.6</td>
+<td style="text-align: right;">48.1</td>
+<td style="text-align: right;">-10.2</td>
+<td style="text-align: right;">27.7</td>
+<td style="text-align: right;">26.9</td>
+<td style="text-align: right;">-2.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1997</td>
+<td style="text-align: right;">528.9</td>
+<td style="text-align: right;">579.1</td>
+<td style="text-align: right;">9.5</td>
+<td style="text-align: right;">47.2</td>
+<td style="text-align: right;">42.5</td>
+<td style="text-align: right;">-9.9</td>
+<td style="text-align: right;">28.3</td>
+<td style="text-align: right;">27.4</td>
+<td style="text-align: right;">-3.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">447.8</td>
+<td style="text-align: right;">474.0</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">35.4</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">-4.2</td>
+<td style="text-align: right;">26.3</td>
+<td style="text-align: right;">25.1</td>
+<td style="text-align: right;">-4.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1999</td>
+<td style="text-align: right;">578.1</td>
+<td style="text-align: right;">675.8</td>
+<td style="text-align: right;">16.9</td>
+<td style="text-align: right;">56.3</td>
+<td style="text-align: right;">52.3</td>
+<td style="text-align: right;">-7.1</td>
+<td style="text-align: right;">27.9</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">-5.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">475.2</td>
+<td style="text-align: right;">509.2</td>
+<td style="text-align: right;">7.1</td>
+<td style="text-align: right;">36.3</td>
+<td style="text-align: right;">35.0</td>
+<td style="text-align: right;">-3.4</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">24.1</td>
+<td style="text-align: right;">-2.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">537.8</td>
+<td style="text-align: right;">581.3</td>
+<td style="text-align: right;">8.1</td>
+<td style="text-align: right;">43.2</td>
+<td style="text-align: right;">39.6</td>
+<td style="text-align: right;">-8.2</td>
+<td style="text-align: right;">26.6</td>
+<td style="text-align: right;">24.8</td>
+<td style="text-align: right;">-6.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2002</td>
+<td style="text-align: right;">470.4</td>
+<td style="text-align: right;">551.3</td>
+<td style="text-align: right;">17.2</td>
+<td style="text-align: right;">36.2</td>
+<td style="text-align: right;">35.7</td>
+<td style="text-align: right;">-1.3</td>
+<td style="text-align: right;">25.4</td>
+<td style="text-align: right;">25.6</td>
+<td style="text-align: right;">0.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2003</td>
+<td style="text-align: right;">433.5</td>
+<td style="text-align: right;">451.9</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">32.2</td>
+<td style="text-align: right;">30.4</td>
+<td style="text-align: right;">-5.9</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">22.9</td>
+<td style="text-align: right;">-8.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2004</td>
+<td style="text-align: right;">492.5</td>
+<td style="text-align: right;">529.4</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">39.7</td>
+<td style="text-align: right;">35.1</td>
+<td style="text-align: right;">-11.7</td>
+<td style="text-align: right;">26.1</td>
+<td style="text-align: right;">23.7</td>
+<td style="text-align: right;">-9.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2005</td>
+<td style="text-align: right;">596.3</td>
+<td style="text-align: right;">638.9</td>
+<td style="text-align: right;">7.1</td>
+<td style="text-align: right;">44.2</td>
+<td style="text-align: right;">38.2</td>
+<td style="text-align: right;">-13.6</td>
+<td style="text-align: right;">27.8</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">-11.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">594.9</td>
+<td style="text-align: right;">641.5</td>
+<td style="text-align: right;">7.8</td>
+<td style="text-align: right;">48.6</td>
+<td style="text-align: right;">42.5</td>
+<td style="text-align: right;">-12.6</td>
+<td style="text-align: right;">28.4</td>
+<td style="text-align: right;">27.2</td>
+<td style="text-align: right;">-4.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2007</td>
+<td style="text-align: right;">567.8</td>
+<td style="text-align: right;">600.2</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">41.9</td>
+<td style="text-align: right;">37.3</td>
+<td style="text-align: right;">-11.1</td>
+<td style="text-align: right;">27.1</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">-11.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2008</td>
+<td style="text-align: right;">555.8</td>
+<td style="text-align: right;">568.1</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">41.9</td>
+<td style="text-align: right;">36.7</td>
+<td style="text-align: right;">-12.5</td>
+<td style="text-align: right;">28.8</td>
+<td style="text-align: right;">25.4</td>
+<td style="text-align: right;">-11.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2009</td>
+<td style="text-align: right;">536.1</td>
+<td style="text-align: right;">550.0</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">36.0</td>
+<td style="text-align: right;">-14.2</td>
+<td style="text-align: right;">27.9</td>
+<td style="text-align: right;">25.8</td>
+<td style="text-align: right;">-7.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">530.3</td>
+<td style="text-align: right;">547.6</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">39.6</td>
+<td style="text-align: right;">35.9</td>
+<td style="text-align: right;">-9.4</td>
+<td style="text-align: right;">24.4</td>
+<td style="text-align: right;">22.8</td>
+<td style="text-align: right;">-6.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2011</td>
+<td style="text-align: right;">679.2</td>
+<td style="text-align: right;">700.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">69.3</td>
+<td style="text-align: right;">56.0</td>
+<td style="text-align: right;">-19.2</td>
+<td style="text-align: right;">30.8</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">-7.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">714.0</td>
+<td style="text-align: right;">708.9</td>
+<td style="text-align: right;">-0.7</td>
+<td style="text-align: right;">63.9</td>
+<td style="text-align: right;">52.4</td>
+<td style="text-align: right;">-18.0</td>
+<td style="text-align: right;">32.9</td>
+<td style="text-align: right;">30.0</td>
+<td style="text-align: right;">-8.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">628.6</td>
+<td style="text-align: right;">605.0</td>
+<td style="text-align: right;">-3.8</td>
+<td style="text-align: right;">56.6</td>
+<td style="text-align: right;">45.3</td>
+<td style="text-align: right;">-20.0</td>
+<td style="text-align: right;">31.6</td>
+<td style="text-align: right;">27.5</td>
+<td style="text-align: right;">-13.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2014</td>
+<td style="text-align: right;">457.8</td>
+<td style="text-align: right;">460.7</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">37.5</td>
+<td style="text-align: right;">35.5</td>
+<td style="text-align: right;">-5.3</td>
+<td style="text-align: right;">25.1</td>
+<td style="text-align: right;">24.2</td>
+<td style="text-align: right;">-3.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">425.1</td>
+<td style="text-align: right;">414.8</td>
+<td style="text-align: right;">-2.4</td>
+<td style="text-align: right;">43.8</td>
+<td style="text-align: right;">39.3</td>
+<td style="text-align: right;">-10.4</td>
+<td style="text-align: right;">25.4</td>
+<td style="text-align: right;">24.4</td>
+<td style="text-align: right;">-3.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">476.9</td>
+<td style="text-align: right;">458.6</td>
+<td style="text-align: right;">-3.8</td>
+<td style="text-align: right;">48.2</td>
+<td style="text-align: right;">40.7</td>
+<td style="text-align: right;">-15.6</td>
+<td style="text-align: right;">28.1</td>
+<td style="text-align: right;">25.4</td>
+<td style="text-align: right;">-9.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">660.7</td>
+<td style="text-align: right;">573.2</td>
+<td style="text-align: right;">-13.2</td>
+<td style="text-align: right;">77.0</td>
+<td style="text-align: right;">51.4</td>
+<td style="text-align: right;">-33.3</td>
+<td style="text-align: right;">29.4</td>
+<td style="text-align: right;">26.9</td>
+<td style="text-align: right;">-8.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">797.7</td>
+<td style="text-align: right;">779.8</td>
+<td style="text-align: right;">-2.2</td>
+<td style="text-align: right;">80.9</td>
+<td style="text-align: right;">59.8</td>
+<td style="text-align: right;">-26.1</td>
+<td style="text-align: right;">34.4</td>
+<td style="text-align: right;">30.8</td>
+<td style="text-align: right;">-10.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">532.6</td>
+<td style="text-align: right;">534.5</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">45.2</td>
+<td style="text-align: right;">42.4</td>
+<td style="text-align: right;">-6.3</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">27.8</td>
+<td style="text-align: right;">-3.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">438.6</td>
+<td style="text-align: right;">429.4</td>
+<td style="text-align: right;">-2.1</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">31.1</td>
+<td style="text-align: right;">-8.2</td>
+<td style="text-align: right;">22.7</td>
+<td style="text-align: right;">21.4</td>
+<td style="text-align: right;">-5.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">372.2</td>
+<td style="text-align: right;">380.9</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">29.5</td>
+<td style="text-align: right;">28.0</td>
+<td style="text-align: right;">-5.1</td>
+<td style="text-align: right;">20.7</td>
+<td style="text-align: right;">19.8</td>
+<td style="text-align: right;">-4.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">423.7</td>
+<td style="text-align: right;">419.8</td>
+<td style="text-align: right;">-0.9</td>
+<td style="text-align: right;">33.6</td>
+<td style="text-align: right;">29.3</td>
+<td style="text-align: right;">-12.7</td>
+<td style="text-align: right;">21.8</td>
+<td style="text-align: right;">20.3</td>
+<td style="text-align: right;">-7.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The percentage differences are small before about 2006 (TP -7% on average over 1990 to 2006) and larger afterwards (-14% over 2007 to 2022). TN differs by -1% and FRP by -8% over 2007 to 2022.</p>
+</section>
+<section id="sec-byinflow" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-byinflow"><span class="header-section-number">4</span> Where the differences are: by inflow</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-inflow-tp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-inflow-tp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="pc10-loads-2026_files/figure-html/fig-inflow-tp-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Mean annual TP load by inflow, 2007 to 2022."><img src="pc10-loads-2026_files/figure-html/fig-inflow-tp-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inflow-tp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Mean annual TP load by inflow, 2007 to 2022.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-inflow" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-inflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Mean annual flow (Mm<sup>3</sup>/y) and loads (t/y) by inflow, 2007 to 2022, old and new, with the percentage change.
+</figcaption>
+<div aria-describedby="tbl-inflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Inflow</th>
+<th style="text-align: right;">Flow old</th>
+<th style="text-align: right;">Flow new</th>
+<th style="text-align: right;">TN old</th>
+<th style="text-align: right;">TN new</th>
+<th style="text-align: right;">TN %</th>
+<th style="text-align: right;">TP old</th>
+<th style="text-align: right;">TP new</th>
+<th style="text-align: right;">TP %</th>
+<th style="text-align: right;">FRP old</th>
+<th style="text-align: right;">FRP new</th>
+<th style="text-align: right;">FRP %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Hamurana</td>
+<td style="text-align: right;">83.9</td>
+<td style="text-align: right;">82.7</td>
+<td style="text-align: right;">68.1</td>
+<td style="text-align: right;">65.4</td>
+<td style="text-align: right;">-4.0</td>
+<td style="text-align: right;">7.8</td>
+<td style="text-align: right;">7.6</td>
+<td style="text-align: right;">-1.9</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">6.6</td>
+<td style="text-align: right;">-1.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: right;">64.6</td>
+<td style="text-align: right;">65.4</td>
+<td style="text-align: right;">72.8</td>
+<td style="text-align: right;">71.6</td>
+<td style="text-align: right;">-1.6</td>
+<td style="text-align: right;">7.5</td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">-16.1</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">4.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ngongotaha</td>
+<td style="text-align: right;">55.5</td>
+<td style="text-align: right;">55.0</td>
+<td style="text-align: right;">59.6</td>
+<td style="text-align: right;">54.5</td>
+<td style="text-align: right;">-8.5</td>
+<td style="text-align: right;">5.8</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">-32.0</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">-2.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Geothermal</td>
+<td style="text-align: right;">18.9</td>
+<td style="text-align: right;">18.9</td>
+<td style="text-align: right;">17.1</td>
+<td style="text-align: right;">17.1</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: right;">55.5</td>
+<td style="text-align: right;">55.1</td>
+<td style="text-align: right;">48.5</td>
+<td style="text-align: right;">46.7</td>
+<td style="text-align: right;">-3.7</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">4.6</td>
+<td style="text-align: right;">-7.3</td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">8.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ungauged-Quick</td>
+<td style="text-align: right;">51.8</td>
+<td style="text-align: right;">52.0</td>
+<td style="text-align: right;">65.4</td>
+<td style="text-align: right;">73.3</td>
+<td style="text-align: right;">12.2</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">-38.5</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">1.8</td>
+<td style="text-align: right;">-33.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Awahou</td>
+<td style="text-align: right;">50.9</td>
+<td style="text-align: right;">49.1</td>
+<td style="text-align: right;">72.9</td>
+<td style="text-align: right;">70.2</td>
+<td style="text-align: right;">-3.7</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">-3.2</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">-3.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waiteti</td>
+<td style="text-align: right;">37.9</td>
+<td style="text-align: right;">38.1</td>
+<td style="text-align: right;">59.1</td>
+<td style="text-align: right;">59.8</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">-29.8</td>
+<td style="text-align: right;">1.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">1.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ungauged-Slow</td>
+<td style="text-align: right;">29.6</td>
+<td style="text-align: right;">20.2</td>
+<td style="text-align: right;">33.4</td>
+<td style="text-align: right;">26.2</td>
+<td style="text-align: right;">-21.8</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">-57.9</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">-68.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waiohewa</td>
+<td style="text-align: right;">10.4</td>
+<td style="text-align: right;">13.2</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">36.9</td>
+<td style="text-align: right;">24.3</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">-12.8</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">35.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Waingaehe</td>
+<td style="text-align: right;">8.2</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">13.0</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">-3.4</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waiowhiro</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">10.8</td>
+<td style="text-align: right;">10.3</td>
+<td style="text-align: right;">11.5</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">34.1</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">6.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The largest percentage changes in TP are in the ungauged slow flow, ungauged quick flow, Ngongotaha, Waiteti and Puarenga (all lower), with a rise in the Waiowhiro. The Hamurana, Awahou, Waingaehe and the geothermal inflow hardly change. The ungauged slow flow also drops from 29.6 to 20.2 Mm<sup>3</sup>/y and the Waiohewa flow rises by about a quarter.</p>
+<p>Flow differs because the new files redo the lake water balance and the stream flow models (<a href="#sec-flows" class="quarto-xref">Section&nbsp;8</a>). Concentrations differ because the new loads are rebuilt from the monitoring samples with the storm and speciation treatment described below.</p>
+</section>
+<section id="sec-storm" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-storm"><span class="header-section-number">5</span> Wet years and flood-day particulates</h2>
+<p>In the current file particulate P is 42% of TP, against 29% in the new files without storm particulates and 34.5% with them (<a href="#tbl-storm" class="quarto-xref">Table&nbsp;4</a>), and the largest TP differences are in the wet years (<a href="#tbl-annual-diff" class="quarto-xref">Table&nbsp;2</a>). The new report refits the particulate regressions (concentration against flow, per stream, with a common trend over time) and applies them only on flood days, defined as flow above twice the stream median. The extra material is split into particulate organic N and organic and inorganic P. On average it adds 14 t N/y and 4.0 t P/y over 2007 to 2026.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-wet" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="pc10-loads-2026_files/figure-html/fig-wet-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: TP load in the wet years, current file, new files without storm particulates and new files with them."><img src="pc10-loads-2026_files/figure-html/fig-wet-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: TP load in the wet years, current file, new files without storm particulates and new files with them.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-storm" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-storm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Particulate P (organic plus inorganic) as a share of TP, 2007 to 2022, and the TP load from flood days in the new files (storm minus no-storm).
+</figcaption>
+<div aria-describedby="tbl-storm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">PP share of TP (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">old file</td>
+<td style="text-align: right;">42.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new, no storm</td>
+<td style="text-align: right;">29.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new, with storm</td>
+<td style="text-align: right;">34.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The storm component is 3.7 t P/y on average (2007 to 2022) and reaches 11.5 t in the wettest year (2011). The model has so far been run with the old particulates scaled by 0.5 on flood days; this scaling has no counterpart in the new files and should not be applied to them.</p>
+</section>
+<section id="sec-spec" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-spec"><span class="header-section-number">6</span> Speciation</h2>
+<p>The AED state variables need organic and particulate parts that the monitoring does not measure. The new report splits them with fractions held constant over time: DON is 0.50 of non-inorganic N at base flow and 0.25 on flood days; DOP is 0.10 of non-DRP P; particulate P is the rest, split 0.20 organic and 0.80 inorganic; POC is 10 times PON by mass.</p>
+<div class="cell">
+<div id="tbl-spec" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-spec-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Load-weighted composition of TN and TP, 2007 to 2022, all inflows. Shares are of the total in each file.
+</figcaption>
+<div aria-describedby="tbl-spec-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">DIN/TN</th>
+<th style="text-align: right;">(DON+PON)/TN</th>
+<th style="text-align: right;">FRP/TP</th>
+<th style="text-align: right;">DOP/TP</th>
+<th style="text-align: right;">PP/TP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">old file</td>
+<td style="text-align: right;">87.5</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">56.1</td>
+<td style="text-align: right;">1.9</td>
+<td style="text-align: right;">42.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new files</td>
+<td style="text-align: right;">90.1</td>
+<td style="text-align: right;">9.9</td>
+<td style="text-align: right;">61.6</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: right;">34.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div id="tbl-spec-in" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-spec-in-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: FRP share of TP (%), 2007 to 2022, by stream.
+</figcaption>
+<div aria-describedby="tbl-spec-in-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">inflow</th>
+<th style="text-align: right;">new</th>
+<th style="text-align: right;">old</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Awahou</td>
+<td style="text-align: right;">86</td>
+<td style="text-align: right;">86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Geothermal</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hamurana</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ngongotaha</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ungauged-Quick</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ungauged-Slow</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Waingaehe</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waiohewa</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Waiowhiro</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">66</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Waiteti</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-alum" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-alum"><span class="header-section-number">7</span> Alum: with and without dosing</h2>
+<p>In the <code>alum</code> sets part of the FRP of the Utuhina and Puarenga becomes particulate inorganic P (<code>PHS_frp_ads</code>). TP and all N are identical in the two scenarios. The Utuhina is sampled below its plant, so the <code>alum</code> set uses the measured DRP and the <code>noalum</code> set rebuilds the undosed DRP; the Puarenga is sampled above its plant, so the <code>noalum</code> set uses the measured DRP and the <code>alum</code> set estimates the dosed DRP from the daily dose and the Al:DRP binding ratio of McBride et al.&nbsp;(2022).</p>
+<div class="cell">
+<div id="tbl-alum" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Mean FRP (mmol m<sup>-3</sup>) in the dosed streams, 2010 to 2022 (both plants dosing). The reduction is compared with the in-stream binding fractions fixed in the model (<code>calibration/alum/stream_variant.R</code>: Utuhina 0.45, Puarenga 0.9 min(1, R/23)).
+</figcaption>
+<div aria-describedby="tbl-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">no alum</th>
+<th style="text-align: right;">alum</th>
+<th style="text-align: right;">reduction (%)</th>
+<th style="text-align: right;">PIP gained</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">43.61</td>
+<td style="text-align: right;">0.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">63.14</td>
+<td style="text-align: right;">0.53</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-alum" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="pc10-loads-2026_files/figure-html/fig-alum-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Annual FRP load of the Utuhina and Puarenga with and without dosing (2026 loads)."><img src="pc10-loads-2026_files/figure-html/fig-alum-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Annual FRP load of the Utuhina and Puarenga with and without dosing (2026 loads).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Utuhina reduction is close to the fixed 0.45 binding fraction in the model. The Puarenga reduction (about 63%) is below the 0.9 maximum of the model rule, which depends on the daily Al:FRP ratio; this table compares period means only, and a day-by-day comparison with the model rule has not been made. Because the model applies alum in-stream, the <code>noalum</code> sets are the natural inflows with the alum module on; the <code>alum</code> sets can be used to check the binding rules, not to drive the model.</p>
+</section>
+<section id="sec-flows" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="sec-flows"><span class="header-section-number">8</span> Flows and the 2022 to 2026 extension</h2>
+<div class="cell">
+<div id="tbl-flow" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Mean annual flow (m<sup>3</sup> s<sup>-1</sup>) and total inflow volume, 2007 to 2022.
+</figcaption>
+<div aria-describedby="tbl-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">Inflow, all streams and ungauged (m3/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">old file</td>
+<td style="text-align: right;">15.13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new files</td>
+<td style="text-align: right;">14.85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The new mean Ōhau outflow over the same years is 17.1 m<sup>3</sup> s<sup>-1</sup>. In the new files the ungauged flow is the residual of the daily lake water balance (Ōhau outflow plus evaporation minus gauged streams, geothermal, rain on the lake and storage change), split into quick and slow flow. The geothermal inflow is a constant 0.6 m<sup>3</sup> s<sup>-1</sup>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ext" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ext-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="pc10-loads-2026_files/figure-html/fig-ext-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Annual loads of all inflows through 2026 (new files). Years beyond 2022 have no counterpart in the current file."><img src="pc10-loads-2026_files/figure-html/fig-ext-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ext-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Annual loads of all inflows through 2026 (new files). Years beyond 2022 have no counterpart in the current file.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The four new years (2023 to 2026) have mean loads of 641 t N/y, 39.6 t P/y and 24.5 t FRP/y, compared with 546, 41.1 and 25.3 for 2007 to 2022. Year 2026 ends in June 2026 but the forcing ends in December 2025, so a model run on this branch covers the first half of that year only.</p>
+</section>
+<section id="sec-bounds" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="sec-bounds"><span class="header-section-number">9</span> Uncertainty bounds</h2>
+<div class="cell">
+<div id="tbl-bounds" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bounds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: Mean annual load 2007 to 2022 (t/y) in the lower, central and upper no-alum storm sets, and the ratio to central.
+</figcaption>
+<div aria-describedby="tbl-bounds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">bound</th>
+<th style="text-align: right;">TN</th>
+<th style="text-align: right;">TP</th>
+<th style="text-align: right;">FRP</th>
+<th style="text-align: right;">TN ratio</th>
+<th style="text-align: right;">TP ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">lower</td>
+<td style="text-align: right;">482.75</td>
+<td style="text-align: right;">35.90</td>
+<td style="text-align: right;">22.14</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">central</td>
+<td style="text-align: right;">545.76</td>
+<td style="text-align: right;">41.07</td>
+<td style="text-align: right;">25.31</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">upper</td>
+<td style="text-align: right;">633.12</td>
+<td style="text-align: right;">47.78</td>
+<td style="text-align: right;">29.48</td>
+<td style="text-align: right;">1.16</td>
+<td style="text-align: right;">1.16</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The bounds scale concentrations only (flows are unchanged so that the water balance and lake level stay closed), so a run on a bound is a load history that is low or high in every year, not a random draw. The mean band is about 0.87 to 1.16 of central for TP (individual years range from 0.73 to 1.28). The difference between the current file and the new central set over 2007 to 2022 (<a href="#sec-summary" class="quarto-xref">Section&nbsp;1</a>) is of the same size as this 5 to 95% band, which is worth keeping in mind when judging calibration against either.</p>
+</section>
+<section id="sec-targets" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="sec-targets"><span class="header-section-number">10</span> How the new data enter the pipeline</h2>
+<p>A parallel set of targets, suffixed <code>_pc10</code>, is in <code>_targets.R</code> under <em>PC10 loads 2026 branch</em>. The existing inflow targets are not touched, and nothing in the old chain depends on the new ones.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Target</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pc10_loads_set</code></td>
+<td>The set to use (default <code>noalum_storm_central</code>). Change to any of the twelve names</td>
+</tr>
+<tr class="even">
+<td><code>pc10_loads_files</code></td>
+<td>The files of that set (a file target, so edits to the data re-run the chain)</td>
+</tr>
+<tr class="odd">
+<td><code>pc10_loads_stop</code></td>
+<td>Last date of the corrected ERA5 forcing, used to cut the inflows</td>
+</tr>
+<tr class="even">
+<td><code>rotorua_inflow_list_pc10</code></td>
+<td><code>read_pc10_loads()</code>: the set converted to the current list layout (mg L<sup>-1</sup>, m<sup>3</sup> day<sup>-1</sup>, AEME names)</td>
+</tr>
+<tr class="odd">
+<td><code>rotorua_inflow_list_matrix_pc10</code></td>
+<td>Adds <code>ALU_ala</code> and <code>ALU_alp</code> from the dosing records, as the existing matrix target does</td>
+</tr>
+<tr class="even">
+<td><code>aeme_base_pc10_file</code>, <code>aeme_baseline_pc10</code></td>
+<td>Builds <code>aeme_base_pc10.rds</code> with <code>build_calib_base_aeme()</code>, in <code>calibration/base_build_pc10</code></td>
+</tr>
+</tbody>
+</table>
+<p>Units. <code>read_pc10_loads()</code> converts the mmol m<sup>-3</sup> nutrient columns back to mg L<sup>-1</sup> with the molar masses used in the report so that the existing AEME conversion applies unchanged. The converted loads equal <code>check_annual_loads.csv</code> to within 0.012% in all twelve sets (script <code>calibration/pc10_loads/01_verify_loads.R</code>).</p>
+<p>Points to check before calibrating on the new base:</p>
+<ul>
+<li>the rain file (<code>rain_on_lake_OPTIONAL.csv</code>) is not used, because rain enters through the meteorology file;</li>
+<li>the current file holds constants for some variables in every inflow (SiO2 = 1, DIC = 10, and pH values as low as 1), whereas the new files give stream-specific silica (53 to 109 g SiO2 m<sup>-3</sup>), DIC from alkalinity and pH from measurements. Silica is converted to mg Si L<sup>-1</sup> for consistency with <code>rotorua_inflow_key.csv</code>, so check what the AEME inflow conversion expects for <code>SIL_rsi</code> and <code>CAR_dic</code> before comparing lake silica or pH;</li>
+<li>the previously fitted particulate and phosphorus parameters (<code>w_pom</code>, <code>rpop_hydrol</code>, <code>w_po4ads</code>, sediment P) were tuned against the higher old loads, so a forward run with the final member on the new base should come before any refit.</li>
+</ul>
+</section>
+<section id="sec-refs" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="sec-refs"><span class="header-section-number">11</span> References</h2>
+<ul>
+<li>McBride, C. G. (2026). <em>Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026</em>. Limnotrack for Bay of Plenty Regional Council.</li>
+<li><code>data/raw/pc10_loads_2026/README.md</code> (file and column descriptions).</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "2026 PC10 river loads: what changed from the current inflow file"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Comparison of the Limnotrack/BoPRC 2026 loads with `rotorua_inflows_populated_noalum.csv`"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"read_pc10_loads.R"</span>))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"pc10_loads_helpers.R"</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>root <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"pc10_loads_2026"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>new  <span class="ot">&lt;-</span> <span class="fu">read_pc10_loads</span>(<span class="st">"noalum_storm_central"</span>, <span class="at">root =</span> root)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>old  <span class="ot">&lt;-</span> <span class="fu">read_current_inflows</span>()</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>new_alum <span class="ot">&lt;-</span> <span class="fu">read_pc10_loads</span>(<span class="st">"alum_storm_central"</span>, <span class="at">root =</span> root)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>new_nost <span class="ot">&lt;-</span> <span class="fu">read_pc10_loads</span>(<span class="st">"noalum_nostorm_central"</span>, <span class="at">root =</span> root)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>a_new <span class="ot">&lt;-</span> <span class="fu">inflow_annual_loads</span>(new)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>a_old <span class="ot">&lt;-</span> <span class="fu">inflow_annual_loads</span>(old[<span class="fu">names</span>(old) <span class="sc">!=</span> <span class="st">"Rainfall"</span>])</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>chk   <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(root, <span class="st">"check_annual_loads.csv"</span>))</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparison period: both series exist and the lake has routine data</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>hy_cmp <span class="ot">&lt;-</span> <span class="dv">1990</span><span class="sc">:</span><span class="dv">2022</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>old_end <span class="ot">&lt;-</span> <span class="fu">max</span>(old[[<span class="dv">1</span>]]<span class="sc">$</span>Date)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>pal <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">old =</span> <span class="st">"grey40"</span>, <span class="at">new =</span> <span class="st">"#0072B2"</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">11</span>))</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary {#sec-summary}</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>In November 2026 Limnotrack (C. G. McBride) delivered daily GLM-AED boundary-condition files for Lake Rotorua for BoPRC, 1 July 1959 to 30 June 2026. They come from *Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026*. This page compares them with the inflow file the model currently uses (<span class="in">`data/raw/flows/rotorua_inflows_populated_noalum.csv`</span>, which ends 30 June 2022) and says where they differ.</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: summary-numbers</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>cmp <span class="ot">&lt;-</span> <span class="cf">function</span>(a, hys) a <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> hys) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(tn, tp, frp), sum), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(tn, tp, frp), mean))</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>c0722o <span class="ot">&lt;-</span> <span class="fu">cmp</span>(a_old, <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>); c0722n <span class="ot">&lt;-</span> <span class="fu">cmp</span>(a_new, <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>wet <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2011</span>, <span class="dv">2012</span>, <span class="dv">2017</span>, <span class="dv">2018</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>w_o <span class="ot">&lt;-</span> a_old <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> wet) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tp =</span> <span class="fu">sum</span>(tp))</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>w_n <span class="ot">&lt;-</span> a_new <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> wet) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tp =</span> <span class="fu">sum</span>(tp))</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>**Key points**</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Total P is lower in the new files, mostly in wet years.** Over 2007 to 2022 the mean TP load is <span class="in">`r round(c0722n$tp, 1)`</span> t/y against <span class="in">`r round(c0722o$tp, 1)`</span> t/y in the current file (<span class="in">`r round(100 * (c0722n$tp / c0722o$tp - 1))`</span>%). TN is <span class="in">`r round(c0722n$tn)`</span> against <span class="in">`r round(c0722o$tn)`</span> t/y (<span class="in">`r round(100 * (c0722n$tn / c0722o$tn - 1))`</span>%) and FRP is <span class="in">`r round(c0722n$frp, 1)`</span> against <span class="in">`r round(c0722o$frp, 1)`</span> t/y (<span class="in">`r round(100 * (c0722n$frp / c0722o$frp - 1))`</span>%).</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**The wet years carry the difference.** In 2011, 2012, 2017 and 2018 the new TP loads are <span class="in">`r paste0(round(w_n$tp, 1), collapse = ", ")`</span> t against <span class="in">`r paste0(round(w_o$tp, 1), collapse = ", ")`</span> t. These are the years where the lake TP was overestimated by 66 to 113%, which we worked around by halving flood-day particulates (<span class="in">`STR_FLOODSCALE = 0.5`</span>). The new files treat flood-day particulates explicitly instead (@sec-storm).</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**The record is four years longer** (to June 2026). The ERA5 forcing ends on 31 December 2025, so the new targets branch cuts the inflows there (@sec-targets).</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**The alum and no-alum sets give the in-stream binding rules an independent check.** Dosing lowers FRP in the Utuhina by about 42% and in the Puarenga by about 64%, with TP unchanged (@sec-alum).</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**The `lower` and `upper` sets** give 5th and 95th percentile load histories and <span class="in">`nostorm`</span> sets give the PC10 target basis (@sec-sets).</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is in the data {#sec-sets}</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>Twelve complete sets, one folder each, named <span class="in">`&lt;alum|noalum&gt;_&lt;storm|nostorm&gt;_&lt;central|lower|upper&gt;`</span>.</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Part <span class="pp">|</span> Option <span class="pp">|</span> Meaning <span class="pp">|</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> alum <span class="pp">|</span> <span class="in">`alum`</span> / <span class="in">`noalum`</span> <span class="pp">|</span> P as it entered the lake with alum dosing (Utuhina from June 2006, Puarenga from January 2010) / as it would have without dosing <span class="pp">|</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> storm <span class="pp">|</span> <span class="in">`storm`</span> / <span class="in">`nostorm`</span> <span class="pp">|</span> with / without stormflow particulates (extra particulate N, P and sediment on flood days). <span class="in">`nostorm`</span> is the basis of the PC10 targets (435 t N/y, 37 t P/y) <span class="pp">|</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> bound <span class="pp">|</span> <span class="in">`central`</span>, <span class="in">`lower`</span>, <span class="in">`upper`</span> <span class="pp">|</span> best estimate / 5th and 95th percentile of the annual TN and TP load uncertainty <span class="pp">|</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>Each folder holds nine stream files, <span class="in">`Geothermal`</span>, ungauged slow and quick flow, <span class="in">`WWTP`</span>, <span class="in">`inflow_all_combined`</span>, <span class="in">`outflow_ohau`</span> and an optional <span class="in">`rain_on_lake`</span> file. Concentrations are already in AED variables and units (mmol m^-3^, flow in m^3^ s^-1^), unlike the current file (mg L^-1^, m^3^ day^-1^). The project reader <span class="in">`read_pc10_loads()`</span> converts them to the current layout (@sec-targets) and reproduces <span class="in">`check_annual_loads.csv`</span> to within 0.012% in all twelve sets.</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-sets</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean annual load 2007 to 2022 (t/y) in each central set, from the supplied check file."</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>chk <span class="sc">|&gt;</span> <span class="fu">filter</span>(bound <span class="sc">==</span> <span class="st">"central"</span>, hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(alum, storm) <span class="sc">|&gt;</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TN =</span> <span class="fu">mean</span>(tn), <span class="at">TP =</span> <span class="fu">mean</span>(tp), <span class="at">FRP =</span> <span class="fu">mean</span>(frp), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Annual loads, old and new {#sec-annual}</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>Loads are computed from the species the model reads (ammonium, nitrate, DON, PON for N; FRP, DOP, POP, PIP for P), for both the current and the new inflows. The current file also has its own <span class="in">`TN`</span> and <span class="in">`TP`</span> columns, which give higher totals than the sum of its species over 2007 to 2022 (TN 575 against 550 t/y and TP 50.8 against 49.1 t/y); the difference is N and P that the old file does not allocate to a model variable. Against the <span class="in">`TP`</span> column, the new TP is 19% lower.</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>The new series used for the comparison is <span class="in">`noalum_storm_central`</span>, because the current file is a no-alum file with flood-day particulates included.</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-annual</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Annual TN, TP and FRP loads from all inflows, current file and 2026 loads (no-alum, with storm particulates). Years are July to June, named by the year in which they end."</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>tot <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>  a_old <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"old"</span>), a_new <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"new"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hy <span class="sc">&gt;=</span> <span class="dv">1990</span>, hy <span class="sc">&lt;=</span> <span class="dv">2026</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(src, hy) <span class="sc">|&gt;</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TN =</span> <span class="fu">sum</span>(tn), <span class="at">TP =</span> <span class="fu">sum</span>(tp), <span class="at">FRP =</span> <span class="fu">sum</span>(frp), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(TN, TP, FRP), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"load"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(var, <span class="fu">c</span>(<span class="st">"TN"</span>, <span class="st">"TP"</span>, <span class="st">"FRP"</span>)))</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tot, <span class="fu">aes</span>(hy, load, <span class="at">colour =</span> src)) <span class="sc">+</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> pal, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hydrological year"</span>, <span class="at">y =</span> <span class="st">"Load (t/y)"</span>)</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-annual-diff</span></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Annual load difference, new minus old (t/y). Percent is relative to the old file."</span></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>  a_old <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tn_o =</span> <span class="fu">sum</span>(tn), <span class="at">tp_o =</span> <span class="fu">sum</span>(tp), <span class="at">frp_o =</span> <span class="fu">sum</span>(frp)),</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>  a_new <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tn_n =</span> <span class="fu">sum</span>(tn), <span class="at">tp_n =</span> <span class="fu">sum</span>(tp), <span class="at">frp_n =</span> <span class="fu">sum</span>(frp)),</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">"hy"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hy <span class="sc">%in%</span> hy_cmp) <span class="sc">|&gt;</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Year =</span> hy,</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">TN old</span><span class="st">`</span> <span class="ot">=</span> tn_o, <span class="st">`</span><span class="at">TN new</span><span class="st">`</span> <span class="ot">=</span> tn_n, <span class="st">`</span><span class="at">TN %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (tn_n <span class="sc">/</span> tn_o <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">TP old</span><span class="st">`</span> <span class="ot">=</span> tp_o, <span class="st">`</span><span class="at">TP new</span><span class="st">`</span> <span class="ot">=</span> tp_n, <span class="st">`</span><span class="at">TP %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (tp_n <span class="sc">/</span> tp_o <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">FRP old</span><span class="st">`</span> <span class="ot">=</span> frp_o, <span class="st">`</span><span class="at">FRP new</span><span class="st">`</span> <span class="ot">=</span> frp_n, <span class="st">`</span><span class="at">FRP %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (frp_n <span class="sc">/</span> frp_o <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(d, <span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: period-means</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>per <span class="ot">&lt;-</span> <span class="cf">function</span>(y) d <span class="sc">|&gt;</span> <span class="fu">filter</span>(Year <span class="sc">%in%</span> y) <span class="sc">|&gt;</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="sc">-</span>Year, mean))</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>p_early <span class="ot">&lt;-</span> <span class="fu">per</span>(<span class="dv">1990</span><span class="sc">:</span><span class="dv">2006</span>); p_late <span class="ot">&lt;-</span> <span class="fu">per</span>(<span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>)</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>The percentage differences are small before about 2006 (TP <span class="in">`r round(p_early[["TP %"]])`</span>% on average over 1990 to 2006) and larger afterwards (<span class="in">`r round(p_late[["TP %"]])`</span>% over 2007 to 2022). TN differs by <span class="in">`r round(p_late[["TN %"]])`</span>% and FRP by <span class="in">`r round(p_late[["FRP %"]])`</span>% over 2007 to 2022.</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="fu">## Where the differences are: by inflow {#sec-byinflow}</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-inflow-tp</span></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Mean annual TP load by inflow, 2007 to 2022."</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>by_in <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(a_old <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"old"</span>), a_new <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"new"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(src, inflow) <span class="sc">|&gt;</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TN =</span> <span class="fu">mean</span>(tn), <span class="at">TP =</span> <span class="fu">mean</span>(tp), <span class="at">FRP =</span> <span class="fu">mean</span>(frp), <span class="at">Flow =</span> <span class="fu">mean</span>(flow), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>by_in <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">inflow =</span> <span class="fu">reorder</span>(inflow, TP)) <span class="sc">|&gt;</span></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(TP, inflow, <span class="at">fill =</span> src)) <span class="sc">+</span></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> pal, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"TP load (t/y)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-inflow</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean annual flow (Mm^3^/y) and loads (t/y) by inflow, 2007 to 2022, old and new, with the percentage change."</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>by_in <span class="sc">|&gt;</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> src, <span class="at">values_from =</span> <span class="fu">c</span>(Flow, TN, TP, FRP)) <span class="sc">|&gt;</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Inflow =</span> inflow,</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Flow old</span><span class="st">`</span> <span class="ot">=</span> Flow_old, <span class="st">`</span><span class="at">Flow new</span><span class="st">`</span> <span class="ot">=</span> Flow_new,</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">TN old</span><span class="st">`</span> <span class="ot">=</span> TN_old, <span class="st">`</span><span class="at">TN new</span><span class="st">`</span> <span class="ot">=</span> TN_new, <span class="st">`</span><span class="at">TN %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (TN_new <span class="sc">/</span> TN_old <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">TP old</span><span class="st">`</span> <span class="ot">=</span> TP_old, <span class="st">`</span><span class="at">TP new</span><span class="st">`</span> <span class="ot">=</span> TP_new, <span class="st">`</span><span class="at">TP %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (TP_new <span class="sc">/</span> TP_old <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">FRP old</span><span class="st">`</span> <span class="ot">=</span> FRP_old, <span class="st">`</span><span class="at">FRP new</span><span class="st">`</span> <span class="ot">=</span> FRP_new,</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">FRP %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (FRP_new <span class="sc">/</span> FRP_old <span class="sc">-</span> <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Inflow <span class="sc">!=</span> <span class="st">"WWTP"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="st">`</span><span class="at">TP old</span><span class="st">`</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>The largest percentage changes in TP are in the ungauged slow flow, ungauged quick flow, Ngongotaha, Waiteti and Puarenga (all lower), with a rise in the Waiowhiro. The Hamurana, Awahou, Waingaehe and the geothermal inflow hardly change. The ungauged slow flow also drops from 29.6 to 20.2 Mm^3^/y and the Waiohewa flow rises by about a quarter.</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>Flow differs because the new files redo the lake water balance and the stream flow models (@sec-flows). Concentrations differ because the new loads are rebuilt from the monitoring samples with the storm and speciation treatment described below.</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wet years and flood-day particulates {#sec-storm}</span></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>In the current file particulate P is 42% of TP, against 29% in the new files without storm particulates and 34.5% with them (@tbl-storm), and the largest TP differences are in the wet years (@tbl-annual-diff). The new report refits the particulate regressions (concentration against flow, per stream, with a common trend over time) and applies them only on flood days, defined as flow above twice the stream median. The extra material is split into particulate organic N and organic and inorganic P. On average it adds 14 t N/y and 4.0 t P/y over 2007 to 2026.</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-wet</span></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "TP load in the wet years, current file, new files without storm particulates and new files with them."</span></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>a_nost <span class="ot">&lt;-</span> <span class="fu">inflow_annual_loads</span>(new_nost)</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>wy <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>  a_old  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"old file"</span>),</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>  a_nost <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"new, no storm"</span>),</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>  a_new  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"new, with storm"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(src, hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">TP =</span> <span class="fu">sum</span>(tp), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">src =</span> <span class="fu">factor</span>(src, <span class="fu">c</span>(<span class="st">"old file"</span>, <span class="st">"new, no storm"</span>, <span class="st">"new, with storm"</span>)))</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wy, <span class="fu">aes</span>(hy, TP, <span class="at">colour =</span> src)) <span class="sc">+</span></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">2011</span>, <span class="dv">2012</span>, <span class="dv">2017</span>, <span class="dv">2018</span>), <span class="at">linetype =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"grey70"</span>) <span class="sc">+</span></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hydrological year"</span>, <span class="at">y =</span> <span class="st">"TP load (t/y)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>)</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-storm</span></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Particulate P (organic plus inorganic) as a share of TP, 2007 to 2022, and the TP load from flood days in the new files (storm minus no-storm)."</span></span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>share <span class="ot">&lt;-</span> <span class="cf">function</span>(a, nm) a <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">pp =</span> <span class="fu">sum</span>(pp), <span class="at">tp =</span> <span class="fu">sum</span>(tp)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> nm, <span class="at">share =</span> <span class="dv">100</span> <span class="sc">*</span> pp <span class="sc">/</span> tp)</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(<span class="fu">share</span>(a_old, <span class="st">"old file"</span>), <span class="fu">share</span>(a_nost, <span class="st">"new, no storm"</span>),</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>          <span class="fu">share</span>(a_new, <span class="st">"new, with storm"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Source =</span> src, <span class="st">`</span><span class="at">PP share of TP (%)</span><span class="st">`</span> <span class="ot">=</span> share) <span class="sc">|&gt;</span></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>extra <span class="ot">&lt;-</span> a_new <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tp =</span> <span class="fu">sum</span>(tp)) <span class="sc">|&gt;</span></span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(a_nost <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">tp0 =</span> <span class="fu">sum</span>(tp)), <span class="at">by =</span> <span class="st">"hy"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">storm_P =</span> tp <span class="sc">-</span> tp0)</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>The storm component is <span class="in">`r round(mean(extra$storm_P[extra$hy %in% 2007:2022]), 1)`</span> t P/y on average (2007 to 2022) and reaches <span class="in">`r round(max(extra$storm_P[extra$hy %in% 2007:2022]), 1)`</span> t in the wettest year (<span class="in">`r extra$hy[which.max(extra$storm_P * (extra$hy %in% 2007:2022))]`</span>). The model has so far been run with the old particulates scaled by 0.5 on flood days; this scaling has no counterpart in the new files and should not be applied to them.</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## Speciation {#sec-spec}</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>The AED state variables need organic and particulate parts that the monitoring does not measure. The new report splits them with fractions held constant over time: DON is 0.50 of non-inorganic N at base flow and 0.25 on flood days; DOP is 0.10 of non-DRP P; particulate P is the rest, split 0.20 organic and 0.80 inorganic; POC is 10 times PON by mass.</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-spec</span></span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Load-weighted composition of TN and TP, 2007 to 2022, all inflows. Shares are of the total in each file."</span></span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>comp <span class="ot">&lt;-</span> <span class="cf">function</span>(a, nm) a <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(tn, din, tp, frp, dop, pp), sum)) <span class="sc">|&gt;</span></span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">src =</span> nm,</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">DIN/TN</span><span class="st">`</span> <span class="ot">=</span> din <span class="sc">/</span> tn, <span class="st">`</span><span class="at">(DON+PON)/TN</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> din <span class="sc">/</span> tn,</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">FRP/TP</span><span class="st">`</span> <span class="ot">=</span> frp <span class="sc">/</span> tp, <span class="st">`</span><span class="at">DOP/TP</span><span class="st">`</span> <span class="ot">=</span> dop <span class="sc">/</span> tp, <span class="st">`</span><span class="at">PP/TP</span><span class="st">`</span> <span class="ot">=</span> pp <span class="sc">/</span> tp) <span class="sc">|&gt;</span></span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(src, <span class="st">`</span><span class="at">DIN/TN</span><span class="st">`</span>, <span class="st">`</span><span class="at">(DON+PON)/TN</span><span class="st">`</span>, <span class="fu">ends_with</span>(<span class="st">"/TP"</span>))</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(<span class="fu">comp</span>(a_old, <span class="st">"old file"</span>), <span class="fu">comp</span>(a_new, <span class="st">"new files"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">-</span>src, \(x) <span class="dv">100</span> <span class="sc">*</span> x)) <span class="sc">|&gt;</span></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Source =</span> src) <span class="sc">|&gt;</span></span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-spec-in</span></span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "FRP share of TP (%), 2007 to 2022, by stream."</span></span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>by_s <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(a_old <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"old"</span>), a_new <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> <span class="st">"new"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>, inflow <span class="sc">!=</span> <span class="st">"WWTP"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(src, inflow) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">f =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(frp) <span class="sc">/</span> <span class="fu">sum</span>(tp), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> src, <span class="at">values_from =</span> f)</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(by_s, <span class="at">digits =</span> <span class="dv">0</span>)</span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alum: with and without dosing {#sec-alum}</span></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>In the <span class="in">`alum`</span> sets part of the FRP of the Utuhina and Puarenga becomes particulate inorganic P (<span class="in">`PHS_frp_ads`</span>). TP and all N are identical in the two scenarios. The Utuhina is sampled below its plant, so the <span class="in">`alum`</span> set uses the measured DRP and the <span class="in">`noalum`</span> set rebuilds the undosed DRP; the Puarenga is sampled above its plant, so the <span class="in">`noalum`</span> set uses the measured DRP and the <span class="in">`alum`</span> set estimates the dosed DRP from the daily dose and the Al:DRP binding ratio of McBride et al. (2022).</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-alum</span></span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean FRP (mmol m^-3^) in the dosed streams, 2010 to 2022 (both plants dosing). The reduction is compared with the in-stream binding fractions fixed in the model (`calibration/alum/stream_variant.R`: Utuhina 0.45, Puarenga 0.9 min(1, R/23))."</span></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>yr <span class="ot">&lt;-</span> <span class="cf">function</span>(l, nm) {</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> l[[nm]]; d <span class="ot">&lt;-</span> d[d<span class="sc">$</span>Date <span class="sc">&gt;=</span> <span class="st">"2010-07-01"</span> <span class="sc">&amp;</span> d<span class="sc">$</span>Date <span class="sc">&lt;=</span> <span class="st">"2022-06-30"</span>, ]</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">frp =</span> <span class="fu">mean</span>(d<span class="sc">$</span>PHS_frp) <span class="sc">/</span> <span class="fl">30.974</span> <span class="sc">*</span> <span class="dv">1000</span>, <span class="at">pip =</span> <span class="fu">mean</span>(d<span class="sc">$</span>PHS_pip) <span class="sc">/</span> <span class="fl">30.974</span> <span class="sc">*</span> <span class="dv">1000</span>)</span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>al <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">"Utuhina"</span>, <span class="st">"Puarenga"</span>), \(nm) {</span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">yr</span>(new, nm); a <span class="ot">&lt;-</span> <span class="fu">yr</span>(new_alum, nm)</span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">no alum</span><span class="st">`</span> <span class="ot">=</span> n[[<span class="st">"frp"</span>]], <span class="st">`</span><span class="at">alum</span><span class="st">`</span> <span class="ot">=</span> a[[<span class="st">"frp"</span>]],</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">reduction (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> a[[<span class="st">"frp"</span>]] <span class="sc">/</span> n[[<span class="st">"frp"</span>]]),</span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">PIP gained</span><span class="st">`</span> <span class="ot">=</span> a[[<span class="st">"pip"</span>]] <span class="sc">-</span> n[[<span class="st">"pip"</span>]])</span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">t</span>(al), <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-alum</span></span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Annual FRP load of the Utuhina and Puarenga with and without dosing (2026 loads)."</span></span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>aa <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inflow_annual_loads</span>(new_alum) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"alum"</span>),</span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inflow_annual_loads</span>(new)      <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"noalum"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(inflow <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Utuhina"</span>, <span class="st">"Puarenga"</span>), hy <span class="sc">&gt;=</span> <span class="dv">2000</span>)</span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(aa, <span class="fu">aes</span>(hy, frp, <span class="at">colour =</span> set)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>inflow) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hydrological year"</span>, <span class="at">y =</span> <span class="st">"FRP load (t/y)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>)</span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>The Utuhina reduction is close to the fixed 0.45 binding fraction in the model. The Puarenga reduction (about 63%) is below the 0.9 maximum of the model rule, which depends on the daily Al:FRP ratio; this table compares period means only, and a day-by-day comparison with the model rule has not been made. Because the model applies alum in-stream, the <span class="in">`noalum`</span> sets are the natural inflows with the alum module on; the <span class="in">`alum`</span> sets can be used to check the binding rules, not to drive the model.</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Flows and the 2022 to 2026 extension {#sec-flows}</span></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-flow</span></span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean annual flow (m^3^ s^-1^) and total inflow volume, 2007 to 2022."</span></span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>fl <span class="ot">&lt;-</span> <span class="cf">function</span>(a, nm) a <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span></span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q =</span> <span class="fu">sum</span>(flow) <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> <span class="dv">86400</span> <span class="sc">/</span> <span class="fl">365.25</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_q =</span> <span class="fu">mean</span>(q)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">src =</span> nm)</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>ohau <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(root, <span class="st">"noalum_storm_central"</span>, <span class="st">"outflow_ohau.csv"</span>))</span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>ohau<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(ohau<span class="sc">$</span>time)</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>ohau_m <span class="ot">&lt;-</span> <span class="fu">mean</span>(ohau<span class="sc">$</span>FLOW[ohau<span class="sc">$</span>Date <span class="sc">&gt;=</span> <span class="st">"2007-07-01"</span> <span class="sc">&amp;</span> ohau<span class="sc">$</span>Date <span class="sc">&lt;=</span> <span class="st">"2022-06-30"</span>])</span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(<span class="fu">fl</span>(a_old, <span class="st">"old file"</span>), <span class="fu">fl</span>(a_new, <span class="st">"new files"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Source =</span> src, <span class="st">`</span><span class="at">Inflow, all streams and ungauged (m3/s)</span><span class="st">`</span> <span class="ot">=</span> mean_q) <span class="sc">|&gt;</span></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a>The new mean Ōhau outflow over the same years is <span class="in">`r round(ohau_m, 1)`</span> m^3^ s^-1^. In the new files the ungauged flow is the residual of the daily lake water balance (Ōhau outflow plus evaporation minus gauged streams, geothermal, rain on the lake and storage change), split into quick and slow flow. The geothermal inflow is a constant 0.6 m^3^ s^-1^.</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ext</span></span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Annual loads of all inflows through 2026 (new files). Years beyond 2022 have no counterpart in the current file."</span></span>
+<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>ext <span class="ot">&lt;-</span> a_new <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">&gt;=</span> <span class="dv">2010</span>, hy <span class="sc">&lt;=</span> <span class="dv">2026</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(hy) <span class="sc">|&gt;</span></span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TN =</span> <span class="fu">sum</span>(tn), <span class="at">TP =</span> <span class="fu">sum</span>(tp), <span class="at">FRP =</span> <span class="fu">sum</span>(frp)) <span class="sc">|&gt;</span></span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>hy, <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"load"</span>)</span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ext, <span class="fu">aes</span>(hy, load)) <span class="sc">+</span> <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">2022.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="fu">factor</span>(var, <span class="fu">c</span>(<span class="st">"TN"</span>, <span class="st">"TP"</span>, <span class="st">"FRP"</span>)), <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hydrological year"</span>, <span class="at">y =</span> <span class="st">"Load (t/y)"</span>)</span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ext-numbers</span></span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a>e23 <span class="ot">&lt;-</span> ext <span class="sc">|&gt;</span> <span class="fu">filter</span>(hy <span class="sc">&gt;=</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> load)</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a>The four new years (2023 to 2026) have mean loads of <span class="in">`r round(mean(e23$TN))`</span> t N/y, <span class="in">`r round(mean(e23$TP), 1)`</span> t P/y and <span class="in">`r round(mean(e23$FRP), 1)`</span> t FRP/y, compared with <span class="in">`r round(c0722n$tn)`</span>, <span class="in">`r round(c0722n$tp, 1)`</span> and <span class="in">`r round(c0722n$frp, 1)`</span> for 2007 to 2022. Year 2026 ends in June 2026 but the forcing ends in December 2025, so a model run on this branch covers the first half of that year only.</span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uncertainty bounds {#sec-bounds}</span></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-bounds</span></span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Mean annual load 2007 to 2022 (t/y) in the lower, central and upper no-alum storm sets, and the ratio to central."</span></span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>chk <span class="sc">|&gt;</span> <span class="fu">filter</span>(scenario <span class="sc">%in%</span> <span class="fu">paste0</span>(<span class="st">"noalum_storm_"</span>, <span class="fu">c</span>(<span class="st">"lower"</span>, <span class="st">"central"</span>, <span class="st">"upper"</span>)),</span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>              hy <span class="sc">%in%</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2022</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(bound) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">TN =</span> <span class="fu">mean</span>(tn), <span class="at">TP =</span> <span class="fu">mean</span>(tp), <span class="at">FRP =</span> <span class="fu">mean</span>(frp)) <span class="sc">|&gt;</span></span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bound =</span> <span class="fu">factor</span>(bound, <span class="fu">c</span>(<span class="st">"lower"</span>, <span class="st">"central"</span>, <span class="st">"upper"</span>))) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(bound) <span class="sc">|&gt;</span></span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">TN ratio</span><span class="st">`</span> <span class="ot">=</span> TN <span class="sc">/</span> TN[bound <span class="sc">==</span> <span class="st">"central"</span>],</span>
+<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">TP ratio</span><span class="st">`</span> <span class="ot">=</span> TP <span class="sc">/</span> TP[bound <span class="sc">==</span> <span class="st">"central"</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a>The bounds scale concentrations only (flows are unchanged so that the water balance and lake level stay closed), so a run on a bound is a load history that is low or high in every year, not a random draw. The mean band is about 0.87 to 1.16 of central for TP (individual years range from 0.73 to 1.28). The difference between the current file and the new central set over 2007 to 2022 (@sec-summary) is of the same size as this 5 to 95% band, which is worth keeping in mind when judging calibration against either.</span>
+<span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a><span class="fu">## How the new data enter the pipeline {#sec-targets}</span></span>
+<span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>A parallel set of targets, suffixed <span class="in">`_pc10`</span>, is in <span class="in">`_targets.R`</span> under *PC10 loads 2026 branch*. The existing inflow targets are not touched, and nothing in the old chain depends on the new ones.</span>
+<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Target <span class="pp">|</span> What it does <span class="pp">|</span></span>
+<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`pc10_loads_set`</span> <span class="pp">|</span> The set to use (default <span class="in">`noalum_storm_central`</span>). Change to any of the twelve names <span class="pp">|</span></span>
+<span id="cb1-372"><a href="#cb1-372" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`pc10_loads_files`</span> <span class="pp">|</span> The files of that set (a file target, so edits to the data re-run the chain) <span class="pp">|</span></span>
+<span id="cb1-373"><a href="#cb1-373" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`pc10_loads_stop`</span> <span class="pp">|</span> Last date of the corrected ERA5 forcing, used to cut the inflows <span class="pp">|</span></span>
+<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`rotorua_inflow_list_pc10`</span> <span class="pp">|</span> <span class="in">`read_pc10_loads()`</span>: the set converted to the current list layout (mg L^-1^, m^3^ day^-1^, AEME names) <span class="pp">|</span></span>
+<span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`rotorua_inflow_list_matrix_pc10`</span> <span class="pp">|</span> Adds <span class="in">`ALU_ala`</span> and <span class="in">`ALU_alp`</span> from the dosing records, as the existing matrix target does <span class="pp">|</span></span>
+<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`aeme_base_pc10_file`</span>, <span class="in">`aeme_baseline_pc10`</span> <span class="pp">|</span> Builds <span class="in">`aeme_base_pc10.rds`</span> with <span class="in">`build_calib_base_aeme()`</span>, in <span class="in">`calibration/base_build_pc10`</span> <span class="pp">|</span></span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>Units. <span class="in">`read_pc10_loads()`</span> converts the mmol m^-3^ nutrient columns back to mg L^-1^ with the molar masses used in the report so that the existing AEME conversion applies unchanged. The converted loads equal <span class="in">`check_annual_loads.csv`</span> to within 0.012% in all twelve sets (script <span class="in">`calibration/pc10_loads/01_verify_loads.R`</span>).</span>
+<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>Points to check before calibrating on the new base:</span>
+<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the rain file (<span class="in">`rain_on_lake_OPTIONAL.csv`</span>) is not used, because rain enters through the meteorology file;</span>
+<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the current file holds constants for some variables in every inflow (SiO2 = 1, DIC = 10, and pH values as low as 1), whereas the new files give stream-specific silica (53 to 109 g SiO2 m^-3^), DIC from alkalinity and pH from measurements. Silica is converted to mg Si L^-1^ for consistency with <span class="in">`rotorua_inflow_key.csv`</span>, so check what the AEME inflow conversion expects for <span class="in">`SIL_rsi`</span> and <span class="in">`CAR_dic`</span> before comparing lake silica or pH;</span>
+<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the previously fitted particulate and phosphorus parameters (<span class="in">`w_pom`</span>, <span class="in">`rpop_hydrol`</span>, <span class="in">`w_po4ads`</span>, sediment P) were tuned against the higher old loads, so a forward run with the final member on the new base should come before any refit.</span>
+<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {#sec-refs}</span></span>
+<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>McBride, C. G. (2026). *Long-term nutrient loads, retention and water quality for Lake Rotorua: 1965 to 2026*. Limnotrack for Bay of Plenty Regional Council.</span>
+<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`data/raw/pc10_loads_2026/README.md`</span> (file and column descriptions).</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

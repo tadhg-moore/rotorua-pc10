@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tadhg Moore">
+<meta name="dcterms.date" content="2026-11-11">
+
+<title>Lake pH time series – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">Project admin</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data.html"> 
+<span class="menu-text">Data preparation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./aed_calibration_sa_plan.html"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./research-overview.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link active" data-scroll-target="#the-data"><span class="header-section-number">1</span> The data</a></li>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series"><span class="header-section-number">2</span> Time series</a></li>
+  <li><a href="#depth-structure" id="toc-depth-structure" class="nav-link" data-scroll-target="#depth-structure"><span class="header-section-number">3</span> Depth structure</a></li>
+  <li><a href="#seasonality" id="toc-seasonality" class="nav-link" data-scroll-target="#seasonality"><span class="header-section-number">4</span> Seasonality</a></li>
+  <li><a href="#relationship-with-other-profiler-variables" id="toc-relationship-with-other-profiler-variables" class="nav-link" data-scroll-target="#relationship-with-other-profiler-variables"><span class="header-section-number">5</span> Relationship with other profiler variables</a></li>
+  <li><a href="#alkalinity-hardness-and-dissolved-organic-carbon" id="toc-alkalinity-hardness-and-dissolved-organic-carbon" class="nav-link" data-scroll-target="#alkalinity-hardness-and-dissolved-organic-carbon"><span class="header-section-number">6</span> Alkalinity, hardness and dissolved organic carbon</a>
+  <ul class="collapse">
+  <li><a href="#do-ph-values-exist-on-the-sampling-dates" id="toc-do-ph-values-exist-on-the-sampling-dates" class="nav-link" data-scroll-target="#do-ph-values-exist-on-the-sampling-dates"><span class="header-section-number">6.1</span> Do pH values exist on the sampling dates?</a></li>
+  </ul></li>
+  <li><a href="#download" id="toc-download" class="nav-link" data-scroll-target="#download"><span class="header-section-number">7</span> Download</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Lake pH time series</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Buoy pH record (2014 to 2026): summaries, seasonality, depth structure and download</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tadhg Moore </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 11, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-data" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="the-data"><span class="header-section-number">1</span> The data</h2>
+<p>pH is measured by the Lake Rotorua monitoring buoy and enters the model workflow as <code>CHM_ph</code> (see <code>R/format_buoy_for_aeme.R</code>). It is used to check the pH response (<code>fpH</code>) of the alum module, and is an input to the <a href="./alum-calibration-stage-1.html">alum calibration</a>. The record is two buoy deployments with different sensor set-ups:</p>
+<ul>
+<li><strong>Old buoy</strong> (target <code>old_buoy_wq</code>): one value per day at 1 m, 25 Feb 2014 to 7 Jan 2018 (only 4 days in 2018).</li>
+<li><strong>New buoy</strong> (target <code>aeme_buoy_data</code>): a daily profile at 12:00 UTC from 21 Feb 2022 to 17 Sep 2026, with values every 0.5 m between 1 and 21 m (41 depths).</li>
+<li>There is <strong>no pH record between January 2018 and February 2022</strong>.</li>
+</ul>
+<div class="cell" data-tbl-cap="Inventory of the pH record. The quantiles use values between 4 and 11 only.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inventory of the pH record. The quantiles use values between 4 and 11 only.</caption>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Values</th>
+<th style="text-align: right;">Days</th>
+<th style="text-align: left;">First</th>
+<th style="text-align: left;">Last</th>
+<th style="text-align: left;">Depths (m)</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: left;">5th–95th pct</th>
+<th style="text-align: right;">Min</th>
+<th style="text-align: right;">Max</th>
+<th style="text-align: right;">Out of range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: left;">1,229</td>
+<td style="text-align: right;">1229</td>
+<td style="text-align: left;">2014-02-25</td>
+<td style="text-align: left;">2018-01-07</td>
+<td style="text-align: left;">1–1 (1)</td>
+<td style="text-align: right;">6.95</td>
+<td style="text-align: left;">6.06–7.74</td>
+<td style="text-align: right;">5.20</td>
+<td style="text-align: right;">8.85</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: left;">59,313</td>
+<td style="text-align: right;">1508</td>
+<td style="text-align: left;">2022-02-21</td>
+<td style="text-align: left;">2026-10-30</td>
+<td style="text-align: left;">1–21 (41)</td>
+<td style="text-align: right;">6.84</td>
+<td style="text-align: left;">6.1–7.78</td>
+<td style="text-align: right;">5.32</td>
+<td style="text-align: right;">12.71</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Quality control.</strong> Only one value is outside the plausible range of 4 to 11 (12.7 at 14.5 m on 2024-05-28), and it is flagged <code>qc_in_range = FALSE</code> in the download rather than removed. All figures and tables on this page exclude it. The old buoy record has a minimum of 5.2 and the new buoy of 5.3 (at 20 m in February 2025); these are plausible for the anoxic hypolimnion but have not been checked against grab samples. The two sensors have not been cross-calibrated.</p>
+</section>
+<section id="time-series" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="time-series"><span class="header-section-number">2</span> Time series</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-ts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-ts-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Daily median pH in the surface layer (<= 5 m), old and new buoy."><img src="ph-data_files/figure-html/fig-ph-ts-1.png" class="img-fluid figure-img" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Daily median pH in the surface layer (&lt;= 5 m), old and new buoy.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Annual summaries (all depths). Fractions are of all values in the year.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Annual summaries (all depths). Fractions are of all values in the year.</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Days</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">5th pct</th>
+<th style="text-align: right;">95th pct</th>
+<th style="text-align: right;">Fraction &gt; 8</th>
+<th style="text-align: right;">Fraction &lt; 6.5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">278</td>
+<td style="text-align: right;">7.40</td>
+<td style="text-align: right;">6.53</td>
+<td style="text-align: right;">8.07</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">307</td>
+<td style="text-align: right;">7.39</td>
+<td style="text-align: right;">6.55</td>
+<td style="text-align: right;">7.86</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">291</td>
+<td style="text-align: right;">6.80</td>
+<td style="text-align: right;">6.05</td>
+<td style="text-align: right;">7.53</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">6.49</td>
+<td style="text-align: right;">5.86</td>
+<td style="text-align: right;">7.10</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.51</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new buoy</td>
+<td style="text-align: right;">2026</td>
+<td style="text-align: right;">272</td>
+<td style="text-align: right;">6.80</td>
+<td style="text-align: right;">6.27</td>
+<td style="text-align: right;">7.38</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: right;">2014</td>
+<td style="text-align: right;">303</td>
+<td style="text-align: right;">7.05</td>
+<td style="text-align: right;">6.02</td>
+<td style="text-align: right;">7.84</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">274</td>
+<td style="text-align: right;">7.06</td>
+<td style="text-align: right;">6.33</td>
+<td style="text-align: right;">7.44</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">331</td>
+<td style="text-align: right;">6.72</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">7.65</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">317</td>
+<td style="text-align: right;">7.01</td>
+<td style="text-align: right;">5.90</td>
+<td style="text-align: right;">7.82</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">old buoy</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6.69</td>
+<td style="text-align: right;">6.68</td>
+<td style="text-align: right;">6.93</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>pH is typically near neutral.</strong> The median is 6.95 (old buoy) and 6.83 (new buoy), with 90% of values between about 6.1 and 7.8.</li>
+<li><strong>2022 and 2023 were higher</strong> (median 7.4) than 2024 (6.8) and 2025 (6.5). In 2025, 51% of values were below 6.5. 2026 has partly recovered (6.8, to September).</li>
+<li><strong>Caution:</strong> part of the 2023 to 2025 fall could be sensor drift rather than a real change. This has not been tested against independent measurements.</li>
+</ul>
+</section>
+<section id="depth-structure" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="depth-structure"><span class="header-section-number">3</span> Depth structure</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-depth" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-depth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-depth-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Depth profile of pH, old and new buoy combined: median (line), interquartile range (dark band) and 5th to 95th percentile (light band) at each 0.5 m depth."><img src="ph-data_files/figure-html/fig-ph-depth-1.png" class="img-fluid figure-img" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-depth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Depth profile of pH, old and new buoy combined: median (line), interquartile range (dark band) and 5th to 95th percentile (light band) at each 0.5 m depth.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="pH by depth class.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>pH by depth class.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Depth class (m)</th>
+<th style="text-align: left;">n</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">5th pct</th>
+<th style="text-align: right;">95th pct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(-1,2]</td>
+<td style="text-align: left;">5,601</td>
+<td style="text-align: right;">7.04</td>
+<td style="text-align: right;">6.26</td>
+<td style="text-align: right;">8.09</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(10,15]</td>
+<td style="text-align: left;">15,070</td>
+<td style="text-align: right;">6.76</td>
+<td style="text-align: right;">6.11</td>
+<td style="text-align: right;">7.62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(15,25]</td>
+<td style="text-align: left;">15,766</td>
+<td style="text-align: right;">6.68</td>
+<td style="text-align: right;">5.84</td>
+<td style="text-align: right;">7.57</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(2,5]</td>
+<td style="text-align: left;">9,039</td>
+<td style="text-align: right;">7.12</td>
+<td style="text-align: right;">6.39</td>
+<td style="text-align: right;">8.19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(5,10]</td>
+<td style="text-align: left;">15,065</td>
+<td style="text-align: right;">6.91</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">7.80</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>pH decreases with depth: a median of 7.1 in the upper 5 m against 6.7 at 15 to 21 m (only the new buoy measures below 1 m), consistent with respiration and CO₂ accumulation in the stratified bottom water. The surface layer shows the high values (the 95th percentile is 8.2) that come with photosynthesis in summer blooms.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-zones" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-zones-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-zones-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Monthly median pH in the surface (<= 5 m), mid (5 to 17 m) and bottom (>= 17 m) layers."><img src="ph-data_files/figure-html/fig-ph-zones-1.png" class="img-fluid figure-img" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-zones-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Monthly median pH in the surface (&lt;= 5 m), mid (5 to 17 m) and bottom (&gt;= 17 m) layers.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="seasonality" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="seasonality"><span class="header-section-number">4</span> Seasonality</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-seasonal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-seasonal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-seasonal-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Monthly distributions of surface (<= 5 m) pH, both buoys combined."><img src="ph-data_files/figure-html/fig-ph-seasonal-1.png" class="img-fluid figure-img" style="width:70.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-seasonal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Monthly distributions of surface (&lt;= 5 m) pH, both buoys combined.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Surface (<= 5 m) pH by month.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Surface (&lt;= 5 m) pH by month.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Month</th>
+<th style="text-align: left;">n</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">5th pct</th>
+<th style="text-align: right;">95th pct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Jan</td>
+<td style="text-align: left;">1,020</td>
+<td style="text-align: right;">7.29</td>
+<td style="text-align: right;">6.49</td>
+<td style="text-align: right;">8.84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Feb</td>
+<td style="text-align: left;">1,051</td>
+<td style="text-align: right;">6.96</td>
+<td style="text-align: right;">6.12</td>
+<td style="text-align: right;">8.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mar</td>
+<td style="text-align: left;">1,490</td>
+<td style="text-align: right;">7.08</td>
+<td style="text-align: right;">6.38</td>
+<td style="text-align: right;">8.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Apr</td>
+<td style="text-align: left;">1,293</td>
+<td style="text-align: right;">6.97</td>
+<td style="text-align: right;">6.12</td>
+<td style="text-align: right;">7.77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">May</td>
+<td style="text-align: left;">917</td>
+<td style="text-align: right;">6.97</td>
+<td style="text-align: right;">6.21</td>
+<td style="text-align: right;">7.94</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jun</td>
+<td style="text-align: left;">1,279</td>
+<td style="text-align: right;">7.10</td>
+<td style="text-align: right;">6.30</td>
+<td style="text-align: right;">7.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jul</td>
+<td style="text-align: left;">1,270</td>
+<td style="text-align: right;">7.10</td>
+<td style="text-align: right;">6.43</td>
+<td style="text-align: right;">7.67</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aug</td>
+<td style="text-align: left;">1,400</td>
+<td style="text-align: right;">7.10</td>
+<td style="text-align: right;">6.52</td>
+<td style="text-align: right;">8.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sep</td>
+<td style="text-align: left;">1,427</td>
+<td style="text-align: right;">7.14</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">8.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oct</td>
+<td style="text-align: left;">1,417</td>
+<td style="text-align: right;">6.93</td>
+<td style="text-align: right;">6.51</td>
+<td style="text-align: right;">7.65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nov</td>
+<td style="text-align: left;">1,126</td>
+<td style="text-align: right;">7.27</td>
+<td style="text-align: right;">6.47</td>
+<td style="text-align: right;">7.99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dec</td>
+<td style="text-align: left;">950</td>
+<td style="text-align: right;">7.23</td>
+<td style="text-align: right;">6.25</td>
+<td style="text-align: right;">8.86</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The seasonal cycle of the median is weak (6.9 to 7.3). The spread is what changes: the 95th percentile exceeds 8.3 in December to March and in September (summer productivity) and the 5th percentile is lowest in February and April (6.1).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-hist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-hist-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Density of all pH values (0.1 pH bins), by buoy."><img src="ph-data_files/figure-html/fig-ph-hist-1.png" class="img-fluid figure-img" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Density of all pH values (0.1 pH bins), by buoy.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-with-other-profiler-variables" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="relationship-with-other-profiler-variables"><span class="header-section-number">5</span> Relationship with other profiler variables</h2>
+<p>The profiler measures temperature, fluorescence chlorophyll, dissolved oxygen, ORP, turbidity and specific conductance alongside pH (target <code>buoy_profile_daily</code>: daily means in 0.5 m bins, 2022 to 2026, so the new buoy only). The old buoy has no chlorophyll record. Chlorophyll here is in-situ fluorescence (<code>FlChlr</code>), which is not calibrated against lab chlorophyll-a, so it is a relative index of phytoplankton.</p>
+<div class="cell" data-tbl-cap="Spearman rank correlation of daily mean pH (0.5 m bins) with the other profiler variables: all depths, by depth zone, and for anomalies from each depth's long-term mean.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Spearman rank correlation of daily mean pH (0.5 m bins) with the other profiler variables: all depths, by depth zone, and for anomalies from each depth’s long-term mean.</caption>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">All</th>
+<th style="text-align: right;">0-5 m</th>
+<th style="text-align: right;">5-10 m</th>
+<th style="text-align: right;">10-17 m</th>
+<th style="text-align: right;">17-22 m</th>
+<th style="text-align: right;">Anomaly from depth mean</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Temperature</td>
+<td style="text-align: right;">-0.26</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">-0.21</td>
+<td style="text-align: right;">-0.44</td>
+<td style="text-align: right;">-0.50</td>
+<td style="text-align: right;">-0.28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chlorophyll (fluorescence)</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">0.41</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DO (mg/L)</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DO saturation (%)</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ORP</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Turbidity</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.07</td>
+<td style="text-align: right;">-0.17</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">-0.04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Specific conductance</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.06</td>
+<td style="text-align: right;">-0.01</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Depth</td>
+<td style="text-align: right;">-0.28</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">-0.11</td>
+<td style="text-align: right;">-0.10</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ph-corr" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ph-corr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-ph-corr-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: pH against fluorescence chlorophyll and temperature by depth zone. Points are daily means at 0.5 m (chlorophyll above its 99.5th percentile omitted); lines are linear fits."><img src="ph-data_files/figure-html/fig-ph-corr-1.png" class="img-fluid figure-img" style="width:95.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ph-corr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: pH against fluorescence chlorophyll and temperature by depth zone. Points are daily means at 0.5 m (chlorophyll above its 99.5th percentile omitted); lines are linear fits.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Oxygen is the strongest correlate</strong> (Spearman 0.63 with saturation and 0.55 with concentration over all depths; 0.51 for saturation in the top 5 m and 0.7 at 17 to 22 m). Both pH and oxygen respond to the balance of photosynthesis and respiration, so this is expected and not independent evidence.</li>
+<li><strong>Chlorophyll is positively correlated with pH</strong> (0.38 overall, from 0.27 in the top 5 m to 0.52 at 17 to 22 m). It stays at 0.41 after removing each depth’s mean, so days with more chlorophyll have higher pH at a given depth.</li>
+<li><strong>Temperature is negatively correlated overall</strong> (-0.26), but the relationship changes with depth: 0.02 in the top 5 m and -0.5 at 17 to 22 m, where colder water has the higher pH.</li>
+<li><strong>Turbidity and specific conductance</strong> have correlations of 0 and 0 with pH over all depths, and ORP (0.27) largely follows oxygen.</li>
+<li>These are rank correlations of autocorrelated daily data from one site. They show association only, and any significance test would be overstated.</li>
+</ul>
+</section>
+<section id="alkalinity-hardness-and-dissolved-organic-carbon" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="alkalinity-hardness-and-dissolved-organic-carbon"><span class="header-section-number">6</span> Alkalinity, hardness and dissolved organic carbon</h2>
+<p>Discrete lake samples from Sites 2 and 5 (target <code>alk_data</code>, from the BOPRC file <code>alkalinity, tot hardness &amp; diss org Carbon.xlsx</code>) give the buffering context for the pH record. Alkalinity and total hardness are in mg/L as CaCO₃; DOC is in g/m³ (the same as mg/L).</p>
+<div class="cell" data-tbl-cap="Inventory of the alkalinity, total hardness and DOC samples by site and sample type.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inventory of the alkalinity, total hardness and DOC samples by site and sample type.</caption>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 16%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Site</th>
+<th style="text-align: left;">Sample type</th>
+<th style="text-align: left;">First</th>
+<th style="text-align: left;">Last</th>
+<th style="text-align: right;">Alkalinity (n)</th>
+<th style="text-align: right;">Hardness (n)</th>
+<th style="text-align: right;">DOC (n)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Site 2</td>
+<td style="text-align: left;">Discrete</td>
+<td style="text-align: left;">2011-08-17</td>
+<td style="text-align: left;">2014-07-23</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Site 2</td>
+<td style="text-align: left;">Integrated</td>
+<td style="text-align: left;">2015-07-22</td>
+<td style="text-align: left;">2018-02-20</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Site 5</td>
+<td style="text-align: left;">Discrete</td>
+<td style="text-align: left;">2011-08-17</td>
+<td style="text-align: left;">2014-07-23</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Site 5</td>
+<td style="text-align: left;">Hypolimnion</td>
+<td style="text-align: left;">2016-07-20</td>
+<td style="text-align: left;">2016-07-20</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Site 5</td>
+<td style="text-align: left;">Integrated</td>
+<td style="text-align: left;">2015-10-21</td>
+<td style="text-align: left;">2018-02-20</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Summary of the three variables (alkalinity and hardness in mg/L as CaCO₃, DOC in g/m³), all sites and sample types.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Summary of the three variables (alkalinity and hardness in mg/L as CaCO₃, DOC in g/m³), all sites and sample types.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Min</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alkalinity</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">6.48</td>
+<td style="text-align: right;">13.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total hardness</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">13.90</td>
+<td style="text-align: right;">15.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DOC</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">2.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-alk-ts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-alk-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-alk-ts-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Alkalinity at Sites 2 and 5 (lines and filled points: integrated samples; hollow points: discrete and hypolimnion samples)."><img src="ph-data_files/figure-html/fig-alk-ts-1.png" class="img-fluid figure-img" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alk-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Alkalinity at Sites 2 and 5 (lines and filled points: integrated samples; hollow points: discrete and hypolimnion samples).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>The lake is poorly buffered.</strong> Integrated-sample alkalinity has a median of 6.2 mg/L as CaCO₃ (range 3.3 to 13) over 57 monthly samples (both sites combined) between 2015-10-21 and 2018-02-20. Such low alkalinity lets pH move easily with photosynthesis, respiration and alum addition.</li>
+<li><strong>Alkalinity varies a lot from month to month</strong>, with no regular seasonal cycle visible in about two years of monthly data.</li>
+<li><strong>Hardness and DOC are measured about once a year</strong> (July or August, 2011 to 2017). DOC is low (0.9 to 2.5 g/m³) and hardness is steady (12.5 to 15 mg/L as CaCO₃).</li>
+<li><strong>No clear same-day link with pH.</strong> Matching the 46 alkalinity samples to the old buoy’s 1 to 2 m pH on the same date gives a Spearman correlation of -0.15. The sample is small, and alkalinity is only available while the old buoy was running (2015 to 2018), so it says nothing about the 2022 to 2026 pH decline.</li>
+</ul>
+<section id="do-ph-values-exist-on-the-sampling-dates" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="do-ph-values-exist-on-the-sampling-dates"><span class="header-section-number">6.1</span> Do pH values exist on the sampling dates?</h3>
+<div class="cell" data-tbl-cap="Samples with a value for each variable, and how many have a buoy pH measurement on the same date.">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Samples with a value for each variable, and how many have a buoy pH measurement on the same date.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">Samples</th>
+<th style="text-align: right;">With pH on the same date</th>
+<th style="text-align: right;">Without pH</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alkalinity</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hardness</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DOC</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Mostly, yes. 46 of the 66 alkalinity samples have a buoy pH value on the same date, all from the old buoy (the alkalinity file ends in February 2018 and the new buoy starts in February 2022). Of the 20 without pH, 6 were taken before the old buoy started on 25 Feb 2014, 4 after it stopped in January 2018, and the other 10 fall on days within the old buoy period when it has no pH record. Only 5 of the 13 hardness and DOC samples have a matching pH value. The old buoy measures at 1 m only, so each match is to surface pH, while the integrated samples cover a depth range.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-alk-ph" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-alk-ph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="ph-data_files/figure-html/fig-alk-ph-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Same-date surface pH (old buoy, 1 to 2 m) against alkalinity at the two sites."><img src="ph-data_files/figure-html/fig-alk-ph-1.png" class="img-fluid figure-img" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alk-ph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Same-date surface pH (old buoy, 1 to 2 m) against alkalinity at the two sites.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="download" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="download"><span class="header-section-number">7</span> Download</h2>
+<p>The full pH record, with every value from both buoys (58,863 rows), and the alkalinity, hardness and DOC samples are available as CSV files.</p>
+<p><a class="btn btn-primary" href="downloads/rotorua_ph_timeseries.csv" download=""><i class="bi bi-download"></i> pH time series CSV (3.8 MB)</a> <a class="btn btn-outline-primary" href="downloads/rotorua_alkalinity_hardness_doc.csv" download=""><i class="bi bi-download"></i> Alkalinity, hardness and DOC CSV</a></p>
+<p>pH file columns:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>datetime</code></td>
+<td style="text-align: left;">Timestamp (UTC). Both buoys: one value per depth per day, stamped 12:00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">Date</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>depth_m</code></td>
+<td style="text-align: left;">Sensor depth (m)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ph</code></td>
+<td style="text-align: left;">pH (pH units)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>old buoy</code> or <code>new buoy</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>qc_in_range</code></td>
+<td style="text-align: left;"><code>TRUE</code> if 4 &lt; pH &lt; 11</td>
+</tr>
+</tbody>
+</table>
+<p>The alkalinity file has <code>site_id</code>, <code>location</code>, <code>datetime</code>, <code>alkalinity_mgl_caco3</code>, <code>doc_gm3</code> and <code>hardness_mgl_caco3</code> (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³), one row per sample.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Lake pH time series"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Buoy pH record (2014 to 2026): summaries, seasonality, depth structure and download"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Tadhg Moore"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: false</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  freeze: false   # the CSVs below are written at render time, so never skip execution</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets); <span class="fu">library</span>(dplyr); <span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ph_all <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(ph_data)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>ph <span class="ot">&lt;-</span> ph_all <span class="sc">|&gt;</span> <span class="fu">filter</span>(qc_in_range) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%Y"</span>)), <span class="at">month =</span> <span class="fu">as.integer</span>(<span class="fu">format</span>(date, <span class="st">"%m"</span>)))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>q <span class="ot">&lt;-</span> \(x, p) <span class="fu">quantile</span>(x, p, <span class="at">names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>th <span class="ot">&lt;-</span> <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"old buoy"</span> <span class="ot">=</span> <span class="st">"#8c8c8c"</span>, <span class="st">"new buoy"</span> <span class="ot">=</span> <span class="st">"#1f78b4"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Download files (the website `resources` copies downloads/ into the site)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"downloads"</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>ph_all <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">datetime =</span> <span class="fu">format</span>(datetime, <span class="st">"%Y-%m-%d %H:%M:%S"</span>, <span class="at">tz =</span> <span class="st">"UTC"</span>), <span class="at">date =</span> <span class="fu">as.character</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(<span class="st">"downloads/rotorua_ph_timeseries.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>prof <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(buoy_profile_daily)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>alk <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(alk_data) <span class="sc">|&gt;</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(datetime), <span class="at">site =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"^EK"</span>, site_id), <span class="st">"Site 2"</span>, <span class="st">"Site 5"</span>),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">sample =</span> <span class="fu">c</span>(<span class="at">DIS =</span> <span class="st">"Discrete"</span>, <span class="at">INT =</span> <span class="st">"Integrated"</span>, <span class="at">HYP =</span> <span class="st">"Hypolimnion"</span>)[<span class="fu">sub</span>(<span class="st">".*_"</span>, <span class="st">""</span>, site_id)])</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>alk <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">datetime =</span> <span class="fu">format</span>(datetime, <span class="st">"%Y-%m-%d %H:%M:%S"</span>, <span class="at">tz =</span> <span class="st">"UTC"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(<span class="st">"downloads/rotorua_alkalinity_hardness_doc.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## The data</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>pH is measured by the Lake Rotorua monitoring buoy and enters the model workflow as <span class="in">`CHM_ph`</span> (see <span class="in">`R/format_buoy_for_aeme.R`</span>). It is used to check the pH response (<span class="in">`fpH`</span>) of the alum module, and is an input to the <span class="co">[</span><span class="ot">alum calibration</span><span class="co">](alum-calibration-stage-1.qmd)</span>. The record is two buoy deployments with different sensor set-ups:</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Old buoy** (target <span class="in">`old_buoy_wq`</span>): one value per day at 1 m, 25 Feb 2014 to 7 Jan 2018 (only 4 days in 2018).</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**New buoy** (target <span class="in">`aeme_buoy_data`</span>): a daily profile at 12:00 UTC from 21 Feb 2022 to 17 Sep 2026, with values every 0.5 m between 1 and 21 m (41 depths).</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is **no pH record between January 2018 and February 2022**.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Inventory of the pH record. The quantiles use values between 4 and 11 only."</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> ph_all <span class="sc">|&gt;</span> <span class="fu">group_by</span>(source) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">n_out =</span> <span class="fu">sum</span>(<span class="sc">!</span>qc_in_range), <span class="at">first =</span> <span class="fu">min</span>(date), <span class="at">last =</span> <span class="fu">max</span>(date), <span class="at">days =</span> <span class="fu">n_distinct</span>(date),</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">depth_min =</span> <span class="fu">min</span>(depth_m), <span class="at">depth_max =</span> <span class="fu">max</span>(depth_m), <span class="at">n_depths =</span> <span class="fu">n_distinct</span>(depth_m), <span class="at">median =</span> <span class="fu">r2</span>(<span class="fu">median</span>(ph[qc_in_range])),</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">p05 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph[qc_in_range], .<span class="dv">05</span>)), <span class="at">p95 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph[qc_in_range], .<span class="dv">95</span>)), <span class="at">min =</span> <span class="fu">r2</span>(<span class="fu">min</span>(ph)), <span class="at">max =</span> <span class="fu">r2</span>(<span class="fu">max</span>(ph))) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(source))</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Source =</span> i<span class="sc">$</span>source, <span class="st">`</span><span class="at">Values</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">format</span>(i<span class="sc">$</span>n, <span class="at">big.mark =</span> <span class="st">","</span>), <span class="st">`</span><span class="at">Days</span><span class="st">`</span> <span class="ot">=</span> i<span class="sc">$</span>days, <span class="at">First =</span> i<span class="sc">$</span>first, <span class="at">Last =</span> i<span class="sc">$</span>last,</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Depths (m)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste0</span>(i<span class="sc">$</span>depth_min, <span class="st">"–"</span>, i<span class="sc">$</span>depth_max, <span class="st">" ("</span>, i<span class="sc">$</span>n_depths, <span class="st">")"</span>), <span class="at">Median =</span> i<span class="sc">$</span>median, <span class="st">`</span><span class="at">5th–95th pct</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste</span>(i<span class="sc">$</span>p05, i<span class="sc">$</span>p95, <span class="at">sep =</span> <span class="st">"–"</span>),</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">Min =</span> i<span class="sc">$</span>min, <span class="at">Max =</span> i<span class="sc">$</span>max, <span class="st">`</span><span class="at">Out of range</span><span class="st">`</span> <span class="ot">=</span> i<span class="sc">$</span>n_out, <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>**Quality control.** Only one value is outside the plausible range of 4 to 11 (12.7 at 14.5 m on 2024-05-28), and it is flagged <span class="in">`qc_in_range = FALSE`</span> in the download rather than removed. All figures and tables on this page exclude it. The old buoy record has a minimum of 5.2 and the new buoy of 5.3 (at 20 m in February 2025); these are plausible for the anoxic hypolimnion but have not been checked against grab samples. The two sensors have not been cross-calibrated.</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Time series</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-ts</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily median pH in the surface layer (&lt;= 5 m), old and new buoy."</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "90%"</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>ph <span class="sc">|&gt;</span> <span class="fu">filter</span>(depth_m <span class="sc">&lt;=</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(source, date) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">ph =</span> <span class="fu">median</span>(ph), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, ph, <span class="at">colour =</span> source)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> .<span class="dv">5</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span> <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"pH (daily median, &lt;= 5 m)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span> th <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Annual summaries (all depths). Fractions are of all values in the year."</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> ph <span class="sc">|&gt;</span> <span class="fu">group_by</span>(source, year) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">days =</span> <span class="fu">n_distinct</span>(date), <span class="at">median =</span> <span class="fu">r2</span>(<span class="fu">median</span>(ph)), <span class="at">p05 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">05</span>)), <span class="at">p95 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">95</span>)),</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">frac_gt8 =</span> <span class="fu">r2</span>(<span class="fu">mean</span>(ph <span class="sc">&gt;</span> <span class="dv">8</span>)), <span class="at">frac_lt65 =</span> <span class="fu">r2</span>(<span class="fu">mean</span>(ph <span class="sc">&lt;</span> <span class="fl">6.5</span>)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Source =</span> y<span class="sc">$</span>source, <span class="at">Year =</span> y<span class="sc">$</span>year, <span class="at">Days =</span> y<span class="sc">$</span>days, <span class="at">Median =</span> y<span class="sc">$</span>median, <span class="st">`</span><span class="at">5th pct</span><span class="st">`</span> <span class="ot">=</span> y<span class="sc">$</span>p05, <span class="st">`</span><span class="at">95th pct</span><span class="st">`</span> <span class="ot">=</span> y<span class="sc">$</span>p95,</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Fraction &gt; 8</span><span class="st">`</span> <span class="ot">=</span> y<span class="sc">$</span>frac_gt8, <span class="st">`</span><span class="at">Fraction &lt; 6.5</span><span class="st">`</span> <span class="ot">=</span> y<span class="sc">$</span>frac_lt65, <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**pH is typically near neutral.** The median is 6.95 (old buoy) and 6.83 (new buoy), with 90% of values between about 6.1 and 7.8.</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2022 and 2023 were higher** (median 7.4) than 2024 (6.8) and 2025 (6.5). In 2025, 51% of values were below 6.5. 2026 has partly recovered (6.8, to September).</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Caution:** part of the 2023 to 2025 fall could be sensor drift rather than a real change. This has not been tested against independent measurements.</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## Depth structure</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-depth</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Depth profile of pH, old and new buoy combined: median (line), interquartile range (dark band) and 5th to 95th percentile (light band) at each 0.5 m depth."</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "60%"</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> ph <span class="sc">|&gt;</span> <span class="fu">group_by</span>(depth_m) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(ph), <span class="at">p05 =</span> <span class="fu">q</span>(ph, .<span class="dv">05</span>), <span class="at">p25 =</span> <span class="fu">q</span>(ph, .<span class="dv">25</span>), <span class="at">p75 =</span> <span class="fu">q</span>(ph, .<span class="dv">75</span>), <span class="at">p95 =</span> <span class="fu">q</span>(ph, .<span class="dv">95</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pd, <span class="fu">aes</span>(<span class="at">y =</span> depth_m)) <span class="sc">+</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> p05, <span class="at">xmax =</span> p95), <span class="at">orientation =</span> <span class="st">"y"</span>, <span class="at">fill =</span> <span class="st">"#b2df8a"</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> p25, <span class="at">xmax =</span> p75), <span class="at">orientation =</span> <span class="st">"y"</span>, <span class="at">fill =</span> <span class="st">"#33a02c"</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> med), <span class="at">linewidth =</span> .<span class="dv">8</span>) <span class="sc">+</span> <span class="fu">scale_y_reverse</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"pH"</span>, <span class="at">y =</span> <span class="st">"Depth (m)"</span>) <span class="sc">+</span> th</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "pH by depth class."</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> ph <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">depth_class =</span> <span class="fu">as.character</span>(<span class="fu">cut</span>(depth_m, <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">25</span>, <span class="dv">40</span>)))) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(depth_class) <span class="sc">|&gt;</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">median =</span> <span class="fu">r2</span>(<span class="fu">median</span>(ph)), <span class="at">p05 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">05</span>)), <span class="at">p95 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">95</span>)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="st">`</span><span class="at">Depth class (m)</span><span class="st">`</span> <span class="ot">=</span> d<span class="sc">$</span>depth_class, <span class="at">n =</span> <span class="fu">format</span>(d<span class="sc">$</span>n, <span class="at">big.mark =</span> <span class="st">","</span>), <span class="at">Median =</span> d<span class="sc">$</span>median, <span class="st">`</span><span class="at">5th pct</span><span class="st">`</span> <span class="ot">=</span> d<span class="sc">$</span>p05, <span class="st">`</span><span class="at">95th pct</span><span class="st">`</span> <span class="ot">=</span> d<span class="sc">$</span>p95, <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>pH decreases with depth: a median of 7.1 in the upper 5 m against 6.7 at 15 to 21 m (only the new buoy measures below 1 m), consistent with respiration and CO₂ accumulation in the stratified bottom water. The surface layer shows the high values (the 95th percentile is 8.2) that come with photosynthesis in summer blooms.</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-zones</span></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly median pH in the surface (&lt;= 5 m), mid (5 to 17 m) and bottom (&gt;= 17 m) layers."</span></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "90%"</span></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>ph <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">zone =</span> <span class="fu">ifelse</span>(depth_m <span class="sc">&lt;=</span> <span class="dv">5</span>, <span class="st">"Surface (&lt;= 5 m)"</span>, <span class="fu">ifelse</span>(depth_m <span class="sc">&gt;=</span> <span class="dv">17</span>, <span class="st">"Bottom (&gt;= 17 m)"</span>, <span class="st">"Mid (5-17 m)"</span>)),</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>             <span class="at">ym =</span> <span class="fu">as.Date</span>(<span class="fu">format</span>(date, <span class="st">"%Y-%m-01"</span>))) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(zone, ym) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">ph =</span> <span class="fu">median</span>(ph), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(ym, ph, <span class="at">colour =</span> zone)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> .<span class="dv">8</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"pH (monthly median)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>  th <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="fu">## Seasonality</span></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-seasonal</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly distributions of surface (&lt;= 5 m) pH, both buoys combined."</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "70%"</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">filter</span>(ph, depth_m <span class="sc">&lt;=</span> <span class="dv">5</span>), <span class="fu">aes</span>(<span class="fu">factor</span>(month), ph)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">outlier.size =</span> .<span class="dv">3</span>, <span class="at">fill =</span> <span class="st">"#a6cee3"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"pH (&lt;= 5 m)"</span>) <span class="sc">+</span> th</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Surface (&lt;= 5 m) pH by month."</span></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> ph <span class="sc">|&gt;</span> <span class="fu">filter</span>(depth_m <span class="sc">&lt;=</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">median =</span> <span class="fu">r2</span>(<span class="fu">median</span>(ph)), <span class="at">p05 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">05</span>)), <span class="at">p95 =</span> <span class="fu">r2</span>(<span class="fu">q</span>(ph, .<span class="dv">95</span>)))</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Month =</span> month.abb[m<span class="sc">$</span>month], <span class="at">n =</span> <span class="fu">format</span>(m<span class="sc">$</span>n, <span class="at">big.mark =</span> <span class="st">","</span>), <span class="at">Median =</span> m<span class="sc">$</span>median, <span class="st">`</span><span class="at">5th pct</span><span class="st">`</span> <span class="ot">=</span> m<span class="sc">$</span>p05, <span class="st">`</span><span class="at">95th pct</span><span class="st">`</span> <span class="ot">=</span> m<span class="sc">$</span>p95, <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>The seasonal cycle of the median is weak (6.9 to 7.3). The spread is what changes: the 95th percentile exceeds 8.3 in December to March and in September (summer productivity) and the 5th percentile is lowest in February and April (6.1).</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-hist</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Density of all pH values (0.1 pH bins), by buoy."</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "60%"</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ph, <span class="fu">aes</span>(ph, <span class="at">fill =</span> source)) <span class="sc">+</span> <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> .<span class="dv">1</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> .<span class="dv">6</span>) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"pH"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>) <span class="sc">+</span> th <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Relationship with other profiler variables</span></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>The profiler measures temperature, fluorescence chlorophyll, dissolved oxygen, ORP, turbidity and specific conductance alongside pH (target <span class="in">`buoy_profile_daily`</span>: daily means in 0.5 m bins, 2022 to 2026, so the new buoy only). The old buoy has no chlorophyll record. Chlorophyll here is in-situ fluorescence (<span class="in">`FlChlr`</span>), which is not calibrated against lab chlorophyll-a, so it is a relative index of phytoplankton.</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">Temperature</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"temp_c"</span>, <span class="st">`</span><span class="at">Chlorophyll (fluorescence)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"chl_fl"</span>, <span class="st">`</span><span class="at">DO (mg/L)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"do_mgl"</span>, <span class="st">`</span><span class="at">DO saturation (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"do_sat"</span>,</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">ORP</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"orp_mv"</span>, <span class="st">`</span><span class="at">Turbidity</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"turb"</span>, <span class="st">`</span><span class="at">Specific conductance</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"spcond"</span>, <span class="st">`</span><span class="at">Depth</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"depth_m"</span>)</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>sp <span class="ot">&lt;-</span> \(x, y) <span class="fu">suppressWarnings</span>(<span class="fu">cor</span>(x, y, <span class="at">method =</span> <span class="st">"spearman"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>))</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>prof <span class="ot">&lt;-</span> prof <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">zone =</span> <span class="fu">cut</span>(depth_m, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">17</span>, <span class="dv">22</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-5 m"</span>, <span class="st">"5-10 m"</span>, <span class="st">"10-17 m"</span>, <span class="st">"17-22 m"</span>)))</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="co"># anomalies from the long-term mean at each depth (removes the average depth gradient)</span></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>anom <span class="ot">&lt;-</span> prof <span class="sc">|&gt;</span> <span class="fu">group_by</span>(depth_m) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(ph, temp_c, chl_fl, do_mgl, do_sat, orp_mv, turb, spcond), \(x) x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>()</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>cr <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Variable =</span> <span class="fu">names</span>(vars),</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>  <span class="at">All =</span> <span class="fu">sapply</span>(vars, \(v) <span class="fu">sp</span>(prof<span class="sc">$</span>ph, prof[[v]])),</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(<span class="fu">levels</span>(prof<span class="sc">$</span>zone), \(z) <span class="fu">sapply</span>(vars, \(v) <span class="fu">sp</span>(prof<span class="sc">$</span>ph[prof<span class="sc">$</span>zone <span class="sc">==</span> z], prof[[v]][prof<span class="sc">$</span>zone <span class="sc">==</span> z]))),</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Anomaly from depth mean</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sapply</span>(vars, \(v) <span class="cf">if</span> (v <span class="sc">==</span> <span class="st">"depth_m"</span>) <span class="cn">NA</span> <span class="cf">else</span> <span class="fu">sp</span>(anom<span class="sc">$</span>ph, anom[[v]])), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>cr[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cr[<span class="sc">-</span><span class="dv">1</span>], r2)</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cr) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> \(v, z) cr[cr<span class="sc">$</span>Variable <span class="sc">==</span> v, z]</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Spearman rank correlation of daily mean pH (0.5 m bins) with the other profiler variables: all depths, by depth zone, and for anomalies from each depth's long-term mean."</span></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cr)</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ph-corr</span></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "pH against fluorescence chlorophyll and temperature by depth zone. Points are daily means at 0.5 m (chlorophyll above its 99.5th percentile omitted); lines are linear fits."</span></span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "95%"</span></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>long <span class="ot">&lt;-</span> prof <span class="sc">|&gt;</span> <span class="fu">filter</span>(chl_fl <span class="sc">&lt;</span> <span class="fu">quantile</span>(chl_fl, .<span class="dv">995</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(chl_fl, temp_c), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"x"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">c</span>(<span class="at">chl_fl =</span> <span class="st">"Chlorophyll (fluorescence)"</span>, <span class="at">temp_c =</span> <span class="st">"Temperature (°C)"</span>)[var])</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(long, <span class="fu">aes</span>(x, ph)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> .<span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">15</span>, <span class="at">colour =</span> <span class="st">"grey30"</span>) <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">colour =</span> <span class="st">"#e31a1c"</span>, <span class="at">linewidth =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(zone <span class="sc">~</span> var, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"pH"</span>) <span class="sc">+</span> th</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Oxygen is the strongest correlate** (Spearman <span class="in">`r g("DO saturation (%)", "All")`</span> with saturation and <span class="in">`r g("DO (mg/L)", "All")`</span> with concentration over all depths; <span class="in">`r g("DO saturation (%)", "0-5 m")`</span> for saturation in the top 5 m and <span class="in">`r g("DO saturation (%)", "17-22 m")`</span> at 17 to 22 m). Both pH and oxygen respond to the balance of photosynthesis and respiration, so this is expected and not independent evidence.</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chlorophyll is positively correlated with pH** (<span class="in">`r g("Chlorophyll (fluorescence)", "All")`</span> overall, from <span class="in">`r g("Chlorophyll (fluorescence)", "0-5 m")`</span> in the top 5 m to <span class="in">`r g("Chlorophyll (fluorescence)", "17-22 m")`</span> at 17 to 22 m). It stays at <span class="in">`r g("Chlorophyll (fluorescence)", "Anomaly from depth mean")`</span> after removing each depth's mean, so days with more chlorophyll have higher pH at a given depth.</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Temperature is negatively correlated overall** (<span class="in">`r g("Temperature", "All")`</span>), but the relationship changes with depth: <span class="in">`r g("Temperature", "0-5 m")`</span> in the top 5 m and <span class="in">`r g("Temperature", "17-22 m")`</span> at 17 to 22 m, where colder water has the higher pH.</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Turbidity and specific conductance** have correlations of <span class="in">`r g("Turbidity", "All")`</span> and <span class="in">`r g("Specific conductance", "All")`</span> with pH over all depths, and ORP (<span class="in">`r g("ORP", "All")`</span>) largely follows oxygen.</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>These are rank correlations of autocorrelated daily data from one site. They show association only, and any significance test would be overstated.</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alkalinity, hardness and dissolved organic carbon</span></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>Discrete lake samples from Sites 2 and 5 (target <span class="in">`alk_data`</span>, from the BOPRC file <span class="in">`alkalinity, tot hardness &amp; diss org Carbon.xlsx`</span>) give the buffering context for the pH record. Alkalinity and total hardness are in mg/L as CaCO₃; DOC is in g/m³ (the same as mg/L).</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Inventory of the alkalinity, total hardness and DOC samples by site and sample type."</span></span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>inv <span class="ot">&lt;-</span> alk <span class="sc">|&gt;</span> <span class="fu">group_by</span>(<span class="at">Site =</span> site, <span class="st">`</span><span class="at">Sample type</span><span class="st">`</span> <span class="ot">=</span> sample) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>  <span class="at">First =</span> <span class="fu">min</span>(date), <span class="at">Last =</span> <span class="fu">max</span>(date), <span class="st">`</span><span class="at">Alkalinity (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3)), <span class="st">`</span><span class="at">Hardness (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(hardness_mgl_caco3)), <span class="st">`</span><span class="at">DOC (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(doc_gm3)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(inv)</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Summary of the three variables (alkalinity and hardness in mg/L as CaCO₃, DOC in g/m³), all sites and sample types."</span></span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>sm <span class="ot">&lt;-</span> \(x, nm) <span class="fu">data.frame</span>(<span class="at">Variable =</span> nm, <span class="at">n =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)), <span class="at">Min =</span> <span class="fu">r2</span>(<span class="fu">min</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">Median =</span> <span class="fu">r2</span>(<span class="fu">median</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">Max =</span> <span class="fu">r2</span>(<span class="fu">max</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">rbind</span>(<span class="fu">sm</span>(alk<span class="sc">$</span>alkalinity_mgl_caco3, <span class="st">"Alkalinity"</span>), <span class="fu">sm</span>(alk<span class="sc">$</span>hardness_mgl_caco3, <span class="st">"Total hardness"</span>), <span class="fu">sm</span>(alk<span class="sc">$</span>doc_gm3, <span class="st">"DOC"</span>)), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-alk-ts</span></span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Alkalinity at Sites 2 and 5 (lines and filled points: integrated samples; hollow points: discrete and hypolimnion samples)."</span></span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "90%"</span></span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(alk <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3)), <span class="fu">aes</span>(date, alkalinity_mgl_caco3, <span class="at">colour =</span> site, <span class="at">shape =</span> sample <span class="sc">==</span> <span class="st">"Integrated"</span>)) <span class="sc">+</span></span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> alk <span class="sc">|&gt;</span> <span class="fu">filter</span>(sample <span class="sc">==</span> <span class="st">"Integrated"</span>, <span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3)), <span class="fu">aes</span>(<span class="at">group =</span> site), <span class="at">linewidth =</span> .<span class="dv">4</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">TRUE</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">16</span>, <span class="st">`</span><span class="at">FALSE</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">1</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Alkalinity (mg/L as CaCO₃)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span> th <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>int <span class="ot">&lt;-</span> alk <span class="sc">|&gt;</span> <span class="fu">filter</span>(sample <span class="sc">==</span> <span class="st">"Integrated"</span>, <span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3))</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>ph_d <span class="ot">&lt;-</span> ph <span class="sc">|&gt;</span> <span class="fu">filter</span>(depth_m <span class="sc">&lt;=</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">ph =</span> <span class="fu">mean</span>(ph))</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>jj <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(<span class="fu">filter</span>(alk, <span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3)), ph_d, <span class="at">by =</span> <span class="st">"date"</span>)</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>r_pa <span class="ot">&lt;-</span> <span class="fu">cor</span>(jj<span class="sc">$</span>ph, jj<span class="sc">$</span>alkalinity_mgl_caco3, <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The lake is poorly buffered.** Integrated-sample alkalinity has a median of <span class="in">`r r2(median(int$alkalinity_mgl_caco3))`</span> mg/L as CaCO₃ (range <span class="in">`r r2(min(int$alkalinity_mgl_caco3))`</span> to <span class="in">`r r2(max(int$alkalinity_mgl_caco3))`</span>) over <span class="in">`r nrow(int)`</span> monthly samples (both sites combined) between <span class="in">`r min(int$date)`</span> and <span class="in">`r max(int$date)`</span>. Such low alkalinity lets pH move easily with photosynthesis, respiration and alum addition.</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Alkalinity varies a lot from month to month**, with no regular seasonal cycle visible in about two years of monthly data.</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hardness and DOC are measured about once a year** (July or August, 2011 to 2017). DOC is low (<span class="in">`r r2(min(alk$doc_gm3, na.rm = TRUE))`</span> to <span class="in">`r r2(max(alk$doc_gm3, na.rm = TRUE))`</span> g/m³) and hardness is steady (<span class="in">`r r2(min(alk$hardness_mgl_caco3, na.rm = TRUE))`</span> to <span class="in">`r r2(max(alk$hardness_mgl_caco3, na.rm = TRUE))`</span> mg/L as CaCO₃).</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No clear same-day link with pH.** Matching the <span class="in">`r nrow(jj)`</span> alkalinity samples to the old buoy's 1 to 2 m pH on the same date gives a Spearman correlation of <span class="in">`r r2(r_pa)`</span>. The sample is small, and alkalinity is only available while the old buoy was running (2015 to 2018), so it says nothing about the 2022 to 2026 pH decline.</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="fu">### Do pH values exist on the sampling dates?</span></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>chk <span class="ot">&lt;-</span> alk <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">has_ph =</span> date <span class="sc">%in%</span> ph<span class="sc">$</span>date)</span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>cnt <span class="ot">&lt;-</span> \(v) { x <span class="ot">&lt;-</span> chk[<span class="sc">!</span><span class="fu">is.na</span>(chk[[v]]), ]; <span class="fu">c</span>(<span class="at">n =</span> <span class="fu">nrow</span>(x), <span class="at">same_day =</span> <span class="fu">sum</span>(x<span class="sc">$</span>has_ph)) }</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>cc <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">c</span>(<span class="at">Alkalinity =</span> <span class="st">"alkalinity_mgl_caco3"</span>, <span class="at">Hardness =</span> <span class="st">"hardness_mgl_caco3"</span>, <span class="at">DOC =</span> <span class="st">"doc_gm3"</span>), cnt)</span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>no_ph <span class="ot">&lt;-</span> chk <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(alkalinity_mgl_caco3), <span class="sc">!</span>has_ph)</span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Samples with a value for each variable, and how many have a buoy pH measurement on the same date."</span></span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">data.frame</span>(<span class="at">Variable =</span> <span class="fu">colnames</span>(cc), <span class="at">Samples =</span> cc[<span class="st">"n"</span>, ], <span class="st">`</span><span class="at">With pH on the same date</span><span class="st">`</span> <span class="ot">=</span> cc[<span class="st">"same_day"</span>, ], <span class="st">`</span><span class="at">Without pH</span><span class="st">`</span> <span class="ot">=</span> cc[<span class="st">"n"</span>, ] <span class="sc">-</span> cc[<span class="st">"same_day"</span>, ], <span class="at">check.names =</span> <span class="cn">FALSE</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>Mostly, yes. <span class="in">`r cc["same_day", "Alkalinity"]`</span> of the <span class="in">`r cc["n", "Alkalinity"]`</span> alkalinity samples have a buoy pH value on the same date, all from the old buoy (the alkalinity file ends in February 2018 and the new buoy starts in February 2022). Of the <span class="in">`r nrow(no_ph)`</span> without pH, <span class="in">`r sum(no_ph$date &lt; as.Date("2014-02-25"))`</span> were taken before the old buoy started on 25 Feb 2014, <span class="in">`r sum(no_ph$date &gt; as.Date("2018-01-07"))`</span> after it stopped in January 2018, and the other <span class="in">`r sum(no_ph$date &gt;= as.Date("2014-02-25") &amp; no_ph$date &lt;= as.Date("2018-01-07"))`</span> fall on days within the old buoy period when it has no pH record. Only <span class="in">`r cc["same_day", "Hardness"]`</span> of the <span class="in">`r cc["n", "Hardness"]`</span> hardness and DOC samples have a matching pH value. The old buoy measures at 1 m only, so each match is to surface pH, while the integrated samples cover a depth range.</span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-alk-ph</span></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Same-date surface pH (old buoy, 1 to 2 m) against alkalinity at the two sites."</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: "60%"</span></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(jj, <span class="fu">aes</span>(alkalinity_mgl_caco3, ph, <span class="at">colour =</span> site)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Alkalinity (mg/L as CaCO₃)"</span>, <span class="at">y =</span> <span class="st">"pH"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>) <span class="sc">+</span> th <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="fu">## Download</span></span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>The full pH record, with every value from both buoys (58,863 rows), and the alkalinity, hardness and DOC samples are available as CSV files.</span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> class</span><span class="op">=</span><span class="st">"btn btn-primary"</span><span class="ot"> href</span><span class="op">=</span><span class="st">"downloads/rotorua_ph_timeseries.csv"</span><span class="ot"> download</span><span class="dt">&gt;&lt;</span><span class="kw">i</span><span class="ot"> class</span><span class="op">=</span><span class="st">"bi bi-download"</span><span class="dt">&gt;&lt;/</span><span class="kw">i</span><span class="dt">&gt;</span> pH time series CSV (3.8 MB)<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> class</span><span class="op">=</span><span class="st">"btn btn-outline-primary"</span><span class="ot"> href</span><span class="op">=</span><span class="st">"downloads/rotorua_alkalinity_hardness_doc.csv"</span><span class="ot"> download</span><span class="dt">&gt;&lt;</span><span class="kw">i</span><span class="ot"> class</span><span class="op">=</span><span class="st">"bi bi-download"</span><span class="dt">&gt;&lt;/</span><span class="kw">i</span><span class="dt">&gt;</span> Alkalinity, hardness and DOC CSV<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>pH file columns:</span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Column <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span>:--<span class="pp">|</span>:--<span class="pp">|</span></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`datetime`</span> <span class="pp">|</span> Timestamp (UTC). Both buoys: one value per depth per day, stamped 12:00 <span class="pp">|</span></span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`date`</span> <span class="pp">|</span> Date <span class="pp">|</span></span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`depth_m`</span> <span class="pp">|</span> Sensor depth (m) <span class="pp">|</span></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`ph`</span> <span class="pp">|</span> pH (pH units) <span class="pp">|</span></span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`source`</span> <span class="pp">|</span> <span class="in">`old buoy`</span> or <span class="in">`new buoy`</span> <span class="pp">|</span></span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`qc_in_range`</span> <span class="pp">|</span> <span class="in">`TRUE`</span> if 4 &lt; pH &lt; 11 <span class="pp">|</span></span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>The alkalinity file has <span class="in">`site_id`</span>, <span class="in">`location`</span>, <span class="in">`datetime`</span>, <span class="in">`alkalinity_mgl_caco3`</span>, <span class="in">`doc_gm3`</span> and <span class="in">`hardness_mgl_caco3`</span> (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³), one row per sample.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
