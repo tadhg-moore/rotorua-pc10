@@ -1,0 +1,188 @@
+---
+title: "Lake Rotorua — Latest GLM-AED Run"
+subtitle: "Calibrated alum-on baseline, 1977–2022: plots from the parquet output of the last local run"
+author: "Tadhg Moore"
+date: last-modified
+date-format: "DD MMMM YYYY"
+fig-width: 10
+fig-height: 4.5
+fig-dpi: 150
+execute:
+  cache: false    # the page is driven by the parquet output, not by its code: never reuse cached chunks or frozen results
+  freeze: false
+---
+
+::: {.callout-note}
+This page does **not** run the model. The baseline is run locally (`Rscript R/run_latest.R`, about 8 minutes) from the
+`rotorua-pc10/latest/` folder on the team OneDrive, which holds the calibrated GLM-AED set-up, the parameters, the
+executable and the observations. That run writes its full output as parquet into `latest/output/`, and this page
+syncs and plots it. The baseline has no scenarios, and the run-info table below says exactly what produced the output.
+:::
+
+```{r setup}
+#| include: false
+#| echo: false
+library(dplyr); library(tidyr); library(ggplot2); library(arrow); library(data.table)
+library(knitr); library(kableExtra)
+
+# where the "latest" folder lives locally: a mirror of rotorua-pc10/latest on OneDrive (synced here when the OneDrive token is set)
+latest <- here::here("onedrive_mirror", "rotorua-pc10", "latest")
+data_source <- "local mirror (OneDrive not used)"
+if (nzchar(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))) {
+  source(here::here("R", "sync_aeme_onedrive.R"))
+  data_source <- tryCatch({
+    sync_onedrive_file("rotorua-pc10/latest/metadata.json", file.path(latest, "metadata.json"))   # only the small files: the page needs the output, not the set-up
+    sync_onedrive_folder("rotorua-pc10/latest/output", file.path(latest, "output"))
+    "OneDrive: rotorua-pc10/latest"
+  }, error = function(e) paste0("local mirror (OneDrive sync failed: ", substr(conditionMessage(e), 1, 80), ")"))
+}
+out <- file.path(latest, "output"); stopifnot(dir.exists(file.path(out, "model")))
+meta <- jsonlite::fromJSON(file.path(latest, "metadata.json")); runi <- jsonlite::fromJSON(file.path(out, "run_info.json"))
+
+raw <- open_dataset(file.path(out, "model", "output_raw"))
+getv <- function(v) raw |> filter(var_sim == v) |> select(date, depth, value) |> collect() |> mutate(date = as.Date(date), value = if (v == "LKE_lvlwtr") value + meta$bed_elevation_m else value)   # level is written as a depth
+obs <- read_parquet(file.path(out, "observations.parquet")) |> mutate(date = as.Date(date))
+sed <- read_parquet(file.path(out, "model", "sediment.parquet")) |> mutate(date = as.Date(date))   # (filtered to the output period below)
+d0 <- min(getv("LKE_lvlwtr")$date); d1 <- max(getv("LKE_lvlwtr")$date); obs <- obs |> filter(date >= d0, date <= d1); sed <- sed |> filter(date >= d0)
+
+col_obs <- "#1b3a4b"; col_sim <- "#d95f02"; col_band <- "#cfe3f1"
+alum_start <- as.Date("2006-01-01")
+shade <- annotate("rect", xmin = alum_start, xmax = d1 + 365, ymin = -Inf, ymax = Inf, fill = col_band, alpha = 0.4)
+th <- theme_minimal(base_size = 13) + theme(legend.position = "top", strip.text = element_text(face = "bold", hjust = 0), panel.grid.minor = element_blank())
+
+# surface (top 5 m mean) and bottom (within 3 m of the bed) daily series from the depth-resolved output
+surf_bot <- function(v) {
+  x <- getv(v) |> group_by(date) |> mutate(zmax = max(depth)) |> ungroup()
+  bind_rows(x |> filter(depth <= 5) |> group_by(date) |> summarise(value = mean(value), .groups = "drop") |> mutate(where = "Surface (0-5 m)"),
+            x |> filter(depth >= zmax - 3) |> group_by(date) |> summarise(value = mean(value), .groups = "drop") |> mutate(where = "Bottom (lowest 3 m)"))
+}
+obs_sb <- function(v) {
+  x <- obs |> filter(var_aeme == v, !is.na(depth))
+  bind_rows(x |> filter(depth <= 5) |> group_by(date) |> summarise(value = mean(value), .groups = "drop") |> mutate(where = "Surface (0-5 m)"),
+            x |> filter(depth >= 17) |> group_by(date) |> summarise(value = mean(value), .groups = "drop") |> mutate(where = "Bottom (lowest 3 m)"))
+}
+sb_plot <- function(v, ylab) {
+  s <- surf_bot(v); o <- obs_sb(v)
+  ggplot() + shade + geom_line(data = s, aes(date, value, colour = "Simulated"), linewidth = 0.4) + geom_point(data = o, aes(date, value, colour = "Observed"), size = 0.7, alpha = 0.7) +
+    facet_wrap(~ factor(where, c("Surface (0-5 m)", "Bottom (lowest 3 m)")), ncol = 1) + scale_colour_manual(values = c(Observed = col_obs, Simulated = col_sim)) + labs(x = NULL, y = ylab, colour = NULL) + th
+}
+
+# model vs observation pairs: simulated value at the observed date and the nearest simulated depth
+pair <- function(v) {
+  o <- obs |> filter(var_aeme == v); s <- getv(v)
+  if (all(is.na(o$depth))) { s <- s |> group_by(date) |> summarise(sim = mean(value), .groups = "drop"); return(inner_join(o |> select(date, obs = value), s, by = "date")) }
+  so <- as.data.table(s); setnames(so, "value", "sim"); setkey(so, date, depth); ot <- as.data.table(o |> filter(!is.na(depth)) |> select(date, depth, obs = value))
+  ot[, sim := so[.(ot$date, ot$depth), sim, roll = "nearest"]]; ot[!is.na(sim)] |> as_tibble()
+}
+cal0 <- as.Date("2006-06-01"); cal1 <- as.Date("2018-06-30"); val1 <- as.Date("2022-06-30")
+vars <- c(HYD_temp = "Water temperature (°C)", CHM_oxy = "Dissolved oxygen (g/m³)", LKE_lvlwtr = "Lake level (m)", NIT_tn = "Total nitrogen (g/m³)", PHS_tp = "Total phosphorus (g/m³)", PHY_tchla = "Chlorophyll-a (mg/m³)")
+perf <- lapply(names(vars), function(v) { p <- pair(v)
+  per <- list(`All years` = p, `Calibration 2006-06 to 2018-06` = p |> filter(date >= cal0, date <= cal1), `Held out 2018-07 to 2022-06` = p |> filter(date > cal1, date <= val1))
+  bind_rows(lapply(names(per), function(k) { x <- per[[k]]; data.frame(Variable = vars[[v]], Period = k, n = nrow(x), RMSE = sqrt(mean((x$sim - x$obs)^2)), Bias = mean(x$sim - x$obs), r2 = if (nrow(x) > 2) cor(x$sim, x$obs)^2 else NA) })) }) |> bind_rows()
+```
+
+## Run info {#run-info}
+
+```{r run-info-table}
+#| echo: false
+data.frame(
+  Field = c("Data source", "Output period (after spin-up)", "Spin-up", "Parameter set", "Calibration / held out", "Forcing", "Executable", "Set-up exported", "Git commit at export", "Run (local)", "Run time", "Scenarios"),
+  Value = c(data_source, paste(format(d0), "to", format(d1)), paste(meta$simulation$spin_up_days, "days (from", meta$simulation$start, ")"), meta$parameter_source,
+            paste(meta$calibration_period, "/", meta$held_out_period), meta$forcing, paste(meta$executable[1:2], collapse = "; "),
+            paste(meta$exported, "by", meta$exported_by), paste0(meta$git_commit, if (isTRUE(meta$git_dirty)) " (uncommitted changes)" else ""),
+            paste(runi$run, "by", runi$run_by), paste(runi$minutes, "min"), meta$scenarios)
+) |> kbl() |> kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+Observations are from the Bay of Plenty Regional Council monitoring programme and only start in the 1990s, so the 1977–1989
+results are not constrained by data. Blue shading marks the alum-dosing period (from 2006).
+
+## Water temperature {#temp}
+
+```{r plot-temperature}
+#| fig-cap: "Simulated (line) and observed (points) water temperature at the surface and bottom."
+#| fig-height: 6
+sb_plot("HYD_temp", "Temperature (°C)")
+```
+
+```{r plot-temperature-heat}
+#| fig-cap: "Simulated water temperature, monthly mean by depth."
+#| fig-height: 4
+getv("HYD_temp") |> mutate(m = as.Date(format(date, "%Y-%m-01")), z = 2 * floor(depth / 2) + 1) |> group_by(m, z) |> summarise(value = mean(value), .groups = "drop") |>
+  ggplot(aes(m, z, fill = value)) + geom_tile() + scale_y_reverse() + scale_fill_viridis_c(option = "plasma", name = "°C") + labs(x = NULL, y = "Depth (m)") + th + theme(legend.position = "right")
+```
+
+## Stratification {#stability}
+
+```{r plot-thermocline}
+#| fig-cap: "Simulated thermocline depth (monthly mean)."
+#| fig-height: 3.5
+getv("HYD_thmcln") |> group_by(m = as.Date(format(date, "%Y-%m-01"))) |> summarise(value = mean(value), .groups = "drop") |>
+  ggplot(aes(m, value)) + geom_line(colour = col_sim) + scale_y_reverse() + labs(x = NULL, y = "Thermocline depth (m)") + th
+```
+
+## Dissolved oxygen {#oxygen}
+
+```{r plot-oxygen}
+#| fig-cap: "Simulated and observed dissolved oxygen at the surface and bottom."
+#| fig-height: 6
+sb_plot("CHM_oxy", "Dissolved oxygen (g/m³)")
+```
+
+## Lake level {#level}
+
+```{r plot-level}
+#| fig-cap: "Simulated lake water level (line) and observed level (points)."
+#| fig-height: 3.5
+ggplot() + geom_line(data = getv("LKE_lvlwtr") |> group_by(date) |> summarise(value = mean(value)), aes(date, value, colour = "Simulated"), linewidth = 0.4) +
+  geom_point(data = obs |> filter(var_aeme == "LKE_lvlwtr"), aes(date, value, colour = "Observed"), size = 0.6, alpha = 0.6) +
+  scale_colour_manual(values = c(Observed = col_obs, Simulated = col_sim)) + labs(x = NULL, y = "Level (m a.s.l.)", colour = NULL) + th
+```
+
+## Nutrients and chlorophyll-a {#nutrients}
+
+```{r plot-nutrients}
+#| fig-cap: "Simulated (surface, 0-5 m) and observed total phosphorus, total nitrogen and chlorophyll-a."
+#| fig-height: 8
+nut <- c(PHS_tp = "Total phosphorus (g/m³)", NIT_tn = "Total nitrogen (g/m³)", PHY_tchla = "Chlorophyll-a (mg/m³)")
+s <- bind_rows(lapply(names(nut), function(v) surf_bot(v) |> filter(grepl("Surface", where)) |> mutate(var = nut[[v]])))
+o <- bind_rows(lapply(names(nut), function(v) obs_sb(v) |> filter(grepl("Surface", where)) |> mutate(var = nut[[v]])))
+ggplot() + shade + geom_line(data = s, aes(date, value, colour = "Simulated"), linewidth = 0.4) + geom_point(data = o, aes(date, value, colour = "Observed"), size = 0.7, alpha = 0.7) +
+  facet_wrap(~ var, ncol = 1, scales = "free_y") + scale_colour_manual(values = c(Observed = col_obs, Simulated = col_sim)) + labs(x = NULL, y = NULL, colour = NULL) + th
+```
+
+## Phytoplankton groups {#phyto-groups}
+
+```{r plot-phytos}
+#| fig-cap: "Simulated surface (0-5 m) phytoplankton group chlorophyll-a, monthly mean."
+#| fig-height: 4
+grp <- c(PHY_cyano = "Cyanobacteria", PHY_green = "Green algae", PHY_diatom = "Diatoms")
+bind_rows(lapply(names(grp), function(v) getv(v) |> filter(depth <= 5) |> group_by(m = as.Date(format(date, "%Y-%m-01"))) |> summarise(value = mean(value), .groups = "drop") |> mutate(group = grp[[v]]))) |>
+  ggplot(aes(m, value, fill = group)) + geom_area() + scale_fill_manual(values = c(Cyanobacteria = "#1b9e77", `Green algae` = "#7fb069", Diatoms = "#a6761d")) + labs(x = NULL, y = "Chl-a (mg/m³)", fill = NULL) + th
+```
+
+## Sediment fluxes and alum {#sediment}
+
+```{r plot-sediment}
+#| fig-cap: "Simulated sediment fluxes by sediment zone (coloured lines) and the lake-wide series written by the model (black), annual means, in the units GLM-AED writes. Zone 5 has no values."
+#| fig-height: 8
+fl <- c(SDF_Fsed_frp_Z = "Sediment P release (FRP flux)", SDF_Fsed_oxy_Z = "Sediment oxygen demand", ALU_bur_alp_Z = "Alum-bound P buried", ALU_res_alp_Z = "Alum-bound P released")
+z <- sed |> filter(var_sim %in% names(fl), !is.na(zone)) |> group_by(var_sim, zone, yr = as.integer(format(date, "%Y"))) |> summarise(value = mean(value, na.rm = TRUE), .groups = "drop") |> mutate(what = fl[var_sim], zone = factor(zone))
+l <- sed |> filter(var_sim %in% paste0(names(fl), "_lake")) |> group_by(var_sim, yr = as.integer(format(date, "%Y"))) |> summarise(value = mean(value, na.rm = TRUE), .groups = "drop") |> mutate(what = fl[sub("_lake$", "", var_sim)])
+ggplot() + geom_line(data = z, aes(yr, value, colour = zone), linewidth = 0.5) + geom_line(data = l, aes(yr, value), colour = "black", linewidth = 1) +
+  facet_wrap(~ what, ncol = 1, scales = "free_y") + labs(x = NULL, y = NULL, colour = "Sediment zone") + th
+```
+
+In this configuration the sediment phosphorus release and oxygen demand are fixed rates per sediment zone (set in `aed.nml`),
+so they do not respond to oxygen or alum. The alum terms are zero before dosing starts.
+
+## Model performance summary {#performance}
+
+```{r performance-stats}
+#| echo: false
+perf |>
+  mutate(Variable = ifelse(duplicated(Variable), "", Variable)) |>
+  kbl(digits = c(0, 0, 0, 2, 2, 2), col.names = c("Variable", "Period", "n", "RMSE", "Bias (sim - obs)", "r²"),
+      caption = "Model performance against observations (simulated value at the observed date and nearest depth). RMSE and bias in the units of the variable.") |>
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
