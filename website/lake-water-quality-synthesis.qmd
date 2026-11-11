@@ -7,6 +7,7 @@ format:
   html:
     toc: true
     toc-depth: 3
+    toc-expand: true
     number-sections: true
     code-fold: true
     fig-width: 9
@@ -59,8 +60,13 @@ dla     <- tr("driver_lake_annual")
 dcor    <- tr("driver_lake_correlations")
 airport <- tr("airport_met")
 buoymet <- tr("all_buoy_met_data")
-enso    <- readr::read_csv(here::here("data", "raw", "enso", "enso_indices_monthly.csv"),
-                           show_col_types = FALSE)
+ctdth   <- tr("ctd_thermal")
+buoyth  <- tr("buoy_thermal")
+hflux   <- tr("hyp_flux")
+hod     <- tr("hod_events")
+hyps    <- tr("lake_hyps")
+burger  <- read.csv(here::here("website", "data", "burger2007_chamber_fluxes.csv"))
+enso    <- tr("enso_indices")
 
 theme_set(theme_bw(base_size = 11))
 pal_site <- c("Site 2" = "#0072B2", "Site 5" = "#D55E00", "Lake (mean of sites)" = "black")
@@ -130,6 +136,11 @@ ch_0106 <- mean_int("chla", 2001:2006); ch_1220 <- mean_int("chla", 2012:2020); 
 
 - **Alum** is the strongest single correlate of lake TP and TLI (ρ ≈ −0.8). It is confounded with the time trend, but the 2019–2021 dosing pause acts as a natural experiment that supports a causal link.
 - **Internal loading.** Year-to-year changes in summer air temperature track bottom-water oxygen and NH₄ accumulation. Hot, calm summers produce long stratification, anoxia and internal P and N release: 2008/09, 2010/11, 2014/15, 2017/18, 2021/22 and 2023/24.
+- **Internal release rates.** The bottom layer below the thermocline (typically 9–12 m deep in summer) is only about 5 m thick on average. During stratified periods:
+  - it loses oxygen at about 1.5 g O₂/m²/d (the depletion rate rises about 5 % per °C);
+  - it gains NH₄ at about 25–80 mg N/m²/d and DRP at about 2–5 mg P/m²/d (lower bounds).
+
+  These rates suggest roughly 3–15 t of DRP and 30–230 t of NH₄-N are released each summer from the deep sediments alone (@sec-internal).
 - **External loads.** Wet years raise external loads (2011–2013, 2017–2018, 2023–2024) but tend to flush and mix the lake, so they reduce peak bottom DRP.
 - **Warming.** The bias-corrected ERA5 record warms by about 1 °C over 1977–2025. Air-heatwave days have increased from typically 5–20 per year before 2016 to mostly 25–55 per year since then.
 
@@ -157,7 +168,8 @@ tibble::tribble(
   "Alum dose rates + Puarenga compliance", "L/day by plant; paired up/downstream TP, DRP, Al, pH", paste(rng(alum26$date), "; compliance", rng(pcomp$date)), "`alum_dose_2026`, `puarenga_compliance`",
   "BOPRC river WQ (new)", "12 sites; TN, TKN, NOx, NH4, TP, DRP, TSS, DO, pH, temp, Al, discharge", rng(rwq$date), "`river_wq_data`",
   "PC10 2026 loads (McBride 2026)", "Modelled daily flow and AED concentrations per inflow, 12 scenario sets", "1959-07 to 2026-06", "`pc10_stream_loads`, `pc10_check_loads`",
-  "ENSO indices (NOAA)", "Monthly ONI, SOI, IPO, SAM", rng(enso$date[enso$index == "ONI"]), "data/raw/enso"
+  "ENSO indices (NOAA)", "Monthly ONI, SOI, IPO, SAM",
+    rng(enso$date[enso$index == "ONI"]), "`enso_indices`"
 ) |> kable()
 ```
 
@@ -323,6 +335,7 @@ ann |>
   - Bottom TP and DRP have declined over the whole record, but show no decline over the last decade.
   - Bottom NH₄ has increased over the alum era at both sites (+1.8 to +4.6 %/yr).
 - So alum has suppressed the P released from the sediment, but it has not removed it, and N release continues.
+- The seasonal timing, the thermal controls and estimates of the release rates are in @sec-internal.
 
 ### Trophic Level Index
 
@@ -553,7 +566,514 @@ be$heatwaves |>
 
 The highest surface temperatures in the buoy record are 24–24.7 °C, in summer 2015/16, 2017/18, 2021/22 and 2023/24.
 
+## Internal loading {#sec-internal}
+
+Lake Rotorua is polymictic. It does not stratify through the whole summer like a deep monomictic lake. Instead it stratifies for days to weeks at a time between about October and March, and wind events mix it in between. Each stratified period isolates a thin bottom layer, roughly 3–8 m thick, over the deep sediments. That layer loses oxygen quickly and gains NH₄ and DRP released from the sediment. The next mixing event carries those nutrients into the surface water. This section uses the temperature profiles (buoys and CTD), the bottom-water chemistry and the lake hypsography to describe this cycle and to estimate the release rates.
+
+### Seasonal cycle of stratification
+
+```{r}
+#| label: fig-thermal-season
+#| fig-cap: "Seasonal cycle of thermal structure from the daily buoy profiles (2007–2026). Lines are the median by week of year and ribbons the 25–75th and 10–90th percentiles: surface–bottom temperature difference, Schmidt stability (from the lake hypsograph), thermocline depth (on stratified days only, ΔT ≥ 1 °C, searched between 3 m and 2 m above the bed), and bottom (≥ 18 m) DO. Weeks are ordered July–June."
+#| fig-height: 8
+bdaily <- buoyth |>
+  group_by(date) |>
+  summarise(d_temp = mean(d_temp), schmidt = mean(schmidt), thermo_depth = mean(thermo_depth, na.rm = TRUE),
+            .groups = "drop") |>
+  mutate(thermo_depth = ifelse(is.nan(thermo_depth), NA, thermo_depth)) |>
+  left_join(be$daily |> select(date, do_bot), by = "date")
+wk_order <- c(27:53, 1:26)
+season_q <- bdaily |>
+  mutate(wk = pmin(as.integer(format(date, "%U")) + 1, 53),
+         wk = match(wk, wk_order)) |>
+  pivot_longer(c(d_temp, schmidt, thermo_depth, do_bot)) |>
+  filter(is.finite(value)) |>
+  group_by(name, wk) |>
+  summarise(q10 = quantile(value, .1), q25 = quantile(value, .25), q50 = median(value),
+            q75 = quantile(value, .75), q90 = quantile(value, .9), n = n(), .groups = "drop") |>
+  filter(n >= 10) |>
+  mutate(name = factor(name, c("d_temp", "schmidt", "thermo_depth", "do_bot"),
+                       c("ΔT surface − bottom (°C)", "Schmidt stability (J/m²)",
+                         "Thermocline depth (m)", "Bottom DO (g/m³)")))
+mlab <- tibble::tibble(wk = c(1, 5.4, 9.8, 14.1, 18.5, 22.8, 27.1, 31.5, 35.8, 40.2, 44.5, 48.9),
+                       lab = month.abb[c(7:12, 1:6)])
+ggplot(season_q, aes(wk)) +
+  geom_ribbon(aes(ymin = q10, ymax = q90), fill = "#0072B2", alpha = 0.15) +
+  geom_ribbon(aes(ymin = q25, ymax = q75), fill = "#0072B2", alpha = 0.3) +
+  geom_line(aes(y = q50), colour = "#0072B2") +
+  geom_hline(data = tibble::tibble(name = factor("Bottom DO (g/m³)", levels(season_q$name)), y = 2),
+             aes(yintercept = y), linetype = 2, colour = "firebrick") +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  scale_x_continuous(breaks = mlab$wk, labels = mlab$lab) +
+  labs(x = NULL, y = NULL)
+```
+
+```{r}
+#| label: tbl-thermal-month
+#| tbl-cap: "Monthly summary of thermal structure from the buoys (daily) and CTD casts (monthly, Sites 2 and 5): share of days or casts stratified (ΔT ≥ 1 °C), median thermocline depth on stratified days, and median Schmidt stability."
+mon <- function(d) d |> mutate(m = factor(month.abb[as.integer(format(date, "%m"))], month.abb[c(7:12, 1:6)])) |>
+  group_by(m) |>
+  summarise(strat = mean(d_temp >= 1), zth = median(thermo_depth[d_temp >= 1], na.rm = TRUE),
+            ss = median(schmidt), .groups = "drop")
+left_join(mon(bdaily), mon(ctdth), by = "m", suffix = c("_buoy", "_ctd")) |>
+  transmute(Month = m, `Stratified (buoy)` = scales::percent(strat_buoy, 1),
+            `Thermocline, m (buoy)` = round(zth_buoy, 1), `Schmidt, J/m² (buoy)` = round(ss_buoy, 1),
+            `Stratified (CTD)` = scales::percent(strat_ctd, 1),
+            `Thermocline, m (CTD)` = round(zth_ctd, 1)) |>
+  kable()
+```
+
+**When the lake stratifies.**
+
+- Stratification starts to develop in October and November.
+- It is most frequent and strongest from December to February. On about half of all summer days the surface is at least 1 °C warmer than the bottom, and Schmidt stability on calm, hot days exceeds 100–300 J/m².
+- It collapses in March as the lake cools. From April to August the lake is fully mixed.
+- **Thermocline depth.** On stratified days the thermocline is typically 9–12 m deep (monthly medians; interquartile range about 7–13 m). The isolated bottom layer therefore covers roughly a third to half of the lake bed, because the hypsograph is steep below 10 m.
+- **The bottom layer is thin.** Its mean thickness (hypolimnion volume divided by its sediment area) is only about 4–6 m. A thin layer over a large sediment area is why oxygen falls so fast: below 2 g/m³ within 1–3 weeks of the onset of stratification.
+
+### Stratified periods and the thermocline, summer by summer
+
+```{r}
+#| label: fig-thermo-summers
+#| fig-cap: "Daily thermocline depth from the buoys (points, only on stratified days), coloured by bottom DO, for each summer (November–March). Grey shading marks days with bottom DO < 2 g/m³. Gaps are periods without a thermocline (mixed) or without data."
+#| fig-height: 10
+sdat <- bdaily |>
+  filter(as.integer(format(date, "%m")) %in% c(11, 12, 1, 2, 3)) |>
+  mutate(summer = paste0(wq_hy(date) - 1, "/", substr(wq_hy(date), 3, 4)),
+         doy = as.numeric(date - as.Date(paste0(wq_hy(date) - 1, "-11-01"))))
+ggplot(sdat, aes(doy)) +
+  geom_rect(data = \(d) filter(d, do_bot < 2), aes(xmin = doy - 0.5, xmax = doy + 0.5, ymin = -Inf, ymax = Inf),
+            fill = "grey80") +
+  geom_point(aes(y = thermo_depth, colour = do_bot), size = 0.7) +
+  scale_y_reverse(limits = c(20, 0)) +
+  scale_colour_gradientn(colours = c("darkred", "orange", "gold", "skyblue", "navy"),
+                         values = scales::rescale(c(0, 2, 4, 7, 11)), limits = c(0, 11),
+                         na.value = "grey50") +
+  scale_x_continuous(breaks = c(0, 30, 61, 92, 120), labels = c("Nov", "Dec", "Jan", "Feb", "Mar")) +
+  facet_wrap(~summer, ncol = 4) +
+  labs(x = NULL, y = "Thermocline depth (m)", colour = "Bottom DO\n(g/m³)")
+```
+
+**Summer by summer.** The summers differ mainly in how long the stratified periods last and how often wind breaks them up.
+
+- **Long stratified periods with prolonged bottom anoxia:** 2007/08, 2008/09, 2014/15, 2015/16, 2017/18 and 2023/24. In these summers the thermocline deepens steadily, by about 1 m a week, from 6–9 m to 12–16 m as the period goes on.
+- **Long stratification without bottom-DO data:** 2019/20 and 2021/22 (grey points). The bottom chemistry shows strong accumulation in both.
+- **Short stratified periods separated by frequent mixing, with little anoxia:** 2011/12, 2012/13, 2013/14, 2016/17, 2022/23 and 2025/26.
+- **Missing:** the 2009/10 and 2010/11 summers are largely missing from the buoy record.
+- **New profiler (from 2022).** Thermocline depths are similar to the old buoy's: a median of about 10 m in November–December and about 13 m in January.
+
+### Seasonal cycle of bottom-water nutrients
+
+```{r}
+#| label: fig-int-load-season
+#| fig-cap: "Monthly medians (both sites) of NH4-N, DRP and TP in the bottom (BOT), hypolimnion (HYP) and integrated (INT) samples, for the pre-alum period, the first decade of dosing and the last decade. The lower panels show the bottom − integrated difference: the excess that internal loading builds up below the thermocline."
+#| fig-height: 9
+era_cut <- function(date) cut(date, as.Date(c("1980-01-01", "2006-07-01", "2016-07-01", "2030-01-01")),
+                              labels = c("1990–2006 (pre-alum)", "2006–2016", "2016–2026"))
+lm_ <- lw |>
+  filter(variable %in% c("nh4", "drp", "tp")) |>
+  mutate(era = era_cut(date),
+         month = factor(month.abb[as.integer(format(date, "%m"))], month.abb[c(7:12, 1:6)]),
+         variable = factor(var_lab[variable], var_lab[c("nh4", "drp", "tp")]))
+p_a <- lm_ |>
+  group_by(era, layer, month, variable) |>
+  summarise(med = median(value), .groups = "drop") |>
+  mutate(layer = factor(layer, c("INT", "HYP", "BOT"))) |>
+  ggplot(aes(month, med, colour = layer, group = layer)) +
+  geom_line() + geom_point(size = 0.8) +
+  facet_grid(variable ~ era, scales = "free_y") +
+  scale_colour_manual(values = pal_layer) +
+  labs(x = NULL, y = "Monthly median (mg/m³)", colour = "Layer") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
+p_b <- lm_ |>
+  filter(layer %in% c("BOT", "INT")) |>
+  group_by(era, site, date, month, variable, layer) |>
+  summarise(value = mean(value), .groups = "drop") |>
+  pivot_wider(names_from = layer, values_from = value) |>
+  filter(is.finite(BOT), is.finite(INT)) |>
+  group_by(era, month, variable) |>
+  summarise(excess = median(BOT - INT), q75 = quantile(BOT - INT, .75), .groups = "drop") |>
+  ggplot(aes(month, excess, colour = era, group = era)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_line() + geom_point(size = 0.8) +
+  facet_wrap(~variable, scales = "free_y") +
+  scale_colour_manual(values = c("grey40", "#56B4E9", "#D55E00")) +
+  labs(x = NULL, y = "BOT − INT (mg/m³)", colour = NULL) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7), legend.position = "bottom")
+p_a / p_b + plot_layout(heights = c(2.2, 1))
+```
+
+**The internal-loading signal follows stratification closely.**
+
+- The bottom-water excess over the surface water (BOT − INT) is near zero from April to September.
+- It builds from November or December and peaks in January–February, which is the timing of the longest stratified, anoxic periods.
+- It collapses again in March as the stratification breaks down. In the integrated surface samples, the released NH₄ and P then appear as the March–May peaks in @fig-seasonal.
+
+**Before and after alum.**
+
+- **Before alum,** the median December–March bottom DRP excess was 12–18 mg/m³.
+- **Since 2006,** it has been 0–5 mg/m³.
+- **NH₄** shows no such fall. Its summer bottom excess in 2016–2026 (up to about 210 mg/m³ in January) is larger than before alum, and it starts earlier, from November.
+- **TP.** The TP excess in 2016–2026 is again larger than in 2006–2016.
+- **Reading.** This pattern supports the view that alum caps the release of P from the sediment, but does not reduce the mineralisation of organic matter that supplies N.
+
+### Stratification strength and internal loading, year by year
+
+```{r}
+#| label: fig-strat-vs-load
+#| fig-cap: "Summer (December–February) stratification strength from the buoys against the annual maximum bottom-water concentrations (mean of Sites 2 and 5). Labels are hydrological years; colour separates years before full dosing of both streams (≤ 2010) from later years."
+#| fig-height: 4.5
+sstrat <- bdaily |>
+  filter(as.integer(format(date, "%m")) %in% c(12, 1, 2)) |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy) |>
+  summarise(n = n(), schmidt = mean(schmidt), strat_days = sum(d_temp >= 1) * 90 / n(),
+            anox_days = sum(do_bot < 2, na.rm = TRUE) * 90 / sum(is.finite(do_bot)), .groups = "drop") |>
+  filter(n >= 45)
+bmax <- ann |> filter(layer == "BOT", variable %in% c("drp", "nh4")) |>
+  group_by(hy, variable) |> summarise(max = mean(max), .groups = "drop") |>
+  pivot_wider(names_from = variable, values_from = max)
+sv <- inner_join(sstrat, bmax, by = "hy") |> mutate(period = ifelse(hy <= 2010, "≤ 2010", "2011–2026"))
+sv |>
+  pivot_longer(c(drp, nh4), names_to = "var", values_to = "max") |>
+  mutate(var = c(drp = "Bottom DRP max (mg/m³)", nh4 = "Bottom NH4 max (mg/m³)")[var]) |>
+  pivot_longer(c(schmidt, strat_days), names_to = "x", values_to = "xv") |>
+  mutate(x = c(schmidt = "Mean summer Schmidt stability (J/m²)",
+               strat_days = "Stratified days, Dec–Feb (scaled to 90)")[x]) |>
+  ggplot(aes(xv, max, label = hy, colour = period)) +
+  geom_text(size = 2.7) +
+  geom_smooth(aes(group = 1), method = "lm", se = FALSE, colour = "grey50", linewidth = 0.4) +
+  facet_grid(var ~ x, scales = "free") +
+  scale_colour_manual(values = c("≤ 2010" = "grey40", "2011–2026" = "#D55E00")) +
+  labs(x = NULL, y = NULL, colour = NULL)
+```
+
+```{r}
+#| label: strat-load-cor
+ct_ <- function(x, y) { k <- suppressWarnings(cor.test(x, y, method = "spearman")); sprintf("ρ = %.2f, p = %.2f", k$estimate, k$p.value) }
+r_drp_ss <- ct_(sv$schmidt, sv$drp); r_nh4_ss <- ct_(sv$schmidt, sv$nh4)
+r_drp_sd <- ct_(sv$strat_days, sv$drp); r_nh4_sd <- ct_(sv$strat_days, sv$nh4)
+```
+
+**Year-to-year links between stratification and bottom concentrations.** These use the `r nrow(sv)` hydrological years with buoy coverage.
+
+- **NH₄:**
+  - against mean summer Schmidt stability, `r r_nh4_ss`
+  - against stratified days, `r r_nh4_sd`
+- **DRP:**
+  - against Schmidt stability, `r r_drp_ss`
+  - against stratified days, `r r_drp_sd`
+
+**How to read these.**
+
+- The relationships are weakly positive (ρ ≈ 0.4 with Schmidt stability, p ≈ 0.1) and essentially absent for the count of stratified days. Monthly bottom samples catch the peak of each event only by chance, and the strength of stratification matters more than its duration.
+- For DRP, the alum era shifts the response downwards. For the same stratification, post-2010 years mostly have lower bottom DRP, with the exceptions of 2015, 2021, 2022 and 2025.
+- 2021/22 stands out as high stratification combined with very high DRP, in the year the Puarenga dosing was paused.
+
+### Estimating release rates (fluxes)
+
+Two independent estimates are possible from the monitoring data. Both are compared with the sediment-chamber fluxes measured in the lake by Burger et al. (2007) and with the values in the model's `aed.nml`.
+
+**1. Hypolimnetic accumulation (NH₄, DRP, TP).**
+
+- **Which samples are used.** Pairs of consecutive monthly samples at the same site when the CTD casts show the lake stratified on both dates.
+- **Hypolimnetic mass.** The mean of the HYP and BOT samples multiplied by the volume below the thermocline (from the hypsograph, using the mean thermocline depth of the two casts).
+- **Flux.** The change in that mass divided by the time between samples and by the sediment area below the thermocline.
+- **These are lower bounds.** The lake mixes partially between monthly samples, so some released mass is lost upward. Positive intervals are summarised below.
+
+```{r}
+#| label: tbl-hyp-flux
+#| tbl-cap: "Hypolimnetic accumulation fluxes (mg/m²/d) from consecutive stratified CTD and chemistry sampling dates, 2003–2026. n is the number of sample pairs; positive pairs are those where the hypolimnetic mass increased."
+hflux |>
+  group_by(Variable = c(nh4 = "NH4-N", drp = "DRP", tp = "TP")[variable]) |>
+  summarise(`Pairs (n)` = n(), `Positive` = sum(flux > 0),
+            `Median of positive` = median(flux[flux > 0]),
+            `75th pct of positive` = quantile(flux[flux > 0], .75),
+            `Max` = max(flux),
+            `Thermocline (m)` = median(z_th), `Mean hypolimnion thickness (m)` = median(h_mean),
+            `Interval (d)` = median(days)) |>
+  kable(digits = 1)
+```
+
+```{r}
+#| label: fig-hyp-flux
+#| fig-cap: "Hypolimnetic accumulation fluxes for each pair of stratified sampling dates, against mean bottom temperature. Open symbols are negative (net loss, usually partial mixing between samples)."
+#| fig-height: 4
+hflux |>
+  mutate(variable = factor(c(nh4 = "NH4-N", drp = "DRP", tp = "TP")[variable], c("NH4-N", "DRP", "TP")),
+         sign = ifelse(flux > 0, "gain", "loss")) |>
+  ggplot(aes(t_bot, flux, colour = site, shape = sign)) +
+  geom_hline(yintercept = 0, colour = "grey60") +
+  geom_point(size = 2) +
+  facet_wrap(~variable, scales = "free_y") +
+  scale_shape_manual(values = c(gain = 16, loss = 1)) +
+  scale_colour_manual(values = pal_site) +
+  labs(x = "Bottom temperature (°C)", y = "Flux (mg/m²/d)", colour = NULL, shape = NULL)
+```
+
+**2. Hypolimnetic oxygen depletion (from the buoys).**
+
+- **Which periods are used.** Each buoy-recorded stratified period (at least 7 days) that starts with bottom DO above 2 g/m³.
+- **Volumetric rate.** A regression of daily bottom DO against time, up to the point where DO first falls below 1 g/m³.
+- **Areal hypolimnetic oxygen demand (AHOD).** The volumetric rate multiplied by the mean hypolimnion thickness below the median thermocline depth of the period.
+- **What it measures.** AHOD is a measure of total sediment and hypolimnetic oxygen demand. It is directly comparable with chamber sediment oxygen demand (SOD).
+
+```{r}
+#| label: fig-hod
+#| fig-cap: "Hypolimnetic oxygen depletion in buoy-recorded stratified periods. Left: volumetric rate against mean bottom temperature, with an exponential (θ) fit. Right: areal hypolimnetic oxygen demand (AHOD) by year, with the interquartile range of the Burger et al. (2007) light-chamber SOD (grey band)."
+#| fig-height: 4
+hod_ok <- hod |> filter(rate > 0, r2 >= 0.5)
+th_fit <- lm(log(rate) ~ I(t_bot - 20), data = hod_ok)
+theta <- exp(coef(th_fit)[2]); r20 <- exp(coef(th_fit)[1])
+h1 <- ggplot(hod_ok, aes(t_bot, rate)) + geom_point() +
+  geom_line(data = tibble::tibble(t_bot = seq(10, 23, 0.1)) |> mutate(rate = r20 * theta^(t_bot - 20)),
+            colour = "#D55E00") +
+  labs(x = "Mean bottom temperature (°C)", y = "DO decline (g/m³/d)")
+h2 <- ggplot(hod_ok, aes(start, ahod)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = quantile(burger$sod_g_m2_d[burger$chamber == "light"], .25),
+           ymax = quantile(burger$sod_g_m2_d[burger$chamber == "light"], .75), fill = "grey85") +
+  geom_point(aes(colour = t_bot)) + scale_colour_viridis_c(option = "C") +
+  labs(x = NULL, y = "AHOD (g O₂/m²/d)", colour = "T bottom (°C)")
+h1 + h2
+```
+
+```{r}
+#| label: flux-numbers
+ahod_med <- median(hod_ok$ahod); ahod_iqr <- quantile(hod_ok$ahod, c(.25, .75))
+rate_med <- median(hod_ok$rate)
+# Redfield mineralisation: 138 mol O2 : 16 mol N : 1 mol P
+gN_per_gO2 <- 16 * 14.007 / (138 * 31.998); gP_per_gO2 <- 30.974 / (138 * 31.998)
+pos <- function(v) median(hflux$flux[hflux$variable == v & hflux$flux > 0])
+```
+
+**Oxygen depletion results.**
+
+- Across `r nrow(hod_ok)` well-fitted stratified periods (r² ≥ 0.5), bottom DO fell at a median `r sprintf("%.2f", rate_med)` g/m³/d.
+- The median AHOD is **`r sprintf("%.1f", ahod_med)` g O₂/m²/d** (interquartile range `r sprintf("%.1f–%.1f", ahod_iqr[1], ahod_iqr[2])`).
+- The depletion rate rises with bottom temperature, with θ ≈ `r sprintf("%.3f", theta)` per °C. That is about `r sprintf("%.0f", 100 * (theta^5 - 1))` % faster at 20 °C than at 15 °C. This is one mechanism by which warmer summers strengthen internal loading.
+- The AHOD values sit within the chamber SOD range of Burger et al. (2007), 0.3–4.0 g O₂/m²/d in the light chambers. They are towards the upper part of it, which is expected, because AHOD also includes oxygen demand in the water column below the thermocline.
+
+**Converting oxygen demand to nutrient release.** If the oxygen demand were all due to the mineralisation of Redfield organic matter (O₂:N:P = 138:16:1 by mole), the median AHOD would correspond to:
+
+- about **`r sprintf("%.0f", ahod_med * 1000 * gN_per_gO2)` mg N/m²/d**
+- about **`r sprintf("%.1f", ahod_med * 1000 * gP_per_gO2)` mg P/m²/d**
+
+This is an upper-bound-type estimate for N. For P it is an estimate of mineralisation only. It excludes P released when iron oxides are reduced, which can be larger, and it excludes the P bound by alum.
+
+```{r}
+#| label: tbl-flux-compare
+#| tbl-cap: "Comparison of internal-load flux estimates for Lake Rotorua (mg/m²/d, O₂ in g/m²/d). Chamber values are the range of the light-chamber means of Burger et al. (2007), 2003–2004, at 7–20 m depth. The aed.nml values are the current model settings (three sediment zones)."
+bl <- burger |> filter(chamber == "light")
+fmt_r <- function(x, d = 0) paste(formatC(min(x), format = "f", digits = d), "–", formatC(max(x), format = "f", digits = d))
+tibble::tribble(
+  ~Method, ~`NH4-N`, ~`DRP / SRP`, ~`O2 demand`,
+  "Hypolimnetic accumulation, this study (median of positive intervals; lower bound)",
+    sprintf("%.0f", pos("nh4")), sprintf("%.1f", pos("drp")), "–",
+  "Hypolimnetic accumulation, 75th percentile / max",
+    sprintf("%.0f / %.0f", quantile(hflux$flux[hflux$variable == "nh4" & hflux$flux > 0], .75), max(hflux$flux[hflux$variable == "nh4"])),
+    sprintf("%.1f / %.1f", quantile(hflux$flux[hflux$variable == "drp" & hflux$flux > 0], .75), max(hflux$flux[hflux$variable == "drp"])), "–",
+  "Oxygen depletion (AHOD), buoys, median",
+    sprintf("%.0f (Redfield)", ahod_med * 1000 * gN_per_gO2), sprintf("%.1f (Redfield)", ahod_med * 1000 * gP_per_gO2),
+    sprintf("%.1f", ahod_med),
+  "Burger et al. 2007 chambers (light, 7–20 m)",
+    paste(fmt_r(bl$nh4_phase2_mg_m2_d), "(phase 2);", fmt_r(bl$nh4_phase1_mg_m2_d), "(phase 1)"),
+    fmt_r(bl$srp_mg_m2_d, 1), fmt_r(bl$sod_g_m2_d, 2),
+  "Model aed.nml (fsed_amm, fsed_frp, fsed_oxy; zones 1–3)",
+    paste(sprintf("%.0f", c(6.654, 2.408, 0.616) * 14.007), collapse = ", "),
+    paste(sprintf("%.1f", c(0.0602, 0.0657, 0.0254) * 30.974), collapse = ", "),
+    paste(sprintf("%.2f", c(30.1, 30.1, 23.33) * 31.998 / 1000), collapse = ", ")
+) |> kable()
+```
+
+**How the estimates compare.**
+
+- **NH₄.**
+  - The accumulation estimates (median about 25 mg N/m²/d, up to about 80) are at the low end of the chamber rates (33–224 mg N/m²/d in the secondary phase).
+  - The oxygen-demand-based estimate (about 78 mg N/m²/d) sits within them.
+  - Together they put summer NH₄ release in Rotorua at roughly **25–100 mg N/m²/d**, so the model's zone-1 value (about 93 mg N/m²/d) is plausible.
+  - The two deeper zones (34 and 9 mg N/m²/d) look low.
+- **DRP.**
+  - Accumulation (2004–2024) gives about 2–5 mg P/m²/d (maximum about 8 mg P/m²/d, in 2019/20 and 2020/21).
+  - That is at the lower end of the 2003–2004 chamber range (2–86 mg P/m²/d in the light chambers), which was measured before alum dosing.
+  - The model's `fsed_frp` (0.8–2 mg P/m²/d) is at or below the lowest observed value. It may be too low unless the model supplies P to the sediment by another route (settling and mineralisation, or the alum-bound pool).
+- **Oxygen.** AHOD (interquartile range about 1.0–2.1 g O₂/m²/d) is consistent with the chamber SOD. It is above `fsed_oxy` (0.75–0.96 g O₂/m²/d), but the difference is mostly accounted for by water-column demand below the thermocline.
+
+```{r}
+#| label: tbl-internal-annual
+#| tbl-cap: "Order-of-magnitude summer internal load: release rate × sediment area below the median summer thermocline × stratified days (December–February, buoy). Low uses the median hypolimnetic accumulation flux and high the 75th percentile (DRP), or the Redfield-equivalent of AHOD (NH4). Compare with the external loads (alum_storm_central)."
+a_sed <- hyps_area(hyps, median(bdaily$thermo_depth[as.integer(format(bdaily$date, "%m")) %in% c(12, 1, 2)], na.rm = TRUE))
+q_drp <- quantile(hflux$flux[hflux$variable == "drp" & hflux$flux > 0], c(.5, .75))
+f_nh4 <- c(pos("nh4"), ahod_med * 1000 * gN_per_gO2)
+ext <- loads |> filter(scenario == "alum_storm_central") |> select(hy, ext_tp = tp, ext_tn = tn)
+sstrat |>
+  inner_join(ext, by = "hy") |>
+  transmute(`Hydrological year` = hy, `Stratified days` = round(strat_days),
+            `DRP (t P)` = sprintf("%.1f–%.1f", strat_days * a_sed * q_drp[1] / 1e9, strat_days * a_sed * q_drp[2] / 1e9),
+            `External TP (t/y)` = round(ext_tp, 1),
+            `NH4-N (t N)` = sprintf("%.0f–%.0f", strat_days * a_sed * f_nh4[1] / 1e9, strat_days * a_sed * f_nh4[2] / 1e9),
+            `External TN (t/y)` = round(ext_tn)) |>
+  kable()
+```
+
+**Scaling up to an annual internal load.**
+
+- Sediment area below the median summer thermocline: about `r sprintf("%.0f", a_sed / 1e6)` km².
+- Release rates:
+  - DRP: `r sprintf("%.1f–%.1f", q_drp[1], q_drp[2])` mg/m²/d
+  - NH₄: `r sprintf("%.0f–%.0f", f_nh4[1], f_nh4[2])` mg N/m²/d
+
+**What the scaling suggests.**
+
+- **P.** Each summer's stratified periods release in the order of 3–15 t of DRP in most years, against an external TP load of about 28–60 t/y. It was lowest in the barely stratified 2009/10 (about 1–2 t) and highest in 2021/22 (about 7–16 t).
+- **N.** NH₄-N release is in the order of 30–230 t, against an external TN load of 380–815 t/y.
+
+**Limits of these totals.**
+
+- They cover only the stratified bottom layer in December–February.
+- They exclude release during mixed periods. Burger et al. (2007) found SRP release largely independent of DO.
+- They exclude release from the shallower sediments, which occupy the larger area.
+
+So these are conservative. Earlier whole-lake budgets put internal loading at a substantial share of the total P load. These monitoring-based rates are best treated as the floor of the range the model's sediment fluxes should reproduce.
+
+
 ## Sudden changes and events {#sec-events}
+
+### Event definitions {#sec-event-defs}
+
+All events are detected automatically from continuous daily series (functions in `R/wq_synthesis_helpers.R`; targets `met_events` and `buoy_events`).
+
+```{r}
+#| label: tbl-event-defs
+#| tbl-cap: "Definitions of the events used in this report."
+st_thr <- attr(me$storms, "threshold_mm")
+tibble::tribble(
+  ~Event, ~`Data`, ~Definition, ~`Number detected`,
+  "Air heatwave", "ERA5-BC daily mean air temperature, 1976–2026",
+    "At least 5 consecutive days above the day-of-year 90th percentile (11-day window, 1991–2020 baseline); gaps of up to 2 days are bridged. This is the Hobday et al. (2016) marine-heatwave definition applied to air temperature.",
+    sprintf("%d (%d since 2016)", nrow(me$air_heatwaves), sum(me$air_heatwaves$start >= as.Date("2016-01-01"))),
+  "Lake (surface) heatwave", "Buoy daily mean water temperature at ≤ 1.5 m, 2007–2026",
+    "Same rule as for air heatwaves, applied to lake surface temperature (cf. Woolway et al. 2021). The climatology uses the whole buoy record, because the record is too short for a 30-year baseline.",
+    sprintf("%d", nrow(be$heatwaves)),
+  "Heatwave category", "Both",
+    "The peak anomaly expressed in multiples of the threshold-minus-climatology difference on that day: 1–2× Moderate, 2–3× Strong, 3–4× Severe, ≥ 4× Extreme (Hobday et al. 2018).",
+    "–",
+  "Storm (heavy-rain event)", "ERA5-BC daily rainfall, 1976–2026",
+    sprintf("The 3-day running rainfall total exceeds its 99th percentile (%.0f mm); exceedances within 3 days of each other are one event. The event magnitude is the largest 3-day total. The peak modelled total inflow (PC10 loads) is reported alongside.", st_thr),
+    sprintf("%d (%d since 2016)", nrow(me$storms), sum(me$storms$start >= as.Date("2016-01-01"))),
+  "Stratified", "Buoy and CTD profiles",
+    "The surface (≤ 1.5 m) minus bottom (≥ 18 m) temperature is ≥ 1 °C. Stratified periods are runs of at least 3 such days (gaps of up to 2 days bridged).",
+    sprintf("%d periods", nrow(be$stratified)),
+  "Bottom anoxia / hypoxia", "Buoy bottom (≥ 18 m) DO",
+    "Bottom DO below 2 g/m³ (anoxia) or below 4 g/m³ (hypoxia) for at least 3 days (gaps of up to 2 days bridged).",
+    sprintf("%d anoxic periods", nrow(be$anoxia))
+) |> kable()
+```
+
+### Examples
+
+```{r}
+#| label: hw-daily
+air_hw <- detect_heatwaves(me$daily$date, me$daily$tair, base_years = 1991:2020)
+hw_example <- function(daily, events, from, to, title, ylab) {
+  d <- daily |> filter(date >= as.Date(from), date <= as.Date(to))
+  ev <- events |> filter(end >= as.Date(from), start <= as.Date(to))
+  ggplot(d, aes(date)) +
+    geom_rect(data = ev, aes(xmin = start - 0.5, xmax = end + 0.5, ymin = -Inf, ymax = Inf),
+              inherit.aes = FALSE, fill = "#F4A582", alpha = 0.5) +
+    geom_ribbon(aes(ymin = thresh, ymax = pmax(temp, thresh)), fill = "#B2182B", alpha = 0.6) +
+    geom_line(aes(y = clim), colour = "grey40", linetype = 2) +
+    geom_line(aes(y = thresh), colour = "grey40") +
+    geom_line(aes(y = temp), colour = "black", linewidth = 0.4) +
+    scale_x_date(date_labels = "%d %b\n%Y") +
+    labs(x = NULL, y = ylab, title = title)
+}
+```
+
+```{r}
+#| label: fig-ex-air-hw
+#| fig-cap: "Air heatwave examples (ERA5-BC daily mean air temperature, black). The dashed line is the day-of-year climatology (1991–2020), the solid grey line the 90th-percentile threshold, red fill the exceedance and pink bands the detected heatwave periods. Left: the 21-day summer heatwave of December 2021 – January 2022 (Strong). Right: the August 2022 winter heatwave (Severe), when temperatures were near summer values."
+#| fig-height: 3.8
+ev_a <- me$air_heatwaves
+hw_example(air_hw$daily, ev_a, "2021-11-15", "2022-02-15", "Summer 2021/22", "Air temperature (°C)") +
+  hw_example(air_hw$daily, ev_a, "2022-07-15", "2022-09-30", "Winter 2022", NULL)
+```
+
+```{r}
+#| label: fig-ex-lake-hw
+#| fig-cap: "Lake (surface water) heatwave examples from the buoys, same layout as the air-heatwave figure. Left: December 2017, the most intense lake heatwave on record (+3.9 °C above climatology, 20 days), which coincided with 41 days of stratification and bottom anoxia. Right: Christmas 2021 – January 2022 (Strong, 19 days), at the end of the 70-day stratified period of summer 2021/22."
+#| fig-height: 3.8
+hw_example(be$heatwave_daily, be$heatwaves, "2017-11-01", "2018-02-28", "Summer 2017/18", "Surface water temperature (°C)") +
+  hw_example(be$heatwave_daily, be$heatwaves, "2021-11-01", "2022-02-28", "Summer 2021/22", NULL)
+```
+
+```{r}
+#| label: fig-ex-storm
+#| fig-cap: "Storm examples. Top: ERA5-BC daily rainfall (bars) and 3-day running total (line), with the 99th-percentile 3-day threshold (dashed) and detected storm events (blue bands). Bottom: modelled total inflow to the lake (PC10 loads, all inflows) and daily mean wind speed. Left: late January and February 2023 (the late-January storm and Cyclone Gabrielle). Right: the July 2025 storm sequence, including the second-largest 3-day total in the record."
+#| fig-height: 6
+storm_example <- function(from, to, title) {
+  rr <- me$daily |> arrange(date) |>
+    mutate(roll3 = as.numeric(stats::filter(rain_mm, rep(1, 3), sides = 1))) |>
+    filter(date >= as.Date(from), date <= as.Date(to))
+  ev <- me$storms |> filter(end >= as.Date(from), start <= as.Date(to))
+  q <- pflow |> filter(inflow == "All inflows", date >= as.Date(from), date <= as.Date(to))
+  p1 <- ggplot(rr, aes(date)) +
+    geom_rect(data = ev, aes(xmin = start - 0.5, xmax = end + 0.5, ymin = -Inf, ymax = Inf),
+              inherit.aes = FALSE, fill = "#92C5DE", alpha = 0.5) +
+    geom_col(aes(y = rain_mm), fill = "#2166AC", width = 0.8) +
+    geom_line(aes(y = roll3), colour = "black") +
+    geom_hline(yintercept = st_thr, linetype = 2, colour = "firebrick") +
+    labs(x = NULL, y = "Rain (mm/d; 3-day total)", title = title)
+  p2 <- ggplot() +
+    geom_line(data = q, aes(date, flow_m3s), colour = "#0072B2") +
+    geom_line(data = rr, aes(date, wind * 5), colour = "grey50", linetype = 2) +
+    scale_y_continuous(sec.axis = sec_axis(~ . / 5, name = "Wind (m/s, dashed)")) +
+    labs(x = NULL, y = "Total inflow (m³/s)")
+  p1 / p2 + plot_layout(heights = c(1.4, 1))
+}
+(storm_example("2023-01-10", "2023-03-10", "Jan – Feb 2023") |
+   storm_example("2025-06-20", "2025-08-20", "Jul 2025"))
+```
+
+```{r}
+#| label: fig-ex-summer
+#| fig-cap: "Anatomy of one summer, 2017/18: air temperature (ERA5-BC) with air-heatwave periods, buoy surface and bottom water temperature with lake-heatwave periods, bottom DO with anoxic periods (< 2 g/m³), and daily rainfall with storm events. Shaded bands mark the detected events in each panel."
+#| fig-height: 8
+from <- as.Date("2017-11-01"); to <- as.Date("2018-03-31")
+band <- function(ev, fill) {
+  ev <- ev |> filter(end >= from, start <= to)
+  geom_rect(data = ev, aes(xmin = start - 0.5, xmax = end + 0.5, ymin = -Inf, ymax = Inf),
+            inherit.aes = FALSE, fill = fill, alpha = 0.4)
+}
+w <- \(d) filter(d, date >= from, date <= to)
+x_sc <- scale_x_date(limits = c(from, to), date_breaks = "1 month", date_labels = "%b %Y")
+e1 <- ggplot(w(me$daily), aes(date, tair)) + band(me$air_heatwaves, "#F4A582") +
+  geom_line() + x_sc + labs(x = NULL, y = "Air temp (°C)")
+e2 <- be$daily |> w() |> select(date, Surface = t_surf, Bottom = t_bot) |>
+  pivot_longer(-date) |>
+  ggplot(aes(date, value, colour = name)) + band(be$heatwaves, "#D6604D") +
+  band(be$stratified, "grey85") + geom_line() + x_sc +
+  scale_colour_manual(values = c(Surface = "#D55E00", Bottom = "#0072B2")) +
+  labs(x = NULL, y = "Water temp (°C)", colour = NULL) + theme(legend.position = c(0.9, 0.25))
+e3 <- ggplot(w(be$daily), aes(date, do_bot)) + band(be$anoxia, "#B2ABD2") +
+  geom_hline(yintercept = 2, linetype = 2, colour = "firebrick") +
+  geom_line(colour = "purple4") + x_sc + labs(x = NULL, y = "Bottom DO (g/m³)")
+e4 <- ggplot(w(me$daily), aes(date, rain_mm)) + band(me$storms, "#92C5DE") +
+  geom_col(fill = "#2166AC") + x_sc + labs(x = NULL, y = "Rain (mm/d)")
+e1 / e2 / e3 / e4
+```
+
+**What the examples show.**
+
+- **Air heatwaves** in Rotorua typically peak 2–6 °C above the climatology and last 1–3 weeks. Since 2016 they have occurred in winter as well as summer. August 2022 was the most intense ("Severe"), with daily means near 15 °C.
+- **Lake surface heatwaves** follow air heatwaves combined with light winds.
+  - The December 2017 event warmed the surface to about 23 °C while the bottom stayed near 16 °C.
+  - It set up a 41-day stratified period, and bottom DO fell from about 10 g/m³ to below 2 g/m³ in about four weeks.
+- **Mixing ends the anoxia.** Mixing in late December, then the storm of early January 2018 (149 mm in 3 days, daily mean wind up to 14 m/s), reoxygenated the bottom water. A hot spell then re-stratified the lake: a second lake heatwave in late January brought the surface to 24.7 °C, and anoxia returned within two weeks.
+- **Storms** are mostly 2–4-day events, and the modelled total inflow responds within a day.
+  - **Late January 2023:** inflow peaked at 83 m³/s and stayed above about 25 m³/s for three weeks.
+  - **Cyclone Gabrielle:** more rain (229 mm in 3 days), and the windiest of the large storms (daily mean wind about 15 m/s), but a smaller modelled inflow peak (about 34 m³/s).
+  - **The July 2025 sequence:** three storms in five weeks, ending with the second-largest 3-day total on record (285 mm) and an inflow peak of about 60 m³/s.
+
 
 ### Detected change points
 
@@ -760,7 +1280,7 @@ an <- mann |>
   mutate(name = factor(name, c("Air temp (°C)", "Rain (% of mean)", "Summer wind (m/s)",
                                "Summer SW (W/m²)", "Air heatwave days")))
 ggplot(an, aes(hy, value)) +
-  geom_tile(aes(y = 0, height = Inf, fill = oni), alpha = 0.35, width = 1) +
+  { if (nrow(oni)) geom_tile(aes(y = 0, height = Inf, fill = oni), alpha = 0.35, width = 1) } +
   geom_col(width = 0.7, fill = "grey25") +
   facet_wrap(~name, ncol = 1, scales = "free_y") +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", limits = c(-2, 2),
