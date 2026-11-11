@@ -63,7 +63,8 @@ w_n <- a_new |> filter(hy %in% wet) |> group_by(hy) |> summarise(tp = sum(tp))
 2. **The wet years carry the difference.** In 2011, 2012, 2017 and 2018 the new TP loads are `r paste0(round(w_n$tp, 1), collapse = ", ")` t against `r paste0(round(w_o$tp, 1), collapse = ", ")` t. These are the years where the lake TP was overestimated by 66 to 113%, which we worked around by halving flood-day particulates (`STR_FLOODSCALE = 0.5`). The new files treat flood-day particulates explicitly instead (@sec-storm).
 3. **The record is four years longer** (to June 2026). The ERA5 forcing ends on 31 December 2025, so the new targets branch cuts the inflows there (@sec-targets).
 4. **The alum and no-alum sets give the in-stream binding rules an independent check.** Dosing lowers FRP in the Utuhina by about 42% and in the Puarenga by about 64%, with TP unchanged (@sec-alum).
-5. **The `lower` and `upper` sets** give 5th and 95th percentile load histories and `nostorm` sets give the PC10 target basis (@sec-sets).
+5. **In a forward run of the reference member the new loads change the lake little** (TP bias within a few points, wet-year TP overshoot smaller, level unchanged); the new silica changes chlorophyll much more (@sec-forward).
+6. **The `lower` and `upper` sets** give 5th and 95th percentile load histories and `nostorm` sets give the PC10 target basis (@sec-sets).
 
 ## What is in the data {#sec-sets}
 
@@ -325,6 +326,108 @@ chk |> filter(scenario %in% paste0("noalum_storm_", c("lower", "central", "upper
 ```
 
 The bounds scale concentrations only (flows are unchanged so that the water balance and lake level stay closed), so a run on a bound is a load history that is low or high in every year, not a random draw. The mean band is about 0.87 to 1.16 of central for TP (individual years range from 0.73 to 1.28). The difference between the current file and the new central set over 2007 to 2022 (@sec-summary) is of the same size as this 5 to 95% band, which is worth keeping in mind when judging calibration against either.
+
+## Forward run of the reference member {#sec-forward}
+
+To see what the new loads do to the lake, the reference member of the one-stage calibration (`calibration/all_stage/out_main/best.rds`, new GLM-AED executable) was run from 1 January 1976 on three sets of inflows, with everything else unchanged (scripts in `calibration/pc10_loads/`, `02_build_forward.R` to `04_compare_forward.R`).
+
+| Run | Inflows | Silica in inflows | Ends |
+|---|---|---|---|
+| `old` | the calibrated base (`base_Q50`, which halves flood-day particulate P) | constant 200 mmol m^-3^ | 2022-06-29 |
+| `new` | `noalum_storm_central`, GLM-native units | constant 200 mmol m^-3^ (as old) | 2025-12-31 |
+| `newsil` | `noalum_storm_central` | stream-specific silica of the new files | 2025-12-31 |
+
+For the new runs `ALU_ala` is rebuilt from the dosing records and the new flows (it reproduces the old dose to 1e-5), and the in-stream binding rules of `calibration/alum/stream_variant.R` are applied to the new FRP (Utuhina 0.45, Puarenga 0.9 min(1, R/23)). The constant outflow file (6.06 m^3^ s^-1^, the rest of the outflow being the calibrated weir) is extended to the end of 2025. Model values are the mean over the top 10 m and are compared with the mean of the integrated samples at sites 2 and 5 (TP includes the refractory DOP pool); bottom oxygen is the lowest 3 m against the deepest profile samples. The forcing ends on 31 December 2025, so that is where the new runs stop.
+
+```{r}
+#| label: fwd-load
+cdir <- here::here("calibration", "pc10_loads", "compare")
+sm <- read.csv(file.path(cdir, "summary.csv"))
+an <- read.csv(file.path(cdir, "annual.csv"))
+lv <- read.csv(file.path(cdir, "level_bias_by_year.csv"))
+run_nm <- c(old = "old", new = "new", newsil = "new + new silica")
+per_nm <- c("1 pre-2006" = "pre-2006", "2 calibration 2006-18" = "2006-18 (calibration)",
+            "3 held out 2018-22" = "2018-22 (held out)", "4 new years 2022-25" = "2022-25 (new years)")
+vv <- c(TP = "TP", FRP = "FRP", chl = "Chlorophyll-a", TN = "TN", NO3 = "Nitrate", NH4 = "Ammonium", DO_bot = "Bottom oxygen")
+```
+
+### Lake bias and skill {#sec-forward-bias}
+
+```{r}
+#| label: tbl-fwd-bias
+#| tbl-cap: "Bias (%, model relative to observed mean) by period for the three runs. The old inflows end in June 2022, so there is no old run for 2022 to 2025."
+b <- sm |> filter(period != "1 pre-2006", var %in% names(vv)) |>
+  mutate(Variable = vv[var], Period = per_nm[period], run = run_nm[run]) |>
+  select(Variable, Period, run, bias_pct) |>
+  pivot_wider(names_from = run, values_from = bias_pct) |>
+  arrange(match(Variable, vv), Period)
+kable(b[, c("Variable", "Period", "old", "new", "new + new silica")], digits = 0)
+```
+
+```{r}
+#| label: tbl-fwd-skill
+#| tbl-cap: "Correlation of model with observations (sample dates) and RMSE (mg m^-3^), 2006 to 2018 and 2018 to 2022."
+k <- sm |> filter(period %in% c("2 calibration 2006-18", "3 held out 2018-22"), var %in% c("TP", "FRP", "chl", "TN")) |>
+  mutate(Variable = vv[var], Period = per_nm[period], run = run_nm[run],
+         txt = sprintf("r %.2f, RMSE %.1f", r, rmse)) |>
+  select(Variable, Period, run, txt) |> pivot_wider(names_from = run, values_from = txt) |>
+  arrange(match(Variable, vv), Period)
+kable(k[, c("Variable", "Period", "old", "new", "new + new silica")])
+```
+
+```{r}
+#| label: fwd-numbers
+g <- \(v, p, r) sm$bias_pct[sm$var == v & sm$period == p & sm$run == r]
+```
+
+What the tables show:
+
+- **The new loads change the lake little.** TP bias over 2006 to 2018 goes from `r round(g("TP", "2 calibration 2006-18", "old"))`% to `r round(g("TP", "2 calibration 2006-18", "new"))`% and is `r round(g("TP", "3 held out 2018-22", "new"))`% against `r round(g("TP", "3 held out 2018-22", "old"))`% in 2018 to 2022. Chlorophyll, TN, nitrate and ammonium are essentially unchanged. Part of the reason may be that the old base already halves flood-day particulate P, so the unscaled new loads end up in a similar place (not tested separately).
+- **The model is still low on P in the later years**: TP `r round(g("TP", "3 held out 2018-22", "new"))`% in 2018 to 2022 and `r round(g("TP", "4 new years 2022-25", "new"))`% in 2022 to 2025 with the new loads. The shortfall is the same in the old run, so it comes from the model, not from the loads data.
+- **Silica is the one input that clearly matters.** With the stream silica of the new files the chlorophyll bias changes from `r round(g("chl", "2 calibration 2006-18", "new"))`% to `r round(g("chl", "2 calibration 2006-18", "newsil"))`% (2006 to 2018) and from `r round(g("chl", "3 held out 2018-22", "new"))`% to `r round(g("chl", "3 held out 2018-22", "newsil"))`% (2018 to 2022), and the positive nitrate and FRP biases of 2006 to 2018 shrink. Most likely silica no longer limits diatom growth, but the diatom and nutrient output were not checked. The reference member was tuned with silica fixed at 200 mmol m^-3^, so the real silica should go in with a refit of the phytoplankton parameters, not before. Correlations with observed chlorophyll stay near zero in all runs.
+- **Bottom oxygen** is `r round(g("DO_bot", "4 new years 2022-25", "new"))`% too high in 2022 to 2025 (less anoxia in the model than observed).
+
+### Wet years and the new years {#sec-forward-annual}
+
+```{r}
+#| label: fig-fwd-annual
+#| fig-cap: "Annual mean TP, FRP, chlorophyll-a and TN in the top 10 m for the three runs, with the annual mean of the observations (points, few samples in some years). The dashed line marks the end of the old inflow record."
+#| fig-height: 8
+an |> filter(var %in% c("TP", "FRP", "chl", "TN"), yr >= 2003) |>
+  mutate(var = factor(vv[var], vv)) |>
+  ggplot(aes(yr)) +
+  geom_line(aes(y = sim, colour = run_nm[run])) +
+  geom_point(aes(y = obs), colour = "black", size = 1) +
+  geom_vline(xintercept = 2022.5, linetype = 2, colour = "grey50") +
+  facet_wrap(~var, scales = "free_y", ncol = 1) +
+  scale_colour_manual(values = c(old = "grey40", new = "#0072B2", `new + new silica` = "#D55E00")) +
+  labs(x = NULL, y = "Annual mean (mg m^-3^)", colour = NULL)
+```
+
+```{r}
+#| label: tbl-fwd-wet
+#| tbl-cap: "Annual mean TP and FRP (mg m^-3^, top 10 m) in the wet years, with the mean of the observed samples."
+an |> filter(var %in% c("TP", "FRP"), yr %in% c(2011, 2012, 2017, 2018), run %in% c("old", "new")) |>
+  select(var, yr, run, sim, obs) |> pivot_wider(names_from = run, values_from = sim) |>
+  transmute(Variable = var, Year = yr, Observed = obs, `Old inflows` = old, `New loads` = new) |>
+  arrange(Variable, Year) |> kable(digits = 1)
+```
+
+The 2017 and 2018 TP overshoot is smaller with the new loads and the 2017 FRP overshoot is about halved. 2011 and 2012 hardly change. The observed annual means rest on few samples per year, so single years should be read with care.
+
+### Water balance {#sec-forward-level}
+
+```{r}
+#| label: fig-fwd-level
+#| fig-cap: "Model minus observed lake level (annual mean of anomalies relative to 2002 to 2012, cm), old and new inflows."
+#| fig-height: 3.5
+lv |> filter(run %in% c("old", "new"), yr >= 1990) |>
+  ggplot(aes(yr, bias_cm, colour = run)) + geom_hline(yintercept = 0, colour = "grey70") +
+  geom_line() + scale_colour_manual(values = c(old = "grey40", new = "#0072B2")) +
+  labs(x = NULL, y = "Level anomaly error (cm)", colour = NULL)
+```
+
+The level error is almost the same with the two inflow sets (within a few centimetres in most years), including after 2012, so the weir calibrated on the old inflows still balances the new water budget. The Ōhau series of the new files was not used; the old constant outflow file was extended instead.
 
 ## How the new data enter the pipeline {#sec-targets}
 
