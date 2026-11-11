@@ -64,7 +64,9 @@ tar_source(
     here::here("R", "build_calib_base_aeme.R"),
     here::here("R", "read_chem_data.R"),
     here::here("R", "read_electro_fishing.R"),
-    here::here("R", "download_arcgis_layer.R")
+    here::here("R", "download_arcgis_layer.R"),
+    here::here("R", "read_river_wq.R"),
+    here::here("R", "wq_synthesis_helpers.R")
   )
 )
 # Set target options
@@ -2155,6 +2157,233 @@ list(
     },
     format = "file",
     deployment = "main"
+  ),
+
+  # 5b. Lake water quality synthesis ----
+  # Inputs and summaries for website/lake-water-quality-synthesis.qmd.
+  #* River WQ (BOPRC, 12 sites, 1984-2026) ----
+  tar_target(
+    river_wq_file,
+    file.path(data_raw_dir, "flows", "BOPRC - River WQ Data Rotorua.xlsx"),
+    format = "file"
+  ),
+  tar_target(river_wq_sites, read_river_wq_sites(river_wq_file)),
+  tar_target(river_wq_data, read_river_wq(river_wq_file)),
+
+  #* Extended lake chemistry and CTD (PC10 Jun-26 workbooks, to 2026-06) ----
+  tar_target(
+    lake_chem_2026_file,
+    file.path(pc10_data_dir, "Rotorua S2 & S5 data 1989_2026.xlsx"),
+    format = "file"
+  ),
+  tar_target(lake_chem_2026, read_lake_chem_2026(lake_chem_2026_file)),
+  tar_target(
+    lake_ctd_2026_file,
+    file.path(pc10_data_dir, "Lake Rotorua S2 & S5 Profile data 2001_2026.xlsx"),
+    format = "file"
+  ),
+  tar_target(lake_ctd_2026, read_lake_ctd_2026(lake_ctd_2026_file)),
+
+  #* Alum: daily Al dose (2006-2026), 2022-26 dose rates, Puarenga compliance ----
+  tar_target(
+    alum_2026_file,
+    file.path(data_raw_dir, "PC10_data_Jun26", "Alum",
+              "Lake Rotorua alum dosing data Jan 2022 to Jul 2026 incl Puarenga DRP data .xlsx"),
+    format = "file"
+  ),
+  tar_target(alum_dose_2026, read_alum_dose_2026(alum_2026_file)),
+  tar_target(puarenga_compliance, read_puarenga_compliance(alum_2026_file)),
+  tar_target(alum_al_daily, read_alum_al_kg(alum_dosing_file)),
+
+  #* Lake chemistry summaries ----
+  tar_target(wq_lake_long, lake_chem_long(lake_chem_2026)),
+  tar_target(wq_periods, list(
+    full = c("1990-07-01", "2026-06-30"),
+    pre_alum = c("1990-07-01", "2006-06-30"),
+    alum_era = c("2006-07-01", "2026-06-30"),
+    last_10y = c("2016-07-01", "2026-06-30")
+  )),
+  tar_target(wq_annual, annual_summary(wq_lake_long, site, layer, variable)),
+  tar_target(wq_climatology, seasonal_climatology(wq_lake_long, site, layer, variable)),
+  tar_target(wq_trends, trend_table(wq_lake_long, site, layer, variable,
+                                    periods = wq_periods)),
+  tar_target(
+    wq_changepoints,
+    wq_lake_long |>
+      dplyr::filter(variable %in% c("tp", "tn", "drp", "nh4", "nnn", "chla", "secchi", "pp", "org_n")) |>
+      dplyr::group_by(site, layer, variable) |>
+      dplyr::group_modify(\(d, k) detect_changepoints(d$date, d$value)) |>
+      dplyr::ungroup()
+  ),
+  tar_target(lake_tli_annual, tli_annual(lake_chem_2026)),
+
+  #* Profiles: CTD (2003-2026) and buoys (2007-2026) ----
+  tar_target(
+    ctd_cast_metrics,
+    lake_ctd_2026 |>
+      dplyr::filter(var %in% c("temp_c", "do_mgl", "chl", "turb")) |>
+      dplyr::select(site, date, depth_m, var, value) |>
+      tidyr::pivot_wider(names_from = var, values_from = value, values_fn = mean) |>
+      dplyr::mutate(source = site) |>
+      profile_daily_metrics(surf_max = 1, bot_min = 18) |>
+      dplyr::rename(site = source)
+  ),
+  tar_target(
+    buoy_profile_long, {
+      dplyr::bind_rows(
+        old_buoy_wq |> dplyr::mutate(source = "old buoy"),
+        aeme_buoy_data |> dplyr::mutate(source = "new buoy")
+      ) |>
+        dplyr::filter(var_aeme %in% c("HYD_temp", "CHM_oxy"), is.finite(value)) |>
+        dplyr::transmute(source, date = as.Date(Date), depth_m = depth,
+                         var = c(HYD_temp = "temp_c", CHM_oxy = "do_mgl")[var_aeme], value) |>
+        tidyr::pivot_wider(names_from = var, values_from = value, values_fn = mean)
+    }
+  ),
+  tar_target(buoy_daily_metrics, profile_daily_metrics(buoy_profile_long)),
+  tar_target(
+    buoy_events, {
+      d <- buoy_daily_metrics |>
+        dplyr::group_by(date) |>
+        dplyr::summarise(dplyr::across(c(t_surf, t_bot, do_bot, d_temp), \(x) mean(x, na.rm = TRUE)),
+                         .groups = "drop") |>
+        dplyr::mutate(dplyr::across(-date, \(x) ifelse(is.nan(x), NA_real_, x)))
+      hw <- detect_heatwaves(d$date, d$t_surf)
+      list(
+        daily = d,
+        heatwaves = hw$events,
+        heatwave_daily = hw$daily,
+        anoxia = run_events(d$date, d$do_bot < 2, min_len = 3, max_gap = 2),
+        hypoxia = run_events(d$date, d$do_bot < 4, min_len = 3, max_gap = 2),
+        stratified = run_events(d$date, d$d_temp > 1, min_len = 3, max_gap = 2)
+      )
+    }
+  ),
+
+  #* Meteorology events and annual summaries (ERA5 bias-corrected, 1976-) ----
+  tar_target(
+    met_events, {
+      d <- era5_corrected_daily_baseline |>
+        dplyr::transmute(date = as.Date(Date), tair = MET_tmpair,
+                         rain_mm = MET_pprain * 1000, wind = MET_wndspd)
+      hw <- detect_heatwaves(d$date, d$tair, base_years = 1991:2020)
+      cs <- detect_heatwaves(d$date, -d$tair, base_years = 1991:2020)  # cold spells
+      calm_thr <- stats::quantile(d$wind, 0.1, na.rm = TRUE)
+      list(
+        daily = d,
+        storms = detect_storms(d$date, d$rain_mm, window = 3, pct = 0.99, wind = d$wind),
+        storms_1day = detect_storms(d$date, d$rain_mm, window = 1, pct = 0.995, wind = d$wind),
+        air_heatwaves = hw$events,
+        cold_spells = cs$events,
+        calm_spells = run_events(d$date, d$wind < calm_thr, min_len = 4),
+        calm_threshold = calm_thr
+      )
+    }
+  ),
+  tar_target(met_annual_era5, met_annual(era5_corrected_daily_baseline)),
+
+  #* PC10 2026 modelled loads ----
+  tar_target(
+    pc10_loads_central_files,
+    list.files(here::here("data", "raw", "pc10_loads_2026", "alum_storm_central"),
+               full.names = TRUE),
+    format = "file"
+  ),
+  tar_target(
+    pc10_check_loads,
+    readr::read_csv(here::here("data", "raw", "pc10_loads_2026", "check_annual_loads.csv"),
+                    show_col_types = FALSE)
+  ),
+  tar_target(
+    pc10_stream_loads, {
+      pc10_loads_central_files  # dependency
+      # outflow_ohau.csv holds flow only (no concentrations), so it is not a load
+      inflow_annual_loads(read_pc10_loads("alum_storm_central", include_rain = TRUE))
+    }
+  ),
+  tar_target(
+    pc10_daily_flow, {
+      pc10_loads_central_files  # dependency
+      dir <- here::here("data", "raw", "pc10_loads_2026", "alum_storm_central")
+      rd <- function(f, nm) readr::read_csv(file.path(dir, f), show_col_types = FALSE) |>
+        dplyr::transmute(date = as.Date(time), inflow = nm, flow_m3s = FLOW)
+      key <- pc10_inflow_key()
+      dplyr::bind_rows(
+        lapply(seq_len(nrow(key)), \(i) rd(key$file[i], key$name[i])),
+        rd("inflow_all_combined.csv", "All inflows"),
+        rd("outflow_ohau.csv", "Ohau outflow"))
+    }
+  ),
+
+  #* River WQ summaries ----
+  tar_target(
+    river_wq_annual,
+    river_wq_data |>
+      dplyr::filter(variable %in% c("TN", "NNN", "NH4-N", "TP", "DRP", "TSS", "Water Temp")) |>
+      annual_summary(site_id, location, variable, min_months = 4)
+  ),
+  tar_target(
+    river_wq_trends,
+    river_wq_data |>
+      dplyr::filter(variable %in% c("TN", "NNN", "NH4-N", "TP", "DRP", "TSS")) |>
+      trend_table(location, variable, periods = wq_periods)
+  ),
+
+  #* Annual driver - lake response table and correlations ----
+  tar_target(
+    driver_lake_annual, {
+      lake <- wq_annual |>
+        dplyr::filter(layer == "INT", variable %in% c("tp", "tn", "drp", "nh4", "nnn", "chla", "secchi")) |>
+        dplyr::group_by(hy, variable) |>
+        dplyr::summarise(value = mean(mean), .groups = "drop") |>
+        tidyr::pivot_wider(names_from = variable, values_from = value, names_prefix = "lake_")
+      bot <- wq_annual |>
+        dplyr::filter(layer == "BOT", variable %in% c("tp", "nh4", "drp")) |>
+        dplyr::group_by(hy, variable) |>
+        dplyr::summarise(value = mean(max), .groups = "drop") |>
+        tidyr::pivot_wider(names_from = variable, values_from = value, names_prefix = "bot_max_")
+      tli <- lake_tli_annual |>
+        dplyr::filter(site == "Lake (mean of sites)") |>
+        dplyr::select(hy, tli3)
+      ctd <- ctd_cast_metrics |>
+        dplyr::mutate(hy = wq_hy(date)) |>
+        dplyr::group_by(hy) |>
+        dplyr::summarise(ctd_min_do_bot = min(do_bot, na.rm = TRUE),
+                         ctd_frac_hypoxic = mean(do_bot < 2, na.rm = TRUE), .groups = "drop") |>
+        dplyr::filter(is.finite(ctd_min_do_bot))
+      loads <- pc10_check_loads |>
+        dplyr::filter(scenario == "alum_storm_central") |>
+        dplyr::select(hy, load_tn = tn, load_tp = tp, load_frp = frp)
+      flow <- pc10_stream_loads |>
+        dplyr::filter(!inflow %in% c("Rainfall")) |>
+        dplyr::group_by(hy) |>
+        dplyr::summarise(inflow_Mm3 = sum(flow), load_pp = sum(pp), .groups = "drop")
+      alum <- alum_al_daily |>
+        dplyr::mutate(hy = wq_hy(date)) |>
+        dplyr::group_by(hy) |>
+        dplyr::summarise(alum_t_al = sum(total_kg_al) / 1000, .groups = "drop")
+      lake |>
+        dplyr::full_join(bot, by = "hy") |>
+        dplyr::full_join(tli, by = "hy") |>
+        dplyr::full_join(ctd, by = "hy") |>
+        dplyr::left_join(met_annual_era5, by = "hy") |>
+        dplyr::left_join(loads, by = "hy") |>
+        dplyr::left_join(flow, by = "hy") |>
+        dplyr::left_join(alum, by = "hy") |>
+        dplyr::mutate(alum_t_al = dplyr::coalesce(alum_t_al, 0)) |>
+        dplyr::filter(hy >= 1991, hy <= 2026) |>
+        dplyr::arrange(hy)
+    }
+  ),
+  tar_target(
+    driver_lake_correlations,
+    driver_correlations(
+      driver_lake_annual,
+      responses = c("lake_tp", "lake_tn", "lake_drp", "lake_nh4", "lake_chla",
+                    "lake_secchi", "tli3", "bot_max_nh4", "bot_max_drp", "ctd_min_do_bot"),
+      drivers = c("tair", "tair_djf", "wind", "wind_djf", "swr_djf", "rain_mm",
+                  "inflow_Mm3", "load_tn", "load_tp", "load_frp", "load_pp", "alum_t_al"),
+      lags = 0:1)
   )
 
   # 6. Reporting / Quarto rendering
