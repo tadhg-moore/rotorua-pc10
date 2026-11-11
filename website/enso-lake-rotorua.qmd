@@ -13,8 +13,16 @@ message: false
 library(dplyr)
 library(readr)
 library(knitr)
+library(ggplot2)
+library(targets)
 source("scripts/include_img.R")
+# analysis outputs written by calibration/enso/*.R
 d <- function(f) read_csv(file.path("data", "enso", f), show_col_types = FALSE)
+# ENSO input data come from the targets pipeline (downloaded in _targets.R)
+soi_long <- tar_read(soi_long)             # Stats NZ SOI 1990-2025 + NOAA SOI rescaled before 1990, with phases
+statsnz_soi <- tar_read(statsnz_soi)       # official Stats NZ 3-month SOI and phases
+enso_indices <- tar_read(enso_indices)     # NOAA SOI/ONI, IPO tripole index, SAM (AAO)
+ph <- table(statsnz_soi$phase)
 ```
 
 ::: {.callout-note}
@@ -23,7 +31,20 @@ d <- function(f) read_csv(file.path("data", "enso", f), show_col_types = FALSE)
 
 ## 1. Approach and data
 
-**ENSO index.** Following the [Stats NZ ENSO indicator](https://www.stats.govt.nz/indicators/el-nino-southern-oscillation-data-to-2025/), ENSO phase is the 3-month mean Southern Oscillation Index (SOI): at or above +1 is La Niña, at or below -1 is El Niño. The Stats NZ / Earth Sciences NZ series (1990-2025) is used directly; before 1990 the NOAA CPC SOI is rescaled to it (r = 0.97 over the overlap). ONI (Niño3.4) is a sensitivity check; the IPO tripole index is used as a confounder. Over 1990-2025 the record holds 48 El Niño, 62 La Niña and 322 neutral months, so phase composites rest on few events.
+**ENSO index.** Following the [Stats NZ ENSO indicator](https://www.stats.govt.nz/indicators/el-nino-southern-oscillation-data-to-2025/), ENSO phase is the 3-month mean Southern Oscillation Index (SOI): at or above +1 is La Niña, at or below -1 is El Niño. The Stats NZ / Earth Sciences NZ series (1990-2025) is used directly; before 1990 the NOAA CPC SOI is rescaled to it (r = 0.97 over the overlap). ONI (Niño3.4) is a sensitivity check; the IPO tripole index is used as a confounder. Over `r format(min(statsnz_soi$date), "%Y")`-`r format(max(statsnz_soi$date), "%Y")` the record holds `r ph[["El Nino"]]` El Niño, `r ph[["La Nina"]]` La Niña and `r ph[["Neutral"]]` neutral months, so phase composites rest on few events. All index data are downloaded by the targets pipeline (`enso_indices`, `statsnz_soi`, `soi_long`).
+
+```{r}
+#| label: soi-timeline
+#| echo: false
+#| fig-height: 3.2
+#| fig-cap: "3-month SOI (Stats NZ from 1990, NOAA SOI rescaled to it before) with El Niño (SOI <= -1) and La Niña (SOI >= +1) months shaded."
+soi_long |> filter(date >= as.Date("1975-01-01")) |>
+  ggplot(aes(date, soi3, fill = phase)) +
+  geom_col(width = 31) +
+  geom_hline(yintercept = c(-1, 1), lty = 2, colour = "grey40") +
+  scale_fill_manual(values = c("El Nino" = "#b2652b", Neutral = "grey75", "La Nina" = "#1b7f8a"), labels = c("El Niño", "Neutral", "La Niña")) +
+  labs(x = NULL, y = "3-month SOI", fill = NULL) + theme_minimal() + theme(legend.position = "top")
+```
 
 **Observations before reanalysis.** Meteorology is from NIWA station 1770 (Rotorua airport; rain 1982-, temperature, wind, radiation 1991-) and MetService NZROA hourly (1993-2023, used for wind direction). ERA5 (a reanalysis) is only used where no observation exists. Inflows are the measured BOPRC gauge records (not the generated inflow files); lake data are the BOPRC Lake Rotorua monitoring and CTD profiles.
 

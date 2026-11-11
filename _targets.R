@@ -59,6 +59,7 @@ tar_source(
     here::here("R", "make_met_data_zip.R"),
     here::here("R", "read_bop_csv_url.R"),
     here::here("R", "read_bop_daily_flow.R"),
+    here::here("R", "enso_helpers.R"),
     here::here("R", "read_bop_lab_csv_url.R"),
     here::here("R", "est_glm_weir_params.R"),
     here::here("R", "build_calib_base_aeme.R"),
@@ -299,6 +300,19 @@ list(
     dplyr::bind_rows(ngongotaha_flow_daily, puarenga_sh30_flow_daily,
                      waingaehe_flow_daily, kuirau_flow_daily)
   ),
+
+  # ENSO indices (see website/enso-lake-rotorua.qmd, calibration/enso/).
+  # Live downloads, like the BOPRC URL targets above: tar_invalidate() to refresh.
+  #  - enso_indices: NOAA CPC SOI, ONI; NOAA PSL IPO tripole index; CPC AAO (SAM proxy); monthly
+  #  - statsnz_soi: Stats NZ / Earth Sciences NZ 3-month SOI and official phases, 1990-2025
+  #  - soi_long: Stats NZ SOI from 1990, NOAA SOI rescaled to it before 1990, with phases
+  tar_target(enso_indices, get_enso_indices(cache_dir = NULL)),
+  tar_target(
+    statsnz_soi_url,
+    "https://www.stats.govt.nz/assets/Uploads/Environment-indicators-2026/El-Nino-Southern-Oscillation-Data-to-2025/Download-data/soi-3-month-rolling-average-and-de-trended-temperature-anomaly-1990-2025.csv"
+  ),
+  tar_target(statsnz_soi, read_statsnz_soi(statsnz_soi_url)),
+  tar_target(soi_long, splice_soi(enso_indices, statsnz_soi)),
 
   tar_target(ohau_weir_width, 26.0),
   
