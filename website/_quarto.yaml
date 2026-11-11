@@ -177,6 +177,7 @@ website:
           target: _blank
         - href: modelling-updates.qmd
           text: "Modelling Updates"
+          target: _blank
         - href: nzfss-abstract.qmd
           text: "NZFSS Abstract"
         - href: nzfss-2026-alum.qmd
