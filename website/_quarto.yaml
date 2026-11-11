@@ -36,7 +36,7 @@ website:
         text: "Sensitivity & calibration"
       - href: climate-impact-strategy.qmd
         text: "Climate change"
-      - href: research-overview.qmd
+      - href: presentations.qmd
         text: "Presentations"
     right:
       - icon: github
