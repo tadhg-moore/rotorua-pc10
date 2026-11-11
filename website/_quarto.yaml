@@ -74,6 +74,8 @@ website:
           text: "Inflows"
         - href: pc10-loads-2026.qmd
           text: "PC10 Loads 2026"
+        - href: ph-data.qmd
+          text: "pH & Alkalinity"
         - href: ohau-channel-water-quality.qmd
           text: "Ōhau Channel Water Quality"
         - href: lake-water-quality-synthesis.qmd
