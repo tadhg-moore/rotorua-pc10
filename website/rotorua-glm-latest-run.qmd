@@ -1,6 +1,6 @@
 ---
 title: "Lake Rotorua — Latest GLM-AED Run"
-subtitle: "Calibrated alum-on baseline, 1977–2022: plots from the parquet output of the last local run"
+subtitle: "Calibrated alum-on baseline, 1977–2025 (2026 PC10 loads): plots from the parquet output of the last local run"
 author: "Tadhg Moore"
 date: last-modified
 date-format: "DD MMMM YYYY"
@@ -10,7 +10,20 @@ fig-dpi: 150
 execute:
   cache: false    # the page is driven by the parquet output, not by its code: never reuse cached chunks or frozen results
   freeze: false
+resources:
+  - downloads/glm_aed_setup.zip
 ---
+
+```{r download-link}
+#| echo: false
+#| output: asis
+zf <- file.path(here::here("onedrive_mirror", "rotorua-pc10", "latest", "output"), "glm_aed_setup.zip")
+if (file.exists(zf)) {
+  dir.create(here::here("website", "downloads"), showWarnings = FALSE); file.copy(zf, here::here("website", "downloads", "glm_aed_setup.zip"), overwrite = TRUE)
+  cat(sprintf("**[Download the GLM-AED set-up (zip, %.0f MB)](downloads/glm_aed_setup.zip)**: namelists, AED files, all boundary files (meteorology, 13 inflows, outflow) and the calibrated parameters. Add the GLM-AED alum executable to run it.
+", file.size(zf) / 1e6))
+}
+```
 
 ::: {.callout-note}
 This page does **not** run the model. The baseline is run locally (`Rscript R/run_latest.R`, about 8 minutes) from the
@@ -77,7 +90,7 @@ pair <- function(v) {
 cal0 <- as.Date("2006-06-01"); cal1 <- as.Date("2018-06-30"); val1 <- as.Date("2022-06-30")
 vars <- c(HYD_temp = "Water temperature (°C)", CHM_oxy = "Dissolved oxygen (g/m³)", LKE_lvlwtr = "Lake level (m)", NIT_tn = "Total nitrogen (g/m³)", PHS_tp = "Total phosphorus (g/m³)", PHY_tchla = "Chlorophyll-a (mg/m³)")
 perf <- lapply(names(vars), function(v) { p <- pair(v)
-  per <- list(`All years` = p, `Calibration 2006-06 to 2018-06` = p |> filter(date >= cal0, date <= cal1), `Held out 2018-07 to 2022-06` = p |> filter(date > cal1, date <= val1))
+  per <- list(`All years` = p, `Calibration 2006-06 to 2018-06` = p |> filter(date >= cal0, date <= cal1), `Held out 2018-07 to 2022-06` = p |> filter(date > cal1, date <= val1), `New years 2022-07 to 2025-12` = p |> filter(date > val1))
   bind_rows(lapply(names(per), function(k) { x <- per[[k]]; data.frame(Variable = vars[[v]], Period = k, n = nrow(x), RMSE = sqrt(mean((x$sim - x$obs)^2)), Bias = mean(x$sim - x$obs), r2 = if (nrow(x) > 2) cor(x$sim, x$obs)^2 else NA) })) }) |> bind_rows()
 ```
 
