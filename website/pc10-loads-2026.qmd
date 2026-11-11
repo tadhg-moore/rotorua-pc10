@@ -21,22 +21,20 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(knitr)
-source(here::here("R", "read_pc10_loads.R"))
-source(here::here("R", "pc10_loads_helpers.R"))
 
-root <- here::here("data", "raw", "pc10_loads_2026")
-new  <- read_pc10_loads("noalum_storm_central", root = root)
-old  <- read_current_inflows()
-new_alum <- read_pc10_loads("alum_storm_central", root = root)
-new_nost <- read_pc10_loads("noalum_nostorm_central", root = root)
-
-a_new <- inflow_annual_loads(new)
-a_old <- inflow_annual_loads(old[names(old) != "Rainfall"])
-chk   <- read.csv(file.path(root, "check_annual_loads.csv"))
+# Everything below is read from the targets store (built in _targets.R, section
+# "PC10 2026 loads vs current inflows"), so the page does not need the raw folders.
+store <- here::here("_targets")
+tr <- function(x) targets::tar_read_raw(x, store = store)
+cmp_data <- tr("pc10_compare")
+a_new  <- cmp_data$a_new
+a_old  <- cmp_data$a_old
+a_nost <- cmp_data$a_nost
+a_alum <- cmp_data$a_alum
+chk    <- cmp_data$chk
 
 # Comparison period: both series exist and the lake has routine data
 hy_cmp <- 1990:2022
-old_end <- max(old[[1]]$Date)
 
 pal <- c(old = "grey40", new = "#0072B2")
 theme_set(theme_bw(base_size = 11))
@@ -180,7 +178,6 @@ In the current file particulate P is 42% of TP, against 29% in the new files wit
 #| label: fig-wet
 #| fig-cap: "TP load in the wet years, current file, new files without storm particulates and new files with them."
 #| fig-height: 4
-a_nost <- inflow_annual_loads(new_nost)
 wy <- bind_rows(
   a_old  |> mutate(src = "old file"),
   a_nost |> mutate(src = "new, no storm"),
@@ -246,17 +243,9 @@ In the `alum` sets part of the FRP of the Utuhina and Puarenga becomes particula
 ```{r}
 #| label: tbl-alum
 #| tbl-cap: "Mean FRP (mmol m^-3^) in the dosed streams, 2010 to 2022 (both plants dosing). The reduction is compared with the in-stream binding fractions fixed in the model (`calibration/alum/stream_variant.R`: Utuhina 0.45, Puarenga 0.9 min(1, R/23))."
-yr <- function(l, nm) {
-  d <- l[[nm]]; d <- d[d$Date >= "2010-07-01" & d$Date <= "2022-06-30", ]
-  c(frp = mean(d$PHS_frp) / 30.974 * 1000, pip = mean(d$PHS_pip) / 30.974 * 1000)
-}
-al <- sapply(c("Utuhina", "Puarenga"), \(nm) {
-  n <- yr(new, nm); a <- yr(new_alum, nm)
-  c(`no alum` = n[["frp"]], `alum` = a[["frp"]],
-    `reduction (%)` = 100 * (1 - a[["frp"]] / n[["frp"]]),
-    `PIP gained` = a[["pip"]] - n[["pip"]])
-})
-kable(t(al), digits = 2)
+cmp_data$alum_period |>
+  rename(Stream = stream, `no alum` = no_alum, `reduction (%)` = reduction_pct, `PIP gained` = pip_gained) |>
+  kable(digits = 2)
 ```
 
 ```{r}
@@ -264,8 +253,8 @@ kable(t(al), digits = 2)
 #| fig-cap: "Annual FRP load of the Utuhina and Puarenga with and without dosing (2026 loads)."
 #| fig-height: 4
 aa <- bind_rows(
-  inflow_annual_loads(new_alum) |> mutate(set = "alum"),
-  inflow_annual_loads(new)      |> mutate(set = "noalum")) |>
+  a_alum |> mutate(set = "alum"),
+  a_new  |> mutate(set = "noalum")) |>
   filter(inflow %in% c("Utuhina", "Puarenga"), hy >= 2000)
 ggplot(aa, aes(hy, frp, colour = set)) + geom_line() +
   facet_wrap(~inflow) + labs(x = "Hydrological year", y = "FRP load (t/y)", colour = NULL)
@@ -281,9 +270,7 @@ The Utuhina reduction is close to the fixed 0.45 binding fraction in the model. 
 fl <- function(a, nm) a |> filter(hy %in% 2007:2022) |> group_by(hy) |>
   summarise(q = sum(flow) * 1e6 / 86400 / 365.25) |>
   summarise(mean_q = mean(q)) |> mutate(src = nm)
-ohau <- read.csv(file.path(root, "noalum_storm_central", "outflow_ohau.csv"))
-ohau$Date <- as.Date(ohau$time)
-ohau_m <- mean(ohau$FLOW[ohau$Date >= "2007-07-01" & ohau$Date <= "2022-06-30"])
+ohau_m <- cmp_data$ohau_m
 bind_rows(fl(a_old, "old file"), fl(a_new, "new files")) |>
   select(Source = src, `Inflow, all streams and ungauged (m3/s)` = mean_q) |>
   kable(digits = 2)
@@ -341,10 +328,9 @@ For the new runs `ALU_ala` is rebuilt from the dosing records and the new flows 
 
 ```{r}
 #| label: fwd-load
-cdir <- here::here("calibration", "pc10_loads", "compare")
-sm <- read.csv(file.path(cdir, "summary.csv"))
-an <- read.csv(file.path(cdir, "annual.csv"))
-lv <- read.csv(file.path(cdir, "level_bias_by_year.csv"))
+sm <- tr("pc10_fwd_summary")
+an <- tr("pc10_fwd_annual")
+lv <- tr("pc10_fwd_level")
 run_nm <- c(old = "old", new = "new", newsil = "new + new silica")
 per_nm <- c("1 pre-2006" = "pre-2006", "2 calibration 2006-18" = "2006-18 (calibration)",
             "3 held out 2018-22" = "2018-22 (held out)", "4 new years 2022-25" = "2022-25 (new years)")
@@ -441,6 +427,8 @@ A parallel set of targets, suffixed `_pc10`, is in `_targets.R` under *PC10 load
 | `rotorua_inflow_list_pc10` | `read_pc10_loads()`: the set converted to the current list layout (mg L^-1^, m^3^ day^-1^, AEME names) |
 | `rotorua_inflow_list_matrix_pc10` | Adds `ALU_ala` and `ALU_alp` from the dosing records, as the existing matrix target does |
 | `aeme_base_pc10_file`, `aeme_baseline_pc10` | Builds `aeme_base_pc10.rds` with `build_calib_base_aeme()`, in `calibration/base_build_pc10` |
+
+This page reads its data from the targets store. `pc10_compare` (built by `pc10_compare_data()` from the raw sets synced from OneDrive, so it also works in CI) holds the annual loads of the old file and of three central sets. `pc10_fwd_summary`, `pc10_fwd_annual` and `pc10_fwd_level` are file targets for the result tables of the forward runs (@sec-forward). Those GLM runs are local only (about 7 GB of output each, `calibration/pc10_loads/02_build_forward.R` to `04_compare_forward.R`), so the three small CSVs in `calibration/pc10_loads/compare/` are tracked in git.
 
 Units. `read_pc10_loads()` converts the mmol m^-3^ nutrient columns back to mg L^-1^ with the molar masses used in the report so that the existing AEME conversion applies unchanged. The converted loads equal `check_annual_loads.csv` to within 0.012% in all twelve sets (script `calibration/pc10_loads/01_verify_loads.R`).
 

@@ -61,3 +61,39 @@ read_current_inflows <- function(file = here::here("data", "raw", "flows",
     )
   })
 }
+
+#' Everything the loads-comparison page (website/pc10-loads-2026.qmd) needs from the raw sets
+#'
+#' Computed in a target (`pc10_compare`) so the page reads one small object from the
+#' targets store instead of the 12 raw folders.
+#'
+#' @param root directory holding the set folders (data/raw/pc10_loads_2026).
+#' @param old_file path of `rotorua_inflows_populated_noalum.csv`.
+#' @return list: a_new, a_nost, a_alum (annual loads by inflow for the noalum_storm,
+#'   noalum_nostorm and alum_storm central sets), a_old (current file), alum_period
+#'   (mean FRP and PIP of the dosed streams 2010-07 to 2022-06 with and without dosing, mmol/m3),
+#'   ohau_m (mean Ohau outflow 2007-07 to 2022-06, m3/s), chk (check_annual_loads.csv).
+pc10_compare_data <- function(root, old_file) {
+  rd <- function(s) read_pc10_loads(s, root = root)
+  new <- rd("noalum_storm_central"); alum <- rd("alum_storm_central"); nost <- rd("noalum_nostorm_central")
+  old <- read_current_inflows(old_file)
+  per <- function(l, nm) {
+    d <- l[[nm]]; d <- d[d$Date >= "2010-07-01" & d$Date <= "2022-06-30", ]
+    c(frp = mean(d$PHS_frp) / 30.974 * 1000, pip = mean(d$PHS_pip) / 30.974 * 1000)
+  }
+  al <- do.call(rbind, lapply(c("Utuhina", "Puarenga"), function(nm) {
+    n <- per(new, nm); a <- per(alum, nm)
+    data.frame(stream = nm, no_alum = n[["frp"]], alum = a[["frp"]],
+               reduction_pct = 100 * (1 - a[["frp"]] / n[["frp"]]), pip_gained = a[["pip"]] - n[["pip"]])
+  }))
+  oh <- utils::read.csv(file.path(root, "noalum_storm_central", "outflow_ohau.csv")); oh$Date <- as.Date(oh$time)
+  list(
+    a_new  = inflow_annual_loads(new),
+    a_nost = inflow_annual_loads(nost),
+    a_alum = inflow_annual_loads(alum),
+    a_old  = inflow_annual_loads(old[names(old) != "Rainfall"]),
+    alum_period = al,
+    ohau_m = mean(oh$FLOW[oh$Date >= "2007-07-01" & oh$Date <= "2022-06-30"]),
+    chk = utils::read.csv(file.path(root, "check_annual_loads.csv"))
+  )
+}

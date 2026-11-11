@@ -67,7 +67,8 @@ tar_source(
     here::here("R", "read_electro_fishing.R"),
     here::here("R", "download_arcgis_layer.R"),
     here::here("R", "read_river_wq.R"),
-    here::here("R", "wq_synthesis_helpers.R")
+    here::here("R", "wq_synthesis_helpers.R"),
+    here::here("R", "wq_target_metrics.R")
   )
 )
 # Set target options
@@ -2299,6 +2300,19 @@ list(
     }
   ),
 
+  #* Observation-based model targets (signatures + tolerances) ----
+  # Score a model run with score_wq_targets(wq_obs_targets, wq_target_signatures(<model inputs>))
+  tar_target(
+    wq_obs_targets, {
+      th <- buoy_thermal |>
+        dplyr::group_by(date) |>
+        dplyr::summarise(d_temp = mean(d_temp), thermo_depth = mean(thermo_depth, na.rm = TRUE),
+                         .groups = "drop") |>
+        dplyr::mutate(thermo_depth = ifelse(is.nan(thermo_depth), NA_real_, thermo_depth))
+      wq_target_signatures(buoy_events$daily, th, wq_lake_long, hod_events, hyp_flux)
+    }
+  ),
+
   #* Meteorology events and annual summaries (ERA5 bias-corrected, 1976-) ----
   tar_target(
     met_events, {
@@ -2352,6 +2366,51 @@ list(
         rd("inflow_all_combined.csv", "All inflows"),
         rd("outflow_ohau.csv", "Ohau outflow"))
     }
+  ),
+
+  #* PC10 2026 loads vs current inflows (website/pc10-loads-2026.qmd) ----
+  # Raw sets come from OneDrive via data_raw_dir (data/raw/pc10_loads_2026), so they are
+  # also available in CI; the page reads the small summaries below from the store.
+  tar_target(
+    pc10_compare_files,
+    c(file.path(data_raw_dir, "flows", "rotorua_inflows_populated_noalum.csv"),
+      file.path(data_raw_dir, "pc10_loads_2026", "check_annual_loads.csv"),
+      list.files(file.path(data_raw_dir, "pc10_loads_2026",
+                           c("noalum_storm_central", "alum_storm_central", "noalum_nostorm_central")),
+                 full.names = TRUE)),
+    format = "file"
+  ),
+  tar_target(
+    pc10_compare, {
+      pc10_compare_files  # dependency
+      pc10_compare_data(root = file.path(data_raw_dir, "pc10_loads_2026"),
+                        old_file = file.path(data_raw_dir, "flows",
+                                             "rotorua_inflows_populated_noalum.csv"))
+    }
+  ),
+  # Forward runs of the reference member on the old and the 2026 inflows. The GLM runs
+  # (calibration/pc10_loads/02-04_*.R) are local only (7 GB of output each); their small
+  # result tables are tracked in git so CI can read them.
+  tar_target(
+    pc10_fwd_summary_file,
+    here::here("calibration", "pc10_loads", "compare", "summary.csv"), format = "file"
+  ),
+  tar_target(
+    pc10_fwd_summary, utils::read.csv(pc10_fwd_summary_file)
+  ),
+  tar_target(
+    pc10_fwd_annual_file,
+    here::here("calibration", "pc10_loads", "compare", "annual.csv"), format = "file"
+  ),
+  tar_target(
+    pc10_fwd_annual, utils::read.csv(pc10_fwd_annual_file)
+  ),
+  tar_target(
+    pc10_fwd_level_file,
+    here::here("calibration", "pc10_loads", "compare", "level_bias_by_year.csv"), format = "file"
+  ),
+  tar_target(
+    pc10_fwd_level, utils::read.csv(pc10_fwd_level_file)
   ),
 
   #* River WQ summaries ----
