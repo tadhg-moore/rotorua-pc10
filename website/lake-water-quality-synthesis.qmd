@@ -7,7 +7,6 @@ format:
   html:
     toc: true
     toc-depth: 3
-    toc-expand: true
     number-sections: true
     code-fold: true
     fig-width: 9
@@ -1227,7 +1226,7 @@ resp_tab |> left_join(wt, by = "variable") |>
 - **Lake response.**
   - Bottom DRP reached 108–118 mg/m³ and TP 157–162 mg/m³.
   - Surface DRP and TP rose to the highest values since 2010.
-- **Reading.** With external loads at a minimum, this points to an internal source. The sediment P was no longer being capped by Puarenga alum, and was then released under strong, long stratification.
+- **Reading.** With external loads at a minimum, this points to an internal source. The sediment P was no longer being capped by Puarenga alum, and was then released under strong, long stratification. See @sec-pause for the sequence and why the model misses it.
 - **Recovery.** TP fell back in 2022/23, after the resumption of dosing (64 t Al from Puarenga in 2022/23) and in a cool, wet, well-mixed summer.
 
 **2023 – 2026: wet years, high N loads, rising TN and chl-a.**
@@ -1236,6 +1235,159 @@ resp_tab |> left_join(wt, by = "variable") |>
 - The 2023 TN load (814 t/y) was the highest since 1990, and 2024 (706 t/y) was also well above the target.
 - Lake TN, NH₄ and NOx rose, and in 2026 chl-a rose and Secchi depth fell.
 - TP has stayed near 19–21 mg/m³ under steady dosing (50–96 t Al/y).
+
+### The 2019–2022 phosphorus excursion {#sec-pause}
+
+Lake TP doubled between 2017–2020 and 2021–2022, from about 15 to 27–32 mg/m³ (annual means of the integrated samples). This was the largest change since full dosing began. The evidence below points to internal loading that built up while Puarenga dosing was paused, amplified by the hot, long-stratified summer of 2021/22.
+
+```{r}
+#| label: pause-data
+p_lo <- as.Date("2016-07-01"); p_hi <- as.Date("2024-07-01")
+pz <- pua_pause_main
+lag_end <- as.Date("2022-09-30")      # last month of high bottom-water P after dosing resumed
+shade <- function() list(
+  annotate("rect", xmin = pz$start, xmax = pz$end, ymin = -Inf, ymax = Inf, fill = "grey60", alpha = 0.25),
+  annotate("rect", xmin = pz$end, xmax = lag_end, ymin = -Inf, ymax = Inf, fill = "#E69F00", alpha = 0.12))
+lake_mean <- function(v, L) lw |>
+  filter(variable == v, layer == L, date >= p_lo, date < p_hi) |>
+  group_by(date) |> summarise(value = mean(value), .groups = "drop")
+jfm <- lw |>
+  filter(layer == "BOT", variable %in% c("drp", "tp"), as.integer(format(date, "%m")) %in% 1:3) |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy, variable) |> summarise(value = mean(value), .groups = "drop") |>
+  mutate(panel = ifelse(variable == "drp", "Bottom DRP, Jan–Mar (mg/m³)", "Bottom TP, Jan–Mar (mg/m³)"))
+```
+
+```{r}
+#| label: fig-pause-sequence
+#| fig-cap: "Sequence of the 2019–2022 excursion. Top: aluminium dosed per month in the Puarenga and Utuhina (t Al). Middle: bottom-water (BOT) TP and DRP. Bottom: integrated (INT) TP and DRP. Middle and bottom panels show the mean of Sites 2 and 5 on each sampling date. Grey: Puarenga dosing paused (Sep 2018 – Nov 2020). Orange: the two summers of high bottom-water P after dosing resumed."
+#| fig-height: 8
+al_m <- alum |>
+  filter(date >= p_lo, date < p_hi) |>
+  mutate(m = as.Date(format(date, "%Y-%m-15"))) |>
+  group_by(m) |> summarise(Puarenga = sum(puarenga_kg_al) / 1000, Utuhina = sum(utuhina_kg_al) / 1000, .groups = "drop") |>
+  pivot_longer(-m, names_to = "stream")
+pa <- ggplot(al_m, aes(m, value, fill = stream)) + shade() +
+  geom_col(position = "dodge", width = 25) +
+  scale_fill_manual(values = c(Puarenga = "#0072B2", Utuhina = "#56B4E9")) +
+  labs(x = NULL, y = "t Al / month", fill = NULL)
+pp_fun <- function(L, ttl) {
+  d <- bind_rows(lake_mean("tp", L) |> mutate(var = "TP"), lake_mean("drp", L) |> mutate(var = "DRP"))
+  ggplot(d, aes(date, value, colour = var)) + shade() +
+    geom_line(linewidth = 0.4) + geom_point(size = 0.9) +
+    scale_colour_manual(values = c(TP = "#009E73", DRP = "#CC79A7")) +
+    labs(x = NULL, y = paste(ttl, "(mg/m³)"), colour = NULL)
+}
+(pa / pp_fun("BOT", "Bottom") / pp_fun("INT", "Integrated")) &
+  scale_x_date(limits = c(p_lo, p_hi), date_breaks = "1 year", date_labels = "%Y") &
+  theme(legend.position = "right")
+```
+
+```{r}
+#| label: fig-pause-summers
+#| fig-cap: "Summer by summer, hydrological years 2008–2025. Panels: January–March mean bottom-water DRP and TP (both sites); longest buoy-recorded stratified period; external TP load (PC10 2026 loads); and Puarenga aluminium dosed. Orange bars are the pause and recovery years (hy2019–2022). The bottom-water P built up while external loads were at their lowest, and stratification was unusual only in 2021/22."
+#| fig-height: 8
+strat_long <- be$stratified |> mutate(hy = wq_hy(start)) |>
+  group_by(hy) |> summarise(value = max(duration), .groups = "drop") |>
+  mutate(panel = "Longest stratified period (days)")
+drv <- dla |> transmute(hy, `External TP load (t/y)` = load_tp) |>
+  left_join(alum |> mutate(hy = wq_hy(date)) |> group_by(hy) |>
+              summarise(`Puarenga Al dosed (t/y)` = sum(puarenga_kg_al) / 1000), by = "hy") |>
+  pivot_longer(-hy, names_to = "panel")
+sumz <- bind_rows(jfm |> select(hy, panel, value), strat_long, drv) |>
+  filter(hy >= 2008, hy <= 2025) |>
+  mutate(pause = hy %in% 2019:2022,
+         panel = factor(panel, c("Bottom DRP, Jan–Mar (mg/m³)", "Bottom TP, Jan–Mar (mg/m³)",
+                                 "Longest stratified period (days)", "External TP load (t/y)",
+                                 "Puarenga Al dosed (t/y)")))
+ggplot(sumz, aes(hy, value, fill = pause)) +
+  geom_col(width = 0.8) +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  scale_fill_manual(values = c(`FALSE` = "grey70", `TRUE` = "#D55E00"), guide = "none") +
+  scale_x_continuous(breaks = 2008:2025) +
+  labs(x = "Hydrological year (ending June)", y = NULL)
+```
+
+**What the data show.**
+
+- **The model's alum input and the dosing record agree.** Puarenga dosing fell to 6.5 t Al in 2018/19, stopped from September 2018 to November 2020, and then resumed (@fig-pause-sequence). Utuhina dosing continued unchanged.
+- **Summer bottom-water P built up year on year during the pause.** January–March bottom DRP rose from about 1 mg/m³ (2018) to 8.5 (2019), 22 (2020) and 34 (2021 and 2022). Bottom TP rose from 22 to 37, 43 and about 70 mg/m³ over the same years (@fig-pause-summers).
+- **The build-up mixed into the surface.** Each autumn (April–June), when the lake mixes, the bottom-water P spread through the water column. Surface TP reached 39 mg/m³ in early 2021 and 42 mg/m³ in autumn 2022. In winter it fell back to 14–23 mg/m³, but from a higher base each year.
+- **It was not driven by external load.** External TP loads in 2020/21 and 2021/22 were the lowest since the 1990s (28–29 t/y, against 40–60 t/y in 2017–2018), and inflow volumes were low.
+- **Stratification amplified it, but only at the end.** Summers 2018/19 to 2020/21 were not unusually stratified. Summer 2021/22 had the longest stratified period on record (70 days), an air heatwave, a strong lake heatwave and the warmest December–February air temperature in the record (19.4 °C). It produced the peak bottom-water DRP and TP (108–118 and 157–162 mg/m³).
+- **Recovery lagged the restart of dosing by about two summers.** Bottom-water P stayed high in summers 2020/21 and 2021/22, after dosing resumed in November 2020. It fell sharply only from late 2022. That followed heavier dosing (96 t Al in 2022/23) and the cool, wet, well-mixed 2023.
+- **It is not a laboratory artefact.** The finer reporting from 2021 (@sec-dq) affects low DRP values. It cannot produce a doubling of TP, or bottom TP of 70–160 mg/m³.
+
+**Interpretation.**
+
+- **How Puarenga dosing caps the sediment.** The Puarenga is dosed at about 33 mol Al per mol P, far more than is needed to bind the stream's P. The excess aluminium enters the lake as floc and keeps a P-binding layer on the lake bed, where it limits the release of P during low-oxygen periods.
+- **What happened when it stopped.** With no fresh floc, the binding capacity aged and was buried over one to two years. Each summer's anoxic release was then less suppressed than the summer before.
+- **The 2021/22 peak.** The very long stratification of summer 2021/22 coincided with weakened sediment binding, and produced the peak.
+- **The recovery.** It needed the binding layer to rebuild, which took about two summers of renewed dosing.
+- **What this implies.** The lake's phosphorus state depends on the continuity of dosing more than on the size of the external load. A break in dosing shows up as rising internal loading within one to two summers.
+
+```{r}
+#| label: pause-model
+pause_file <- here::here("calibration", "wq_targets", "pause", "sed_ens.rds")
+have_pause <- file.exists(pause_file)
+```
+
+```{r}
+#| label: fig-pause-model
+#| fig-cap: "The same period in the calibrated model (24-member long ensemble, calibration/all_stage). Left: annual surface TP, observed (integrated samples, black) and modelled (0–8 m mean; line = ensemble median, ribbon = range). Right: modelled sediment indices relative to their 2015–2017 mean: lake-water alum capacity (ALU_ala), sediment alum capacity (ALU_ben_ala), P taken up by sediment alum (ALU_uptake_s) and gross sediment FRP release (PHS_frp_dsf), with the observed January–March bottom DRP (dashed) for comparison. Grey: Puarenga dosing paused."
+#| fig-height: 4.5
+#| eval: !expr have_pause
+se <- readRDS(pause_file)
+pause_band <- annotate("rect", xmin = 2018.7, xmax = 2020.9, ymin = -Inf, ymax = Inf, fill = "grey60", alpha = 0.25)
+tp_m <- se |> filter(var_sim == "PHS_tp_s") |>
+  group_by(hy) |> summarise(med = median(v), lo = min(v), hi = max(v), .groups = "drop")
+tp_o <- dla |> filter(hy >= 2013, hy <= 2022)
+p1 <- ggplot(tp_m, aes(hy)) + pause_band +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "#0072B2", alpha = 0.25) +
+  geom_line(aes(y = med, colour = "Model")) +
+  geom_line(data = tp_o, aes(hy, lake_tp, colour = "Observed")) +
+  geom_point(data = tp_o, aes(hy, lake_tp, colour = "Observed")) +
+  scale_colour_manual(values = c(Model = "#0072B2", Observed = "black")) +
+  scale_x_continuous(breaks = 2013:2022) +
+  labs(x = "Hydrological year", y = "Surface TP (mg/m³)", colour = NULL) +
+  theme(legend.position = "top", axis.text.x = element_text(angle = 90, vjust = 0.5))
+idx_lab <- c(ALU_ala = "Lake-water alum capacity", ALU_ben_ala_Z_lake = "Sediment alum capacity",
+             ALU_uptake_s_Z_lake = "P uptake by sediment alum", PHS_frp_dsf_Z_lake = "Sediment FRP release")
+obs_lab <- "Observed bottom DRP (Jan–Mar)"
+idx <- se |> filter(var_sim %in% names(idx_lab)) |>
+  group_by(hy, var_sim) |> summarise(v = median(v), .groups = "drop") |>
+  group_by(var_sim) |> mutate(rel = v / mean(v[hy %in% 2015:2017])) |> ungroup() |>
+  mutate(series = unname(idx_lab[var_sim])) |>
+  bind_rows(jfm |> filter(variable == "drp", hy >= 2013, hy <= 2022) |>
+              mutate(rel = value / mean(value[hy %in% 2015:2017]), series = obs_lab)) |>
+  mutate(obs = series == obs_lab)
+p2 <- ggplot(idx, aes(hy, rel, colour = series, linetype = obs)) + pause_band +
+  geom_hline(yintercept = 1, colour = "grey50") +
+  geom_line() + geom_point(size = 1) +
+  scale_y_log10() +
+  scale_colour_manual(values = c("Lake-water alum capacity" = "#56B4E9", "Sediment alum capacity" = "#0072B2",
+                                 "P uptake by sediment alum" = "#009E73", "Sediment FRP release" = "#D55E00",
+                                 "Observed bottom DRP (Jan–Mar)" = "black")) +
+  scale_linetype_manual(values = c(`FALSE` = 1, `TRUE` = 2), guide = "none") +
+  scale_x_continuous(breaks = 2013:2022) +
+  labs(x = "Hydrological year", y = "Relative to 2015–2017 (log scale)", colour = NULL) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+p1 + p2 + plot_layout(widths = c(1, 1.4))
+```
+
+**Why the model does not reproduce it.**
+
+- **The input is correct.** The calibration inflows contain the pause: Puarenga alum is zero from September 2018 to October 2020. Puarenga inflow FRP rises about fourfold over the pause, because the in-stream reaction no longer removes it.
+- **The modelled TP bump is early and short.** It comes from that extra stream FRP and the wet 2017–2018 years, peaking in 2018–2019. It is then flushed out, so all 24 members simulate TP falling by 5–8 mg/m³ from 2017–2020 to 2021–2022, where the lake rose by about 14 (@fig-pause-model).
+- **The sediment alum pool reacts too fast.** It loses about 60% of its capacity in the first year of the pause and recovers within a year of dosing restarting. In the lake, the binding loss and the recovery each took about two years.
+- **Gross sediment P release is fixed.** It is a constant flux in the model (`aed_sed_const2d`) and changes by only 5–8% across the pause. The model has no store of sediment P whose release grows when the alum binding is lost.
+
+The misfit is therefore structural, and calibrating parameters cannot remove it: the one-stage calibration with this response as a target left it unchanged (z about −8; `calibration/wq_targets/README.md`). The model needs two additions:
+
+- a sediment P pool that accumulates and is released when the binding capacity falls;
+- an alum binding capacity in the sediment that decays over one to two years.
+
+The analysis is in `calibration/wq_targets/pause/`.
 
 ## Observational drivers {#sec-drivers}
 

@@ -328,3 +328,42 @@ model_target_inputs <- function(sim, obs_chem, hyps, from = as.Date("2000-07-01"
   hflux <- hypolimnetic_flux(chem_long, ctd_like, hyps)
   list(prof_daily = prof, thermal_daily = th, chem_long = chem_long, hod = hod, hflux = hflux)
 }
+
+# ---- reading GLM-AED output directly (calibration runs keep only output.nc) ----
+# Long profile table in the shape model_target_inputs() expects (date, var_sim, depth, value), with AEME
+# names and units (mg/L for N, P and O2; ug/L chl-a; degC). Depth is metres below the surface at the
+# layer midpoint (as in AEME's parquet output). Daily values (first output step of each day).
+glm_nc_profiles <- function(nc_file, from = as.Date("2000-07-01"), to = as.Date("2100-01-01")) {
+  nc <- ncdf4::nc_open(nc_file); on.exit(ncdf4::nc_close(nc))
+  tm <- ncdf4::ncvar_get(nc, "time"); tu <- ncdf4::ncatt_get(nc, "time", "units")$value
+  orig <- as.Date(strsplit(tu, " ")[[1]][3]); d <- if (grepl("hour", tu)) orig + floor(tm / 24) else orig + floor(tm)
+  keep <- which(d >= from & d <= to & !duplicated(d))
+  ns <- ncdf4::ncvar_get(nc, "NS")[keep]; z <- ncdf4::ncvar_get(nc, "z")[, keep, drop = FALSE]
+  zmax <- z[cbind(ns, seq_along(ns))]
+  idx <- cbind(sequence(ns), rep(seq_along(ns), ns))                  # (layer, time) of every wet layer
+  zlo <- ifelse(idx[, 1] > 1, z[cbind(pmax(idx[, 1] - 1, 1), idx[, 2])], 0)   # bottom of each layer
+  depth <- round(zmax[idx[, 2]] - (z[idx] + zlo) / 2, 3); date <- d[keep][idx[, 2]]   # layer midpoint below the surface
+  map <- list(HYD_temp = c("temp", 1), CHM_oxy = c("OXY_oxy", 32 / 1000), PHS_tp = c("TOT_tp", 30.97 / 1000),
+              NIT_tn = c("TOT_tn", 14.007 / 1000), PHS_frp = c("PHS_frp", 30.97 / 1000), NIT_amm = c("NIT_amm", 14.007 / 1000),
+              NIT_nit = c("NIT_nit", 14.007 / 1000), PHY_tchla = c("PHY_tchla", 1))
+  map <- map[vapply(map, function(m) m[1] %in% names(nc$var), logical(1))]
+  dplyr::bind_rows(lapply(names(map), function(v) {
+    a <- ncdf4::ncvar_get(nc, map[[v]][1])[, keep, drop = FALSE]
+    data.frame(date = date, var_sim = v, depth = depth, value = a[idx] * as.numeric(map[[v]][2]))
+  }))
+}
+
+# ---- calibration objective terms ----
+# Residuals for an ES-MDA / least-squares objective from the observation-based targets: one term per
+# target of priority <= max_priority, r = sqrt(w / 3) * z with the score weights w (3, 2, 1), so that
+# mean(r^2) over the terms is proportional to the priority-weighted z^2 of score_wq_summary().
+# z is clipped to +/- zcap so a single wild signature cannot dominate an ensemble update; targets the
+# run cannot cover (NA z) get `na_value` so the residual vector keeps a fixed length.
+wq_objective_terms <- function(sig, obs, max_priority = 2, exclude = character(), zcap = 6, na_value = zcap) {
+  ob <- obs[obs$priority <= max_priority & !obs$metric %in% exclude, ]
+  sc <- score_wq_targets(ob, sig)
+  z <- setNames(sc$z, sc$metric)[ob$metric]
+  z[!is.finite(z)] <- na_value
+  z <- pmax(pmin(z, zcap), -zcap)
+  setNames(sqrt(c(3, 2, 1)[ob$priority] / 3) * z, paste0("wq_", ob$metric))
+}
