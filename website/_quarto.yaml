@@ -76,6 +76,8 @@ website:
           text: "PC10 Loads 2026"
         - href: ohau-channel-water-quality.qmd
           text: "Ōhau Channel Water Quality"
+        - href: lake-water-quality-synthesis.qmd
+          text: "Lake Water Quality Synthesis"
         - href: cmip6-processing.qmd
           text: "CMIP6 Processing"
         - href: cmip6-visualisation.qmd
