@@ -1044,6 +1044,10 @@ list(
   #   },
   #   format = "file"
   # ),
+  # Survey (GNS) hypsograph in model datum, basin cut at 25 m
+  tar_target(
+    gns_hyps_model, get_gns_hyps_model(gns_hyps, corr_hyps, cut_depth = 25)
+  ),
   tar_target(
     hyps_no_hole, {
       hyp <- corr_hyps |> 
@@ -1056,6 +1060,13 @@ list(
   tar_target(
     aeme_base_hyps, {
       aeme <- update_hyps(aeme_base, hyps = corr_hyps)
+      return(aeme)
+    }
+  ),
+  # Alternate model on the survey (GNS) hypsograph: same as aeme_base_hyps but with gns_hyps_model
+  tar_target(
+    aeme_base_hyps_gns, {
+      aeme <- update_hyps(aeme_base, hyps = gns_hyps_model)
       return(aeme)
     }
   ),
@@ -1512,6 +1523,32 @@ list(
   ),
   tar_target(
     aeme_baseline, readRDS(aeme_base_file)
+  ),
+
+  # Alternate baseline on the survey (GNS) hypsograph (gns_hyps_model: basin cut at 25 m, above-surface
+  # extension and surface elevation taken from the current hypsograph). Identical to aeme_base_file in
+  # every other respect; sediment zone heights follow the new bed depth via build_calib_base_aeme().
+  tar_target(
+    aeme_base_gns_file,
+    build_calib_base_aeme(
+      aeme_download_file = aeme_onedrive_rds,
+      hyps_no_hole = gns_hyps_model,
+      era5_corrected_hourly = era5_corrected_hourly,
+      inflows = rotorua_inflow_list_matrix[[1]],
+      zone_heights = zone_heights,
+      weir_params = weir_params,
+      aed_models_alum = aed_models_alum,
+      model = model,
+      ext_elev = ext_elev,
+      alum_nml_file = file.path(aeme_onedrive_lake_rotorua_dir, "aed", "aed_original.nml"),
+      out_file = here::here("aeme_base_gns.rds"),
+      build_path = here::here("calibration", "base_build_gns"),
+      old_buoy_wq = old_buoy_wq
+    ),
+    format = "file"
+  ),
+  tar_target(
+    aeme_baseline_gns, readRDS(aeme_base_gns_file)
   ),
 
   # tar_target(
