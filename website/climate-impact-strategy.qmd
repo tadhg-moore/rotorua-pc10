@@ -15,6 +15,16 @@ execute:
   message: false
 ---
 
+```{r}
+#| label: setup
+#| include: false
+
+library(targets)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
 **Status: draft strategy.** It builds on components that already exist in this project and lists what still has to be done before the projections can be trusted. Numbers marked *estimate* are my planning figures, not measurements.
 
 ## Purpose and questions
@@ -81,11 +91,196 @@ flowchart LR
 - Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.
 - **How the ERA5 record maps to the climate windows.** The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (`scenario_ref_years`), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).
 - The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.
-- **NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. The one thing to verify is that `metscale::climate_point_monthly_climatology()` assigns NZESM days to calendar months correctly (the repository already handles 360-day time in `R/summarise_gcm_ts.R` and `R/standardise_to_gregorian.R`). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.
+- **NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. `metscale::climate_point_monthly_climatology()` decodes each GCM's calendar (including the 360-day `NZESM`) before averaging, as described on the [climate-scenario workflow page](climate-scenario-workflow.qmd). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.
 - Keep **hindcast** (no delta) as the reference, and compare future windows with it, not with observations.
 - Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on `NorESM2-MM` alone, which is at the low end.
 - Assumption to state clearly: delta-change keeps present variability and sequences, so it will not capture changes in the frequency of persistent calm spells beyond what the monthly means imply. The extreme-event indices are used to check this.
 
+### Approaches to impact modelling, illustrated
+
+The figures below are built from the pipeline's own targets (`era5_corrected_daily_baseline`, `gcm_monthly_deltas_df`, `gcm_transient_deltas_df`, `transient_year_map`, `gcm_point_data_std_df`). They use annual-mean air temperature and the two GCMs at the ends of the warming range under SSP585 (`NorESM2-MM`, low; `ACCESS-CM2`, high). Rebuild the targets before rendering if they are out of date.
+
+```{r}
+#| label: fig-data
+#| code-fold: true
+
+baseline <- tar_read(era5_corrected_daily_baseline) |>
+  mutate(Date = as.Date(Date), year = as.integer(format(Date, "%Y")),
+         month = as.integer(format(Date, "%m")))
+deltas    <- tar_read(gcm_monthly_deltas_df)
+tdeltas   <- tar_read(gcm_transient_deltas_df)
+ymap      <- tar_read(transient_year_map)
+gcm_raw   <- tar_read(gcm_point_data_std_df)
+ref_years <- tar_read(scenario_ref_years)
+windows   <- tar_read(time_periods)
+
+full_years <- seq(min(baseline$year) + 1, max(baseline$year) - 1)
+base_yr <- baseline |>
+  filter(year %in% full_years) |>
+  group_by(year) |>
+  summarise(temp = mean(MET_tmpair), rain = sum(MET_pprain), .groups = "drop")
+base_30 <- baseline |> filter(year %in% 1991:2020) |> mutate(year_d = year)
+
+gcm_pair <- c(low = "NorESM2-MM", high = "ACCESS-CM2")
+scn <- "ssp585"
+gcm_cols <- c("NorESM2-MM" = "#2c7fb8", "ACCESS-CM2" = "#d95f0e")
+
+# Apply monthly (or year-by-month, for transient) deltas to a daily baseline,
+# using the same add / ratio rule as apply_gcm_delta_to_baseline()
+shift_daily <- function(dat, d, by_year = FALSE) {
+  out <- dat
+  for (v in c("MET_tmpair", "MET_pprain")) {
+    dv <- d |> filter(variable == v)
+    key  <- if (by_year) paste(out$year_d, out$month) else out$month
+    keyd <- if (by_year) paste(dv$year, dv$month) else dv$month
+    f <- dv$delta[match(key, keyd)]
+    out[[v]] <- if (dv$kind[1] == "ratio") out[[v]] * f else out[[v]] + f
+  }
+  out
+}
+```
+
+**Which ERA5 years stand in for the reference climate.** The delta method adds a GCM's future-minus-reference change to ERA5 weather. The ERA5 baseline (blue) should therefore describe the same climate as the GCM reference period (orange), and the full record shows how much of its own warming and variability sits inside each.
+
+```{r}
+#| label: fig-baseline
+#| fig-cap: "Annual mean air temperature of the bias-corrected ERA5 baseline, with the 1991–2020 baseline and the GCM reference period (`scenario_ref_years` in the targets store)."
+#| fig-width: 8
+#| fig-height: 3.5
+
+ref_rng <- range(ref_years)
+ggplot(base_yr, aes(year, temp)) +
+  annotate("rect", xmin = 1990.5, xmax = 2020.5, ymin = -Inf, ymax = Inf,
+           fill = "#2c7fb8", alpha = 0.15) +
+  annotate("rect", xmin = ref_rng[1] - 0.5, xmax = ref_rng[2] + 0.5,
+           ymin = -Inf, ymax = Inf, fill = "#d95f0e", alpha = 0.15) +
+  geom_line(colour = "grey30") + geom_point(colour = "grey30", size = 1.2) +
+  labs(x = NULL, y = "Annual mean air temperature (°C)",
+       subtitle = sprintf("Blue: 1991–2020 baseline. Orange: GCM reference %d–%d.",
+                          ref_rng[1], ref_rng[2])) +
+  theme_bw()
+```
+
+**Why delta-change.** Only the monthly level is changed, so the weather sequence the lake model sees (storm timing, calm spells, the order of wet and dry months) is real ERA5 weather.
+
+```{r}
+#| label: fig-weather
+#| fig-cap: "Daily air temperature for one ERA5 year, unchanged and with the 2071–2100 SSP585 monthly deltas of the lowest- and highest-warming GCM applied."
+#| fig-width: 8
+#| fig-height: 3.8
+
+yr_show <- 2008
+d0 <- baseline |> filter(year == yr_show) |> select(Date, month, MET_tmpair)
+shifted <- lapply(gcm_pair, function(g) {
+  d <- deltas |> filter(gcm == g, scenario == scn, window == "2071-2100",
+                        variable == "MET_tmpair")
+  d0 |> mutate(MET_tmpair = MET_tmpair + d$delta[match(month, d$month)],
+               series = paste0(g, " (", scn, ", 2071–2100)"))
+}) |> bind_rows()
+cols <- c("ERA5 baseline" = "grey40",
+          setNames(unname(gcm_cols[gcm_pair]),
+                   paste0(gcm_pair, " (", scn, ", 2071–2100)")))
+bind_rows(mutate(d0, series = "ERA5 baseline"), shifted) |>
+  ggplot(aes(Date, MET_tmpair, colour = series)) +
+  geom_line(linewidth = 0.4) +
+  scale_colour_manual(values = cols, name = NULL) +
+  labs(x = NULL, y = "Daily air temperature (°C)",
+       subtitle = paste0("ERA5 ", yr_show, ": same days, same weather, shifted level")) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+**Three ways to build future forcing.** (A) raw GCM output carries its own weather and bias; (B) delta-change **time slices** (proposed) reuse the same 30 ERA5 years for every window, so each window is a fixed climate; (C) delta-change **transient** applies a delta that evolves each year to a continuous 2005–2099 run (the existing `gcm_transient_deltas_df` and `transient_year_map`, which supply different weather years to each target year). Slices give clean comparisons between climates and keep the cost to three 30-year runs per GCM and SSP; the transient set is kept for the timing and legacy questions.
+
+```{r}
+#| label: fig-approaches
+#| fig-cap: "Annual mean air temperature under three ways of building future forcing (SSP585, lowest and highest-warming GCM). Grey: bias-corrected ERA5. In B the 30 baseline weather years are placed at each window's dates for illustration only; the model keeps the original ERA5 dates."
+#| fig-width: 8
+#| fig-height: 8
+
+# A. raw GCM output
+raw <- gcm_raw |>
+  mutate(year = as.integer(format(date, "%Y"))) |>
+  filter(gcm %in% gcm_pair, scenario %in% c("historical", scn), year %in% 1977:2099) |>
+  group_by(gcm, year) |> filter(n() >= 360) |>
+  summarise(temp = mean(tas), .groups = "drop")
+if (max(raw$temp) > 100) raw$temp <- raw$temp - 273.15
+cA <- raw |> mutate(approach = "A. Raw GCM output", series = gcm, seg = gcm)
+
+# B. time slices: baseline weather x window delta
+cB <- lapply(gcm_pair, function(g) {
+  lapply(names(windows), function(w) {
+    d <- deltas |> filter(gcm == g, scenario == scn, window == w)
+    s <- shift_daily(base_30, d) |> group_by(year) |>
+      summarise(temp = mean(MET_tmpair), .groups = "drop")
+    yrs <- seq(windows[[w]][1], windows[[w]][2])
+    n <- min(length(yrs), nrow(s))
+    tibble(year = yrs[seq_len(n)], temp = s$temp[seq_len(n)],
+           series = g, seg = paste(g, w))
+  }) |> bind_rows()
+}) |> bind_rows() |>
+  mutate(approach = "B. Delta-change time slices (proposed)")
+
+# C. transient: year-mapped weather x evolving annual delta
+tw <- lapply(seq_len(nrow(ymap)), function(i) {
+  baseline |> filter(year == ymap$source_year[i]) |> mutate(year_d = ymap$target_year[i])
+}) |> bind_rows()
+cC <- lapply(gcm_pair, function(g) {
+  d <- tdeltas |> filter(gcm == g, scenario == scn)
+  shift_daily(tw, d, by_year = TRUE) |> group_by(year = year_d) |>
+    summarise(temp = mean(MET_tmpair), .groups = "drop") |>
+    mutate(series = g, seg = g)
+}) |> bind_rows() |>
+  mutate(approach = "C. Delta-change transient")
+
+panels <- c("A. Raw GCM output", "B. Delta-change time slices (proposed)",
+            "C. Delta-change transient")
+cdat <- bind_rows(cA, cB, cC) |> mutate(approach = factor(approach, panels))
+era5 <- tidyr::crossing(base_yr |> select(year, temp),
+                        approach = factor(panels, panels))
+
+ggplot() +
+  geom_line(data = era5, aes(year, temp), colour = "grey55", linewidth = 0.4) +
+  geom_line(data = cdat, aes(year, temp, colour = series, group = seg), linewidth = 0.5) +
+  facet_wrap(~approach, ncol = 1) +
+  scale_colour_manual(values = gcm_cols, name = NULL) +
+  labs(x = NULL, y = "Annual mean air temperature (°C)") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+**Signal against internal variability.** Because every window reuses the same 30 weather years, the baseline box shows year-to-year variability and each shifted box shows the climate signal on top of it. Temperature shifts clearly exceed variability from mid-century. Rainfall does not: the monthly ratios are noisy at a single grid point (individual GCM-months reach ratios of 2 to 4), so annual rainfall in a window can be well outside the baseline range for some GCMs and the sign differs between GCMs. This supports smoothing or ensemble-averaging the rainfall deltas before they are used, and treating rain-driven results with more caution than temperature-driven ones.
+
+```{r}
+#| label: fig-signal
+#| fig-cap: "Distribution of annual mean air temperature and annual rainfall (as a percentage of the 1991–2020 mean) for the baseline and for each SSP245 and SSP585 window; each box pools the 30 weather years across all GCMs."
+#| fig-width: 8
+#| fig-height: 6
+
+sig <- lapply(c("ssp245", "ssp585"), function(sc) {
+  lapply(names(windows), function(w) {
+    lapply(unique(deltas$gcm), function(g) {
+      d <- deltas |> filter(gcm == g, scenario == sc, window == w)
+      if (!nrow(d)) return(NULL)
+      shift_daily(base_30, d) |> group_by(year) |>
+        summarise(temp = mean(MET_tmpair), rain = sum(MET_pprain), .groups = "drop") |>
+        mutate(grp = paste(sc, w, sep = "\n"))
+    }) |> bind_rows()
+  }) |> bind_rows()
+}) |> bind_rows()
+b30 <- base_30 |> group_by(year) |>
+  summarise(temp = mean(MET_tmpair), rain = sum(MET_pprain), .groups = "drop") |>
+  mutate(grp = "baseline")
+lv <- c("baseline", paste(rep(c("ssp245", "ssp585"), each = 3), names(windows), sep = "\n"))
+bind_rows(b30, sig) |>
+  mutate(rain = 100 * rain / mean(b30$rain), grp = factor(grp, lv)) |>
+  pivot_longer(c(temp, rain), names_to = "metric") |>
+  mutate(metric = recode(metric, temp = "Annual mean air temperature (°C)",
+                         rain = "Annual rainfall (% of 1991–2020 mean)")) |>
+  ggplot(aes(grp, value)) +
+  geom_boxplot(outlier.size = 0.6, fill = "grey90") +
+  facet_wrap(~metric, scales = "free_y", ncol = 1) +
+  labs(x = NULL, y = NULL) +
+  theme_bw() + theme(axis.text.x = element_text(size = 7))
+```
 
 ### Simulation length
 
