@@ -3,6 +3,89 @@ title: "Meeting Notes"
 format: html
 ---
 
+# 10 Nov 2026 - Meeting with MH & KK
+
+## Status
+- Alum model is working
+- Initial calibration setup is in place
+
+## Outstanding Questions
+- Alum diagnostics (to be handled in a new branch)
+- Phytoplankton succession and/or zooplankton on/off
+
+## GLM-AED Updates
+- **Zone functionality** added
+- Quinn has developed unit tests
+- **v4 milestone**
+  - Sediment nutrient module could potentially link to the alum logic
+  - SFM: 2-layer sediment module, dependent on redox chemistry
+  - FeP dynamics
+
+## pH
+- Send latest version to MH and KK
+- Obtain DIC or alkalinity data
+- Add as a state variable in SIM_fixed_env
+- Inspect depth time series to check for vertical variability in pH
+
+## Zooplankton
+- Set minimum limits
+- Use the faecal pellet fraction to control TN/TP
+
+## Drivers of FRP/TP (2021-24)
+- Investigate what drove FRP and TP over this period
+
+## Sediment Data
+- Composition and totals
+- Static sediment fluxes
+- Organic matter loads (to help resolve the balance)
+- Settling flux
+- Test setup
+- Spin-up days
+
+## Priorities
+1. pH
+2. SFM DOM model
+3. Send GLM-AED setup
+
+## Next Meeting
+- **26 Nov**
+
+
+# 03 Nov 2026 - meet with Deniz
+
+## Context and Funding
+- Bay of Plenty Regional Council (BoP) wants more detail, particularly on the **Rotoiti wall**
+
+## Climate Change
+- Climate change scenarios still need to be settled (the method decision is also a next step)
+
+## Alum Dosing
+- Alum dosing continues, with consent in place for the **next 30 years**
+
+## Data and Method Adjustments
+- The data sheet contains an adjustment equation for the **phosphate–arsenic interaction**
+- Keith Hamill's report on the method change should inform the approach
+- **Open question:** are historical data being adjusted retrospectively?
+
+## Zooplankton
+- There are no zooplankton data, which anchors the argument for including them in the model
+- Stronger supporting evidence is still needed
+- Zooplankton allow for **succession**
+- Planned demonstration: show results with and without zooplankton switched on
+
+## Checks and Requests
+- Asked DO for **TSS**
+- Double-check the **TLI calculation**
+
+## Next Steps
+- **NZFSS**
+  - Extend to 2026
+  - Include TLI-relevant calibration targets
+- Chat with Matt H
+- Prepare the report template
+- Settle on the climate change method
+
+
 ## Meeting 29 Sep
 
 ### Progress updates
