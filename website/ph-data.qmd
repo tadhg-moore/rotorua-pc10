@@ -29,7 +29,7 @@ cols <- c("old buoy" = "#8c8c8c", "new buoy" = "#1f78b4")
 dir.create("downloads", showWarnings = FALSE)
 # Raw sub-daily pH (target `ph_raw`), times in NZST (UTC+12)
 ph_raw <- tar_read(ph_raw)
-ph_raw |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT-12")) |>
+ph_raw |> arrange(datetime, depth_m) |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT-12")) |>
   write.csv("downloads/rotorua_ph_timeseries.csv", row.names = FALSE)
 
 prof <- tar_read(buoy_profile_daily)
@@ -37,7 +37,7 @@ prof <- tar_read(buoy_profile_daily)
 alk <- tar_read(alk_data) |>
   mutate(date = as.Date(datetime), site = ifelse(grepl("^EK", site_id), "Site 2", "Site 5"),
          sample = c(DIS = "Discrete", INT = "Integrated", HYP = "Hypolimnion")[sub(".*_", "", site_id)])
-tar_read(alk_data) |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "UTC")) |>
+tar_read(alk_data) |> arrange(datetime, site_id) |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "UTC")) |>
   write.csv("downloads/rotorua_alkalinity_hardness_doc.csv", row.names = FALSE)
 ```
 
