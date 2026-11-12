@@ -1382,6 +1382,25 @@ list(
     }
   ),
 
+  # Raw (sub-daily) pH for download: new buoy profiler (~2.5 min, depth = sensor depth) and old buoy
+  # (15 min, fixed 1 m). Times are NZST (Etc/GMT-12). qc_in_range flags values outside 4 to 11.
+  tar_target(
+    ph_raw, {
+      dplyr::bind_rows(
+        rotorua_buoy_pro_data |>
+          dplyr::filter(!is.na(pH)) |>
+          dplyr::transmute(datetime = lubridate::as_datetime(DateTime, tz = "Etc/GMT-12"),
+                           depth_m = DptSns, value = pH, source = "new buoy"),
+        rotorua_old_buoy_data |>
+          dplyr::filter(var_abbr == "c_ph", !is.na(qc_value)) |>
+          dplyr::transmute(datetime = datetime, depth_m = as.numeric(gsub("[^0-9]", "", var_ref_id)) / 100,
+                           value = qc_value, source = "old buoy")
+      ) |>
+        dplyr::arrange(source, datetime, depth_m) |>
+        dplyr::mutate(qc_in_range = value > 4 & value < 11)
+    }
+  ),
+
   # Daily mean profiler data (0.5 m depth bins) for pH and the variables measured alongside it
   tar_target(
     buoy_profile_daily, {
