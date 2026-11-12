@@ -42,6 +42,7 @@ tar_source(
     here::here("R", "niwa_hourly_to_aeme_met.R"),
     here::here("R", "format_dyresm_inflow.R"),
     here::here("R", "read_pc10_loads.R"),
+    here::here("R", "latest_helpers.R"),
     here::here("R", "pc10_loads_helpers.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
@@ -99,6 +100,15 @@ list(
     # aeme_onedrive_rds below); locally, sync once then trust the cache so
     # repeat renders don't re-download every time.
     cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    deployment = "main"
+  ),
+  # Downloadable GLM-AED set-up of the latest baseline (rotorua-pc10/latest/output/glm_aed_setup.zip, written by R/run_latest.R),
+  # served by website/rotorua-glm-latest-run.qmd. Falls back to the local mirror when no OneDrive token is set.
+  tar_target(
+    latest_setup_zip,
+    sync_latest_setup_zip(here::here("website", "downloads", "glm_aed_setup.zip")),
+    format = "file",
+    cue = tar_cue(mode = "always"),   # cheap: the OneDrive manifest check skips an unchanged download; the target only changes when the zip does
     deployment = "main"
   ),
   tar_target(
@@ -939,6 +949,27 @@ list(
   ),
   tar_target(
     aeme_baseline_pc10, readRDS(aeme_base_pc10_file)
+  ),
+  # Alternate PC10 baseline on the survey (GNS) hypsograph (gns_hyps_model); everything else identical to
+  # aeme_base_pc10_file. Used by calibration/all_stage/export_latest.R with LATEST_HYPS=gns.
+  tar_target(
+    aeme_base_pc10_gns_file,
+    build_calib_base_aeme(
+      aeme_download_file = aeme_onedrive_rds,
+      hyps_no_hole = gns_hyps_model,
+      era5_corrected_hourly = era5_corrected_hourly,
+      inflows = rotorua_inflow_list_matrix_pc10[[1]],
+      zone_heights = zone_heights,
+      weir_params = weir_params,
+      aed_models_alum = aed_models_alum,
+      model = model,
+      ext_elev = ext_elev,
+      alum_nml_file = file.path(aeme_onedrive_lake_rotorua_dir, "aed", "aed_original.nml"),
+      out_file = here::here("aeme_base_pc10_gns.rds"),
+      build_path = here::here("calibration", "base_build_pc10_gns"),
+      old_buoy_wq = old_buoy_wq
+    ),
+    format = "file"
   ),
 
   #* Data inventory ----

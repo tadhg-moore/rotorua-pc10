@@ -69,3 +69,10 @@ make_setup_zip <- function(latest, zip_file) {
     "Inflow concentrations are in GLM-AED units (mmol/m3), flows in m3/s."), file.path(stage, "README.txt"))
   zip_file <- file.path(normalizePath(dirname(zip_file), mustWork = TRUE), basename(zip_file)); unlink(zip_file); zip::zip(zip_file, files = list.files(stage, recursive = FALSE), root = stage, mode = "cherry-pick"); invisible(zip_file)
 }
+
+#' Get the downloadable set-up zip of the latest baseline into `dest`: from OneDrive (rotorua-pc10/latest/output) when a token is set, else from the local mirror.
+#' Needs R/sync_aeme_onedrive.R sourced when the OneDrive branch is used. Returns `dest`.
+sync_latest_setup_zip <- function(dest, mirror = here::here("onedrive_mirror", "rotorua-pc10", "latest", "output", "glm_aed_setup.zip")) {
+  if (nzchar(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))) return(sync_onedrive_file("rotorua-pc10/latest/output/glm_aed_setup.zip", dest))
+  stopifnot(file.exists(mirror)); dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE); file.copy(mirror, dest, overwrite = TRUE); dest
+}

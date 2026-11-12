@@ -4,7 +4,6 @@ fix_hyps <- function(aeme, lake_elev) {
   lke <- AEME::lake(aeme)
   # lake_elev <- lke$elevation - 5
   # Round lake_elev up to the nearest 0.2
-  browser()
   lake_elev_rnd <- ceiling(lake_elev / 0.2) * 0.2
   
   
@@ -26,11 +25,11 @@ fix_hyps <- function(aeme, lake_elev) {
   # aeme <- AEME::add_hypsograph(aeme = aeme, hypsograph = hyps2)
   return(hyps2)
   
-  hyps3 <- AEME::get_hypsograph(aeme)
-  AEME::plot_hyps(aeme, add_surface = T)
-  plot(hyps$area, hyps$depth, type = "l", xlab = "Area (m²)", ylab = "Depth (m)", main = "Hypsograph")
-  points(hyps2$area, hyps2$depth, col = "red", pch = 19)
-  abline(h = 0, v = 80000000, col = "blue", lty = 2)
+  # hyps3 <- AEME::get_hypsograph(aeme)
+  # AEME::plot_hyps(aeme, add_surface = T)
+  # plot(hyps$area, hyps$depth, type = "l", xlab = "Area (m²)", ylab = "Depth (m)", main = "Hypsograph")
+  # points(hyps2$area, hyps2$depth, col = "red", pch = 19)
+  # abline(h = 0, v = 80000000, col = "blue", lty = 2)
 }
 
 update_hyps <- function(aeme, hyps) {
@@ -41,8 +40,6 @@ update_hyps <- function(aeme, hyps) {
     dplyr::pull(elev)
   lke$elevation <- hyps_elev
   AEME::lake(aeme) <- lke
-  
-  browser()
   
   inp$init_depth <- abs(min(hyps$depth))
   inp$init_profile$depth <- c(0, abs(min(hyps$depth)))
