@@ -2387,7 +2387,8 @@ list(
   ),
 
   #* Thermal structure and internal-load flux estimates ----
-  tar_target(lake_hyps, hyps_below_surface(corr_hyps)),
+  # GNS survey hypsograph (full basin, to 53.5 m) since 2026-11-13; previously hyps_below_surface(corr_hyps) (42.65 m, 80.65 km2)
+  tar_target(lake_hyps, hyps_below_surface(gns_hyps)),
   tar_target(
     ctd_thermal,
     lake_ctd_2026 |>
