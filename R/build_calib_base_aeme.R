@@ -71,7 +71,7 @@ build_calib_base_aeme <- function(aeme_download_file, hyps_no_hole,
     AEME::remove_param() |>
     AEME::reset_wbal_param() |>
     AEME::add_hypsograph(hyps_no_hole) |>
-    AEME::set_initial_conditions(depth = 21) |>
+    AEME::set_initial_conditions(depth = abs(min(hyps_no_hole$depth))) |>
     AEME::add_met(era5_corrected_hourly) |>
     AEME::add_inflows(inflows) |>
     AEME::add_param(sed_params) |>
