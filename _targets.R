@@ -1396,7 +1396,7 @@ list(
           dplyr::transmute(datetime = datetime, depth_m = as.numeric(gsub("[^0-9]", "", var_ref_id)) / 100,
                            value = qc_value, source = "old buoy")
       ) |>
-        dplyr::arrange(source, datetime, depth_m) |>
+        dplyr::arrange(datetime, depth_m, source) |>
         dplyr::mutate(qc_in_range = value > 4 & value < 11)
     }
   ),
