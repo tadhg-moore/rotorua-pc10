@@ -17,12 +17,9 @@ resources:
 ```{r download-link}
 #| echo: false
 #| output: asis
-zf <- file.path(here::here("onedrive_mirror", "rotorua-pc10", "latest", "output"), "glm_aed_setup.zip")
-if (file.exists(zf)) {
-  dir.create(here::here("website", "downloads"), showWarnings = FALSE); file.copy(zf, here::here("website", "downloads", "glm_aed_setup.zip"), overwrite = TRUE)
-  cat(sprintf("**[Download the GLM-AED set-up (zip, %.0f MB)](downloads/glm_aed_setup.zip)**: namelists, AED files, all boundary files (meteorology, 13 inflows, outflow) and the calibrated parameters. Add the GLM-AED alum executable to run it.
+zf <- targets::tar_read(latest_setup_zip)   # website/downloads/glm_aed_setup.zip, synced from OneDrive by the targets pipeline
+cat(sprintf("**[Download the GLM-AED set-up (zip, %.0f MB)](downloads/glm_aed_setup.zip)**: namelists, AED files, all boundary files (meteorology, 13 inflows, outflow) and the calibrated parameters. Add the GLM-AED alum executable to run it.
 ", file.size(zf) / 1e6))
-}
 ```
 
 ::: {.callout-note}
