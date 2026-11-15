@@ -380,10 +380,10 @@ list(
   ),
   tar_target(
     rotorua_era5_50yr_hr_file,
-    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly_1976-2025.csv",
-                       here::here("data", "processed", "rotorua_era5_hourly_1976-2025.csv")),
+    sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly_1972-2026.csv",
+                       here::here("data", "processed", "rotorua_era5_hourly_1972-2026.csv")),
     format = "file",
-    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    # cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
