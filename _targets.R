@@ -43,6 +43,7 @@ tar_source(
     here::here("R", "format_dyresm_inflow.R"),
     here::here("R", "read_pc10_loads.R"),
     here::here("R", "latest_helpers.R"),
+    here::here("R", "obs_priority_met.R"),
     here::here("R", "pc10_loads_helpers.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
@@ -383,7 +384,7 @@ list(
     sync_onedrive_file("rotorua-pc10/data/processed/rotorua_era5_hourly_1972-2026.csv",
                        here::here("data", "processed", "rotorua_era5_hourly_1972-2026.csv")),
     format = "file",
-    # cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   tar_target(
@@ -2110,7 +2111,8 @@ list(
                                   elev = lake_meta$elevation, tz = scenario_tz)
     },
     pattern = map(scenario_delta_grid),
-    iteration = "list"
+    iteration = "list",
+    cue = tar_cue(mode = "never")
   ),
   tar_target(
     scenario_hourly_met, {
@@ -2131,7 +2133,8 @@ list(
         seed = 42, expand = TRUE, verbose = FALSE)
     },
     pattern = map(scenario_daily_met),
-    iteration = "list"
+    iteration = "list",
+    cue = tar_cue(mode = "never")
   ),
 
   #* 4b. TRANSIENT scenarios: one continuous series per GCM x SSP (plus a
@@ -2233,10 +2236,28 @@ list(
   tar_target(
     whaka_rain_return_levels, compute_rain_return_levels(whaka_rain_record)
   ),
+  # Measured-first record (R/obs_priority_met.R): Whakarewarewa gauge / airport / lake buoy wherever they exist,
+  # bias-corrected ERA5 only for the gaps. Used for the thresholds and for the observed annual indices.
+  tar_target(
+    met_obs_priority,
+    build_obs_priority_met(whaka = pc10_climate_met, airport = airport_met_aeme,
+                           airport_to_lake = niwa_to_buoy_bias_correction,
+                           buoy = all_buoy_met_data, era5 = era5_corrected_hourly)
+  ),
   tar_target(
     extreme_thresholds,
+    compute_extreme_thresholds_obs(met_obs_priority, scenario_ref_years,
+                                   rain_thresholds = whaka_rain_thresholds)
+  ),
+  # The earlier definition (wind and temperature from bias-corrected ERA5 alone), kept for comparison.
+  tar_target(
+    extreme_thresholds_era5,
     compute_extreme_thresholds(era5_corrected_hourly, scenario_ref_years,
                                rain_thresholds = whaka_rain_thresholds)
+  ),
+  tar_target(
+    obs_annual_extremes,
+    compute_annual_extreme_indices_obs(met_obs_priority, extreme_thresholds, 1975:2025)
   ),
   tar_target(
     baseline_extreme_indices, {
