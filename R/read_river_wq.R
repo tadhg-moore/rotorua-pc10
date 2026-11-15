@@ -74,11 +74,40 @@ river_wq_inflow_key <- function() {
   )
 }
 
+#' Correct lake TP for silica/arsenic interference in the 2010-2019 BOPRC method
+#'
+#' Formula and period from the "Metat data" sheet of "Rotorua S2 & S5 data 1989_2026.xlsx"
+#' (University of Waikato correction from duplicate P and ion analyses; see also Hamill 2022):
+#'   TP_corr = -3.29420378427001 + C + 0.976716336192513 * TP_old  (mg/m^3), C = 1.82648605256361 for Lake Rotorua,
+#' applied from 20 August 2010 (start of analysis at the BOPRC lab) to September 2018 inclusive, plus July to
+#' September 2019 (gap between the end of the trial and adoption of the new method). Trial (Oct 2018 - Jun 2019) and
+#' new-method (from Oct 2019) results are not adjusted.
+#' BOPRC supplies values already corrected for July 2015 onwards (Aquarius era) but not for Aug 2010 - Jun 2015
+#' (transposed from Lakewatch). Already-corrected values are recognised because they back-transform exactly to whole
+#' mg/m^3 (supplied TP is otherwise almost always whole mg/m^3), so BOPRC-corrected values are not corrected again.
+#' Apply it only to TP as supplied: a few supplied values are not whole numbers, so a second pass would change them.
+#'
+#' @param date sample dates; @param tp TP as supplied (mg/m^3)
+#' @return list(tp = corrected TP, status = "corrected here" / "corrected by BOPRC" / "not in correction period")
+correct_lake_tp <- function(date, tp) {
+  a <- 0.976716336192513; b <- -3.29420378427001 + 1.82648605256361
+  in_window <- (date >= as.Date("2010-08-20") & date <= as.Date("2018-09-30")) |
+    (date >= as.Date("2019-07-01") & date <= as.Date("2019-09-30"))
+  back <- (tp - b) / a
+  already <- is.finite(tp) & abs(back - round(back)) < 1e-4 & abs(tp - round(tp)) > 1e-6
+  fix <- in_window & is.finite(tp) & !already
+  status <- ifelse(!is.finite(tp), NA_character_,
+                   ifelse(fix, "corrected here", ifelse(in_window, "corrected by BOPRC", "not in correction period")))
+  list(tp = ifelse(fix, b + a * tp, tp), status = status)
+}
+
 #' Lake chemistry from the PC10 Jun-26 "Rotorua S2 & S5 data 1989_2026.xlsx"
 #'
 #' Reads both site sheets, trims the padded headers, and returns one row per
 #' sample with snake-case names (units mg/m^3 except pH, NTU, Secchi m).
 #' `layer` is INT (integrated epilimnion), HYP (discrete hypolimnion) or BOT.
+#' TP is corrected consistently for the 2010-2019 method interference (`correct_lake_tp()`);
+#' `tp_supplied` keeps the value as supplied and `tp_correction` says what was done.
 read_lake_chem_2026 <- function(file) {
   sheets <- readxl::excel_sheets(file)
   sheets <- sheets[grepl("data", sheets, ignore.case = TRUE) &
@@ -99,6 +128,9 @@ read_lake_chem_2026 <- function(file) {
       tkn = `TKN (mg/m3)`, turb = `Turbidity (NTU)`, ph = `pH (pH Units)`,
       secchi = `Secchi (m)`, al = `Al (mg/m3)`
     ) |>
+    dplyr::mutate(tp_supplied = tp,
+                  tp_correction = correct_lake_tp(date, tp)$status,
+                  tp = correct_lake_tp(date, tp)$tp) |>
     dplyr::arrange(site, layer, date)
 }
 

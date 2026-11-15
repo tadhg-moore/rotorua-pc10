@@ -34,7 +34,9 @@ format_chem_for_aeme <- function(df) {
   
   df_long <- df |> 
     dplyr::mutate(Date = as.Date(Date),
-                  DepthFrom = dplyr::coalesce(DepthFrom, 0)) |> 
+                  DepthFrom = dplyr::coalesce(DepthFrom, 0),
+                  # consistent 2010-2019 TP interference correction (R/read_river_wq.R)
+                  `TP (mg/m^3)` = correct_lake_tp(Date, `TP (mg/m^3)`)$tp) |>
     dplyr::select(AquariusID, Date, DepthFrom,
                   `TP (mg/m^3)`, `TN (mg/m^3)`, `CHLA (mg/m^3)`, `NNN (mg/m^3)`,
                   `NH4-N (mg/m^3)`, `DRP (mg/m^3)`,

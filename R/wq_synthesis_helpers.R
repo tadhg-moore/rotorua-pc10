@@ -418,23 +418,39 @@ thermal_structure <- function(df, h, ..., min_dt = 1, min_depths = 5) {
     dplyr::group_by(..., date) |>
     dplyr::filter(dplyr::n_distinct(depth_m) >= min_depths) |>
     dplyr::group_modify(\(d, k) {
-      # 1 m bins (old buoy has paired sensors 0.5 m apart near the bottom)
-      d <- d |> dplyr::mutate(depth_m = round(depth_m)) |>
-        dplyr::group_by(depth_m) |> dplyr::summarise(t = mean(temp_c), .groups = "drop") |>
-        dplyr::arrange(depth_m)
-      dt <- d$t[1] - d$t[nrow(d)]
-      # Thermocline searched between 3 m and 2 m above the bottom, so that neither
-      # near-surface diurnal warming nor the near-bed boundary-layer gradient is
-      # taken as the (hypolimnion-bounding) thermocline
-      up <- d[d$depth_m >= 3 & d$depth_m <= max(d$depth_m) - 2, ]
-      td <- if (dt >= min_dt && nrow(up) >= 3)
-        suppressWarnings(rLakeAnalyzer::thermo.depth(up$t, up$depth_m, Smin = 0.05)) else NA_real_
-      ss <- suppressWarnings(rLakeAnalyzer::schmidt.stability(d$t, d$depth_m, h$area, h$depth))
-      tibble::tibble(t_surf = d$t[1], t_bot = d$t[nrow(d)], d_temp = dt,
-                     thermo_depth = ifelse(is.finite(td), td, NA_real_),
-                     schmidt = ss, max_depth = max(d$depth_m))
+      b <- bin_profile_1m(d$depth_m, d$temp_c)
+      td <- thermocline_depth(b$depth, b$temp, min_dt = min_dt, binned = TRUE)
+      ss <- suppressWarnings(rLakeAnalyzer::schmidt.stability(b$temp, b$depth, h$area, h$depth))
+      tibble::tibble(t_surf = b$temp[1], t_bot = b$temp[nrow(b)], d_temp = b$temp[1] - b$temp[nrow(b)],
+                     thermo_depth = td, schmidt = ss, max_depth = max(b$depth))
     }) |>
     dplyr::ungroup()
+}
+
+#' Mean temperature in 1 m depth bins (the old buoy has paired sensors 0.5 m apart near the bottom)
+bin_profile_1m <- function(depth, temp) {
+  ok <- is.finite(depth) & is.finite(temp); z <- round(depth[ok])
+  t <- tapply(temp[ok], z, mean); data.frame(depth = as.numeric(names(t)), temp = unname(as.numeric(t)))
+}
+
+#' Thermocline depth of one profile: the single definition used by the WQ targets
+#' (thermal_structure) and by the paired calibration term (a_thermo_* in
+#' calibration/step2/alum_resid.R)
+#'
+#' 1 m bins; NA when the top-bottom difference is below `min_dt` (mixed);
+#' rLakeAnalyzer::thermo.depth (Smin 0.05) searched between 3 m and 2 m above the
+#' deepest reading, so that neither near-surface diurnal warming nor the near-bed
+#' boundary-layer gradient is taken as the (hypolimnion-bounding) thermocline.
+#' Compare model and observations over the same depth range (pairing, or the
+#' model cut at the deepest observed depth).
+thermocline_depth <- function(depth, temp, min_dt = 1, top = 3, bot_gap = 2, binned = FALSE) {
+  b <- if (binned) data.frame(depth = depth, temp = temp) else bin_profile_1m(depth, temp)
+  b <- b[order(b$depth), ]
+  if (nrow(b) < 2 || b$temp[1] - b$temp[nrow(b)] < min_dt) return(NA_real_)
+  up <- b[b$depth >= top & b$depth <= max(b$depth) - bot_gap, ]
+  if (nrow(up) < 3) return(NA_real_)
+  td <- suppressWarnings(rLakeAnalyzer::thermo.depth(up$temp, up$depth, Smin = 0.05))
+  if (is.finite(td)) td else NA_real_
 }
 
 #' Hypolimnetic accumulation fluxes from discrete chemistry

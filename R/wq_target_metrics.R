@@ -290,13 +290,19 @@ rmse_skill <- function(obs, sim) { ok <- is.finite(obs) & is.finite(sim); sqrt(m
 #' @param hyps hypsograph from hyps_below_surface().
 #' @param from first date used (spin-up excluded).
 #' @param int_max,hyp_range,bot_min depth (m) of the INT, HYP and BOT layers.
+#' @param buoy_max deepest depth (m) the buoy thermistor/DO chains reach (both
+#'   buoys: 20-21 m). Model temperature and DO used for the buoy-based metrics
+#'   (bottom layer, stratification, thermocline, anoxia, oxygen depletion) are cut
+#'   here, so a deeper model basin is not compared with a shallower observed one
+#'   (on the 25 m GNS basin this moved the summer thermocline by ~4 m).
 #' @return list(prof_daily, thermal_daily, chem_long, hod, hflux) ready for
 #'   wq_target_signatures().
 model_target_inputs <- function(sim, obs_chem, hyps, from = as.Date("2000-07-01"),
-                                int_max = 8, hyp_range = c(12, 18), bot_min = 18) {
+                                int_max = 8, hyp_range = c(12, 18), bot_min = 18, buoy_max = 20.5) {
   sim <- sim[sim$date >= from, ]
   g <- function(v) sim[sim$var_sim == v, c("date", "depth", "value")]
   tmp <- g("HYD_temp"); oxy <- g("CHM_oxy")
+  tmp <- tmp[tmp$depth <= buoy_max, ]; oxy <- oxy[oxy$depth <= buoy_max, ]
   lay <- function(d, lo, hi) d |> dplyr::filter(depth >= lo, depth <= hi) |>
     dplyr::group_by(date) |> dplyr::summarise(v = mean(value), .groups = "drop")
   prof <- lay(tmp, 0, 1.5) |> dplyr::rename(t_surf = v) |>
