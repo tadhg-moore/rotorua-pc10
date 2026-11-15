@@ -98,7 +98,9 @@ old_buoy_wq_data <- function(data) {
         var_abbr == "t_wtr" ~ "HYD_temp"
       ),
       value = qc_value,
-      Date = lubridate::ceiling_date(datetime, unit = "day")
+      # NZST calendar day of the readings, stamped at 12:00 UTC like the profiler data (aeme_buoy_data), so that
+      # as.Date() and AEME (which works in UTC) both give the right day. ceiling_date() put most readings on the next day.
+      Date = as.POSIXct(paste(as.Date(datetime, tz = "Etc/GMT-12"), "12:00:00"), tz = "UTC")
     ) |> 
     dplyr::group_by(Date, depth, var_aeme) |>
     dplyr::summarise(
