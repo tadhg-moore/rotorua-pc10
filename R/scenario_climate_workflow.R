@@ -13,9 +13,9 @@
 #' use the right wall-clock hour.
 #'
 #' @param file path to the main hourly file, e.g.
-#'   `data/processed/rotorua_era5_hourly_1988-2024.csv`
+#'   `data/processed/rotorua_era5_hourly_1972-2026.csv`
 #' @param extend_file optional second file (e.g. `rotorua_era5_hourly.csv`,
-#'   2011-2025) used only for rows later than the last row of `file`; the two
+#'   2011-2025; no rows are added now that the main file runs to 2026) used only for rows later than the last row of `file`; the two
 #'   files are identical where they overlap. Only columns present in both are
 #'   kept (the older file also has `MET_ppsnow`, which nothing uses).
 #' @param lat,lon,tz attached as attributes, as `metscale` functions expect
