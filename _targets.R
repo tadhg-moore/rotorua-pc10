@@ -1765,8 +1765,8 @@ list(
 
   #* Reference/future windows for delta-change (matches scenario_batch_rotorua.R) ----
   # 30-year reference (WMO normal), ending at the last CMIP6 historical year. Changed from
-  # 1995:2014 (20 years) on 2026-11-09. The ERA5 baseline only starts in 1988, so the
-  # reference-period GCM-direct (QDM) mapping, which needs both series, cannot use 1985-2014.
+  # 1995:2014 (20 years) on 2026-11-09. The ERA5 baseline starts in 1972 (rotorua_era5_50yr_hr_file,
+  # to July 2026), so the reference-period GCM-direct (QDM) mapping, which needs both series, covers 1985-2014.
   tar_target(
     scenario_ref_years, 1985:2014
   ),
@@ -1782,7 +1782,7 @@ list(
   #* 1-2. Bias-correct hourly ERA5 against the buoy; bias-corrected daily baseline ----
   tar_target(
     era5_hourly_met,
-    # 1988-2024 file, extended to 2025 from the older 2011-2025 file
+    # 1972-2026 (July) file; extend_file only adds rows later than its last row (none now that the main file runs to 2026)
     read_era5_hourly_met(rotorua_era5_50yr_hr_file, lat = lake_meta$latitude,
                          lon = lake_meta$longitude, tz = scenario_tz,
                          extend_file = rotorua_era5_hr_file)
@@ -2110,8 +2110,7 @@ list(
                                   elev = lake_meta$elevation, tz = scenario_tz)
     },
     pattern = map(scenario_delta_grid),
-    iteration = "list",
-    cue = tar_cue(mode = "never")
+    iteration = "list"
   ),
   tar_target(
     scenario_hourly_met, {
@@ -2132,8 +2131,7 @@ list(
         seed = 42, expand = TRUE, verbose = FALSE)
     },
     pattern = map(scenario_daily_met),
-    iteration = "list",
-    cue = tar_cue(mode = "never")
+    iteration = "list"
   ),
 
   #* 4b. TRANSIENT scenarios: one continuous series per GCM x SSP (plus a
