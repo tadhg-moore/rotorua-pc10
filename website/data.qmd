@@ -1,7 +1,6 @@
 ---
 title: "Data Inputs"
 format: html
-editor: visual
 ---
 
 This page summarises the data inputs used in the [`targets`](targets.qmd) pipeline for the Lake Rotorua modelling project (`_targets.R`), where each dataset comes from, and where it can be obtained.
@@ -60,8 +59,8 @@ A live, searchable version of this inventory (generated automatically from the p
 
 ## Access notes
 
--   **LERNZMP API** (`https://api.limnotrack.com`) — used for lake buoy data, lake shape/metadata, depth contours and the base AEME model object. Requires an API key stored in the `LERNZMP_API` (or `LERNZMP_KEY`) environment variable (see `.Renviron`, not committed to the repository).
--   **BoPRC datasets** (lake level, CTD, chemistry, alum dosing) are supplied directly by Bay of Plenty Regional Council as Excel/CSV exports and stored under `data/raw/` (not version-controlled — see [`data-request.qmd`](data-request.qmd) for the running list of requested datasets).
--   **NIWA climate data** is downloaded from the [NIWA Climate Data Portal (CliFlo)](https://cliflo.niwa.co.nz/) for station #1770 and stored under `data/raw/niwa_climate/`.
--   **CMIP6 / VCSN data** is sourced from the [Ministry for the Environment Climate Data Portal](https://climatedata.environment.govt.nz/), with the bulk NetCDF archive mirrored on an institutional shared drive (`Z:`) due to its size (\>4 TB nationally).
--   Processed/derived outputs (e.g. `gcm_point_data_lake_11133.csv`, `cmip6_gcm_metadata.csv`, `rotorua_light_data.csv`) are written to `data/processed/` by the pipeline and are reproducible from the raw inputs above.
+- **LERNZMP API** (`https://api.limnotrack.com`) — used for lake buoy data, lake shape/metadata, depth contours and the base AEME model object. Requires an API key stored in the `LERNZMP_API` (or `LERNZMP_KEY`) environment variable (see `.Renviron`, not committed to the repository).
+- **BoPRC datasets** (lake level, CTD, chemistry, alum dosing) are supplied directly by Bay of Plenty Regional Council as Excel/CSV exports and stored under `data/raw/` (not version-controlled — see [`data-request.qmd`](data-request.qmd) for the running list of requested datasets).
+- **NIWA climate data** is downloaded from the [NIWA Climate Data Portal (CliFlo)](https://cliflo.niwa.co.nz/) for station #1770 and stored under `data/raw/niwa_climate/`.
+- **CMIP6 / VCSN data** is sourced from the [Ministry for the Environment Climate Data Portal](https://climatedata.environment.govt.nz/), with the bulk NetCDF archive mirrored on an institutional shared drive (`Z:`) due to its size (\>4 TB nationally).
+- Processed/derived outputs (e.g. `gcm_point_data_lake_11133.csv`, `cmip6_gcm_metadata.csv`, `rotorua_light_data.csv`) are written to `data/processed/` by the pipeline and are reproducible from the raw inputs above.
