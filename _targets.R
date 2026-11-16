@@ -2436,6 +2436,9 @@ list(
   tar_target(lake_met_daily_tbl, lake_met_daily(all_buoy_met_data, era5_corrected_hourly)),
   tar_target(lake_stability, lake_stability_daily(buoy_profile_long, lake_met_daily_tbl, lake_hyps, buoy_events$daily)),
   tar_target(strat_drivers, strat_transitions(lake_stability, buoy_events$stratified)),
+  # Hourly view of the 19 Dec 2014 - 8 Feb 2015 stratified period (old buoy, 15-min record)
+  tar_target(strat_event_1415, buoy_event_hourly(rotorua_old_buoy_data, era5_corrected_hourly,
+                                                 "2014-12-01", "2015-02-21")),
   tar_target(
     hod_events, {
       th <- buoy_thermal |>
