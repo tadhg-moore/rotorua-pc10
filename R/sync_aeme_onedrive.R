@@ -3,6 +3,18 @@
 #' ONEDRIVE_TOKEN_HASH env vars (see create_onedrive_token.R for how the
 #' token is produced).
 get_onedrive_session <- function() {
+  # Local sessions (no ONEDRIVE_TOKEN_ENCRYPTED): use the cached Microsoft365R login in the AzureR token
+  # cache (created once with Microsoft365R::get_business_onedrive(); see create_onedrive_token.R).
+  # ONEDRIVE_TOKEN_HASH picks the cached token if several exist.
+  if (!nzchar(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))) {
+    hash <- Sys.getenv("ONEDRIVE_TOKEN_HASH")
+    if (!nzchar(hash)) {
+      toks <- AzureAuth::list_azure_tokens()
+      if (!length(toks)) stop("No OneDrive token: set ONEDRIVE_TOKEN_* or log in once with Microsoft365R::get_business_onedrive()")
+      hash <- names(toks)[1]
+    }
+    return(Microsoft365R::get_business_onedrive(token = AzureAuth::load_azure_token(hash)))
+  }
   bundle    <- openssl::base64_decode(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED"))
   iv        <- bundle[1:16]
   encrypted <- bundle[17:length(bundle)]

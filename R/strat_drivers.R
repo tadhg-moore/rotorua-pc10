@@ -9,18 +9,22 @@
 #' Wind, air temperature and RH are the buoy's (15-min to 2021, hourly from 2022) on days
 #' with >= 75% coverage, otherwise ERA5-BC (bias-corrected to the buoy). Shortwave and
 #' longwave are always ERA5-BC: the buoy has no longwave and only patchy shortwave from 2022.
-#' Wind is converted from the anemometer height (`wind_height`, assumed about 2 m) to 10 m
-#' with metscale::met_wind_at_height() (neutral log profile, its default water-surface
-#' z0 = 0.2 mm; factor about 1.17 at 2 m). This applies to ERA5-BC too: its wind is
-#' bias-corrected to the buoy (same mean over 2007-2021, r = 0.90 daily), so it is at buoy
-#' height, not 10 m.
+#' Wind is used as supplied at 10 m: all_buoy_met_data is already converted to 10 m
+#' (metscale::wind_at_height() in old_buoy_met_data() and buoy_to_aeme_met()), and ERA5-BC
+#' wind is bias-corrected to that 10 m buoy wind. `wind_height` is only for input at another
+#' height (converted with metscale::met_wind_at_height()).
 #' `wind_rms` (root mean square of the sub-daily wind) carries the daily wind stress, and
 #' `p_wind` is the mean wind energy flux rho_a Cd U10^3 (W/m2).
 #' @param buoy_met all_buoy_met_data (Date, MET_wndspd, MET_tmpair, MET_humrel)
 #' @param era5 era5_corrected_hourly (Date, MET_*)
-lake_met_daily <- function(buoy_met, era5, wind_height = 2, cd = 1.3e-3) {
+#' @param rh_source "era5" (default) or "buoy". The old-buoy RH reads 5-9% low against ERA5
+#'   and the airport and the new buoy RH drifts from 2024 (see buoy_met_fit_ref in _targets.R; ERA5 RH agrees with the 2022-23 buoy and airport within 2-3%),
+#'   which inflates the latent heat loss; ERA5 RH is used for the heat budget.
+lake_met_daily <- function(buoy_met, era5, wind_height = 10, cd = 1.3e-3, rh_source = c("era5", "buoy")) {
+  rh_source <- match.arg(rh_source)
   tz <- "Etc/GMT-12"
-  to10 <- function(m) metscale::met_wind_at_height(as.data.frame(m), from = wind_height, to = 10)
+  to10 <- function(m) if (wind_height == 10) as.data.frame(m) else
+    metscale::met_wind_at_height(as.data.frame(m), from = wind_height, to = 10)
   b <- buoy_met |>
     dplyr::select(Date, MET_wndspd, MET_tmpair, MET_humrel) |>
     to10() |>
@@ -50,7 +54,7 @@ lake_met_daily <- function(buoy_met, era5, wind_height = 2, cd = 1.3e-3) {
                      wind_src = ifelse(ok_w, "buoy", "ERA5-BC"),
                      wind = ifelse(ok_w, u, e_u), wind_rms = ifelse(ok_w, u_rms, e_u_rms),
                      wind_max = ifelse(ok_w, u_max, e_u_max), p_wind = 1.2 * cd * ifelse(ok_w, u3, e_u3),
-                     tair = ifelse(ok_t, ta, e_ta), rh = ifelse(ok_rh, rh, e_rh), sw, lw)
+                     tair = ifelse(ok_t, ta, e_ta), rh = if (rh_source == "buoy") ifelse(ok_rh, rh, e_rh) else e_rh, sw, lw)
 }
 
 #' Daily surface heat budget (W/m2, positive = into the lake) from daily-mean met and the
@@ -154,9 +158,14 @@ strat_transitions <- function(stab, stratified, window = 10) {
   on <- stratified |>
     dplyr::filter(vapply(start, function(s) mixed_obs(s - 1:3) >= 2, TRUE)) |>
     dplyr::transmute(type = "onset", day0 = start, start, end, duration)
+  # Breakdown day: the first observed mixed day in the last 3 days of the period or the day after.
+  # The period itself bridges mixed gaps of up to 2 days, so a lake that mixes and then briefly
+  # re-stratifies (e.g. 7-8 Feb 2015) would otherwise be dated after the event that mixed it.
+  first_mixed <- function(e) { dd <- e + (-2:1); m <- d$d_temp[match(dd, d$date)] <= 1; as.numeric(dd[which(m %in% TRUE)[1]]) }
   br <- stratified |>
     dplyr::filter(vapply(end, function(e) mixed_obs(e + 1:3) >= 2, TRUE)) |>
-    dplyr::transmute(type = "breakdown", day0 = end + 1, start, end, duration)
+    dplyr::mutate(day0 = as.Date(vapply(end, first_mixed, 0), origin = "1970-01-01")) |>
+    dplyr::transmute(type = "breakdown", day0, start, end, duration)
   ev <- dplyr::bind_rows(on, br) |> dplyr::mutate(id = dplyr::row_number())
   w3 <- function(e, v, f) { x <- d[[v]][match(e - 2:0, d$date)]; if (all(is.na(x))) NA_real_ else f(x, na.rm = TRUE) }
   ev <- ev |>
@@ -186,4 +195,39 @@ doy_mean <- function(date, x, win = 15) {
   doy <- as.integer(format(date, "%j"))
   clim <- vapply(1:366, function(j) { dd <- abs(doy - j); dd <- pmin(dd, 366 - dd); mean(x[dd <= win], na.rm = TRUE) }, 0)
   clim[doy]
+}
+
+#' Hourly view of one stratified period from the old buoy's 15-min record
+#'
+#' Hourly means of the water temperature at every sensor depth, DO at 1 m and 20 m, and the
+#' buoy met (wind converted from 1.5 m to 10 m with metscale::wind_at_height(), as in
+#' old_buoy_met_data()), with ERA5-BC radiation and ERA5 RH, and the hourly surface heat budget.
+#' @param raw rotorua_old_buoy_data (var_ref_id, datetime, qc_value)
+#' @param era5 era5_corrected_hourly
+buoy_event_hourly <- function(raw, era5, from, to, tz = "Etc/GMT-12") {
+  f <- as.POSIXct(from, tz = tz); t <- as.POSIXct(to, tz = tz)
+  h <- raw |>
+    dplyr::filter(datetime >= f, datetime < t, is.finite(qc_value)) |>
+    dplyr::mutate(hour = lubridate::floor_date(lubridate::with_tz(datetime, tz), "hour")) |>
+    dplyr::group_by(var_ref_id, hour) |>
+    dplyr::summarise(v = mean(qc_value), .groups = "drop")
+  wt <- h |> dplyr::filter(grepl("^t_wtr_d", var_ref_id)) |>
+    dplyr::transmute(hour, depth = as.numeric(sub("t_wtr_d", "", var_ref_id)) / 100, temp = v)
+  wide <- h |> dplyr::filter(!grepl("^t_wtr_d", var_ref_id)) |>
+    tidyr::pivot_wider(names_from = var_ref_id, values_from = v)
+  met <- wide |> dplyr::transmute(hour, wind = metscale::wind_at_height(w_spd_h150, from = 1.5, to = 10),
+                                  wdir = w_dir_h150, tair = t_air_h150, rain = pp_rain_h150,
+                                  do_1 = c_do_d100, do_20 = c_do_d2000)
+  era <- era5 |>
+    dplyr::filter(Date >= f, Date < t) |>
+    dplyr::transmute(hour = lubridate::with_tz(Date, tz), sw = MET_radswd, lw = MET_radlwd, rh = MET_humrel)
+  hh <- wt |>
+    dplyr::group_by(hour) |>
+    dplyr::summarise(t_s = temp[which.min(depth)], t_b = temp[which.max(depth)], .groups = "drop") |>
+    dplyr::mutate(d_temp = t_s - t_b,
+                  d_rho = rLakeAnalyzer::water.density(t_b) - rLakeAnalyzer::water.density(t_s)) |>
+    dplyr::left_join(met, by = "hour") |>
+    dplyr::left_join(era, by = "hour")
+  hh <- dplyr::bind_cols(hh, surface_heat_flux(hh$t_s, hh$tair, hh$rh, hh$wind, hh$sw, hh$lw))
+  list(hourly = hh, temp = wt)
 }
