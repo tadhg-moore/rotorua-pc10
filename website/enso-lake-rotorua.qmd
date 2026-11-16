@@ -39,10 +39,12 @@ ph <- table(statsnz_soi$phase)
 #| fig-cap: "3-month SOI (Stats NZ 1990-2025; NOAA SOI rescaled to it before 1990 and in 2026) with El Niño (SOI <= -1) and La Niña (SOI >= +1) months shaded."
 soi_long |> filter(date >= as.Date("1975-01-01")) |>
   ggplot(aes(date, soi3, fill = phase)) +
-  geom_col(width = 31) +
   geom_hline(yintercept = c(-1, 1), lty = 2, colour = "grey40") +
+  geom_col(width = 31) +
   scale_fill_manual(values = c("El Nino" = "#b2652b", Neutral = "grey75", "La Nina" = "#1b7f8a"), labels = c("El Niño", "Neutral", "La Niña")) +
-  labs(x = NULL, y = "3-month SOI", fill = NULL) + theme_minimal() + theme(legend.position = "top")
+  scale_x_date(date_breaks =  "5 years", date_labels = "%Y") +
+  labs(x = NULL, y = "3-month SOI", fill = NULL) + 
+  theme(legend.position = "top")
 ```
 
 **Observations before reanalysis.** Meteorology is from NIWA station 1770 (Rotorua airport; rain 1982-, temperature, wind, radiation 1991-) and MetService NZROA hourly (1993-2023, used for wind direction). ERA5 (a reanalysis) is only used where no observation exists. Inflows are the measured BOPRC gauge records (not the generated inflow files); lake data are the BOPRC Lake Rotorua monitoring and CTD profiles.
