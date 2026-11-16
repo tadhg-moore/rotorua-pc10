@@ -1713,7 +1713,7 @@ resp_tab |> left_join(wt, by = "variable") |>
   - Bottom DRP reached 108–118 mg/m³ and TP 157–162 mg/m³.
   - Surface DRP and TP rose to the highest values since 2010.
 - **Reading.** With external loads at a minimum, this points to an internal source. The sediment P was no longer being capped by Puarenga alum, and was then released under strong, long stratification. See @sec-pause for the sequence and why the model misses it.
-- **Recovery.** TP fell back in 2022/23, after the resumption of dosing (64 t Al from Puarenga in 2022/23) and in a cool, wet, well-mixed summer.
+- **Recovery.** TP fell back in 2022/23, after the resumption of dosing (64 t Al from Puarenga in 2022/23) and in a cool, wet, well-mixed summer (@sec-2023-decline).
 
 **2023 – 2026: wet years, high N loads, rising TN and chl-a.**
 
@@ -2067,6 +2067,153 @@ ggplot(s_chem, aes(date, value, colour = layer)) + s_bands() +
 - Once the lake mixed, surface TP rose from 27–29 mg/m³ in December–January to 38–40 mg/m³ in February and 47–50 mg/m³ in March. These were the highest surface values since 2010.
 - Chl-a rose again to 17–19 mg/m³ in March.
 - Surface TP stayed near 40 mg/m³ until June. This is the 2021/22 peak of the excursion in @sec-pause.
+
+### 2022–2023: phosphorus drawn down across the lake {#sec-2023-decline}
+
+After the 2021–2022 peak (@sec-pause), lake TP and DRP fell to some of the lowest values of the alum era and stayed low through 2023. This section asks what drew the phosphorus down: the larger alum dose in the Puarenga, flushing by the very wet 2023, or the lack of summer internal loading.
+
+```{r}
+#| label: d23-data
+d_lo <- as.Date("2020-07-01"); d_hi <- as.Date("2024-07-01")
+lake_vol_m3 <- sum(diff(hyps$depth) * (head(hyps$area, -1) + tail(hyps$area, -1)) / 2)   # about 830 Mm3
+mo_of <- function(d) as.Date(format(d, "%Y-%m-15"))
+d_flow <- pflow |>
+  filter(inflow %in% c("All inflows", "Ohau outflow", "Puarenga", "Utuhina"), date >= d_lo, date < d_hi) |>
+  mutate(mo = mo_of(date)) |> group_by(mo, inflow) |>
+  summarise(vol = sum(flow_m3s) * 86400 / 1e6, .groups = "drop") |>
+  pivot_wider(names_from = inflow, values_from = vol) |>
+  rename(inflow = `All inflows`, outflow = `Ohau outflow`, q_pua = Puarenga, q_utu = Utuhina)
+d_load <- sl |> group_by(hy) |> summarise(load_tp = sum(tp), .groups = "drop")
+d_tp <- lw |> filter(layer == "INT", variable %in% c("tp", "drp"), date >= d_lo, date < d_hi) |>
+  mutate(mo = mo_of(date)) |> group_by(mo, variable) |> summarise(v = mean(value), .groups = "drop") |>
+  pivot_wider(names_from = variable, values_from = v)
+d_al <- alum |> filter(date >= d_lo, date < d_hi) |> mutate(mo = mo_of(date)) |> group_by(mo) |>
+  summarise(Puarenga = sum(puarenga_kg_al) / 1000, Utuhina = sum(utuhina_kg_al) / 1000, estimated = any(estimated), .groups = "drop")
+# monthly TP budget: annual PC10 load spread by monthly inflow; export = outflow x integrated TP; lake mass = TP x volume
+d_m <- d_flow |> mutate(hy = wq_hy(mo)) |> group_by(hy) |> mutate(share = inflow / sum(inflow)) |> ungroup() |>
+  left_join(d_load, by = "hy") |> mutate(load_t = load_tp * share) |>
+  left_join(d_tp, by = "mo") |> left_join(d_al, by = "mo") |> arrange(mo) |>
+  mutate(mass_t = tp * lake_vol_m3 / 1e9, export_t = outflow * tp / 1000,
+         pua_mgL = Puarenga / q_pua, utu_mgL = Utuhina / q_utu)
+budget <- function(from, to) {
+  w <- d_m |> filter(mo >= as.Date(from), mo <= as.Date(to), is.finite(mass_t))
+  dm <- tail(w$mass_t, 1) - w$mass_t[1]; ld <- sum(w$load_t[-1]); ex <- sum(w$export_t[-1])
+  tibble(Period = paste(format(as.Date(from), "%b %Y"), "–", format(as.Date(to), "%b %Y")),
+         `Change in lake TP (t)` = dm, `Inflow load (t)` = ld, `Outflow export (t)` = ex, `Net retained in sediment (t)` = ld - ex - dm)
+}
+d_bud <- bind_rows(budget("2021-05-15", "2022-01-15"), budget("2022-05-15", "2023-01-15"), budget("2023-05-15", "2024-01-15"))
+```
+
+```{r}
+#| label: fig-d23-monthly
+#| fig-cap: "July 2020 – June 2024, monthly. (a) Integrated TP and DRP (mean of Sites 2 and 5). (b) Aluminium dosed (t Al per month, stacked; pale bars estimated, see @fig-pause-sequence), with the Puarenga dose concentration (Al dosed per unit of stream flow, mg/L, black line, right axis). (c) Modelled total inflow and Ohau outflow (Mm³ per month, PC10 loads). (d) Lake TP budget: lake TP mass (integrated TP × lake volume), and the inflow load and outflow export accumulated from July 2020. Grey band: the 2022–2023 decline."
+#| fig-height: 9
+d_band <- annotate("rect", xmin = as.Date("2022-06-01"), xmax = as.Date("2024-01-31"), ymin = -Inf, ymax = Inf, fill = "grey70", alpha = 0.25)
+d_x <- scale_x_date(limits = c(d_lo, d_hi), date_breaks = "6 months", date_labels = "%b\n%Y", expand = c(0, 0))
+g1 <- d_m |> select(mo, TP = tp, DRP = drp) |> pivot_longer(-mo) |> filter(is.finite(value)) |>
+  ggplot(aes(mo, value, colour = name)) + d_band + geom_line() + geom_point(size = 1) +
+  scale_colour_manual(values = c(TP = "#009E73", DRP = "#CC79A7")) + d_x + labs(x = NULL, y = "Integrated (mg/m³)", colour = NULL, tag = "a")
+g2 <- d_m |> select(mo, Puarenga, Utuhina, estimated) |> pivot_longer(c(Puarenga, Utuhina), names_to = "stream") |>
+  mutate(stream = factor(stream, c("Utuhina", "Puarenga"))) |>
+  ggplot(aes(mo, value)) + d_band +
+  geom_col(aes(fill = stream, alpha = estimated), width = 25) +
+  geom_line(data = d_m, aes(y = pua_mgL * 10), colour = "black") +
+  scale_fill_manual(values = c(Puarenga = "#0072B2", Utuhina = "#56B4E9"), breaks = c("Puarenga", "Utuhina")) +
+  scale_alpha_manual(values = c(`FALSE` = 1, `TRUE` = 0.45), guide = "none") +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 10, name = "Puarenga dose (mg Al/L)")) +
+  d_x + labs(x = NULL, y = "t Al / month", fill = NULL, tag = "b")
+g3 <- d_m |> select(mo, Inflow = inflow, `Ohau outflow` = outflow) |> pivot_longer(-mo) |>
+  ggplot(aes(mo, value, colour = name)) + d_band + geom_line() +
+  scale_colour_manual(values = c(Inflow = "#2166AC", `Ohau outflow` = "#B2182B")) + d_x + labs(x = NULL, y = "Mm³ / month", colour = NULL, tag = "c")
+g4 <- d_m |> filter(is.finite(mass_t)) |>
+  mutate(`Lake TP mass` = mass_t, `Inflow load, cumulative` = cumsum(load_t), `Outflow export, cumulative` = cumsum(export_t)) |>
+  select(mo, `Lake TP mass`, `Inflow load, cumulative`, `Outflow export, cumulative`) |> pivot_longer(-mo) |>
+  ggplot(aes(mo, value, colour = name)) + d_band + geom_line() + geom_point(size = 0.8) +
+  scale_colour_manual(values = c(`Lake TP mass` = "black", `Inflow load, cumulative` = "#2166AC", `Outflow export, cumulative` = "#B2182B")) +
+  d_x + labs(x = NULL, y = "t P", colour = NULL, tag = "d")
+(g1 / g2 / g3 / g4) & theme(legend.position = "right")
+```
+
+```{r}
+#| label: tbl-d23-budget
+#| tbl-cap: "Lake TP budget from May to January in three years: the change in lake TP mass, the modelled inflow load (PC10 loads, all inflows), the export through the Ohau outflow (outflow volume × integrated TP), and the balance, which is the net amount retained in the lake sediment (settling and binding, less any sediment release). Approximate: the lake mass uses the integrated samples for the whole water column, and the monthly loads spread each annual load by the monthly inflow."
+d_bud |> mutate(across(where(is.numeric), \(x) round(x, 1))) |> kable()
+```
+
+```{r}
+#| label: tbl-d23-years
+#| tbl-cap: "Candidate drivers, hydrological years 2019–2026 (July–June), with the 2011–2026 median. Lake: integrated TP and DRP (annual means) and January–March bottom DRP. Weather: ERA5-BC rainfall and December–February air temperature and wind. Stratification: share of buoy December–February days stratified. Loads: modelled total inflow and external TP load (PC10). Alum: Al dosed in each stream and the Puarenga dose concentration (Al per unit of stream flow). Lake Al: integrated total Al (annual mean)."
+d_lal <- lw |> filter(layer == "INT", variable == "al") |> mutate(hy = wq_hy(date)) |> group_by(hy) |> summarise(lake_al = mean(value), .groups = "drop")
+d_bot <- lw |> filter(layer == "BOT", variable == "drp", as.integer(format(date, "%m")) %in% 1:3) |> mutate(hy = wq_hy(date)) |>
+  group_by(hy) |> summarise(bot_drp = mean(value), .groups = "drop")
+d_st <- be$daily |> mutate(hy = wq_hy(date), m = as.integer(format(date, "%m"))) |> filter(m %in% c(12, 1, 2)) |>
+  group_by(hy) |> summarise(strat = mean(is_stratified(d_rho), na.rm = TRUE), .groups = "drop")
+d_alh <- alum |> mutate(hy = wq_hy(date)) |> group_by(hy) |> summarise(al_pua = sum(puarenga_kg_al) / 1000, al_utu = sum(utuhina_kg_al) / 1000, .groups = "drop")
+d_qp <- pflow |> filter(inflow == "Puarenga") |> mutate(hy = wq_hy(date)) |> group_by(hy) |> summarise(q_pua = sum(flow_m3s) * 86400 / 1e6, .groups = "drop")
+d_yr <- dla |> select(hy, lake_tp, lake_drp, rain_mm, tair_djf, wind_djf, inflow_Mm3, load_tp) |>
+  left_join(d_bot, by = "hy") |> left_join(d_st, by = "hy") |> left_join(d_alh, by = "hy") |> left_join(d_qp, by = "hy") |>
+  left_join(d_lal, by = "hy") |> mutate(pua_mgL = al_pua / q_pua) |> filter(hy >= 2011, hy <= 2026)
+d_cols <- c("lake_tp", "lake_drp", "bot_drp", "rain_mm", "tair_djf", "wind_djf", "strat", "inflow_Mm3", "load_tp", "al_pua", "al_utu", "pua_mgL", "lake_al")
+d_lab <- c("Lake TP (mg/m³)", "Lake DRP (mg/m³)", "Bottom DRP, Jan–Mar (mg/m³)", "Rain (mm)", "Air temp, Dec–Feb (°C)", "Wind, Dec–Feb (m/s)",
+           "Stratified, Dec–Feb", "Inflow (Mm³)", "External TP load (t)", "Al, Puarenga (t)", "Al, Utuhina (t)", "Puarenga dose (mg Al/L)", "Lake Al (µg/L)")
+d_tab <- d_yr |> filter(hy >= 2019) |> select(hy, all_of(d_cols)) |>
+  bind_rows(d_yr |> summarise(across(all_of(d_cols), \(x) median(x, na.rm = TRUE))) |> mutate(hy = NA)) |>
+  mutate(strat = scales::percent(strat, 1),
+         across(c(lake_tp, bot_drp, inflow_Mm3, load_tp, al_pua, al_utu, lake_al, rain_mm), \(x) round(x)),
+         lake_drp = round(lake_drp, 1), across(c(tair_djf, wind_djf), \(x) round(x, 1)), pua_mgL = round(pua_mgL, 2),
+         hy = ifelse(is.na(hy), "Median 2011–26", as.character(hy)))
+names(d_tab) <- c("Year", d_lab)
+d_tab |> mutate(across(everything(), as.character)) |> pivot_longer(-Year, names_to = "Driver") |>
+  pivot_wider(names_from = Year, values_from = value) |>
+  kableExtra::kbl(align = c("l", rep("r", nrow(d_tab)))) |>
+  kableExtra::kable_styling(bootstrap_options = c("condensed", "hover"), full_width = FALSE, font_size = 12) |>
+  kableExtra::column_spec(which(d_tab$Year == "2023") + 1, bold = TRUE, background = "#F2F2F2")
+```
+
+```{r}
+#| label: d23-numbers
+b22 <- d_bud[2, ]; b21 <- d_bud[1, ]
+y <- function(h, v) d_yr[[v]][d_yr$hy == h]
+```
+
+**The decline.**
+
+- Integrated TP fell from 44–49 mg/m³ in March–May 2022 to 10–15 mg/m³ from October 2022 to January 2023 (@fig-d23-monthly). DRP fell from 11–20 to 1–2 mg/m³.
+- TP stayed mostly between 12 and 24 mg/m³ through 2023 and only rose again in February–April 2024.
+- The annual mean for hydrological year 2023 (`r round(y(2023, "lake_tp"))` mg/m³) was close to the alum-era median, but the decline came from the highest level since 2010.
+- It happened at both sites and in all layers. Summer 2022/23 bottom DRP was only `r sprintf("%.1f", y(2023, "bot_drp"))` mg/m³, against `r round(y(2022, "bot_drp"))` the summer before.
+
+**Where the phosphorus went** (@tbl-d23-budget).
+
+- From May 2022 to January 2023 the lake lost about `r round(-b22[[2]])` t of TP, while the inflows brought in about `r round(b22[[3]])` t.
+- Only about `r round(b22[[4]])` t left through the Ohau outflow. The rest, about `r round(b22[[5]])` t, must have settled into the sediment and stayed there.
+- That is about `r sprintf("%.0f", b22[[5]] / b21[[5]])` times the net retention over the same months a year earlier (`r round(b21[[5]])` t). Retention stayed high the following year (about `r round(d_bud[[5]][3])` t from May 2023 to January 2024), with a high inflow load but no rise in lake TP.
+- **The decline was a sink, not a flush.** Outflow volumes in 2022–2023 were the highest of 2011–2026 (60–80 Mm³ a month), but the export rose only modestly, because the lake TP it carries was falling.
+- **The inflows did not dilute the lake either.** In hydrological year 2023 the inflow water averaged about `r round(y(2023, "load_tp") / y(2023, "inflow_Mm3") * 1000)` mg TP/m³, richer than the lake. The external TP load (`r round(y(2023, "load_tp"))` t) was the largest since 2018, almost twice the `r round(y(2022, "load_tp"))` t of 2022.
+
+**Candidate drivers** (@tbl-d23-years).
+
+1. **More alum entered the lake, but the dose rate was not unusual.**
+   - Puarenga dosing delivered `r round(y(2023, "al_pua"))` t Al in 2022/23, the most since 2012, and the Utuhina added `r round(y(2023, "al_utu"))` t.
+   - Dosing is paced to stream flow, and Puarenga flow (`r round(y(2023, "q_pua"))` Mm³) was the highest of 2011–2026. The average dose concentration (`r sprintf("%.2f", y(2023, "pua_mgL"))` mg Al/L) was therefore normal for 2022–2026, and below the 0.7–0.95 mg/L of 2012–2016.
+   - Within the year, the dose concentration roughly doubled, from 0.23–0.26 mg/L in July–August 2022 to 0.53–0.80 mg/L from September 2022 to April 2023. With the high flows, that put 5–8 t Al a month into the lake, against 2–3 t in the winter months before.
+   - Lake-water Al (`r round(y(2023, "lake_al"))` µg/L) was the highest annual mean in the record. More aluminium floc in the water column would bind DRP and help carry P to the bed, and would rebuild the sediment's P-binding layer after the 2018–2020 pause.
+   - The step-up in dosing in September 2022 coincides with the period of strongest net retention (@fig-d23-monthly b, d).
+   - But a high dose rate on its own was not enough. The Puarenga dose concentration was at its highest of the whole period, 0.9–1.0 mg Al/L, in November 2021 – January 2022, during the 2021/22 release, and did not prevent it. This points to the sediment binding taking time to rebuild after the pause, and to the weather of the following summer mattering as well.
+2. **The summer of 2022/23 gave no internal loading.**
+   - It was cool (December–February air temperature `r sprintf("%.1f", y(2023, "tair_djf"))` °C), wet (`r round(y(2023, "rain_mm"))` mm over the year, the wettest in the record), and windy (December–February mean wind `r sprintf("%.1f", y(2023, "wind_djf"))` m/s, against a median of `r sprintf("%.1f", median(d_yr$wind_djf))`).
+   - The lake was stratified on only `r scales::percent(y(2023, "strat"), 1)` of buoy days in December–February (buoy coverage was partial that summer), with no bottom anoxia.
+   - Without anoxic periods the sediment did not release P, so the usual summer bottom-water build-up and the March–May surface peak that follows it did not happen. The March 2023 rise (24 mg/m³) was small.
+3. **The P released in 2021–2022 was still in the water column.** TP was at its highest in autumn 2022 (44–49 mg/m³), and much of it was particulate (TP − DRP of 20–40 mg/m³). It settled out once the lake mixed in winter, as it does every winter. The anomaly is that it was not replaced the following summer.
+
+**Reading.**
+
+- The 2022–2023 decline is best explained by two things acting together:
+  - the restored alum cap: renewed Puarenga dosing since November 2020, stepped up in September 2022 and delivering a record mass of aluminium with the high flows;
+  - a summer too cool and windy to stratify for long, so the weakened sediment had no anoxic periods in which to release P.
+- Flushing and dilution were not the cause. The outflow removed only a fraction of the P, and the inflows were richer in P than the lake.
+- The two causes cannot be fully separated with one year. Summer 2023/24 offers a partial test: it stratified, with bottom anoxia (@fig-thermo-summers), yet surface TP stayed near 15 mg/m³ until February 2024. That is consistent with a sediment cap that had been rebuilt by then. The rise to 32 mg/m³ in March–April 2024 shows that internal loading returned once a strong stratified summer coincided with it.
+- **For the model:** the calibrated model has a constant sediment P release (@sec-pause), so it cannot reproduce a year in which the release switches off. This year, with record alum mass, record inflow and weak stratification, is a useful test for any sediment P scheme that is added.
 
 ## Observational drivers {#sec-drivers}
 
