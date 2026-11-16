@@ -39,7 +39,7 @@ The aim is to estimate how climate change alters nutrient dynamics and the troph
 
 | Component | Where | What it gives us |
 |---|---|---|
-| Bias-corrected hourly baseline | `era5_corrected_hourly`, `era5_corrected_daily_baseline` (ERA5-Land 2011 to 2026, corrected against the buoy) | Realistic weather to perturb |
+| Bias-corrected hourly baseline | `era5_corrected_hourly`, `era5_corrected_daily_baseline` (ERA5-Land 1972 to July 2026, corrected against the buoy and the MetService airport) | Realistic weather to perturb |
 | CMIP6 delta factors | `gcm_monthly_deltas_df` (7 GCMs × SSP126/245/370/585 × windows 2015–2040, 2041–2070, 2071–2100, against 1995 to 2014; `NZESM` has no SSP585) | Monthly change factors (additive for temperature and shortwave, ratio for rain, wind, humidity) |
 | Scenario forcing | `scenario_daily_met` → `scenario_hourly_met` (83 combinations, gated off by default) | Hourly AEME forcing per GCM × SSP × window |
 | Extreme-event indices | `scenario_extreme_indices`, `climate-extreme-events.qmd` | Storm and heatwave frequency, for interpretation |
@@ -88,9 +88,9 @@ flowchart LR
 ### Climate forcing
 
 - Use the existing delta-change forcing (`scenario_hourly_met`). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.
-- Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.
+- Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1972 to July 2026 record), with each GCM/SSP/window delta applied to it.
 - **How the ERA5 record maps to the climate windows.** The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (`scenario_ref_years`), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).
-- The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.
+- The remaining ERA5 years are not wasted: 1972–1990 can serve as spin-up weather, and 2021–2026 can be used for hindcast checks. Optionally run the full 54 years (1972 to July 2026) once as a robustness test of the baseline choice.
 - **NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. `metscale::climate_point_monthly_climatology()` decodes each GCM's calendar (including the 360-day `NZESM`) before averaging, as described on the [climate-scenario workflow page](climate-scenario-workflow.qmd). NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.
 - Keep **hindcast** (no delta) as the reference, and compare future windows with it, not with observations.
 - Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on `NorESM2-MM` alone, which is at the low end.
@@ -284,7 +284,7 @@ bind_rows(b30, sig) |>
 
 ### Simulation length
 
-A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:
+A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline used at first was also short; the corrected record now runs from 1972 to July 2026. The reasons:
 
 - **Variability.** Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).
 - **Rare events.** Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.
@@ -294,7 +294,7 @@ What is needed to get 30 years:
 
 | Item | Status | Action |
 |---|---|---|
-| Weather baseline 1991 to 2020 | The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected | Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) |
+| Weather baseline 1991 to 2020 | Originally the corrected daily series covered only 2011 to 2026; the corrected record now covers 1972 to July 2026 (`era5_corrected_hourly`) | The same daily bias correction (fitted on the buoy overlap, assumed stationary) is applied to the full 1972 to 2026 record, then disaggregated to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) |
 | Inflows | The historical inflow series covers 1959 to 2022, so 1991 to 2020 is available | None, but check the inflow record is consistent through the period |
 | Alum dosing in the baseline | Dosing history starts in 2006 and 2010 | Use a constant present-day dose for the slices (scenario A1) rather than the history |
 
