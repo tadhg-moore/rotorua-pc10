@@ -4,7 +4,7 @@
 
 #' Read a whitespace "year + 12 months" table (CPC SOI, PSL TPI style)
 #' into long monthly format.
-.read_year_month_table <- function(url, na_values = c(-99.9, -99.99, -999, -999.9, -9999,
+.read_year_month_table <- function(url, na_values = c(-99, -99.9, -99.99, -999, -999.9, -9999,
                                                       99.9, 99.99, 999, 999.9)) {
   txt <- readLines(url, warn = FALSE)
   rows <- strsplit(trimws(txt), "\\s+")
@@ -38,9 +38,7 @@ get_enso_indices <- function(cache_dir = here::here("data", "raw", "enso"),
   # Southern Oscillation Index (standardised Tahiti - Darwin), NOAA CPC
   soi_txt <- readLines("https://www.cpc.ncep.noaa.gov/data/indices/soi", warn = FALSE)
   i0 <- grep("STANDARDIZED", soi_txt, ignore.case = TRUE)
-  soi_txt <- soi_txt[(i0[1] + 1):length(soi_txt)]
-  tf <- tempfile(fileext = ".txt"); writeLines(soi_txt, tf)
-  soi <- .read_fwf_year_month(tf)
+  soi <- .read_soi_fixed_width(soi_txt[(i0[1] + 1):length(soi_txt)])
 
   # Oceanic Nino Index (ONI, Nino3.4 3-month running mean), NOAA CPC
   oni <- readr::read_table("https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
@@ -78,9 +76,16 @@ get_enso_indices <- function(cache_dir = here::here("data", "raw", "enso"),
   out
 }
 
-# CPC SOI file is fixed-width-ish: year then 12 values separated by spaces
-.read_fwf_year_month <- function(path) {
-  .read_year_month_table(path)
+# CPC SOI file is fixed width: year (4 chars) then 12 values of 6 chars ("%4d%6.1f"). Values run
+# together when large or missing (e.g. "-1.1-999.9"), so it cannot be split on whitespace.
+.read_soi_fixed_width <- function(lines, na_value = -999.9) {
+  lines <- lines[grepl("^[0-9]{4}", lines)]
+  yr <- as.integer(substr(lines, 1, 4))
+  vals <- vapply(lines, function(l) as.numeric(substring(l, 5 + 6 * (0:11), 4 + 6 * (1:12))), numeric(12))
+  tibble::tibble(year = rep(yr, each = 12), month = rep(1:12, times = length(yr)), value = as.vector(vals)) |>
+    dplyr::mutate(value = ifelse(value <= na_value + 0.05, NA_real_, value),
+                  date = as.Date(sprintf("%d-%02d-01", year, month))) |>
+    dplyr::select(date, value)
 }
 
 #' Classify ENSO phase from a monthly SOI series (Stats NZ convention).
@@ -138,9 +143,10 @@ read_statsnz_soi <- function(path = here::here("data", "raw", "enso",
                      levels = c("El Nino", "Neutral", "La Nina")))
 }
 
-#' Long SOI series with phases: Stats NZ 3-month SOI from 1990, and the NOAA
-#' CPC SOI (3-month trailing mean) rescaled to it before 1990 using a linear fit
-#' over the overlap.
+#' Long SOI series with phases: Stats NZ 3-month SOI where available (1990 to the
+#' end of the Stats NZ release), and the NOAA CPC SOI (3-month trailing mean)
+#' rescaled to it before 1990 and after the Stats NZ series ends (2026), using a
+#' linear fit over the overlap.
 #' @param indices output of get_enso_indices() (needs index == "SOI")
 #' @param statsnz output of read_statsnz_soi()
 #' @return tibble: date, soi3, phase (El Nino / Neutral / La Nina), source
