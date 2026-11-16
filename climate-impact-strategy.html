@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tadhg Moore">
-<meta name="dcterms.date" content="2026-11-15">
+<meta name="dcterms.date" content="2026-11-16">
 
 <title>Climate-Change Impact Strategy for Lake Rotorua – Rotorua Lake Modelling</title>
 <style>
@@ -307,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 15, 2026</p>
+      <p class="date">November 16, 2026</p>
     </div>
   </div>
   
@@ -342,7 +342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>Bias-corrected hourly baseline</td>
-<td><code>era5_corrected_hourly</code>, <code>era5_corrected_daily_baseline</code> (ERA5-Land 2011 to 2026, corrected against the buoy)</td>
+<td><code>era5_corrected_hourly</code>, <code>era5_corrected_daily_baseline</code> (ERA5-Land 1972 to July 2026, corrected against the buoy and the MetService airport)</td>
 <td>Realistic weather to perturb</td>
 </tr>
 <tr class="even">
@@ -498,9 +498,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="4.2" class="anchored" data-anchor-id="climate-forcing"><span class="header-section-number">4.2</span> Climate forcing</h3>
 <ul>
 <li>Use the existing delta-change forcing (<code>scenario_hourly_met</code>). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.</li>
-<li>Use <strong>30-year time slices</strong>, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the <strong>1991 to 2020 ERA5 climate normal</strong> (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.</li>
+<li>Use <strong>30-year time slices</strong>, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the <strong>1991 to 2020 ERA5 climate normal</strong> (taken from the 1972 to July 2026 record), with each GCM/SSP/window delta applied to it.</li>
 <li><strong>How the ERA5 record maps to the climate windows.</strong> The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (<code>scenario_ref_years</code>), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).</li>
-<li>The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.</li>
+<li>The remaining ERA5 years are not wasted: 1972–1990 can serve as spin-up weather, and 2021–2026 can be used for hindcast checks. Optionally run the full 54 years (1972 to July 2026) once as a robustness test of the baseline choice.</li>
 <li><strong>NZESM (360-day calendar).</strong> No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. <code>metscale::climate_point_monthly_climatology()</code> decodes each GCM’s calendar (including the 360-day <code>NZESM</code>) before averaging, as described on the <a href="./climate-scenario-workflow.html">climate-scenario workflow page</a>. NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.</li>
 <li>Keep <strong>hindcast</strong> (no delta) as the reference, and compare future windows with it, not with observations.</li>
 <li>Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on <code>NorESM2-MM</code> alone, which is at the low end.</li>
@@ -573,7 +573,7 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 </section>
 <section id="simulation-length" class="level3" data-number="4.4">
 <h3 data-number="4.4" class="anchored" data-anchor-id="simulation-length"><span class="header-section-number">4.4</span> Simulation length</h3>
-<p>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:</p>
+<p>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline used at first was also short; the corrected record now runs from 1972 to July 2026. The reasons:</p>
 <ul>
 <li><strong>Variability.</strong> Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).</li>
 <li><strong>Rare events.</strong> Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.</li>
@@ -596,8 +596,8 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 <tbody>
 <tr class="odd">
 <td>Weather baseline 1991 to 2020</td>
-<td>The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected</td>
-<td>Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5)</td>
+<td>Originally the corrected daily series covered only 2011 to 2026; the corrected record now covers 1972 to July 2026 (<code>era5_corrected_hourly</code>)</td>
+<td>The same daily bias correction (fitted on the buoy overlap, assumed stationary) is applied to the full 1972 to 2026 record, then disaggregated to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5)</td>
 </tr>
 <tr class="even">
 <td>Inflows</td>
@@ -1509,7 +1509,7 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Component <span class="pp">|</span> Where <span class="pp">|</span> What it gives us <span class="pp">|</span></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bias-corrected hourly baseline <span class="pp">|</span> <span class="in">`era5_corrected_hourly`</span>, <span class="in">`era5_corrected_daily_baseline`</span> (ERA5-Land 2011 to 2026, corrected against the buoy) <span class="pp">|</span> Realistic weather to perturb <span class="pp">|</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Bias-corrected hourly baseline <span class="pp">|</span> <span class="in">`era5_corrected_hourly`</span>, <span class="in">`era5_corrected_daily_baseline`</span> (ERA5-Land 1972 to July 2026, corrected against the buoy and the MetService airport) <span class="pp">|</span> Realistic weather to perturb <span class="pp">|</span></span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> CMIP6 delta factors <span class="pp">|</span> <span class="in">`gcm_monthly_deltas_df`</span> (7 GCMs × SSP126/245/370/585 × windows 2015–2040, 2041–2070, 2071–2100, against 1995 to 2014; <span class="in">`NZESM`</span> has no SSP585) <span class="pp">|</span> Monthly change factors (additive for temperature and shortwave, ratio for rain, wind, humidity) <span class="pp">|</span></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Scenario forcing <span class="pp">|</span> <span class="in">`scenario_daily_met`</span> → <span class="in">`scenario_hourly_met`</span> (83 combinations, gated off by default) <span class="pp">|</span> Hourly AEME forcing per GCM × SSP × window <span class="pp">|</span></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Extreme-event indices <span class="pp">|</span> <span class="in">`scenario_extreme_indices`</span>, <span class="in">`climate-extreme-events.qmd`</span> <span class="pp">|</span> Storm and heatwave frequency, for interpretation <span class="pp">|</span></span>
@@ -1558,9 +1558,9 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Climate forcing</span></span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use the existing delta-change forcing (<span class="in">`scenario_hourly_met`</span>). It keeps real weather sequences and shifts their statistics, which suits a model that needs realistic storms and calm spells.</span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1988 to 2024 record), with each GCM/SSP/window delta applied to it.</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use **30-year time slices**, not 10 or 15 years (see the next subsection for why and for the cost). The weather baseline for a slice is the **1991 to 2020 ERA5 climate normal** (taken from the 1972 to July 2026 record), with each GCM/SSP/window delta applied to it.</span>
 <span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**How the ERA5 record maps to the climate windows.** The window (2015–2040, 2041–2070, 2071–2100) only selects which monthly delta is applied; it does not select ERA5 years. Every window uses the same 30 ERA5 weather years (1991–2020), so differences between windows are purely the climate signal. The deltas are relative to the CMIP6 1995–2014 reference (<span class="in">`scenario_ref_years`</span>), which sits at the same centre (about 2005) as the 1991–2020 baseline, so the two are consistent. Keep the original ERA5 dates (1991–2020) in the model and label the run by window; relabelling the years to 2041–2070 gains nothing and causes leap-year problems (for example 2100 is not a leap year).</span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The remaining ERA5 years are not wasted: 1988–1990 can serve as spin-up weather, and 2021–2024 can be used for hindcast checks. Optionally run the full 37 years once as a robustness test of the baseline choice.</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The remaining ERA5 years are not wasted: 1972–1990 can serve as spin-up weather, and 2021–2026 can be used for hindcast checks. Optionally run the full 54 years (1972 to July 2026) once as a robustness test of the baseline choice.</span>
 <span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**NZESM (360-day calendar).** No long transient run is needed. Delta-change uses only 12 monthly factors per variable, and these are applied to the Gregorian ERA5 days, so the GCM calendar never enters the model. <span class="in">`metscale::climate_point_monthly_climatology()`</span> decodes each GCM's calendar (including the 360-day <span class="in">`NZESM`</span>) before averaging, as described on the <span class="co">[</span><span class="ot">climate-scenario workflow page</span><span class="co">](climate-scenario-workflow.qmd)</span>. NZESM contributes monthly means only; its daily variability is not used, as for the other GCMs.</span>
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Keep **hindcast** (no delta) as the reference, and compare future windows with it, not with observations.</span>
 <span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Use all 7 GCMs for the main set, because GCM spread dominates (annual warming for SSP585 by 2071 to 2100 ranges from +2.8 to +4.6 °C). Do not rely on <span class="in">`NorESM2-MM`</span> alone, which is at the low end.</span>
@@ -1754,7 +1754,7 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 <span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulation length</span></span>
 <span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline uses today is also short. The reasons:</span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>A 10-year run is too short for climate statements, and the 15 years of bias-corrected hourly ERA5-Land (2011 to 2026) that the pipeline used at first was also short; the corrected record now runs from 1972 to July 2026. The reasons:</span>
 <span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Variability.** Rainfall, inflow and bloom years in the Rotorua catchment swing with ENSO and decadal climate. A single decade can sit in one phase, so a 10-year difference between scenarios can reflect the weather sequence, not the climate signal. Thirty years is the standard averaging period and gives a much smaller sampling error on annual metrics such as TLI4 (about 40% smaller than for 10 years, as the error falls with the square root of the number of years).</span>
 <span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rare events.** Storms, heatwaves, calm spells and the blooms and anoxic periods that follow them need long samples to estimate how often they occur.</span>
@@ -1764,7 +1764,7 @@ Figure&nbsp;4: Distribution of annual mean air temperature and annual rainfall (
 <span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Item <span class="pp">|</span> Status <span class="pp">|</span> Action <span class="pp">|</span></span>
 <span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Weather baseline 1991 to 2020 <span class="pp">|</span> The corrected daily series covers only 2011 to 2026; ERA5 for 1988 to 2024 is now available but not bias-corrected <span class="pp">|</span> Apply the same daily bias correction (fitted on the buoy overlap, assumed stationary) to the 1988 to 2024 record, then disaggregate to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) <span class="pp">|</span></span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Weather baseline 1991 to 2020 <span class="pp">|</span> Originally the corrected daily series covered only 2011 to 2026; the corrected record now covers 1972 to July 2026 (<span class="in">`era5_corrected_hourly`</span>) <span class="pp">|</span> The same daily bias correction (fitted on the buoy overlap, assumed stationary) is applied to the full 1972 to 2026 record, then disaggregated to hourly using the 2011 to 2025 hourly donor. Fix the rainfall units first (gap 5) <span class="pp">|</span></span>
 <span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Inflows <span class="pp">|</span> The historical inflow series covers 1959 to 2022, so 1991 to 2020 is available <span class="pp">|</span> None, but check the inflow record is consistent through the period <span class="pp">|</span></span>
 <span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Alum dosing in the baseline <span class="pp">|</span> Dosing history starts in 2006 and 2010 <span class="pp">|</span> Use a constant present-day dose for the slices (scenario A1) rather than the history <span class="pp">|</span></span>
 <span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a></span>
