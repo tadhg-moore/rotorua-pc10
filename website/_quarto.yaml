@@ -25,7 +25,7 @@ website:
       - href: gantt.qmd
         text: "Project admin"
       - href: data.qmd
-        text: "Data preparation"
+        text: "Data"
       - href: burger-2007-benthic-fluxes.qmd
         text: "Background info"
       - href: rotorua-glm-config_v4.qmd
@@ -175,7 +175,7 @@ website:
         - href: presentations.qmd
           text: "Presentations"
         - href: research-overview.qmd
-          text: "Research Overview"
+          text: "Research Overview - Lake Research Group"
           target: _blank
         - href: modelling-updates.qmd
           text: "Modelling Updates"
