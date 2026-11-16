@@ -56,7 +56,7 @@ website:
         - href: resources.qmd
           text: "Resources"
     - id: data
-      title: "Data Preparation"
+      title: "Data"
       style: docked
       search: true
       contents:
@@ -66,6 +66,10 @@ website:
           text: "Data Request"
         - href: met-source-comparison.qmd
           text: "Met Source Comparison"
+        - href: climate-extreme-events.qmd
+          text: "Extreme & Storm Events"
+        - href: enso-lake-rotorua.qmd
+          text: "ENSO and Lake Rotorua"
         - href: light-data.qmd
           text: "Light Data (Kw)"
         - href: utuhina-flow.qmd
@@ -80,10 +84,6 @@ website:
           text: "Ōhau Channel Water Quality"
         - href: lake-water-quality-synthesis.qmd
           text: "Lake Water Quality Synthesis"
-        - href: cmip6-processing.qmd
-          text: "CMIP6 Processing"
-        - href: cmip6-visualisation.qmd
-          text: "Visualise CMIP6"
     - id: background
       title: "Background Info"
       style: docked
@@ -151,20 +151,20 @@ website:
         - href: rotorua-calibration-one-stage.qmd
           text: "One-stage calibration (updated exe)"
     - id: climate
-      title: "Climate Change Impacts"
+      title: "Climate Scenarios"
       style: docked
       search: true
       contents:
+        - href: cmip6-processing.qmd
+          text: "CMIP6 Processing"
+        - href: cmip6-visualisation.qmd
+          text: "Visualise CMIP6"
         - href: climate-impact-strategy.qmd
           text: "Climate Impact Strategy (draft)"
         - href: climate-scenario-workflow.qmd
           text: "Climate-Scenario Workflow"
         - href: transient-lake-runs.qmd
           text: "Transient Lake Runs"
-        - href: climate-extreme-events.qmd
-          text: "Extreme & Storm Events"
-        - href: enso-lake-rotorua.qmd
-          text: "ENSO and Lake Rotorua"
         - href: cmip-impact-modelling-approaches.qmd
           text: "Impact Modelling Review"
     - id: presentations
