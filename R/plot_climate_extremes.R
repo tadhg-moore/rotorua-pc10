@@ -62,7 +62,7 @@ plot_extreme_index_summary <- function(extremes_df, baseline_indices, indices) {
       x = NULL, y = "mean annual value (GCM range shown)", colour = "scenario",
       title = "Change in extreme/storm-event frequency and intensity",
       subtitle = paste0("Points = GCM-ensemble mean per scenario/window; bars = GCM min-max range; ",
-                        "dashed line = historical baseline (bias-corrected ERA5, 1995-2014)")
+                        "dashed line = historical baseline (bias-corrected ERA5, 1985-2014); thresholds fixed from measured records first")
     ) +
     ggplot2::theme_bw(base_size = 11) +
     ggplot2::theme(legend.position = "top", strip.background = ggplot2::element_blank())
