@@ -71,7 +71,13 @@ enso    <- tr("enso_indices")
 stab    <- tr("lake_stability")
 sdrv    <- tr("strat_drivers")
 
-theme_set(theme_bw(base_size = 11))
+theme_set(
+  theme_bw(base_size = 11) +
+    theme(
+      panel.grid.major = element_line(colour = "grey80", linewidth = 0.3),
+      panel.grid.minor = element_blank()
+    )
+)
 pal_site <- c("Site 2" = "#0072B2", "Site 5" = "#D55E00", "Lake (mean of sites)" = "black")
 pal_layer <- c(INT = "#009E73", HYP = "#E69F00", BOT = "#CC79A7")
 var_lab <- c(tp = "TP (mg/m³)", tn = "TN (mg/m³)", drp = "DRP (mg/m³)", nh4 = "NH4-N (mg/m³)",
