@@ -45,7 +45,18 @@ cd <- targets::tar_read(chem_data) |> mutate(Date = as.Date(Date)) |> filter(Dep
 lk <- cd |> mutate(ym = floor_date(Date, "month")) |> group_by(ym) |> summarise(TP = mean(`TP (mg/m^3)`, na.rm = TRUE) / 1000, TN = mean(`TN (mg/m^3)`, na.rm = TRUE) / 1000, DRP = mean(`DRP (mg/m^3)`, na.rm = TRUE) / 1000, `NH4-N` = mean(`NH4-N (mg/m^3)`, na.rm = TRUE) / 1000, NNN = mean(`NNN (mg/m^3)`, na.rm = TRUE) / 1000, .groups = "drop") |> pivot_longer(-ym, names_to = "variable", values_to = "lake") |> filter(is.finite(lake))
 om <- o |> group_by(ym, variable) |> summarise(outlet = mean(value), .groups = "drop") |> mutate(variable = as.character(variable)); lo <- inner_join(om, lk, by = c("ym", "variable")) |> mutate(variable = factor(variable, vorder)); lo$lab <- factor(vlab[as.character(lo$variable)], vlab)
 ls <- lo |> group_by(variable) |> summarise(n = n(), outlet_median = median(outlet), lake_median = median(lake), ratio_of_medians = median(outlet) / median(lake), r = cor(outlet, lake), r_spearman = cor(outlet, lake, method = "spearman"), .groups = "drop"); write_csv(ls |> mutate(across(where(is.numeric), \(x) signif(x, 3))), file.path(dat, "ohau_vs_lake.csv")); cat("\nOutlet against lake (same month):\n"); print(as.data.frame(ls |> mutate(across(where(is.numeric), \(x) round(x, 3)))), row.names = FALSE)
-ggsave(file.path(out, "ohau_vs_lake.png"), ggplot(lo, aes(lake, outlet)) + geom_abline(colour = "grey50") + geom_point(aes(colour = ym >= "2011-01-01"), size = 0.9, alpha = 0.6) + facet_wrap(~lab, scales = "free", ncol = 3) + scale_colour_manual(values = c(`FALSE` = "grey50", `TRUE` = "steelblue4"), labels = c(`FALSE` = "to 2010", `TRUE` = "2011 on"), name = NULL) + labs(x = "Lake, sites 2 and 5, top 5 m (monthly mean)", y = "Ohau Channel outlet (monthly mean)", subtitle = "Grey line: 1:1.") + theme_minimal(base_size = 9) + theme(legend.position = "bottom", plot.subtitle = element_text(size = 8)), width = 10, height = 7, dpi = 130, bg = "white")
+
+p <- ggplot(lo) + 
+  geom_abline(colour = "grey50") + 
+  geom_point(aes(lake, outlet, colour = ym >= "2011-01-01"), size = 0.9, alpha = 0) + 
+  geom_point(aes(outlet, lake), size = 0.9, alpha = 0.6) + 
+  facet_wrap(~lab, scales = "free", ncol = 3) +
+  scale_colour_manual(values = c(`FALSE` = "grey50", `TRUE` = "steelblue4"), labels = c(`FALSE` = "to 2010", `TRUE` = "2011 on"), name = NULL) + 
+  labs(x = "Lake, sites 2 and 5, top 5 m (monthly mean)", y = "Ohau Channel outlet (monthly mean)", subtitle = "Grey line: 1:1.") +
+  # coord_equal() +
+  theme_minimal(base_size = 9) + theme(legend.position = "bottom", plot.subtitle = element_text(size = 8))
+
+ggsave(file.path(out, "ohau_vs_lake.png"), p, width = 10, height = 7, dpi = 130, bg = "white")
 # ---- model against the outlet ----
 rdm <- function(tag, run) { f <- list.files(file.path("calibration/historical", paste0("out_", tag)), "^member_.*[.]rds$", full.names = TRUE)
   bind_rows(lapply(f, \(x) { m <- readRDS(x); m$daily |> filter(Date >= "2005-07-01") |> transmute(member = m$member, Date, TP = TOT_tp_surf * MP + DOPR, TN = TOT_tn_surf * MN + DONR, DRP = PHS_frp_surf * MP, `NH4-N` = NIT_amm_surf * MN, NNN = NIT_nit_surf * MN, TSS = TOT_tss_surf, `Water Temp` = temp_surf) })) |> mutate(run = run) }
