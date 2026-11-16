@@ -11,6 +11,7 @@ format:
     code-fold: true
     fig-width: 9
     fig-height: 5
+bibliography: references.bib
 execute:
   echo: false
   warning: false
@@ -126,7 +127,7 @@ ch_0106 <- mean_int("chla", 2001:2006); ch_1220 <- mean_int("chla", 2012:2020); 
 3. **A partial reversal since about 2016.** Over the last 10 years TP, TN and chl-a show significant increasing trends at both sites, and Secchi depth is decreasing at Site 5. Two things stand out:
    - **The 2020–2022 TP excursion.** Mean TP was ≈ `r round(tp_2122)` mg/m³ in 2021–2022. Bottom TP reached 160 mg/m³ and DRP 110–120 mg/m³ in summer 2021/22. Three things coincided:
      - a near-complete pause in Puarenga dosing (`r paste(format(pua_pause_main$start, "%b %Y"), "to", format(pua_pause_main$end, "%b %Y"))`);
-     - the strongest lake heatwave and the longest buoy-recorded stratification (70 days, Nov 2021 – Jan 2022);
+     - the strongest lake heatwave and the longest buoy-recorded stratification (at least 70 days, Nov 2021 – Jan 2022; @sec-strat2122);
      - two low-load years (external TP ≈ 28–29 t/y).
 
      TP returned to about 19 mg/m³ once dosing resumed and the very wet 2023 brought a well-mixed year.
@@ -146,8 +147,11 @@ ch_0106 <- mean_int("chla", 2001:2006); ch_1220 <- mean_int("chla", 2012:2020); 
 
 **Data-quality caveats.** These affect the interpretation of trends.
 
-- The lake DRP, NH₄, NOx and TP records show changes in reporting resolution: zeros and negatives in 2015–2020, non-integer TP in 2015–2018, and finer decimals from 2021. These point to laboratory or method changes, so the "increasing DRP" trend over the last 10 years is not reliable.
-- A synchronous TP rise and fall (2011–2019) across all streams, including spring-fed ones, is more likely analytical than catchment-driven.
+- **Method changes.** TP, DRP and TN were analysed by three laboratories and several methods [@hamill2022]. TN switched from TKN + NNN to direct persulphate TN in November 2009 (about 50 mg/m³ lower), which coincides with the TN step down.
+- **2010–2019 P method.** The BOPRC TP and DRP method used from August 2010 to September 2019 reads high, because silica and arsenic interference adds to the result.
+- **TP correction.** BOPRC applied the lake workbook's TP correction (TP_corr = 0.9767 TP − 1.47 mg/m³) to July 2015 – September 2019 but not to August 2010 – June 2015, which left an artificial step of about 2 mg/m³ in mid-2015. This analysis applies it to the whole period, which lowers 2011–2014 TP by about 1.9 mg/m³.
+- **Reporting resolution.** Zeros and negatives in 2015–2020 and finer decimals from 2021 mean the "increasing DRP" trend over the last 10 years is not reliable.
+- **Streams.** A synchronous TP rise and fall (2011–2019) across all streams, including spring-fed ones, matches the period of the interfering method and is analytical rather than catchment-driven.
 - See @sec-dq.
 
 ## Data {#sec-data}
@@ -213,7 +217,7 @@ ann |>
 **Phosphorus.**
 
 - **Before alum (1990s–2006).** Integrated TP was mostly 30–48 mg/m³. A high 1993/94 (≈ 80 mg/m³) reflects very few samples in that year.
-- **Fall with dosing.** TP fell from about 40 mg/m³ in 2006 to 15–20 mg/m³ from 2011/12.
+- **Fall with dosing.** TP fell from about 40 mg/m³ in 2006 to 11–20 mg/m³ from 2011/12 (after the 2010–2019 TP correction, @sec-dq).
 - **Composition.** DRP dropped from 5–15 mg/m³ to mostly ≤ 2 mg/m³ in the surface water. Most of the remaining TP is particulate or organic (TP − DRP), which also halved, from about 30 to 15 mg/m³.
 - **2021–2022.** TP was clearly elevated (27–33 mg/m³), with DRP rising to 4–8 mg/m³. It then fell back to 18–21 mg/m³ in 2023–2026.
 
@@ -358,13 +362,189 @@ ggplot() +
 **The TLI trajectory.**
 
 - **Peak.** The 3-year TLI3 peaked at 5.0 in 2004–2006.
-- **Fall.** It fell steadily with dosing, and from 2013 to 2021 it stayed close to the target (4.15–4.28).
+- **Fall.** It fell steadily with dosing, and from 2013 to 2021 it stayed close to the target (4.10–4.25).
 - **Recent years.** Since 2022 it has stayed at 4.3–4.4.
   - 2022 was the TP excursion year.
   - In 2024–2026 TN is higher and chl-a is creeping up.
   - 2026 has the highest annual chl-a (≈ 16 mg/m³) since 2009.
 
 ### Data quality and laboratory changes {#sec-dq}
+
+The TP, DRP and TN records span several laboratories and analytical methods. This section sets out the method history from Appendix A of @hamill2022 and the metadata sheet of the BOPRC lake workbook [@boprc2026lakedata]. It then shows where the published TP correction has, and has not, been applied in the data used here.
+
+#### Laboratory method history
+
+```{r}
+#| label: tbl-lab-methods
+#| tbl-cap: "Laboratory methods for TP, DRP and TN used on BOPRC samples, from Table A1.2 of @hamill2022. DL is the detection limit (mg/m³). BOPRC = BOPRC (Environment Bay of Plenty) laboratory; Hill = Hill Laboratories (RJ Hill)."
+lab_methods <- tibble::tribble(
+  ~var, ~code, ~start, ~end, ~lab, ~dl, ~method,
+  "TP", "TP-1", "1990-01-01", "2008-07-31", "BOPRC", "8 (listed); recorded as 1", "Antimony–phosphate–molybdate (Murphy–Riley), NWASCO Misc. Pub. 38",
+  "TP", "TP-6", "2008-08-01", "2009-10-31", "Hill", "4", "Total P digestion, ascorbic acid colorimetry, discrete analyser (APHA 4500-P E mod.)",
+  "TP", "TP-2", "2009-11-01", "2010-08-19", "NIWA", "1", "Acid persulphate digestion, molybdenum blue colorimetry",
+  "TP", "TP-5", "2010-08-20", "2019-09-30", "BOPRC", "1", "Acid persulphate digestion, molybdate colorimetry, FIA (APHA 4500-P H); silica/arsenic interference",
+  "TP", "TP (new channel)", "2019-10-01", "2026-06-30", "BOPRC", "1", "As TP-5 on a new FIA channel (trialled from Oct 2018)",
+  "DRP", "DRP-1", "1990-01-01", "2008-09-30", "BOPRC", "4 (listed); recorded as 1", "Antimony–phosphate–molybdate (Murphy–Riley), NWASCO Misc. Pub. 38",
+  "DRP", "DRP-6", "2008-10-01", "2009-10-31", "Hill", "4", "Molybdenum blue colorimetry, discrete analyser (APHA 4500-P E mod.)",
+  "DRP", "DRP-5", "2009-11-01", "2010-08-19", "NIWA", "1", "Molybdenum blue colorimetry, FIA (APHA 4500-P G)",
+  "DRP", "DRP-5", "2010-08-20", "2019-09-30", "BOPRC", "1", "Molybdenum blue colorimetry, FIA (APHA 4500-P G); silica/arsenic interference",
+  "DRP", "DRP (new channel)", "2019-10-01", "2026-06-30", "BOPRC", "1", "As DRP-5 on a new FIA channel",
+  "TN", "TKN-1 (TN-K)", "1990-01-01", "2008-09-30", "BOPRC", "90 (TKN)", "TN = TKN (APHA 4500B, NIWA mod.) + NNN",
+  "TN", "TKN-7 (TN-K)", "2008-10-01", "2009-10-31", "Hill", "100 (TKN)", "TN = TKN (Kjeldahl, phenol/hypochlorite) + NNN",
+  "TN", "TN-5 (TN-A)", "2009-11-01", "2026-06-30", "BOPRC", "1", "Direct TN: persulphate digestion, cadmium reduction, FIA (NIWA until 20 Aug 2010)"
+) |> mutate(across(c(start, end), as.Date))
+lab_methods |>
+  transmute(Variable = var, Method = code, Period = paste(format(start, "%b %Y"), "–", ifelse(end >= as.Date("2026-01-01"), "present", format(end, "%b %Y"))),
+            Lab = lab, `DL (mg/m³)` = dl, Description = method) |>
+  kable()
+```
+
+```{r}
+#| label: fig-lab-timeline
+#| fig-cap: "Top: laboratory and method periods for TP, DRP and TN (@tbl-lab-methods), and the P-method trial (grey). The top row shows the period the TP interference correction covers (dashed outline), the months already corrected in the supplied data (black) and the part left uncorrected (orange line). Bottom: integrated (INT) TP and TN at both sites as supplied, with method changes as vertical lines."
+#| fig-height: 7.5
+# lake_chem_2026 applies the "Metat data" TP correction consistently (correct_lake_tp() in R/read_river_wq.R):
+# tp is the corrected value, tp_supplied the workbook value and tp_correction what was done to each sample
+tpc <- chem |>
+  filter(is.finite(tp_supplied)) |>
+  mutate(applied = tp_correction == "corrected by BOPRC",
+         status = recode(tp_correction, "corrected by BOPRC" = "Corrected in supplied data",
+                         "corrected here" = "In correction period, not corrected",
+                         "not in correction period" = "Outside correction period"),
+         tp_consistent = tp, tp = tp_supplied)
+pal_lab <- c(BOPRC = "#0072B2", Hill = "#E69F00", NIWA = "#009E73")
+lm_plot <- lab_methods |> mutate(var = factor(var, c("TN", "DRP", "TP")))
+applied_months <- tpc |> filter(applied) |> distinct(m = as.Date(format(date, "%Y-%m-01")))
+p_tl <- ggplot(lm_plot) +
+  geom_rect(aes(xmin = start, xmax = end, ymin = as.numeric(var) - 0.35, ymax = as.numeric(var) + 0.35, fill = lab), colour = "white") +
+  geom_text(aes(x = start + (end - start) / 2, y = as.numeric(var), label = sub(" \\(.*", "", code)), size = 2.6,
+            data = ~ filter(.x, end - start > 500)) +
+  # TP correction row: period it should cover (dashed outline) and months already corrected in the supplied data (black)
+  annotate("rect", xmin = as.Date("2010-08-20"), xmax = as.Date("2018-09-30"), ymin = 3.75, ymax = 4.25, fill = NA, colour = "black", linetype = 2) +
+  annotate("rect", xmin = as.Date("2019-07-01"), xmax = as.Date("2019-09-30"), ymin = 3.75, ymax = 4.25, fill = NA, colour = "black", linetype = 2) +
+  geom_rect(data = applied_months, aes(xmin = m, xmax = m + 28, ymin = 3.8, ymax = 4.2), fill = "black") +
+  annotate("text", x = as.Date("2010-06-01"), y = 4, label = "not applied in data", hjust = 1, size = 2.6, colour = "#D55E00") +
+  annotate("segment", x = as.Date("2010-08-20"), xend = as.Date("2015-06-30"), y = 4.32, yend = 4.32, colour = "#D55E00", linewidth = 0.8) +
+  annotate("rect", xmin = as.Date("2018-10-01"), xmax = as.Date("2019-06-30"), ymin = 1.6, ymax = 3.4, fill = "grey40", alpha = 0.25) +
+  annotate("text", x = as.Date("2019-02-15"), y = 1.45, label = "P method trial", size = 2.5) +
+  scale_y_continuous(breaks = 1:4, labels = c(levels(lm_plot$var), "TP correction"), limits = c(0.6, 4.4)) +
+  scale_x_date(limits = as.Date(c("1990-01-01", "2026-07-01")), date_breaks = "2 years", date_labels = "%Y") +
+  scale_fill_manual(values = pal_lab) +
+  labs(x = NULL, y = NULL, fill = "Laboratory") +
+  theme(panel.grid.major.y = element_blank(), legend.position = "top")
+chg <- tibble::tibble(d = as.Date(c("2008-08-01", "2009-11-01", "2010-08-20", "2015-07-01", "2019-10-01")))
+p_ts <- lw |>
+  filter(layer == "INT", variable %in% c("tp", "tn")) |>
+  mutate(variable = factor(var_lab[variable], var_lab[c("tp", "tn")])) |>
+  ggplot(aes(date, value, colour = site)) +
+  geom_vline(data = chg, aes(xintercept = d), colour = "grey40", linetype = 3) +
+  geom_point(size = 0.6, alpha = 0.6) +
+  facet_wrap(~variable, ncol = 1, scales = "free_y") +
+  scale_colour_manual(values = pal_site) +
+  scale_x_date(limits = as.Date(c("1990-01-01", "2026-07-01")), date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = NULL, colour = NULL) + theme(legend.position = "bottom")
+p_tl / p_ts + plot_layout(heights = c(1, 2))
+```
+
+**Phosphorus (TP and DRP).**
+
+- **Before August 2008.** BOPRC analysed TP and DRP with the Murphy–Riley method. The listed detection limits were 8 (TP) and 4 (DRP) mg/m³, but values were recorded down to 1 mg/m³ [@hamill2022].
+- **August 2008 to August 2010.** Samples went first to Hill Laboratories (detection limit 4 mg/m³), then from November 2009 to NIWA (1 mg/m³).
+- **20 August 2010 to September 2019.** BOPRC brought the analysis back in-house on a flow-injection analyser. This method was later found to read high: silica and arsenic interfere with it, and the interference adds to the true value [@hamill2022]. The workbook notes that the interference was identified in February 2013 and the method was modified following Downes (1978) [@boprc2026lakedata].
+- **October 2018 to September 2019.** BOPRC trialled a new method alongside the old one and adopted it in October 2019. In the paired trial samples the new method gave consistently lower TP and DRP [@hamill2022].
+- **Correction factors.** @hamill2022tli derived correction factors for the lakes, applied to September 2010–September 2019. For the inflow streams the paired differences were too variable for a reliable correction, so @hamill2022 analysed streams before and after each method change separately. That report also argues that a falling stream TP or DRP trend across 2010 is reliable (the interference only adds), whereas a rising one needs support from the periods either side.
+
+**Nitrogen (TN, TKN and NOx).**
+
+- **To October 2009.** TN was calculated as TKN plus NNN (TN-K). The TKN detection limit was 90–100 mg/m³.
+- **From November 2009.** TN is measured directly by alkaline persulphate digestion (TN-A). It is more precise but reads low when suspended solids are high (> 10 g/m³). @hamill2022 cites a comparison of lake means four years either side of the change that found TN-A about 50 mg/m³ lower. Other causes could not be ruled out.
+- **Bearing on the step down in TN.** The TN step down identified above (change point August 2009 at Site 2) coincides with this method change. Part of the ≈ 150 mg/m³ fall in integrated TN may therefore be analytical, although most of it is organic N falling with chl-a.
+- **Date discrepancy.** The workbook dates the switch from calculated TN to "2008" [@boprc2026lakedata]; @hamill2022 gives November 2009.
+- **NOx before 2001.** NNN (nitrate + nitrite N) was analysed as nitrate-N only [@boprc2026lakedata].
+
+#### The workbook metadata and the TP correction
+
+The "Metat data" sheet of the lake workbook [@boprc2026lakedata] records the following.
+
+**Data provenance.**
+
+- Data from 1989 to July 2015 were transposed from the Lakewatch (Access) database to match the sites in Aquarius, which replaced Labstar in July 2015.
+
+**Sampling.**
+
+- Van Dorn discrete samples were used from 1989 to 2001. From 2001 the epilimnion has been sampled with an integrated tube (0–6 m), with discrete hypolimnion samples.
+- `_HYP` samples are taken at hypolimnion depth (15 m at Site 2, 18 m at Site 5) whether or not the lake is stratified.
+- `_BOT` samples are taken about 1 m above the bed.
+
+**Other lab notes.**
+
+- Chlorophyll-a: in-house spectrophotometric method (NIWA Stream Periphyton Monitoring Manual).
+- Turbidity: APHA 2130 B (modified), white-light turbidimeter.
+- The nutrient analysis moved to APHA 4500-P J (modified) by flow-injection analyser in October 2009.
+- The sheet's own P-method table differs slightly from @tbl-lab-methods. It lists TP.1/DRP.1 for 2001–Sept 2008, TP.6/DRP.6 for Oct 2008–Oct 2009 at Hill Laboratories (DL 4), and TP.5/DRP.5 from Oct 2009, mostly at BOPRC with some NIWA.
+
+**The TP correction.** The University of Waikato used duplicate P and ion analyses to derive a correction for the interference. It applies to the old BOPRC method:
+
+$$
+\mathrm{TP_{corr}} = -3.29420 + C + 0.976716\,\mathrm{TP_{old}}, \qquad C_\text{Rotorua} = 1.82649
+$$
+
+with TP in mg/m³. For Lake Rotorua this simplifies to $\mathrm{TP_{corr}} = 0.976716\,\mathrm{TP_{old}} - 1.468$.
+
+- **When it applies.** The sheet specifies August 2010 to September 2018 inclusive, plus July–September 2019, which covers the gap between the end of the trial and adoption of the new method. Trial (October 2018–June 2019) and new-method (from October 2019) results are used unadjusted. The adjustment starts at the August 2010 step change, when analysis began at the BOPRC lab on 20 August 2010.
+- **Size.** It removes 1.5 mg/m³ at 1 mg/m³ and 1.9 mg/m³ at 20 mg/m³ (≈ 10 % at typical integrated TP), and 2.4 mg/m³ at 40 mg/m³.
+- **No DRP formula.** The sheet gives no correction for DRP.
+
+```{r}
+#| label: fig-tp-correction
+#| fig-cap: "The TP correction in the supplied data and in this analysis. Left: each TP sample (all layers) from 2008 to 2021 as supplied, coloured by correction status; corrected values are identified because they back-transform exactly to whole mg/m³. Right: hydrological-year mean integrated TP (both sites) as supplied, and as used on this page and in the calibration targets, with the correction applied over the whole correction period."
+#| fig-height: 4.5
+pal_status <- c("Corrected in supplied data" = "#009E73", "In correction period, not corrected" = "#D55E00", "Outside correction period" = "grey55")
+p_s <- tpc |>
+  filter(date >= as.Date("2008-01-01"), date < as.Date("2021-07-01")) |>
+  ggplot(aes(date, tp, colour = status)) +
+  geom_point(size = 0.8, alpha = 0.8) +
+  scale_y_log10() + scale_colour_manual(values = pal_status) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = "TP as supplied (mg/m³, log scale)", colour = NULL) +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+tpa <- tpc |>
+  filter(layer == "INT") |>
+  mutate(hy = wq_hy(date)) |>
+  group_by(hy) |>
+  summarise(`As supplied` = mean(tp), `Corrected consistently` = mean(tp_consistent), n_months = n_distinct(format(date, "%Y-%m")), .groups = "drop") |>
+  filter(n_months >= 6, hy >= 2005) |>
+  pivot_longer(c(`As supplied`, `Corrected consistently`)) |>
+  mutate(name = recode(name, `Corrected consistently` = "Corrected consistently (used here)"))
+p_a <- ggplot(tpa, aes(hy, value, colour = name)) +
+  annotate("rect", xmin = 2010.6, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "#D55E00", alpha = 0.08) +
+  geom_line() + geom_point(size = 1.2) +
+  scale_colour_manual(values = c(`As supplied` = "black", `Corrected consistently (used here)` = "#0072B2")) +
+  labs(x = "Hydrological year", y = "Mean integrated TP (mg/m³)", colour = NULL) +
+  theme(legend.position = "bottom")
+p_s + p_a + plot_layout(widths = c(1.3, 1))
+```
+
+```{r}
+#| label: tp-correction-numbers
+cs <- tpc |> count(status)
+gap <- tpc |> filter(status == "In correction period, not corrected")
+gap_int <- gap |> filter(layer == "INT")
+gap_range <- format(range(gap$date[gap$date < as.Date("2016-01-01")]), "%B %Y")
+```
+
+**How the supplied data stand.**
+
+- **Corrected samples.** `r cs$n[cs$status == "Corrected in supplied data"]` TP samples in the supplied workbook are already corrected (all of July 2015–September 2018 except June 2016, plus July–September 2019). These are the non-integer TP values noted below. They are corrected values, not conversions from another unit.
+- **Uncorrected samples.** `r nrow(gap)` samples inside the correction period are **not** corrected, almost all from `r gap_range[1]` to `r gap_range[2]`. This is the part of the record transposed from Lakewatch. The older "Lakes Data 1989_2025" workbook is the same.
+- **Size of the gap.** Applying the correction to these samples lowers their integrated TP by `r sprintf("%.1f", mean(gap_int$tp - gap_int$tp_consistent))` mg/m³ on average (`r sprintf("%.0f", 100 * mean((gap_int$tp - gap_int$tp_consistent) / gap_int$tp))` %).
+- **Effect if left as supplied.** The supplied record has an artificial TP step of about 2 mg/m³ between June and July 2015, and alum-era TP statistics mix corrected and uncorrected values.
+- **What this analysis does.** The pipeline applies the correction to these samples (`correct_lake_tp()` in `R/read_river_wq.R`, used by `lake_chem_2026` and `chem_aeme`). Samples already corrected by BOPRC are recognised and left alone, and the value as supplied is kept in `tp_supplied`.
+  - Every TP value on this page, and in the calibration targets, is the consistently corrected value.
+  - The correction lowers annual mean integrated TP by about 1.8–1.9 mg/m³ in 2011–2014, and less in 2010 and 2015, which are only partly affected. The 3-year TLI3 over 2013–2021 is now 4.10–4.25.
+- **DRP.** No correction is given or applied, so the interference remains in DRP for 2010–2019.
+
+#### Reporting resolution
 
 ```{r}
 #| label: fig-dq
@@ -391,7 +571,7 @@ p1 + p2
 **Lake record.** The lake record has at least three visible reporting regimes:
 
 1. **To about 2014.** Values are whole numbers in mg/m³, with detection limits of 0.5–1 mg/m³.
-2. **2015–2020.** Many DRP values are reported as 0, with occasional −1 values in DRP, NOx and NH₄. TP is reported as non-integer values (e.g. 14.159744 and 16.113176), which look like conversions from a different unit or a different instrument.
+2. **2015–2020.** Many DRP values are reported as 0, with occasional −1 values in DRP, NOx and NH₄. TP is reported as non-integer values (e.g. 14.159744 and 16.113176). These are interference-corrected values: 16.113176 is the corrected value of a measured 18 mg/m³ (see the TP correction above).
 3. **From 2021.** All nutrients are reported to 0.1 mg/m³.
 
 **Effects on trends.**
@@ -405,7 +585,11 @@ p1 + p2
 - Spring-fed streams have stable, mainly geological P, so a shared step of about 20–30 % is much more likely to be analytical than a change in the catchment.
 - River DRP is also high at most sites in 1993–1995 and 2003–2008, which may be a further reporting boundary.
 - This matches the open question about a lab or method change in the Ōhau outlet record (labels change from "Labstar – Legacy" to "Routine" in July 2015, and grade codes change around 2020/21).
-- **Recommendation:** confirm the BOPRC lab and method history (lab provider, DRP/TP methods, detection limits, censoring rules) before any trend in DRP or river TP is used in reporting or calibration.
+- @hamill2022 explains the river pattern. The 2010–2019 BOPRC P method suffered additive silica and arsenic interference, which varied more in the streams than in the lakes, so no reliable stream correction could be derived.
+- **Recommendations:**
+  - Ask BOPRC to apply the lake TP correction to August 2010 – June 2015 at source (this analysis already applies it).
+  - Obtain the lake DRP correction from @hamill2022tli.
+  - Analyse river TP and DRP within the method periods (before August 2010, August 2010 – September 2019, after October 2019) rather than across them.
 
 ## Buoy and CTD profiles {#sec-profiles}
 
@@ -464,13 +648,15 @@ sm |>
 
 | Summer | Longest stratified period |
 |---|---|
-| 2021/22 | 70 days (8 Nov 2021 – 16 Jan 2022) |
+| 2021/22 | ≥ 70 days (8 Nov 2021 – at least 16 Jan 2022)\* |
 | 2014/15 | 52 days |
 | 2008/09 | 51 days |
 | 2010/11 | 46 days |
 | 2019/20 | 42 days |
 | 2017/18 | 41 days |
 | 2023/24 | 38 days |
+
+\* A minimum. The buoy's bottom temperature record stops on 16 January 2022, while the lake was still stratified, and resumes only on 21 February. The CTD casts show the lake mixed by 16 February (@sec-strat2122).
 
 - Bottom anoxia (DO < 2 g/m³ for at least 3 days) builds within about 1–3 weeks of stratification setting in. The longest anoxic periods are listed below:
 
@@ -657,7 +843,7 @@ ggplot(sdat, aes(doy)) +
 **Summer by summer.** The summers differ mainly in how long the stratified periods last and how often wind breaks them up.
 
 - **Long stratified periods with prolonged bottom anoxia:** 2007/08, 2008/09, 2014/15, 2015/16, 2017/18 and 2023/24. In these summers the thermocline deepens steadily, by about 1 m a week, from 6–9 m to 12–16 m as the period goes on.
-- **Long stratification without bottom-DO data:** 2019/20 and 2021/22 (grey points). The bottom chemistry shows strong accumulation in both.
+- **Long stratification without bottom-DO data:** 2019/20 and 2021/22 (grey points). The bottom chemistry shows strong accumulation in both. In 2021/22, the CTD casts show bottom anoxia in December (@sec-strat2122).
 - **Short stratified periods separated by frequent mixing, with little anoxia:** 2011/12, 2012/13, 2013/14, 2016/17, 2022/23 and 2025/26.
 - **Missing:** the 2009/10 and 2010/11 summers are largely missing from the buoy record.
 - **New profiler (from 2022).** Thermocline depths are similar to the old buoy's: a median of about 10 m in November–December and about 13 m in January.
@@ -1000,7 +1186,7 @@ hw_example(air_hw$daily, ev_a, "2021-11-15", "2022-02-15", "Summer 2021/22", "Ai
 
 ```{r}
 #| label: fig-ex-lake-hw
-#| fig-cap: "Lake (surface water) heatwave examples from the buoys, same layout as the air-heatwave figure. Left: December 2017, the most intense lake heatwave on record (+3.9 °C above climatology, 20 days), which coincided with 41 days of stratification and bottom anoxia. Right: Christmas 2021 – January 2022 (Strong, 19 days), at the end of the 70-day stratified period of summer 2021/22."
+#| fig-cap: "Lake (surface water) heatwave examples from the buoys, same layout as the air-heatwave figure. Left: December 2017, the most intense lake heatwave on record (+3.9 °C above climatology, 20 days), which coincided with 41 days of stratification and bottom anoxia. Right: Christmas 2021 – January 2022 (Strong, 19 days), at the end of the stratified period of summer 2021/22 (at least 70 days; @sec-strat2122)."
 #| fig-height: 3.8
 hw_example(be$heatwave_daily, be$heatwaves, "2017-11-01", "2018-02-28", "Summer 2017/18", "Surface water temperature (°C)") +
   hw_example(be$heatwave_daily, be$heatwaves, "2021-11-01", "2022-02-28", "Summer 2021/22", NULL)
@@ -1222,7 +1408,7 @@ resp_tab |> left_join(wt, by = "variable") |>
 - **Weather.**
   - 2019 was very dry (794 mm), and 2019 and 2020 were warm and sunny.
   - 2020/21 and 2021/22 had the lowest external TP loads since the 1990s (28–29 t/y).
-  - Summer 2021/22 brought an air heatwave (21 days, Dec 2021 – Jan 2022), a strong lake heatwave and 70 days of stratification.
+  - Summer 2021/22 brought an air heatwave (21 days, Dec 2021 – Jan 2022), a strong lake heatwave and at least 70 days of stratification (@sec-strat2122).
 - **Lake response.**
   - Bottom DRP reached 108–118 mg/m³ and TP 157–162 mg/m³.
   - Surface DRP and TP rose to the highest values since 2010.
@@ -1285,7 +1471,7 @@ pp_fun <- function(L, ttl) {
 
 ```{r}
 #| label: fig-pause-summers
-#| fig-cap: "Summer by summer, hydrological years 2008–2025. Panels: January–March mean bottom-water DRP and TP (both sites); longest buoy-recorded stratified period; external TP load (PC10 2026 loads); and Puarenga aluminium dosed. Orange bars are the pause and recovery years (hy2019–2022). The bottom-water P built up while external loads were at their lowest, and stratification was unusual only in 2021/22."
+#| fig-cap: "Summer by summer, hydrological years 2008–2025. Panels: January–March mean bottom-water DRP and TP (both sites); longest buoy-recorded stratified period; external TP load (PC10 2026 loads); and Puarenga aluminium dosed. Orange bars are the pause and recovery years (hy2019–2022). The bottom-water P built up while external loads were at their lowest, and stratification was unusual only in 2021/22. The 2021/22 bar (70 days) is a minimum, because the buoy record has a gap at the end of that period (@sec-strat2122)."
 #| fig-height: 8
 strat_long <- be$stratified |> mutate(hy = wq_hy(start)) |>
   group_by(hy) |> summarise(value = max(duration), .groups = "drop") |>
@@ -1314,7 +1500,7 @@ ggplot(sumz, aes(hy, value, fill = pause)) +
 - **Summer bottom-water P built up year on year during the pause.** January–March bottom DRP rose from about 1 mg/m³ (2018) to 8.5 (2019), 22 (2020) and 34 (2021 and 2022). Bottom TP rose from 22 to 37, 43 and about 70 mg/m³ over the same years (@fig-pause-summers).
 - **The build-up mixed into the surface.** Each autumn (April–June), when the lake mixes, the bottom-water P spread through the water column. Surface TP reached 39 mg/m³ in early 2021 and 42 mg/m³ in autumn 2022. In winter it fell back to 14–23 mg/m³, but from a higher base each year.
 - **It was not driven by external load.** External TP loads in 2020/21 and 2021/22 were the lowest since the 1990s (28–29 t/y, against 40–60 t/y in 2017–2018), and inflow volumes were low.
-- **Stratification amplified it, but only at the end.** Summers 2018/19 to 2020/21 were not unusually stratified. Summer 2021/22 had the longest stratified period on record (70 days), an air heatwave, a strong lake heatwave and the warmest December–February air temperature in the record (19.4 °C). It produced the peak bottom-water DRP and TP (108–118 and 157–162 mg/m³).
+- **Stratification amplified it, but only at the end.** Summers 2018/19 to 2020/21 were not unusually stratified. Summer 2021/22 had the longest stratified period on record (at least 70 days; @sec-strat2122), an air heatwave, a strong lake heatwave and the warmest December–February air temperature in the record (19.4 °C). It produced the peak bottom-water DRP and TP (108–118 and 157–162 mg/m³).
 - **Recovery lagged the restart of dosing by about two summers.** Bottom-water P stayed high in summers 2020/21 and 2021/22, after dosing resumed in November 2020. It fell sharply only from late 2022. That followed heavier dosing (96 t Al in 2022/23) and the cool, wet, well-mixed 2023.
 - **It is not a laboratory artefact.** The finer reporting from 2021 (@sec-dq) affects low DRP values. It cannot produce a doubling of TP, or bottom TP of 70–160 mg/m³.
 
@@ -1388,6 +1574,193 @@ The misfit is therefore structural, and calibrating parameters cannot remove it:
 - an alum binding capacity in the sediment that decays over one to two years.
 
 The analysis is in `calibration/wq_targets/pause/`.
+
+### Summer 2021/22: the longest recorded stratified period {#sec-strat2122}
+
+The buoy recorded the lake as stratified for 70 days without a break, from 8 November 2021 to 16 January 2022. This is the longest stratified period in the buoy record; the next longest are 52 days (2014/15) and 51 days (2008/09). **70 days is a minimum.** The period does not end with an observed mixing event. It ends because the bottom temperature record stops: the old buoy's last bottom reading is on 16 January, and the new buoy starts on 21 February. This section sets out the data behind the event and what they say about when it ended.
+
+```{r}
+#| label: s2122-data
+s_from <- as.Date("2021-10-01"); s_to <- as.Date("2022-03-31")
+s_ev <- be$stratified |> slice_max(duration, n = 1)                       # 8 Nov 2021 - 16 Jan 2022
+s_gap <- tibble(start = as.Date("2022-01-17"), end = as.Date("2022-02-20")) # no buoy bottom temperature
+s_d <- be$daily |> filter(date >= s_from, date <= s_to) |>
+  tidyr::complete(date = seq(s_from, s_to, by = "day"))   # NA rows so lines break at data gaps
+s_in <- s_d |> filter(date >= s_ev$start, date <= s_ev$end)
+s_dmax <- s_in |> slice_max(d_temp, n = 1)
+s_smax <- s_in |> slice_max(t_surf, n = 1)
+s_tb <- range(s_in$t_bot, na.rm = TRUE)
+s_ndays <- sum(s_in$d_temp > 1, na.rm = TRUE)
+# CTD casts: surface (<= 1.5 m) and bottom (deepest 2 m of each cast), Sites 2 and 5
+s_ctd <- ctd |> filter(date >= s_from, date <= s_to, var %in% c("temp_c", "do_mgl")) |>
+  group_by(site, date, var) |>
+  summarise(top = mean(value[depth_m <= 1.5], na.rm = TRUE),
+            bot = mean(value[depth_m >= max(depth_m) - 2], na.rm = TRUE), .groups = "drop") |>
+  mutate(across(c(top, bot), \(x) ifelse(is.nan(x), NA_real_, x))) |>
+  pivot_wider(names_from = var, values_from = c(top, bot)) |>
+  mutate(d_temp = top_temp_c - bot_temp_c)
+# met over the stratified period against the same calendar days in other years
+s_met <- me$daily |> mutate(doy = as.integer(format(date, "%j")), y = as.integer(format(date, "%Y")),
+                           hy = ifelse(doy >= 312, y + 1L, y)) |>
+  filter(doy >= 312 | doy <= 16, hy >= 1977, hy <= 2026) |>
+  group_by(hy) |> summarise(tair = mean(tair), wind = mean(wind), rain = sum(rain_mm), .groups = "drop")
+s_met22 <- s_met |> filter(hy == 2022)
+s_clim <- s_met |> filter(hy %in% 1991:2020) |> summarise(tair = mean(tair), wind = mean(wind))
+s_rank_t <- rank(-s_met$tair)[s_met$hy == 2022]; s_rank_w <- rank(s_met$wind)[s_met$hy == 2022]
+# bottom-water chemistry, mean of Sites 2 and 5
+s_bot <- lw |> filter(layer == "BOT", date >= as.Date("2021-09-01"), date <= as.Date("2022-06-30")) |>
+  group_by(date, variable) |> summarise(value = mean(value), .groups = "drop") |>
+  pivot_wider(names_from = variable, values_from = value)
+s_b1117 <- s_bot |> filter(date == as.Date("2021-11-17")); s_b1220 <- s_bot |> filter(date == as.Date("2021-12-20"))
+s_rate <- function(v) (s_b1220[[v]] - s_b1117[[v]]) / as.numeric(s_b1220$date - s_b1117$date)
+s_band <- function(ev, fill, alpha = 0.35) geom_rect(data = ev, aes(xmin = start - 0.5, xmax = end + 0.5, ymin = -Inf, ymax = Inf),
+                                               inherit.aes = FALSE, fill = fill, alpha = alpha)
+s_bands <- function() list(s_band(s_ev, "grey70", 0.3), s_band(s_gap, "#FDDBC7", 0.6))
+s_x <- scale_x_date(limits = c(s_from, s_to), date_breaks = "1 month", date_labels = "%b\n%Y", expand = c(0, 0))
+s_ctd_dates <- sort(unique(s_ctd$date))
+```
+
+```{r}
+#| label: fig-s2122-overview
+#| fig-cap: "Summer 2021/22, October 2021 to March 2022. (a) Buoy water temperature by depth (old buoy to 18 January 2022, new buoy from 21 February); dashed lines are the CTD sampling dates. (b) Buoy surface (≤ 1.5 m) and bottom (≥ 18 m) temperature (lines), with the CTD surface and bottom temperatures at Sites 2 and 5 (points). (c) Surface − bottom temperature difference; the dotted line is the 1 °C stratification threshold. (d) Bottom DO from the buoys (line; the old buoy's 20 m sensor stopped on 14 November) and the bottom of each CTD cast (points); the dashed line is 2 g/m³. (e) ERA5-BC daily air temperature (black) and wind speed (grey), with air heatwaves (red) and storms (blue). Grey band: the 70-day buoy-recorded stratified period. Orange band: no buoy bottom temperature (17 January – 20 February)."
+#| fig-height: 11
+s_heat <- bpl |> filter(date >= s_from, date <= s_to, is.finite(temp_c)) |>
+  arrange(source, date, depth_m) |> group_by(source, date) |>
+  mutate(top = (depth_m + lag(depth_m, default = 0)) / 2, bot = (depth_m + lead(depth_m, default = max(depth_m) + 0.25)) / 2) |>
+  ungroup()   # each sensor fills the depth range half-way to its neighbours (old buoy: about 2 m apart)
+pa <- ggplot(s_heat, aes(fill = temp_c)) +
+  geom_rect(aes(xmin = date - 0.5, xmax = date + 0.5, ymin = top, ymax = bot)) +
+  s_band(s_gap, "white", 1) +
+  annotate("text", x = s_gap$start + 17, y = 10, label = "no buoy data", size = 3, colour = "grey30") +
+  geom_vline(xintercept = s_ctd_dates, linetype = 2, colour = "grey30", linewidth = 0.3) +
+  scale_y_reverse() + scale_fill_viridis_c(option = "inferno", name = "°C") +
+  s_x + labs(x = NULL, y = "Depth (m)", tag = "a")
+pb <- s_d |> select(date, Surface = t_surf, Bottom = t_bot) |> pivot_longer(-date) |>
+  ggplot(aes(date, value, colour = name)) + s_bands() +
+  geom_line(linewidth = 0.4) +
+  geom_point(data = s_ctd |> select(site, date, Surface = top_temp_c, Bottom = bot_temp_c) |> pivot_longer(Surface:Bottom),
+             aes(shape = site), size = 2, show.legend = c(colour = FALSE, shape = TRUE)) +
+  guides(colour = guide_legend(override.aes = list(shape = NA))) +
+  scale_colour_manual(values = c(Surface = "#D55E00", Bottom = "#0072B2")) +
+  scale_shape_manual(values = c("Site 2" = 16, "Site 5" = 17)) +
+  s_x + labs(x = NULL, y = "Water temp (°C)", colour = NULL, shape = "CTD", tag = "b")
+pc <- ggplot(s_d, aes(date, d_temp)) + s_bands() +
+  geom_hline(yintercept = 1, linetype = 3) +
+  geom_line(linewidth = 0.4) + geom_point(size = 0.5) +
+  geom_point(data = s_ctd, aes(shape = site), size = 2) +
+  scale_shape_manual(values = c("Site 2" = 16, "Site 5" = 17)) +
+  s_x + labs(x = NULL, y = "Surface − bottom (°C)", shape = "CTD", tag = "c")
+pd <- ggplot(s_d, aes(date, do_bot)) + s_bands() +
+  geom_hline(yintercept = 2, linetype = 2, colour = "firebrick") +
+  geom_line(colour = "purple4", linewidth = 0.4) +
+  geom_point(data = s_ctd |> filter(is.finite(bot_do_mgl)), aes(y = bot_do_mgl, shape = site), size = 2) +
+  scale_shape_manual(values = c("Site 2" = 16, "Site 5" = 17)) +
+  s_x + labs(x = NULL, y = "Bottom DO (g/m³)", shape = "CTD", tag = "d")
+s_md <- me$daily |> filter(date >= s_from, date <= s_to)
+pe <- ggplot(s_md, aes(date)) +
+  s_band(me$air_heatwaves |> filter(end >= s_from, start <= s_to), "#F4A582", 0.5) +
+  s_band(me$storms |> filter(end >= s_from, start <= s_to), "#92C5DE", 0.7) +
+  geom_line(aes(y = tair), colour = "black", linewidth = 0.4) +
+  geom_line(aes(y = wind * 2), colour = "grey50", linewidth = 0.4) +
+  scale_y_continuous(sec.axis = sec_axis(~ . / 2, name = "Wind (m/s, grey)")) +
+  s_x + labs(x = NULL, y = "Air temp (°C, black)", tag = "e")
+(pa / pb / pc / pd / pe) + plot_layout(heights = c(1.3, 1, 0.8, 0.8, 0.8), guides = "collect")
+```
+
+```{r}
+#| label: fig-s2122-ctd
+#| fig-cap: "CTD profiles of temperature and DO at Sites 2 and 5, October 2021 to March 2022. DO was not recorded at Site 2 on 17 November and 16 February, and at Site 5 there was no November cast."
+#| fig-height: 6.5
+s_prof <- ctd |> filter(date >= as.Date("2021-10-15"), date <= s_to, var %in% c("temp_c", "do_mgl")) |>
+  mutate(var = factor(var, c("temp_c", "do_mgl"), c("Temperature (°C)", "DO (g/m³)")),
+         cast = factor(format(date, "%d %b %Y"), format(sort(unique(date)), "%d %b %Y")))
+ggplot(s_prof, aes(value, depth_m, colour = cast)) +
+  geom_path(linewidth = 0.6) +
+  facet_grid(site ~ var, scales = "free_x") +
+  scale_y_reverse() +
+  scale_colour_viridis_d(option = "turbo", end = 0.95) +
+  labs(x = NULL, y = "Depth (m)", colour = "Cast")
+```
+
+```{r}
+#| label: fig-s2122-chem
+#| fig-cap: "Nutrients and chl-a in the integrated (INT, 0–6 m), hypolimnion (HYP; 15 m at Site 2, 18 m at Site 5) and bottom (BOT) samples, September 2021 to June 2022. Grey band: the 70-day buoy-recorded stratified period; orange band: no buoy bottom temperature."
+#| fig-height: 9
+s_chem <- lw |> filter(date >= as.Date("2021-09-01"), date <= as.Date("2022-06-30"),
+                       variable %in% c("nh4", "drp", "tp", "tn", "nnn", "chla")) |>
+  mutate(variable = factor(variable, c("nh4", "drp", "tp", "tn", "nnn", "chla"), var_lab[c("nh4", "drp", "tp", "tn", "nnn", "chla")]))
+ggplot(s_chem, aes(date, value, colour = layer)) + s_bands() +
+  geom_line(linewidth = 0.4) + geom_point(size = 1.4) +
+  facet_grid(variable ~ site, scales = "free_y", switch = "y") +
+  scale_colour_manual(values = pal_layer) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+  labs(x = NULL, y = NULL, colour = NULL) +
+  theme(strip.placement = "outside", strip.text.y.left = element_text(angle = 90))
+```
+
+**Weather.** The stratified period was the warmest on record for those calendar days, and among the calmest.
+
+- Over 8 November – 16 January, ERA5-BC air temperature averaged `r sprintf("%.1f", s_met22$tair)` °C. That is `r sprintf("%.1f", s_met22$tair - s_clim$tair)` °C above the 1991–2020 mean, and the warmest of the `r nrow(s_met)` years in the record (@fig-s2122-overview e).
+- Mean wind was `r sprintf("%.1f", s_met22$wind)` m/s against `r sprintf("%.1f", s_clim$wind)` m/s normally, the `r scales::ordinal(s_rank_w)` calmest of `r nrow(s_met)` years. There were no storms during the period.
+- It included two air heatwaves: 7–16 November (Moderate) and 22 December – 11 January (Strong, 21 days). There were also two lake surface heatwaves: 23 November – 2 December and 25 December – 12 January (Strong, 19 days).
+
+**Onset (early November).**
+
+- The lake was stratifying and mixing intermittently through late October. A mixing spell on 3–7 November brought the surface–bottom difference back to near zero.
+- Stratification then set in on 8 November, during the first air heatwave, and did not break again in the buoy record (@fig-s2122-overview b, c).
+
+**The stratified period (8 November – 16 January).**
+
+- The surface was more than 1 °C warmer than the bottom on all `r s_ndays` days with data. The 2 days without data (20 December, and 15 January for the bottom sensor) are bridged by the 2-day gap rule (@sec-event-defs).
+- The difference peaked at `r sprintf("%.1f", s_dmax$d_temp)` °C on `r format(s_dmax$date, "%d %B")`. The surface reached `r sprintf("%.1f", s_smax$t_surf)` °C on `r format(s_smax$date, "%d %B")`, during the lake heatwave.
+- The thermocline moved deeper as the period went on. On 17 November it sat at about 17–20 m at Site 2. By 20 December the temperature gradient spread from about 13 to 21 m at Site 2 and from 16 to 20 m at Site 5 (@fig-s2122-ctd).
+- The bottom water still warmed steadily, from `r sprintf("%.1f", s_tb[1])` to `r sprintf("%.1f", s_tb[2])` °C. Heat continued to reach it by mixing across the thermocline, so the deep water was not fully isolated.
+- The buoy's bottom-DO record does not cover the anoxia. Bottom DO at 20 m was falling from about 8.6 to 6.8 g/m³ in the first week, then the sensor stopped on 14 November.
+- **The CTD casts show it instead** (@fig-s2122-ctd).
+  - On 20 December, bottom DO was 0.3–0.5 g/m³ at both sites. DO was below 2 g/m³ only in the deepest 2–5 m (below 20 m at Site 5 and 22 m at Site 2).
+  - That thin anoxic layer explains why the bottom (BOT) samples are far more enriched than the hypolimnion (HYP) samples a few metres higher.
+
+**Nutrients during the stratified period** (@fig-s2122-chem).
+
+- On 17 November, about 10 days into the period, bottom NH₄ had already risen to about `r round(s_b1117$nh4)` mg/m³, while DRP was still low (about `r round(s_b1117$drp)` mg/m³).
+- By 20 December (mean of the two sites):
+  - bottom TP was `r round(s_b1220$tp)` mg/m³;
+  - DRP `r round(s_b1220$drp)` mg/m³;
+  - NH₄ `r round(s_b1220$nh4)` mg/m³;
+  - TN `r round(s_b1220$tn)` mg/m³.
+- These are the highest bottom-water P concentrations since 2010.
+- Between the two sampling dates, bottom NH₄ rose by about `r round(s_rate("nh4"))` mg/m³/d and DRP by about `r sprintf("%.1f", s_rate("drp"))` mg/m³/d.
+- Bottom NOx fell from about 42 to 13 mg/m³ and then to about 1.5 mg/m³ by January, which is consistent with denitrification in the anoxic layer.
+- Surface (INT) DRP stayed at 2–3 mg/m³ until December. Chl-a was high (20–22 mg/m³) in November and December.
+
+**The end of the stratified period (between 16 January and 16 February).** No buoy data cover the end, but the CTD casts bracket it.
+
+- **Mid-January.** The surface–bottom difference fell after the lake heatwave peak:
+  - 4.6 °C on 6 January;
+  - 2.6–2.9 °C on 9–14 January, a windier spell with daily mean wind of 7–7.7 m/s on several days;
+  - 1.4 °C on 16 January, the last day with a bottom reading.
+- **19 January (CTD).** The lake was only weakly stratified: surface − bottom 1.1–1.2 °C (@fig-s2122-overview c).
+  - Bottom DO had recovered to 4.0–4.8 g/m³, so the anoxic layer had already been partly reoxygenated.
+  - DO between 5 and 15 m had fallen from about 8.5 g/m³ in December to 4–7 g/m³. DO was 4–7 g/m³ through the whole water column, which is consistent with the low-oxygen bottom water having been mixed upwards.
+  - Bottom DRP (73–78 mg/m³) and NH₄ (370–400 mg/m³) were still high.
+  - Surface DRP had risen to 9.6 mg/m³ at both sites, the first sign of bottom water mixing into the surface.
+- **16 February (CTD).** The lake was mixed (surface − bottom ≤ 0.4 °C), and bottom DO was 6.3 g/m³ at Site 5.
+  - This followed the storm of 7 February (195 mm in one day) and a windy 13 February (11 m/s).
+  - Bottom DRP had fallen to about 16 mg/m³. Surface TP had risen to 38–40 mg/m³ and surface NH₄ to 19–44 mg/m³.
+- **From 21 February (new buoy).** The water column was close to uniform at 21.7–22.5 °C, with only brief differences above 1 °C.
+
+**What this means for the duration.**
+
+- The stratified period lasted at least 70 days.
+- It cannot have lasted beyond 16 February, when the CTD casts show the lake mixed. That gives an upper limit of about 100 days.
+- The falling temperature difference in mid-January and the partly reoxygenated bottom water on 19 January suggest the stratification was already breaking down in the second half of January. The true duration was therefore probably closer to 70–80 days than to 100.
+
+**Where the released nutrients went.**
+
+- The P and N released in December did not stay in the bottom water.
+- Once the lake mixed, surface TP rose from 27–29 mg/m³ in December–January to 38–40 mg/m³ in February and 47–50 mg/m³ in March. These were the highest surface values since 2010.
+- Chl-a rose again to 17–19 mg/m³ in March.
+- Surface TP stayed near 40 mg/m³ until June. This is the 2021/22 peak of the excursion in @sec-pause.
 
 ## Observational drivers {#sec-drivers}
 
@@ -1500,36 +1873,75 @@ pcomp |>
 
 ### River water quality
 
+The Ōhau Channel is the lake's outflow, not an inflow. Its water quality reflects the lake water leaving through the outlet, which in turn integrates all the inflows and the processes in the lake. It is therefore shown last and set apart from the streams in the figures and tables below.
+
+```{r}
+#| label: river-order
+ohau_site <- "Ohau Channel at SH33"
+ohau_lab <- "Ōhau Channel at SH33 (lake outflow)"
+river_sites <- sort(setdiff(unique(rann$location), ohau_site))
+river_site_lab <- function(x) ifelse(x == ohau_site, ohau_lab, x)
+```
+
 ```{r}
 #| label: fig-river-anom
-#| fig-cap: "Annual median river concentrations as a percentage of each site's 1992–2025 median. Synchronous changes across all streams (e.g. TP rising 2011–2016 and falling after 2019) suggest analytical rather than catchment causes."
-#| fig-height: 8
+#| fig-cap: "Annual median river concentrations as a percentage of each site's 1992–2025 median. Streams are listed alphabetically. The Ōhau Channel, the lake outflow, is at the bottom, below the dashed line: it reflects the lake water leaving through the outlet rather than a catchment input. Synchronous changes across all streams (e.g. TP rising 2011–2016 and falling after 2019) suggest analytical rather than catchment causes."
+#| fig-height: 8.5
 rann |>
   filter(variable %in% c("TP", "DRP", "TN", "NNN"), hy >= 1993, hy <= 2026) |>
   group_by(location, variable) |>
   mutate(anom = 100 * (median / median(median) - 1)) |>
   ungroup() |>
+  mutate(location = factor(river_site_lab(location), c(ohau_lab, rev(river_sites)))) |>   # first level is drawn at the bottom
   ggplot(aes(hy, location, fill = anom)) + geom_tile() +
+  geom_hline(yintercept = 1.5, linetype = 2, colour = "grey20", linewidth = 0.5) +
   facet_wrap(~variable, ncol = 1) +
   scale_fill_gradient2(low = "#2166AC", high = "#B2182B", limits = c(-60, 60), oob = scales::squish) +
-  labs(x = "Hydrological year", y = NULL, fill = "% vs site median")
+  labs(x = "Hydrological year", y = NULL, fill = "% vs site median") +
+  theme(axis.text.y = element_text(face = ifelse(c(ohau_lab, rev(river_sites)) == ohau_lab, "bold", "plain")))
 ```
 
 ```{r}
-#| label: tbl-river-trends
-#| tbl-cap: "Seasonal Mann–Kendall trends in river concentrations (% of median per year; ▲/▼ and * mark p < 0.05), full record and last 10 years, with the site median (g/m³)."
-rtr |>
-  filter(variable %in% c("TN", "NNN", "TP", "DRP"), period %in% c("full", "last_10y")) |>
-  mutate(cell = fmt_trend(pct_per_yr, p)) |>
-  select(location, variable, period, cell) |>
-  pivot_wider(names_from = c(variable, period), values_from = cell) |>
-  left_join(rtr |> filter(period == "full", variable %in% c("TN", "TP")) |>
-              select(location, variable, median) |>
-              pivot_wider(names_from = variable, values_from = median, names_prefix = "median_"),
-            by = "location") |>
-  select(Site = location, `TN median` = median_TN, TN_full, TN_last_10y, NNN_full, NNN_last_10y,
-         `TP median` = median_TP, TP_full, TP_last_10y, DRP_full, DRP_last_10y) |>
-  kable(digits = 3)
+#| label: river-trend-table
+# One table per nutrient: total (TN or TP) and its dissolved inorganic fraction (NOx or DRP), full record and last 10 years.
+# Streams are sorted by median (highest first) and the Ohau outflow is kept as the last row. Cells are coloured by the direction
+# of the trend: filled red / blue where significant (p < 0.05), red / blue text where not.
+trend_cell <- function(pct, p) {
+  txt <- fmt_trend(pct, p)
+  sig <- !is.na(p) & p < 0.05
+  col <- ifelse(is.na(pct) | pct == 0, "#333333", ifelse(pct > 0, "#B2182B", "#2166AC"))
+  bg <- ifelse(sig & !is.na(pct) & pct > 0, "#F4C6C0", ifelse(sig & !is.na(pct) & pct < 0, "#C3DCEE", "transparent"))
+  kableExtra::cell_spec(txt, color = col, background = bg, bold = sig)
+}
+river_trend_table <- function(total, inorg) {
+  d <- rtr |>
+    filter(variable %in% c(total, inorg), period %in% c("full", "last_10y")) |>
+    mutate(cell = trend_cell(pct_per_yr, p)) |>
+    select(location, variable, period, cell) |>
+    pivot_wider(names_from = c(variable, period), values_from = cell) |>
+    left_join(rtr |> filter(period == "full", variable == total) |> select(location, median), by = "location") |>
+    mutate(outflow = location == ohau_site) |>
+    arrange(outflow, desc(median)) |>
+    mutate(Site = river_site_lab(location), median = sprintf("%.3f", median))
+  out <- d |> select(Site, median, all_of(paste0(c(total, total, inorg, inorg), c("_full", "_last_10y"))))
+  names(out) <- c("Site", "Median (g/m³)", "Full record", "Last 10 years", "Full record", "Last 10 years")
+  kableExtra::kbl(out, escape = FALSE, align = c("l", rep("r", 5))) |>
+    kableExtra::kable_styling(bootstrap_options = c("condensed", "hover"), full_width = FALSE) |>
+    kableExtra::add_header_above(c(" " = 2, setNames(2, total), setNames(2, ifelse(inorg == "NNN", "NOx-N", inorg)))) |>
+    kableExtra::row_spec(nrow(out), italic = TRUE, extra_css = "border-top: 2px solid #555;")
+}
+```
+
+```{r}
+#| label: tbl-river-trends-tn
+#| tbl-cap: "Seasonal Mann–Kendall trends in river TN and NOx-N (% of the median per year), full record and last 10 years. Streams are sorted by median TN (full record). Red: increasing, blue: decreasing; filled, bold cells with ▲/▼ and * are significant (p < 0.05), coloured text only is not. The Ōhau Channel (last row) is the lake outflow."
+river_trend_table("TN", "NNN")
+```
+
+```{r}
+#| label: tbl-river-trends-tp
+#| tbl-cap: "Seasonal Mann–Kendall trends in river TP and DRP (% of the median per year), full record and last 10 years. Streams are sorted by median TP (full record). Colours as in @tbl-river-trends-tn. The Ōhau Channel (last row) is the lake outflow."
+river_trend_table("TP", "DRP")
 ```
 
 ```{r}
@@ -1859,7 +2271,7 @@ All three point to the sediment-release terms (`fsed_amm`, `fsed_frp` and their 
   - TP and DRP halved.
   - Chl-a and organic N followed within about a year.
   - Clarity improved.
-  - The 3-year mean TLI stayed close to the target of 4.2 (4.15–4.28) from about 2013 to 2021.
+  - The 3-year mean TLI stayed close to the target of 4.2 (4.10–4.25) from about 2013 to 2021.
 - This happened even though external loads in 2011–2013 were among the highest of the period. This is strong evidence that the in-lake P binding by alum, not external load reduction, drove the improvement.
 
 **Present (2016 – 2026).**
