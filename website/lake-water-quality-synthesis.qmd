@@ -77,6 +77,17 @@ var_lab <- c(tp = "TP (mg/m³)", tn = "TN (mg/m³)", drp = "DRP (mg/m³)", nh4 =
              pp = "TP − DRP (mg/m³)", org_n = "Organic N (mg/m³)", tn_tp = "TN:TP (molar)",
              turb = "Turbidity (NTU)")
 
+# Daily Al dose (kg) runs to Feb 2026; the 2022-26 dosing workbook gives alum volumes (L/day) to Jul 2026.
+# Extend kg Al to 30 Jun 2026 with each stream's median kg Al per L over the overlap (about 0.057; monthly range 0.04-0.06).
+al_per_l <- alum |> inner_join(alum26, by = "date") |> mutate(m = format(date, "%Y-%m")) |>
+  group_by(m) |> summarise(p = sum(puarenga_kg_al) / sum(puarenga_l_d), u = sum(utuhina_kg_al) / sum(utuhina_l_d)) |>
+  summarise(p = median(p, na.rm = TRUE), u = median(u, na.rm = TRUE))
+alum_est_from <- max(alum$date) + 1
+alum <- bind_rows(alum |> mutate(estimated = FALSE),
+                  alum26 |> filter(date >= alum_est_from, date <= as.Date("2026-06-30")) |>
+                    transmute(date, utuhina_kg_al = utuhina_l_d * al_per_l$u, puarenga_kg_al = puarenga_l_d * al_per_l$p,
+                              total_kg_al = utuhina_kg_al + puarenga_kg_al, estimated = TRUE))
+
 # Alum dosing milestones
 utu_start <- as.Date("2006-06-15"); pua_start <- as.Date("2010-01-14")
 pua_pause <- run_events(alum$date, alum$date > as.Date("2012-01-01") & alum$puarenga_kg_al < 1,
@@ -1428,7 +1439,7 @@ Lake TP doubled between 2017–2020 and 2021–2022, from about 15 to 27–32 mg
 
 ```{r}
 #| label: pause-data
-p_lo <- as.Date("2016-07-01"); p_hi <- as.Date("2024-07-01")
+p_lo <- as.Date("2016-07-01"); p_hi <- as.Date("2026-07-01")
 pz <- pua_pause_main
 lag_end <- as.Date("2022-09-30")      # last month of high bottom-water P after dosing resumed
 shade <- function() list(
@@ -1446,16 +1457,19 @@ jfm <- lw |>
 
 ```{r}
 #| label: fig-pause-sequence
-#| fig-cap: "Sequence of the 2019–2022 excursion. Top: aluminium dosed per month in the Puarenga and Utuhina (t Al). Middle: bottom-water (BOT) TP and DRP. Bottom: integrated (INT) TP and DRP. Middle and bottom panels show the mean of Sites 2 and 5 on each sampling date. Grey: Puarenga dosing paused (Sep 2018 – Nov 2020). Orange: the two summers of high bottom-water P after dosing resumed."
+#| fig-cap: "Sequence of the 2019–2022 excursion, July 2016 to June 2026. Top: aluminium dosed per month, Puarenga and Utuhina stacked (t Al). March–June 2026 (pale bars) is estimated from the dosed alum volume (about 0.057 kg Al per litre, the median over 2022–2026). Middle: bottom-water (BOT) TP and DRP. Bottom: integrated (INT) TP and DRP. Middle and bottom panels show the mean of Sites 2 and 5 on each sampling date. Grey: Puarenga dosing paused (Sep 2018 – Nov 2020). Orange: the two summers of high bottom-water P after dosing resumed."
 #| fig-height: 8
 al_m <- alum |>
   filter(date >= p_lo, date < p_hi) |>
   mutate(m = as.Date(format(date, "%Y-%m-15"))) |>
-  group_by(m) |> summarise(Puarenga = sum(puarenga_kg_al) / 1000, Utuhina = sum(utuhina_kg_al) / 1000, .groups = "drop") |>
-  pivot_longer(-m, names_to = "stream")
-pa <- ggplot(al_m, aes(m, value, fill = stream)) + shade() +
-  geom_col(position = "dodge", width = 25) +
-  scale_fill_manual(values = c(Puarenga = "#0072B2", Utuhina = "#56B4E9")) +
+  group_by(m) |> summarise(Puarenga = sum(puarenga_kg_al) / 1000, Utuhina = sum(utuhina_kg_al) / 1000,
+                           estimated = any(estimated), .groups = "drop") |>
+  pivot_longer(c(Puarenga, Utuhina), names_to = "stream") |>
+  mutate(stream = factor(stream, c("Utuhina", "Puarenga")))   # Puarenga at the bottom of each stack
+pa <- ggplot(al_m, aes(m, value, fill = stream, alpha = estimated)) + shade() +
+  geom_col(position = "stack", width = 25) +
+  scale_fill_manual(values = c(Puarenga = "#0072B2", Utuhina = "#56B4E9"), breaks = c("Puarenga", "Utuhina")) +
+  scale_alpha_manual(values = c(`FALSE` = 1, `TRUE` = 0.45), guide = "none") +
   labs(x = NULL, y = "t Al / month", fill = NULL)
 pp_fun <- function(L, ttl) {
   d <- bind_rows(lake_mean("tp", L) |> mutate(var = "TP"), lake_mean("drp", L) |> mutate(var = "DRP"))
@@ -1471,7 +1485,7 @@ pp_fun <- function(L, ttl) {
 
 ```{r}
 #| label: fig-pause-summers
-#| fig-cap: "Summer by summer, hydrological years 2008–2025. Panels: January–March mean bottom-water DRP and TP (both sites); longest buoy-recorded stratified period; external TP load (PC10 2026 loads); and Puarenga aluminium dosed. Orange bars are the pause and recovery years (hy2019–2022). The bottom-water P built up while external loads were at their lowest, and stratification was unusual only in 2021/22. The 2021/22 bar (70 days) is a minimum, because the buoy record has a gap at the end of that period (@sec-strat2122)."
+#| fig-cap: "Summer by summer, hydrological years 2008–2026. Panels: January–March mean bottom-water DRP and TP (both sites); longest buoy-recorded stratified period; external TP load (PC10 2026 loads); and Puarenga aluminium dosed. Orange bars are the pause and recovery years (hy2019–2022). The bottom-water P built up while external loads were at their lowest, and stratification was unusual only in 2021/22. The 2021/22 bar (70 days) is a minimum, because the buoy record has a gap at the end of that period (@sec-strat2122)."
 #| fig-height: 8
 strat_long <- be$stratified |> mutate(hy = wq_hy(start)) |>
   group_by(hy) |> summarise(value = max(duration), .groups = "drop") |>
@@ -1481,7 +1495,7 @@ drv <- dla |> transmute(hy, `External TP load (t/y)` = load_tp) |>
               summarise(`Puarenga Al dosed (t/y)` = sum(puarenga_kg_al) / 1000), by = "hy") |>
   pivot_longer(-hy, names_to = "panel")
 sumz <- bind_rows(jfm |> select(hy, panel, value), strat_long, drv) |>
-  filter(hy >= 2008, hy <= 2025) |>
+  filter(hy >= 2008, hy <= 2026) |>
   mutate(pause = hy %in% 2019:2022,
          panel = factor(panel, c("Bottom DRP, Jan–Mar (mg/m³)", "Bottom TP, Jan–Mar (mg/m³)",
                                  "Longest stratified period (days)", "External TP load (t/y)",
@@ -1490,7 +1504,7 @@ ggplot(sumz, aes(hy, value, fill = pause)) +
   geom_col(width = 0.8) +
   facet_wrap(~panel, ncol = 1, scales = "free_y") +
   scale_fill_manual(values = c(`FALSE` = "grey70", `TRUE` = "#D55E00"), guide = "none") +
-  scale_x_continuous(breaks = 2008:2025) +
+  scale_x_continuous(breaks = 2008:2026) +
   labs(x = "Hydrological year (ending June)", y = NULL)
 ```
 
@@ -1502,6 +1516,9 @@ ggplot(sumz, aes(hy, value, fill = pause)) +
 - **It was not driven by external load.** External TP loads in 2020/21 and 2021/22 were the lowest since the 1990s (28–29 t/y, against 40–60 t/y in 2017–2018), and inflow volumes were low.
 - **Stratification amplified it, but only at the end.** Summers 2018/19 to 2020/21 were not unusually stratified. Summer 2021/22 had the longest stratified period on record (at least 70 days; @sec-strat2122), an air heatwave, a strong lake heatwave and the warmest December–February air temperature in the record (19.4 °C). It produced the peak bottom-water DRP and TP (108–118 and 157–162 mg/m³).
 - **Recovery lagged the restart of dosing by about two summers.** Bottom-water P stayed high in summers 2020/21 and 2021/22, after dosing resumed in November 2020. It fell sharply only from late 2022. That followed heavier dosing (96 t Al in 2022/23) and the cool, wet, well-mixed 2023.
+- **2023–2026.** Summer bottom-water P stayed far below the 2021–2022 peak. It rose again in early 2024 and 2025 (single-sample bottom DRP peaks of about 45 and 70 mg/m³), but only briefly. Summer 2025/26 was low (January–March bottom DRP about 5 mg/m³).
+- **Autumn 2026.** Integrated TP rose to 33 mg/m³ in March and 40 mg/m³ in April 2026, then fell back to about 19 mg/m³ in May–June. DRP stayed low (1–3 mg/m³) while chl-a reached 30 mg/m³ in April, so the peak was mostly algal (particulate) P, not a return of the internal release seen in 2021–2022.
+- **Puarenga dosing stopped again in May 2026.** The 2022–2026 dose-rate workbook shows Puarenga dosing ending in early May 2026, at zero through June and July, while Utuhina dosing continued at a higher rate. If this is a second pause, the 2018–2020 sequence suggests bottom-water P could start to build up within one to two summers.
 - **It is not a laboratory artefact.** The finer reporting from 2021 (@sec-dq) affects low DRP values. It cannot produce a doubling of TP, or bottom TP of 70–160 mg/m³.
 
 **Interpretation.**
@@ -1828,7 +1845,7 @@ ggplot(an, aes(hy, value)) +
 
 ```{r}
 #| label: fig-alum
-#| fig-cap: "Annual aluminium dosed (t Al per hydrological year; 2026 is to February only) by stream, and daily dose rates 2022–2026 (L alum/day)."
+#| fig-cap: "Annual aluminium dosed (t Al per hydrological year; March–June 2026 estimated from the dosed alum volume) by stream, and daily dose rates 2022–2026 (L alum/day)."
 #| fig-height: 6
 a1 <- alum |>
   mutate(hy = wq_hy(date)) |>

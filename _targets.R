@@ -98,9 +98,13 @@ list(
     format = "file",
     # Always re-sync in CI (a fresh checkout has none of this on disk, and
     # a restored _targets cache can't be trusted alone — see comment on
-    # aeme_onedrive_rds below); locally, sync once then trust the cache so
-    # repeat renders don't re-download every time.
-    cue = if (identical(Sys.getenv("CI"), "true")) tar_cue(mode = "always") else tar_cue(mode = "never"),
+    # aeme_onedrive_rds below). Locally, also check OneDrive on every run when a
+    # login is available (cached Microsoft365R token, see get_onedrive_session()):
+    # the check lists the remote folder and downloads only when its manifest has
+    # changed since the last sync (.onedrive_stamps). Without a login, trust the cache.
+    cue = if (identical(Sys.getenv("CI"), "true") || nzchar(Sys.getenv("ONEDRIVE_TOKEN_ENCRYPTED")) ||
+              length(tryCatch(AzureAuth::list_azure_tokens(), error = function(e) NULL)) > 0)
+      tar_cue(mode = "always") else tar_cue(mode = "never"),
     deployment = "main"
   ),
   # Downloadable GLM-AED set-up of the latest baseline (rotorua-pc10/latest/output/glm_aed_setup.zip, written by R/run_latest.R),
@@ -2315,10 +2319,12 @@ list(
   tar_target(river_wq_sites, read_river_wq_sites(river_wq_file)),
   tar_target(river_wq_data, read_river_wq(river_wq_file)),
 
-  #* Extended lake chemistry and CTD (PC10 Jun-26 workbooks, to 2026-06) ----
+  #* Extended lake chemistry and CTD (to 2026-06) ----
+  # Lake chemistry: the BOPRC workbook on OneDrive (rotorua-pc10/data/raw/bop_wq, added 2026-11-16; the same file
+  # as in the PC10 Jun-26 bundle). CTD: still from the PC10 bundle.
   tar_target(
     lake_chem_2026_file,
-    file.path(pc10_data_dir, "Rotorua S2 & S5 data 1989_2026.xlsx"),
+    file.path(data_raw_dir, "bop_wq", "Rotorua S2 & S5 data 1989_2026.xlsx"),
     format = "file"
   ),
   tar_target(lake_chem_2026, read_lake_chem_2026(lake_chem_2026_file)),
