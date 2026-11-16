@@ -2106,7 +2106,7 @@ d_bud <- bind_rows(budget("2021-05-15", "2022-01-15"), budget("2022-05-15", "202
 
 ```{r}
 #| label: fig-d23-monthly
-#| fig-cap: "July 2020 – June 2024, monthly. (a) Integrated TP and DRP (mean of Sites 2 and 5). (b) Aluminium dosed (t Al per month, stacked; pale bars estimated, see @fig-pause-sequence), with the Puarenga dose concentration (Al dosed per unit of stream flow, mg/L, black line, right axis). (c) Modelled total inflow and Ohau outflow (Mm³ per month, PC10 loads). (d) Lake TP budget: lake TP mass (integrated TP × lake volume), and the inflow load and outflow export accumulated from July 2020. Grey band: the 2022–2023 decline."
+#| fig-cap: "July 2020 – June 2024, monthly. (a) Integrated TP and DRP (mean of Sites 2 and 5). (b) Aluminium dosed (t Al per month, stacked; pale bars estimated, see @fig-pause-sequence), with the Puarenga dose concentration (Al dosed per unit of stream flow, mg/L, black line, right axis). (c) Total inflow (modelled, PC10 loads) and Ohau outflow (measured; the recorded Ohau Channel flow), Mm³ per month. (d) Lake TP budget: lake TP mass (integrated TP × lake volume), and the inflow load (modelled) and outflow export (measured flow × integrated TP) accumulated from July 2020. Grey band: the 2022–2023 decline."
 #| fig-height: 9
 d_band <- annotate("rect", xmin = as.Date("2022-06-01"), xmax = as.Date("2024-01-31"), ymin = -Inf, ymax = Inf, fill = "grey70", alpha = 0.25)
 d_x <- scale_x_date(limits = c(d_lo, d_hi), date_breaks = "6 months", date_labels = "%b\n%Y", expand = c(0, 0))
@@ -2214,6 +2214,16 @@ y <- function(h, v) d_yr[[v]][d_yr$hy == h]
 - Flushing and dilution were not the cause. The outflow removed only a fraction of the P, and the inflows were richer in P than the lake.
 - The two causes cannot be fully separated with one year. Summer 2023/24 offers a partial test: it stratified, with bottom anoxia (@fig-thermo-summers), yet surface TP stayed near 15 mg/m³ until February 2024. That is consistent with a sediment cap that had been rebuilt by then. The rise to 32 mg/m³ in March–April 2024 shows that internal loading returned once a strong stratified summer coincided with it.
 - **For the model:** the calibrated model has a constant sediment P release (@sec-pause), so it cannot reproduce a year in which the release switches off. This year, with record alum mass, record inflow and weak stratification, is a useful test for any sediment P scheme that is added.
+
+**Caveat: the inflows are modelled.**
+
+- **Inflow volumes and loads are model estimates** from the PC10 2026 loads (McBride 2026, the `alum_storm_central` set), not direct measurements.
+  - The major streams use continuous flow records where they exist, with gaps filled by rainfall–runoff models.
+  - The ungauged inflow is the residual of the lake's daily water balance, and geothermal inflow is a constant 0.6 m³/s.
+  - Stream concentrations are interpolated from mostly monthly samples.
+  - The monthly loads here spread each annual load in proportion to the monthly inflow. The volumes exclude rain falling on the lake, but the annual load sum includes its small deposition input.
+- **The Ohau outflow is measured:** it is identical to the BOPRC discharge record for the channel (FL150407). Lake TP and lake volume are measured too.
+- **The "retained in sediment" term depends on the modelled load.** An error in the load carries straight into it. The main conclusion does not: of the roughly 25 t fall in lake TP, only about 9 t left through the measured outflow.
 
 ## Observational drivers {#sec-drivers}
 
