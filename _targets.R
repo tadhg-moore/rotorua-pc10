@@ -2397,7 +2397,7 @@ list(
     buoy_events, {
       d <- buoy_daily_metrics |>
         dplyr::group_by(date) |>
-        dplyr::summarise(dplyr::across(c(t_surf, t_bot, do_bot, d_temp), \(x) mean(x, na.rm = TRUE)),
+        dplyr::summarise(dplyr::across(c(t_surf, t_bot, do_bot, d_temp, d_rho), \(x) mean(x, na.rm = TRUE)),
                          .groups = "drop") |>
         dplyr::mutate(dplyr::across(-date, \(x) ifelse(is.nan(x), NA_real_, x)))
       hw <- detect_heatwaves(d$date, d$t_surf)
@@ -2407,7 +2407,7 @@ list(
         heatwave_daily = hw$daily,
         anoxia = run_events(d$date, d$do_bot < 2, min_len = 3, max_gap = 2),
         hypoxia = run_events(d$date, d$do_bot < 4, min_len = 3, max_gap = 2),
-        stratified = run_events(d$date, d$d_temp > 1, min_len = 3, max_gap = 2)
+        stratified = run_events(d$date, is_stratified(d$d_rho), min_len = 3, max_gap = 2)   # density difference > strat_drho_threshold()
       )
     }
   ),
@@ -2454,7 +2454,7 @@ list(
     wq_obs_targets, {
       th <- buoy_thermal |>
         dplyr::group_by(date) |>
-        dplyr::summarise(d_temp = mean(d_temp), thermo_depth = mean(thermo_depth, na.rm = TRUE),
+        dplyr::summarise(d_temp = mean(d_temp), d_rho = mean(d_rho), thermo_depth = mean(thermo_depth, na.rm = TRUE),
                          .groups = "drop") |>
         dplyr::mutate(thermo_depth = ifelse(is.nan(thermo_depth), NA_real_, thermo_depth))
       wq_target_signatures(buoy_events$daily, th, wq_lake_long, hod_events, hyp_flux)

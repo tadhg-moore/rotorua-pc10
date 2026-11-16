@@ -633,13 +633,13 @@ h1 / h2
 
 ```{r}
 #| label: fig-strat-anoxia
-#| fig-cap: "Share of buoy-monitored summer days (November–March) that were stratified (surface − bottom > 1 °C), hypoxic (bottom DO < 4 g/m³) or anoxic (bottom DO < 2 g/m³), by hydrological year. Numbers are the summer days with bottom DO data."
+#| fig-cap: "Share of buoy-monitored summer days (November–March) that were stratified (surface − bottom density difference > 0.2 kg/m³), hypoxic (bottom DO < 4 g/m³) or anoxic (bottom DO < 2 g/m³), by hydrological year. Numbers are the summer days with bottom DO data."
 sm <- be$daily |>
   filter(as.integer(format(date, "%m")) %in% c(11, 12, 1, 2, 3)) |>
   mutate(hy = wq_hy(date)) |>
   group_by(hy) |>
   summarise(n = sum(!is.na(do_bot)),
-            Stratified = mean(d_temp > 1, na.rm = TRUE),
+            Stratified = mean(is_stratified(d_rho), na.rm = TRUE),
             Hypoxic = mean(do_bot < 4, na.rm = TRUE),
             Anoxic = mean(do_bot < 2, na.rm = TRUE), .groups = "drop") |>
   filter(n >= 30)
@@ -693,11 +693,11 @@ c1 <- ggplot(ctdm, aes(date, do_bot, colour = site)) +
   geom_line(alpha = 0.5) + geom_point(size = 0.8) +
   scale_colour_manual(values = pal_site) +
   labs(x = NULL, y = "Bottom DO (g/m³)", colour = NULL)
-c2 <- ggplot(ctdm, aes(date, d_temp, colour = site)) +
-  geom_hline(yintercept = 1, linetype = 2) +
+c2 <- ggplot(ctdm, aes(date, d_rho, colour = site)) +
+  geom_hline(yintercept = strat_drho_threshold(), linetype = 2) +
   geom_line(alpha = 0.5) + geom_point(size = 0.8) +
   scale_colour_manual(values = pal_site) +
-  labs(x = NULL, y = "ΔT surface − bottom (°C)", colour = NULL)
+  labs(x = NULL, y = "Δρ bottom − surface (kg/m³)", colour = NULL)
 (c1 / c2) + plot_layout(guides = "collect") & theme(legend.position = "bottom")
 ```
 
@@ -773,7 +773,7 @@ Lake Rotorua is polymictic. It does not stratify through the whole summer like a
 
 ```{r}
 #| label: fig-thermal-season
-#| fig-cap: "Seasonal cycle of thermal structure from the daily buoy profiles (2007–2026). Lines are the median by week of year and ribbons the 25–75th and 10–90th percentiles: surface–bottom temperature difference, Schmidt stability (from the lake hypsograph), thermocline depth (on stratified days only, ΔT ≥ 1 °C, searched between 3 m and 2 m above the bed), and bottom (≥ 18 m) DO. Weeks are ordered July–June."
+#| fig-cap: "Seasonal cycle of thermal structure from the daily buoy profiles (2007–2026). Lines are the median by week of year and ribbons the 25–75th and 10–90th percentiles: surface–bottom temperature difference, Schmidt stability (from the lake hypsograph), thermocline depth (on stratified days only, density difference > 0.2 kg/m³, searched between 3 m and 2 m above the bed), and bottom (≥ 18 m) DO. Weeks are ordered July–June."
 #| fig-height: 8
 # Shallowest thermocline each buoy can resolve: the search starts at 3 m (thermocline_depth()) and readings are
 # binned to 1 m, so the first interval is 3-4 m on the new buoy (0.5 m sensors) but 4-6 m on the old buoy
@@ -782,7 +782,7 @@ thermo_floor <- c(`new buoy` = 3.5, `old buoy` = 5)
 bdaily <- buoyth |>
   mutate(at_floor = is.finite(thermo_depth) & thermo_depth <= thermo_floor[source] + 0.01) |>
   group_by(date) |>
-  summarise(d_temp = mean(d_temp), schmidt = mean(schmidt), thermo_depth = mean(thermo_depth, na.rm = TRUE),
+  summarise(d_temp = mean(d_temp), d_rho = mean(d_rho), schmidt = mean(schmidt), thermo_depth = mean(thermo_depth, na.rm = TRUE),
             at_floor = any(at_floor), .groups = "drop") |>
   mutate(thermo_depth = ifelse(is.nan(thermo_depth), NA, thermo_depth)) |>
   left_join(be$daily |> select(date, do_bot), by = "date")
@@ -814,10 +814,10 @@ ggplot(season_q, aes(wk)) +
 
 ```{r}
 #| label: tbl-thermal-month
-#| tbl-cap: "Monthly summary of thermal structure from the buoys (daily) and CTD casts (monthly, Sites 2 and 5): share of days or casts stratified (ΔT ≥ 1 °C), median thermocline depth on stratified days, and median Schmidt stability."
+#| tbl-cap: "Monthly summary of thermal structure from the buoys (daily) and CTD casts (monthly, Sites 2 and 5): share of days or casts stratified (surface − bottom density difference > 0.2 kg/m³), median thermocline depth on stratified days, and median Schmidt stability."
 mon <- function(d) d |> mutate(m = factor(month.abb[as.integer(format(date, "%m"))], month.abb[c(7:12, 1:6)])) |>
   group_by(m) |>
-  summarise(strat = mean(d_temp >= 1), zth = median(thermo_depth[d_temp >= 1], na.rm = TRUE),
+  summarise(strat = mean(is_stratified(d_rho)), zth = median(thermo_depth[is_stratified(d_rho)], na.rm = TRUE),
             ss = median(schmidt), .groups = "drop")
 left_join(mon(bdaily), mon(ctdth), by = "m", suffix = c("_buoy", "_ctd")) |>
   transmute(Month = m, `Stratified (buoy)` = scales::percent(strat_buoy, 1),
@@ -830,7 +830,7 @@ left_join(mon(bdaily), mon(ctdth), by = "m", suffix = c("_buoy", "_ctd")) |>
 **When the lake stratifies.**
 
 - Stratification starts to develop in October and November.
-- It is most frequent and strongest from December to February. On about half of all summer days the surface is at least 1 °C warmer than the bottom, and Schmidt stability on calm, hot days exceeds 100–300 J/m².
+- It is most frequent and strongest from December to February. About half of all summer days are stratified (in December–February the surface is then typically 1 °C or more warmer than the bottom), and Schmidt stability on calm, hot days exceeds 100–300 J/m².
 - It collapses in March as the lake cools. From April to August the lake is fully mixed.
 - **Thermocline depth.** On stratified days the thermocline is typically 9–12 m deep (monthly medians; interquartile range about 7–13 m). The isolated bottom layer therefore covers roughly a third to half of the lake bed, because the hypsograph is steep below 10 m.
 - **The bottom layer is thin.** Its mean thickness (hypolimnion volume divided by its sediment area) is only about 4–6 m. A thin layer over a large sediment area is why oxygen falls so fast: below 2 g/m³ within 1–3 weeks of the onset of stratification.
@@ -875,16 +875,21 @@ ggplot(sdat, aes(doy)) +
 
 Stratification is a balance between heating, which makes the surface water lighter and builds stability, and mixing. Mixing comes from wind stirring, and from surface cooling, which makes the surface water denser so that it sinks. This section uses only the buoy profiles and the lake meteorology to ask which of these sets up and which ends each stratified period.
 
-- **Wind, air temperature and humidity** are the buoy's. ERA5-BC fills the gaps: 3% of stratified days for wind, and the 2020–2022 humidity gap.
-  - Wind is scaled from the anemometer height (assumed about 2 m) to 10 m with `metscale::met_wind_at_height()`.
-  - ERA5-BC wind is scaled the same way, because it is bias-corrected to the buoy and so is at buoy height.
+- **Wind and air temperature** are the buoy's, with ERA5-BC filling the gaps (3% of stratified days for wind).
+  - The buoy wind is already at 10 m: it was converted from the anemometer height with `metscale::wind_at_height()` when it was loaded.
+  - ERA5-BC wind was bias-corrected to that 10 m wind, so it needs no further scaling.
+- **Humidity** is ERA5. The old buoy's humidity reads 5–9% low and the new buoy's drifts from 2024, which would overstate evaporation. ERA5 agrees with the 2022–23 buoy and airport humidity to within 2–3%.
 - **Radiation** (shortwave and longwave) is from ERA5-BC.
 - **Daily stability** from the buoy profiles and the hypsograph (`rLakeAnalyzer`):
   - **Schmidt stability:** the energy needed to mix the lake fully.
   - **Lake number:** stability against wind stirring of the bottom water. Small values mean wind can mix it.
   - **Wedderburn number:** the same for the thermocline tilting up at the upwind end.
-- **Surface heat budget:** bulk formulas from daily means. It is not closed (−48 W/m² on average, mostly from the assumed transfer coefficients), so it is used only as departures from the seasonal norm and as percentiles.
-- Code in `R/strat_drivers.R`; targets `lake_met_daily_tbl`, `lake_stability`, `strat_drivers`.
+- **Surface heat budget:** bulk formulas from daily means, checked against the lake's measured change in heat content (from the buoy profiles and the hypsograph) over 168 well-covered months.
+  - The surface fluxes lose about 17 W/m² more than the lake actually loses. The gap is largest in winter (27–36 W/m², May–August) and close to zero in summer (2–4 W/m², November–January).
+  - The most likely cause is the ERA5 incoming longwave, which is not bias-corrected. It averages 323 W/m², against about 370 W/m² from an empirical clear-sky and cloud formula (Brutsaert with the ERA5 cloud cover). An underestimate that grows with cloud cover would match the winter pattern. The model calibration's longwave factor (0.9–1.2) points the same way.
+  - Smaller contributions are possible from the difference between the 0.5 m water temperature and the skin temperature, from geothermal and spring inputs that are warmer than the lake in winter, and from the bulk transfer coefficients.
+  - The heat budget is therefore used only as departures from the seasonal norm and as percentiles, which this bias does not affect.
+- Code in `R/strat_drivers.R`; targets `lake_met_daily_tbl`, `lake_stability`, `strat_drivers` and `strat_event_1415`.
 
 ```{r}
 #| label: sdrv-data
@@ -894,16 +899,16 @@ sd_br <- sd_ev |> filter(type == "breakdown")
 sd_on <- sd_ev |> filter(type == "onset")
 # step 1: probability that a stratified day is followed by a mixed day, by Lake number
 ln_next <- sd_daily |> arrange(date) |>
-  mutate(next_mixed = lead(d_temp) <= 1) |>
-  filter(d_temp > 1, is.finite(next_mixed), is.finite(lake_number))
+  mutate(next_mixed = !is_stratified(lead(d_rho))) |>
+  filter(is_stratified(d_rho), is.finite(next_mixed), is.finite(lake_number))
 ln_tab <- ln_next |>
   mutate(bin = cut(lake_number, c(0, 0.03, 0.06, 0.1, 0.2, 0.4, Inf),
                    labels = c("< 0.03", "0.03–0.06", "0.06–0.1", "0.1–0.2", "0.2–0.4", "> 0.4"))) |>
   group_by(bin) |> summarise(n = n(), p = mean(next_mixed), .groups = "drop")
-p_lo_ln <- mean(ln_next$next_mixed[ln_next$lake_number < 0.06])
+p_lo_ln <- mean(ln_next$next_mixed[ln_next$lake_number < 0.1])
 p_hi_ln <- mean(ln_next$next_mixed[ln_next$lake_number >= 0.1])
 # step 3: baseline shares of the forcing classes on all stratified days
-strat_days <- sd_daily |> filter(d_temp > 1, is.finite(p_wind_pct), is.finite(q_net_pct))
+strat_days <- sd_daily |> filter(is_stratified(d_rho), is.finite(p_wind_pct), is.finite(q_net_pct))
 cls <- function(w, q) case_when(w >= 0.75 & q <= 0.25 ~ "wind + cooling", w >= 0.75 ~ "wind",
                                 q <= 0.25 ~ "cooling", TRUE ~ "neither")
 cls_lev <- c("wind + cooling", "wind", "cooling", "neither")
@@ -919,7 +924,7 @@ pal_cls <- c("wind + cooling" = "#7B3294", wind = "#0571B0", cooling = "#E66101"
 
 ```{r}
 #| label: fig-strat-ln
-#| fig-cap: "Step 1: daily stability numbers and the next day. Left: the share of stratified buoy days that were followed by a mixed day (surface − bottom ≤ 1 °C), by the Lake number on the stratified day; numbers are the days in each bin. Right: the Lake number and Schmidt stability on stratified days that stayed stratified and on those followed by mixing (log scales)."
+#| fig-cap: "Step 1: daily stability numbers and the next day. Left: the share of stratified buoy days that were followed by a mixed day (density difference ≤ 0.2 kg/m³), by the Lake number on the stratified day; numbers are the days in each bin. Right: the Lake number and Schmidt stability on stratified days that stayed stratified and on those followed by mixing (log scales)."
 #| fig-height: 4
 g1 <- ggplot(ln_tab, aes(bin, p)) +
   geom_col(fill = "#2166AC", width = 0.7) +
@@ -943,13 +948,13 @@ g1 + g2 + plot_layout(widths = c(1, 1.3))
 
 - **The Lake number separates the days that hold from the days that break.**
   - On stratified days with a Lake number of 0.1 or more, the lake was mixed the next day `r scales::percent(p_hi_ln, 1)` of the time.
-  - Below 0.06 it was `r scales::percent(p_lo_ln, 1)` (@fig-strat-ln).
+  - Below 0.1 it was `r scales::percent(p_lo_ln, 1)`, and above 0.4 it never happened (@fig-strat-ln).
 - **Days that broke the next day already had low stability.** Their median Schmidt stability was about a third of that on days that held.
-- **The threshold is low.** The textbook threshold for wind mixing (a Lake number of 1) is far too high for Rotorua: Lake numbers are almost always below 1 even on stable days.
-  - The lake is shallow and exposed and the stratification is weak, so the useful threshold is about 0.05–0.1.
-  - Lake numbers from daily-mean wind are also lower than from the gustier hourly wind that actually does the mixing.
-- **The Wedderburn number behaves the same way:** nearly all next-day mixing occurred when it was below about 0.05.
-- **For the model:** a simulated lake that holds stratification at Lake numbers below about 0.05, or breaks above about 0.2, is mixing too little or too much.
+- **The threshold is low.** The textbook threshold for wind mixing (a Lake number of 1) is too high for Rotorua.
+  - The lake is shallow and exposed and its stratification is weak, so the useful threshold is about 0.1.
+  - Lake numbers from daily wind are also higher than in the windiest hours, which do the mixing.
+- **The Wedderburn number behaves the same way.**
+- **For the model:** a simulated lake that holds stratification for days at Lake numbers well below 0.1, or breaks at values above about 0.4, is mixing too little or too much.
 
 ```{r}
 #| label: fig-strat-composite
@@ -1034,18 +1039,81 @@ forced <- 1 - sh("neither"); forced_base <- 1 - sh("neither", "Share of all stra
   - `r scales::percent(forced, 1)` of breakdowns had a top-quartile wind, a bottom-quartile heat flux or both over the three days up to breakdown. Only `r scales::percent(forced_base, 1)` of all stratified days had such forcing.
 - **Wind and cooling together** is the most common forcing: `r scales::percent(sh("wind + cooling"), 1)` of breakdowns, against `r scales::percent(sh("wind + cooling", "Share of all stratified days"), 1)` of stratified days.
   - These are the cool, windy changes behind a front, and they end the longest and strongest stratified periods (median peak Schmidt stability about 85 J/m²).
-  - Wind alone rarely does it (`r scales::percent(sh("wind"), 1)`). When it does, the period is usually short and weak.
-- **Cooling without strong wind** (`r scales::percent(sh("cooling"), 1)`) ends mostly the weak, early-season stratification of September–November. Cool nights and cloudy days remove the small heat surplus.
+  - Wind alone rarely does it (`r scales::percent(sh("wind"), 1)`). When it does, the period is usually shorter and weaker.
+- **Cooling without strong wind** (`r scales::percent(sh("cooling"), 1)`) ends periods of ordinary strength, mostly in mid-summer, after several cool, cloudy days without unusually strong wind. The lake loses heat from the top until the surface layer is as dense as the water below.
 - **No unusual forcing** (`r scales::percent(sh("neither"), 1)`): these are mostly mid-summer periods of modest strength, worn down by ordinary wind and night-time cooling.
   - Their forcing sits near the median, so Rotorua's summer stratification is often marginal and needs no event to end it.
   - The daily-mean budget also misses short events: an afternoon squall or one cold night can mix the lake without changing the daily mean much.
 - **Reading.** Stratification is set up by calm, warm spells of one to two days and ended mostly by cool, windy changes. The long, anoxic stratified periods (@sec-strat2122 and @fig-thermo-summers) are those where calm, warm weather persisted and no strong front arrived for weeks.
 
+#### A closer look: summer 2014/15 at hourly resolution {#sec-strat-1415}
+
+The daily analysis can miss what happens within a day. This checks one stratified period against the old buoy's 15-minute record, averaged to hourly. The period is 19 December 2014 – 8 February 2015: the strongest stratification on record (peak Schmidt stability about 210 J/m²) and the 30-day bottom anoxia of early 2015.
+
+```{r}
+#| label: fig-strat-1415
+#| fig-cap: "Summer 2014/15 from the old buoy's 15-minute record (hourly means). (a) Water temperature by depth (sensors at 0.5, 2.5, 4.5, 6.5, 8.5 m and 2 m apart below). (b) Bottom − surface density difference; dotted line at the 0.2 kg/m³ stratification threshold. (c) DO at 1 m and 20 m. (d) Wind at 10 m, with the daily mean (black). (e) Hourly net surface heat flux (grey) and its daily mean (black); positive is heating. Grey band: the stratified period in the daily record; dashed line: the hourly breakdown on 6 February."
+#| fig-height: 10
+ev <- tr("strat_event_1415")
+eh <- ev$hourly
+e_br <- as.POSIXct("2015-02-06", tz = "Etc/GMT-12")
+e_band <- annotate("rect", xmin = as.POSIXct("2014-12-19", tz = "Etc/GMT-12"), xmax = as.POSIXct("2015-02-09", tz = "Etc/GMT-12"),
+                   ymin = -Inf, ymax = Inf, fill = "grey80", alpha = 0.35)
+e_v <- geom_vline(xintercept = e_br, linetype = 2, colour = "firebrick")
+e_x <- scale_x_datetime(date_breaks = "2 weeks", date_labels = "%d %b", expand = c(0, 0))
+e_day <- eh |> mutate(day = lubridate::floor_date(hour, "day") + 12 * 3600) |> group_by(day) |>
+  summarise(wind = mean(wind, na.rm = TRUE), q_net = mean(q_net, na.rm = TRUE), .groups = "drop")
+e_tmp <- ev$temp |> arrange(hour, depth) |> group_by(hour) |>
+  mutate(top = (depth + lag(depth, default = 0)) / 2, bot = (depth + lead(depth, default = max(depth) + 0.25)) / 2) |> ungroup()
+ea <- ggplot(e_tmp, aes(fill = temp)) + geom_rect(aes(xmin = hour, xmax = hour + 3600, ymin = top, ymax = bot)) +
+  scale_y_reverse() + scale_fill_viridis_c(option = "inferno", name = "°C") + e_v + e_x + labs(x = NULL, y = "Depth (m)", tag = "a")
+eb <- ggplot(eh, aes(hour, d_rho)) + e_band + geom_hline(yintercept = strat_drho_threshold(), linetype = 3) + geom_line(linewidth = 0.3) + e_v + e_x +
+  labs(x = NULL, y = "Δρ (kg/m³)", tag = "b")
+ec <- eh |> select(hour, `1 m` = do_1, `20 m` = do_20) |> pivot_longer(-hour) |>
+  ggplot(aes(hour, value, colour = name)) + e_band + geom_line(linewidth = 0.3) + e_v + e_x +
+  scale_colour_manual(values = c(`1 m` = "#41AB5D", `20 m` = "purple4")) + labs(x = NULL, y = "DO (mg/L)", colour = NULL, tag = "c")
+ed <- ggplot(eh, aes(hour, wind)) + e_band + geom_line(linewidth = 0.25, colour = "grey45") +
+  geom_line(data = e_day, aes(day, wind), colour = "black", linewidth = 0.6) + e_v + e_x + labs(x = NULL, y = "Wind (m/s)", tag = "d")
+ee <- ggplot(eh, aes(hour, q_net)) + e_band + geom_hline(yintercept = 0, colour = "grey50") + geom_line(linewidth = 0.2, colour = "grey55") +
+  geom_line(data = e_day, aes(day, q_net), colour = "black", linewidth = 0.6) + e_v + e_x + labs(x = NULL, y = "Heat flux (W/m²)", tag = "e")
+(ea / eb / ec / ed / ee) + plot_layout(heights = c(1.4, 0.8, 0.8, 0.8, 0.8), guides = "collect")
+```
+
+```{r}
+#| label: s1415-numbers
+e_in <- eh |> filter(hour >= as.POSIXct("2014-12-19", tz = "Etc/GMT-12"), hour < as.POSIXct("2015-02-09", tz = "Etc/GMT-12"))
+e_lt1 <- sum(!is_stratified(e_in$d_rho), na.rm = TRUE)
+e_dc <- e_in |> mutate(hr = as.integer(format(hour, "%H"))) |> group_by(hr) |>
+  summarise(t_s = mean(t_s, na.rm = TRUE), wind = mean(wind, na.rm = TRUE), q = mean(q_net, na.rm = TRUE), .groups = "drop")
+e_56 <- eh |> filter(hour >= as.POSIXct("2015-02-05", tz = "Etc/GMT-12"), hour < as.POSIXct("2015-02-07", tz = "Etc/GMT-12"))
+```
+
+**What the hourly record adds.**
+
+- **The stratification was continuous.** The density difference was at or below the threshold in only `r e_lt1` of `r nrow(e_in)` hours. All of these were at the onset (19 December) and the breakdown (6–8 February). There was no hidden mixing in between, and the bottom water stayed anoxic from mid-January (@fig-strat-1415).
+- **The daily cycle is large, but did not break the stratification.**
+  - The surface warmed by about `r sprintf("%.1f", diff(range(e_dc$t_s)))` °C from dawn to mid-afternoon.
+  - The wind followed a sea-breeze-like cycle, from about `r sprintf("%.1f", min(e_dc$wind))` m/s in the morning to `r sprintf("%.1f", max(e_dc$wind))` m/s in the late afternoon. The windiest hours came while the surface was still warm and stable.
+  - Every night the lake lost about 200 W/m² (hourly fluxes reached −400 to −500 W/m² on cool, windy nights). That cooling deepened the surface layer but did not reach the bottom.
+- **Onset.** A windy, wet 17 December (14 hours above 8 m/s) mixed the lake. Two calm days followed, gaining 140–170 W/m², and the lake stratified on 19 December.
+- **The stratification was eroded from above for a week first.** From about 30 January the warm surface layer deepened from about 10 m to about 15 m, and the surface–bottom temperature difference fell steadily from about 4.5 to 2 °C, under modest wind and a near-zero daily heat balance. By the time the storm arrived, only the bottom few metres were still isolated.
+- **The breakdown came on 6 February, earlier than the daily record first showed.**
+  - A windy spell built from 3 February. Then, on 5–6 February, the wind was above 8 m/s for `r sum(e_56$wind > 8, na.rm = TRUE)` of 48 hours (peak `r sprintf("%.1f", max(e_56$wind, na.rm = TRUE))` m/s), the air cooled to 14 °C and the lake lost about 140–260 W/m² a day.
+  - Bottom DO jumped from 0 to 8 mg/L during 6 February, when the lake fully mixed.
+  - In the daily-mean record, 6 February still just counts as stratified (density difference 0.21 kg/m³), 7 February is mixed, and the lake re-stratified weakly on 8 February. With the 2-day gap rule, the period therefore "ended" on 8 February. The forcing window then missed the storm, and this breakdown was first classed as having no unusual weather.
+- **What changed as a result.** Breakdowns are now dated by the first mixed day in the last days of a period, ignoring the bridged gap. This moved `r sum(sd_br$day0 < sd_br$end + 1)` of the `r nrow(sd_br)` breakdowns earlier. The 2014/15 breakdown is now dated 7 February, one day after the hourly record, and classed as wind + cooling.
+  - The "no unusual weather" class shrank only slightly, so most of it is not this artefact.
+  - Some breakdowns are probably still mistimed by a day or so. Classifying them on sub-daily data (daily minimum surface–bottom difference, the hourly wind maximum and night-time cooling) for the whole record is the next refinement.
+
 **Caveats.**
 
-- **Anemometer height.** Assumed to be 2 m. Wind speeds and Lake numbers scale with it, but the percentiles and the classes do not.
-- **Heat budget.** Uses ERA5-BC radiation and daily means, and is not closed. Only departures and percentiles are interpreted.
+- **Wind.** Buoy wind at 10 m (converted from about 1.5–2 m when it was loaded). Lake numbers scale with the wind, but the percentiles and the classes do not.
+- **Heat budget.** Uses ERA5-BC radiation and daily means, and is about 17 W/m² short of closing (see above). Only departures and percentiles are interpreted.
 - **Censored and excluded periods.** Stratified periods that end in a data gap (such as 2021/22) are excluded from the breakdown statistics.
+- **Definition of "stratified".** Since November 2026, a bottom − surface density difference of more than 0.2 kg/m³ (`strat_drho_threshold()` in `R/wq_synthesis_helpers.R`, used for every buoy, CTD and model metric on this page and in the calibration targets). It replaced a 1 °C temperature difference, which is a different stability at different temperatures: 0.09 kg/m³ at 10 °C, but 0.24 kg/m³ at 23 °C.
+  - 0.2 kg/m³ equals 1 °C at about 20–21 °C, so summer results barely changed: 97% of buoy days are classed the same, and the longest periods are unchanged.
+  - The change removed short, weak spring "stratification", which a 1 °C rule counted in cool water. The share of September days stratified fell from 9% to 2%, and the number of buoy-recorded stratified periods from 94 to 86.
+  - A lower threshold (0.1 kg/m³) would add about 600 weakly stratified summer days, many of them only afternoon surface warming.
 - **Not tested.** Rain and inflows (cold, dense storm water) and wind direction (fetch) are not yet tested. Several breakdowns, such as February 2022, coincide with large storms.
 
 ### Seasonal cycle of bottom-water nutrients
@@ -1113,7 +1181,7 @@ sstrat <- bdaily |>
   filter(as.integer(format(date, "%m")) %in% c(12, 1, 2)) |>
   mutate(hy = wq_hy(date)) |>
   group_by(hy) |>
-  summarise(n = n(), schmidt = mean(schmidt), strat_days = sum(d_temp >= 1) * 90 / n(),
+  summarise(n = n(), schmidt = mean(schmidt), strat_days = sum(is_stratified(d_rho)) * 90 / n(),
             anox_days = sum(do_bot < 2, na.rm = TRUE) * 90 / sum(is.finite(do_bot)), .groups = "drop") |>
   filter(n >= 45)
 bmax <- ann |> filter(layer == "BOT", variable %in% c("drp", "nh4")) |>
@@ -1347,7 +1415,7 @@ tibble::tribble(
     sprintf("The 3-day running rainfall total exceeds its 99th percentile (%.0f mm); exceedances within 3 days of each other are one event. The event magnitude is the largest 3-day total. The peak modelled total inflow (PC10 loads) is reported alongside.", st_thr),
     sprintf("%d (%d since 2016)", nrow(me$storms), sum(me$storms$start >= as.Date("2016-01-01"))),
   "Stratified", "Buoy and CTD profiles",
-    "The surface (≤ 1.5 m) minus bottom (≥ 18 m) temperature is ≥ 1 °C. Stratified periods are runs of at least 3 such days (gaps of up to 2 days bridged).",
+    "The bottom (≥ 18 m) water is more than 0.2 kg/m³ denser than the surface (≤ 1.5 m) water, from temperature (equal to a 1 °C difference at about 20–21 °C; until November 2026 the definition was a 1 °C difference). Stratified periods are runs of at least 3 such days (gaps of up to 2 days bridged).",
     sprintf("%d periods", nrow(be$stratified)),
   "Bottom anoxia / hypoxia", "Buoy bottom (≥ 18 m) DO",
     "Bottom DO below 2 g/m³ (anoxia) or below 4 g/m³ (hypoxia) for at least 3 days (gaps of up to 2 days bridged).",
@@ -1796,7 +1864,7 @@ s_in <- s_d |> filter(date >= s_ev$start, date <= s_ev$end)
 s_dmax <- s_in |> slice_max(d_temp, n = 1)
 s_smax <- s_in |> slice_max(t_surf, n = 1)
 s_tb <- range(s_in$t_bot, na.rm = TRUE)
-s_ndays <- sum(s_in$d_temp > 1, na.rm = TRUE)
+s_ndays <- sum(is_stratified(s_in$d_rho), na.rm = TRUE)
 # CTD casts: surface (<= 1.5 m) and bottom (deepest 2 m of each cast), Sites 2 and 5
 s_ctd <- ctd |> filter(date >= s_from, date <= s_to, var %in% c("temp_c", "do_mgl")) |>
   group_by(site, date, var) |>
@@ -1804,7 +1872,7 @@ s_ctd <- ctd |> filter(date >= s_from, date <= s_to, var %in% c("temp_c", "do_mg
             bot = mean(value[depth_m >= max(depth_m) - 2], na.rm = TRUE), .groups = "drop") |>
   mutate(across(c(top, bot), \(x) ifelse(is.nan(x), NA_real_, x))) |>
   pivot_wider(names_from = var, values_from = c(top, bot)) |>
-  mutate(d_temp = top_temp_c - bot_temp_c)
+  mutate(d_temp = top_temp_c - bot_temp_c, d_rho = strat_drho(top_temp_c, bot_temp_c))
 # met over the stratified period against the same calendar days in other years
 s_met <- me$daily |> mutate(doy = as.integer(format(date, "%j")), y = as.integer(format(date, "%Y")),
                            hy = ifelse(doy >= 312, y + 1L, y)) |>
@@ -1828,7 +1896,7 @@ s_ctd_dates <- sort(unique(s_ctd$date))
 
 ```{r}
 #| label: fig-s2122-overview
-#| fig-cap: "Summer 2021/22, October 2021 to March 2022. (a) Buoy water temperature by depth (old buoy to 18 January 2022, new buoy from 21 February); dashed lines are the CTD sampling dates. (b) Buoy surface (≤ 1.5 m) and bottom (≥ 18 m) temperature (lines), with the CTD surface and bottom temperatures at Sites 2 and 5 (points). (c) Surface − bottom temperature difference; the dotted line is the 1 °C stratification threshold. (d) Bottom DO from the buoys (line; the old buoy's 20 m sensor stopped on 14 November) and the bottom of each CTD cast (points); the dashed line is 2 g/m³. (e) ERA5-BC daily air temperature (black) and wind speed (grey), with air heatwaves (red) and storms (blue). Grey band: the 70-day buoy-recorded stratified period. Orange band: no buoy bottom temperature (17 January – 20 February)."
+#| fig-cap: "Summer 2021/22, October 2021 to March 2022. (a) Buoy water temperature by depth (old buoy to 18 January 2022, new buoy from 21 February); dashed lines are the CTD sampling dates. (b) Buoy surface (≤ 1.5 m) and bottom (≥ 18 m) temperature (lines), with the CTD surface and bottom temperatures at Sites 2 and 5 (points). (c) Bottom − surface density difference; the dotted line is the 0.2 kg/m³ stratification threshold. (d) Bottom DO from the buoys (line; the old buoy's 20 m sensor stopped on 14 November) and the bottom of each CTD cast (points); the dashed line is 2 g/m³. (e) ERA5-BC daily air temperature (black) and wind speed (grey), with air heatwaves (red) and storms (blue). Grey band: the 70-day buoy-recorded stratified period. Orange band: no buoy bottom temperature (17 January – 20 February)."
 #| fig-height: 11
 s_heat <- bpl |> filter(date >= s_from, date <= s_to, is.finite(temp_c)) |>
   arrange(source, date, depth_m) |> group_by(source, date) |>
@@ -1850,12 +1918,12 @@ pb <- s_d |> select(date, Surface = t_surf, Bottom = t_bot) |> pivot_longer(-dat
   scale_colour_manual(values = c(Surface = "#D55E00", Bottom = "#0072B2")) +
   scale_shape_manual(values = c("Site 2" = 16, "Site 5" = 17)) +
   s_x + labs(x = NULL, y = "Water temp (°C)", colour = NULL, shape = "CTD", tag = "b")
-pc <- ggplot(s_d, aes(date, d_temp)) + s_bands() +
-  geom_hline(yintercept = 1, linetype = 3) +
+pc <- ggplot(s_d, aes(date, d_rho)) + s_bands() +
+  geom_hline(yintercept = strat_drho_threshold(), linetype = 3) +
   geom_line(linewidth = 0.4) + geom_point(size = 0.5) +
   geom_point(data = s_ctd, aes(shape = site), size = 2) +
   scale_shape_manual(values = c("Site 2" = 16, "Site 5" = 17)) +
-  s_x + labs(x = NULL, y = "Surface − bottom (°C)", shape = "CTD", tag = "c")
+  s_x + labs(x = NULL, y = "Δρ bottom − surface (kg/m³)", shape = "CTD", tag = "c")
 pd <- ggplot(s_d, aes(date, do_bot)) + s_bands() +
   geom_hline(yintercept = 2, linetype = 2, colour = "firebrick") +
   geom_line(colour = "purple4", linewidth = 0.4) +
@@ -1917,7 +1985,7 @@ ggplot(s_chem, aes(date, value, colour = layer)) + s_bands() +
 
 **The stratified period (8 November – 16 January).**
 
-- The surface was more than 1 °C warmer than the bottom on all `r s_ndays` days with data. The 2 days without data (20 December, and 15 January for the bottom sensor) are bridged by the 2-day gap rule (@sec-event-defs).
+- The lake was stratified (density difference above 0.2 kg/m³) on all `r s_ndays` days with data. The 2 days without data (20 December, and 15 January for the bottom sensor) are bridged by the 2-day gap rule (@sec-event-defs).
 - The difference peaked at `r sprintf("%.1f", s_dmax$d_temp)` °C on `r format(s_dmax$date, "%d %B")`. The surface reached `r sprintf("%.1f", s_smax$t_surf)` °C on `r format(s_smax$date, "%d %B")`, during the lake heatwave.
 - The thermocline moved deeper as the period went on. On 17 November it sat at about 17–20 m at Site 2. By 20 December the temperature gradient spread from about 13 to 21 m at Site 2 and from 16 to 20 m at Site 5 (@fig-s2122-ctd).
 - The bottom water still warmed steadily, from `r sprintf("%.1f", s_tb[1])` to `r sprintf("%.1f", s_tb[2])` °C. Heat continued to reach it by mixing across the thermocline, so the deep water was not fully isolated.
@@ -1945,15 +2013,15 @@ ggplot(s_chem, aes(date, value, colour = layer)) + s_bands() +
   - 4.6 °C on 6 January;
   - 2.6–2.9 °C on 9–14 January, a windier spell with daily mean wind of 7–7.7 m/s on several days;
   - 1.4 °C on 16 January, the last day with a bottom reading.
-- **19 January (CTD).** The lake was only weakly stratified: surface − bottom 1.1–1.2 °C (@fig-s2122-overview c).
+- **19 January (CTD).** The lake was only weakly stratified: surface − bottom 1.1–1.2 °C, a density difference of about 0.27 kg/m³, just above the threshold (@fig-s2122-overview c).
   - Bottom DO had recovered to 4.0–4.8 g/m³, so the anoxic layer had already been partly reoxygenated.
   - DO between 5 and 15 m had fallen from about 8.5 g/m³ in December to 4–7 g/m³. DO was 4–7 g/m³ through the whole water column, which is consistent with the low-oxygen bottom water having been mixed upwards.
   - Bottom DRP (73–78 mg/m³) and NH₄ (370–400 mg/m³) were still high.
   - Surface DRP had risen to 9.6 mg/m³ at both sites, the first sign of bottom water mixing into the surface.
-- **16 February (CTD).** The lake was mixed (surface − bottom ≤ 0.4 °C), and bottom DO was 6.3 g/m³ at Site 5.
+- **16 February (CTD).** The lake was mixed (surface − bottom ≤ 0.4 °C, a density difference below 0.1 kg/m³), and bottom DO was 6.3 g/m³ at Site 5.
   - This followed the storm of 7 February (195 mm in one day) and a windy 13 February (11 m/s).
   - Bottom DRP had fallen to about 16 mg/m³. Surface TP had risen to 38–40 mg/m³ and surface NH₄ to 19–44 mg/m³.
-- **From 21 February (new buoy).** The water column was close to uniform at 21.7–22.5 °C, with only brief differences above 1 °C.
+- **From 21 February (new buoy).** The water column was close to uniform at 21.7–22.5 °C, with only brief, weak stratification.
 
 **What this means for the duration.**
 
@@ -2377,6 +2445,8 @@ wq_pointwise_definitions() |>
 - **Calibration and validation:** the signatures can be used directly as calibration terms, in the same way as the CSPS terms in `calibration/csps_metrics.R`. The dosing-pause and recent-period targets are better kept for validation.
 
 ### Example: the current calibrated ensemble
+
+These scores were computed before stratification was redefined by density (November 2026), with the earlier 1 °C definition (@sec-event-defs). The observed stratification targets moved by less than a quarter of a tolerance, so the picture below holds, but the exact z values will change slightly when the ensemble is rescored (`calibration/wq_targets/score_long_ensemble.R`).
 
 ```{r}
 #| label: ens-scores

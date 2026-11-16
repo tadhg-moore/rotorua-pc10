@@ -104,7 +104,7 @@ lake_stability_daily <- function(profiles, met, hyps, events_daily) {
     out
   }
   s <- dplyr::bind_rows(lapply(split(pr, pr$date), one)) |>
-    dplyr::left_join(events_daily |> dplyr::select(date, t_surf, t_bot, d_temp), by = "date") |>
+    dplyr::left_join(events_daily |> dplyr::select(date, t_surf, t_bot, d_temp, d_rho), by = "date") |>
     dplyr::left_join(met, by = "date")
   rho_w <- ifelse(is.finite(s$rho_epi), s$rho_epi, 998)
   s$u_star <- rLakeAnalyzer::uStar(s$wind_rms, 10, rho_w)
@@ -133,7 +133,7 @@ doy_percentile <- function(date, x, win = 15) {
 #' Onsets and breakdowns of buoy-recorded stratification, and the forcing around each
 #'
 #' Onset: the first day of a stratified period (buoy_events$stratified) with at least 2 of
-#' the 3 previous days observed mixed (surface - bottom <= 1 C). Breakdown: the first day
+#' the 3 previous days observed mixed (density difference not above strat_drho_threshold()). Breakdown: the first day
 #' after a period, when at least 2 of the 3 following days are observed mixed, so periods
 #' that end in a data gap are left out. Day 0 is the onset day or the first mixed day.
 #' Each breakdown is classed by the mean forcing over days -2 to 0 (3-day means), as
@@ -154,14 +154,14 @@ strat_transitions <- function(stab, stratified, window = 10) {
                   p_wind_pct = doy_percentile(date, p_wind3), q_net_pct = doy_percentile(date, q_net3),
                   ta_tw = tair - t_surf, q_net_anom = q_net - doy_mean(date, q_net),
                   wind_anom = wind - doy_mean(date, wind), ta_tw_anom = ta_tw - doy_mean(date, ta_tw))
-  mixed_obs <- function(days) sum(d$d_temp[match(days, d$date)] <= 1, na.rm = TRUE)
+  mixed_obs <- function(days) sum(!is_stratified(d$d_rho[match(days, d$date)]), na.rm = TRUE)
   on <- stratified |>
     dplyr::filter(vapply(start, function(s) mixed_obs(s - 1:3) >= 2, TRUE)) |>
     dplyr::transmute(type = "onset", day0 = start, start, end, duration)
   # Breakdown day: the first observed mixed day in the last 3 days of the period or the day after.
   # The period itself bridges mixed gaps of up to 2 days, so a lake that mixes and then briefly
   # re-stratifies (e.g. 7-8 Feb 2015) would otherwise be dated after the event that mixed it.
-  first_mixed <- function(e) { dd <- e + (-2:1); m <- d$d_temp[match(dd, d$date)] <= 1; as.numeric(dd[which(m %in% TRUE)[1]]) }
+  first_mixed <- function(e) { dd <- e + (-2:1); m <- !is_stratified(d$d_rho[match(dd, d$date)]); as.numeric(dd[which(m %in% TRUE)[1]]) }
   br <- stratified |>
     dplyr::filter(vapply(end, function(e) mixed_obs(e + 1:3) >= 2, TRUE)) |>
     dplyr::mutate(day0 = as.Date(vapply(end, first_mixed, 0), origin = "1970-01-01")) |>
@@ -185,7 +185,7 @@ strat_transitions <- function(stab, stratified, window = 10) {
     d |>
       dplyr::filter(date >= ev$day0[i] - window, date <= ev$day0[i] + window) |>
       dplyr::transmute(id = ev$id[i], type = ev$type[i], lag = as.integer(date - ev$day0[i]), date,
-                       wind, wind_anom, p_wind, tair, ta_tw, ta_tw_anom, q_net, q_net_anom, st, d_temp, lake_number)
+                       wind, wind_anom, p_wind, tair, ta_tw, ta_tw_anom, q_net, q_net_anom, st, d_temp, d_rho, lake_number)
   }))
   list(events = ev, composite = comp, daily = d)
 }

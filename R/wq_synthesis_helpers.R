@@ -410,18 +410,19 @@ hyps_vol_below <- function(h, z) {
 #'
 #' @param df long profiles with group column(s), `date`, `depth_m`, `temp_c`.
 #' @param h hypsograph from [hyps_below_surface()].
-#' @param min_dt profiles with surface-bottom difference below this are "mixed"
-#'   (thermocline depth NA).
-thermal_structure <- function(df, h, ..., min_dt = 1, min_depths = 5) {
+#' @param min_drho profiles with a surface-bottom density difference not above this are
+#'   "mixed" (thermocline depth NA); default strat_drho_threshold().
+thermal_structure <- function(df, h, ..., min_drho = strat_drho_threshold(), min_depths = 5) {
   df |>
     dplyr::filter(is.finite(temp_c)) |>
     dplyr::group_by(..., date) |>
     dplyr::filter(dplyr::n_distinct(depth_m) >= min_depths) |>
     dplyr::group_modify(\(d, k) {
       b <- bin_profile_1m(d$depth_m, d$temp_c)
-      td <- thermocline_depth(b$depth, b$temp, min_dt = min_dt, binned = TRUE)
+      td <- thermocline_depth(b$depth, b$temp, min_drho = min_drho, binned = TRUE)
       ss <- suppressWarnings(rLakeAnalyzer::schmidt.stability(b$temp, b$depth, h$area, h$depth))
       tibble::tibble(t_surf = b$temp[1], t_bot = b$temp[nrow(b)], d_temp = b$temp[1] - b$temp[nrow(b)],
+                     d_rho = strat_drho(b$temp[1], b$temp[nrow(b)]),
                      thermo_depth = td, schmidt = ss, max_depth = max(b$depth))
     }) |>
     dplyr::ungroup()
@@ -433,20 +434,38 @@ bin_profile_1m <- function(depth, temp) {
   t <- tapply(temp[ok], z, mean); data.frame(depth = as.numeric(names(t)), temp = unname(as.numeric(t)))
 }
 
+#' Stratification threshold: surface - bottom density difference (kg/m3)
+#'
+#' The single definition of "stratified" used by the buoy and CTD events, thermocline depth,
+#' the WQ targets (observations and model) and the calibration terms. 0.2 kg/m3 equals a
+#' 1 C difference at about 20-21 C (the summer surface temperature), so summer results match
+#' the earlier 1 C definition, while the threshold no longer gets stricter in stability terms
+#' as the water cools (1 C is 0.09 kg/m3 at 10 C, 0.24 kg/m3 at 23 C). Lower values (0.1)
+#' start to count afternoon surface warming as stratification on this shallow lake.
+#' Changed from 1 C on 2026-11-16. Override with options(rotorua.strat_drho = <value>).
+strat_drho_threshold <- function() getOption("rotorua.strat_drho", 0.2)
+
+#' Surface - bottom density difference (kg/m3; positive = stable), freshwater, temperature only
+strat_drho <- function(t_surf, t_bot) rLakeAnalyzer::water.density(t_bot) - rLakeAnalyzer::water.density(t_surf)
+
+#' TRUE where the water column is stratified (density difference above the threshold)
+is_stratified <- function(d_rho, thr = strat_drho_threshold()) d_rho > thr
+
 #' Thermocline depth of one profile: the single definition used by the WQ targets
 #' (thermal_structure) and by the paired calibration term (a_thermo_* in
 #' calibration/step2/alum_resid.R)
 #'
-#' 1 m bins; NA when the top-bottom difference is below `min_dt` (mixed);
+#' 1 m bins; NA when the top-bottom density difference is not above `min_drho` (mixed;
+#' strat_drho_threshold());
 #' rLakeAnalyzer::thermo.depth (Smin 0.05) searched between 3 m and 2 m above the
 #' deepest reading, so that neither near-surface diurnal warming nor the near-bed
 #' boundary-layer gradient is taken as the (hypolimnion-bounding) thermocline.
 #' Compare model and observations over the same depth range (pairing, or the
 #' model cut at the deepest observed depth).
-thermocline_depth <- function(depth, temp, min_dt = 1, top = 3, bot_gap = 2, binned = FALSE) {
+thermocline_depth <- function(depth, temp, min_drho = strat_drho_threshold(), top = 3, bot_gap = 2, binned = FALSE) {
   b <- if (binned) data.frame(depth = depth, temp = temp) else bin_profile_1m(depth, temp)
   b <- b[order(b$depth), ]
-  if (nrow(b) < 2 || b$temp[1] - b$temp[nrow(b)] < min_dt) return(NA_real_)
+  if (nrow(b) < 2 || !is_stratified(strat_drho(b$temp[1], b$temp[nrow(b)]), min_drho)) return(NA_real_)
   up <- b[b$depth >= top & b$depth <= max(b$depth) - bot_gap, ]
   if (nrow(up) < 3) return(NA_real_)
   td <- suppressWarnings(rLakeAnalyzer::thermo.depth(up$temp, up$depth, Smin = 0.05))
@@ -468,16 +487,16 @@ hypolimnetic_flux <- function(chem_long, ctd_thermal, h, vars = c("nh4", "drp", 
     dplyr::filter(layer %in% c("HYP", "BOT"), variable %in% vars) |>
     dplyr::group_by(site, date, variable) |>
     dplyr::summarise(c_hyp = mean(value), n_layers = dplyr::n(), .groups = "drop")
-  th <- ctd_thermal |> dplyr::select(site, date, thermo_depth, d_temp, t_bot)
+  th <- ctd_thermal |> dplyr::select(site, date, thermo_depth, d_rho, t_bot)
   hyp |>
     dplyr::inner_join(th, by = c("site", "date")) |>
     dplyr::arrange(site, variable, date) |>
     dplyr::group_by(site, variable) |>
     dplyr::mutate(date0 = dplyr::lag(date), c0 = dplyr::lag(c_hyp),
-                  z0 = dplyr::lag(thermo_depth), strat0 = dplyr::lag(d_temp) >= 1) |>
+                  z0 = dplyr::lag(thermo_depth), strat0 = is_stratified(dplyr::lag(d_rho))) |>
     dplyr::ungroup() |>
     dplyr::filter(!is.na(date0), as.numeric(date - date0) <= max_gap,
-                  d_temp >= 1, strat0, is.finite(thermo_depth), is.finite(z0)) |>
+                  is_stratified(d_rho), strat0, is.finite(thermo_depth), is.finite(z0)) |>
     dplyr::mutate(
       days = as.numeric(date - date0),
       z_th = (thermo_depth + z0) / 2,

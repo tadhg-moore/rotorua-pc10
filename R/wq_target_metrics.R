@@ -10,7 +10,9 @@
 # Inputs (identical layout for observations and model):
 #   prof_daily    date, t_surf, t_bot, do_bot          daily surface (<= 1.5 m) and
 #                                                      bottom (>= 18 m) temperature and DO
-#   thermal_daily date, d_temp, thermo_depth           from thermal_structure()
+#   thermal_daily date, d_temp, d_rho, thermo_depth    from thermal_structure()
+# "Stratified" is a surface - bottom density difference above strat_drho_threshold()
+# (0.2 kg/m3; R/wq_synthesis_helpers.R), for observations and model alike.
 #   chem_long     site, layer (INT/HYP/BOT), date,     discrete chemistry, mg/m3
 #                 variable (tp, tn, drp, nh4, nnn,     (model: sample the output at the
 #                 chla, secchi), value                 observed dates and depths)
@@ -27,7 +29,7 @@ wq_target_definitions <- function() {
     ~metric, ~priority, ~theme, ~label, ~measure, ~period,
     # --- Priority 1: physics, oxygen and the alum-era phosphorus response
     "strat_frac_djf", 1, "Stratification", "Share of summer days stratified",
-      "Share of Dec–Feb days with surface − bottom ≥ 1 °C, median of years", "2007–2026",
+      "Share of Dec–Feb days with surface − bottom density difference > 0.2 kg/m³, median of years", "2007–2026",
     "strat_longest_spell", 1, "Stratification", "Longest stratified spell",
       "Longest run of stratified days (Nov–Mar), median of years (d)", "2007–2026",
     "thermo_depth_djf", 1, "Stratification", "Summer thermocline depth",
@@ -137,18 +139,19 @@ wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NUL
 
   # ---- profiles
   pd <- prof_daily |>
-    dplyr::left_join(thermal_daily |> dplyr::select(date, d_temp_th = d_temp, thermo_depth), by = "date") |>
-    dplyr::mutate(d_temp = dplyr::coalesce(t_surf - t_bot, d_temp_th), hy = hy(date), m = mon(date))
+    dplyr::left_join(thermal_daily |> dplyr::select(date, d_temp_th = d_temp, d_rho_th = d_rho, thermo_depth), by = "date") |>
+    dplyr::mutate(d_temp = dplyr::coalesce(t_surf - t_bot, d_temp_th),
+                  d_rho = dplyr::coalesce(strat_drho(t_surf, t_bot), d_rho_th), hy = hy(date), m = mon(date))
   djf <- pd |> dplyr::filter(m %in% c(12, 1, 2))
   sumr <- pd |> dplyr::filter(m %in% c(11, 12, 1, 2, 3))
   by_hy <- function(d, f, min_n = 45) {
     sp <- split(d, d$hy); sp <- sp[vapply(sp, nrow, 1L) >= min_n]
     vapply(sp, \(x) suppressWarnings(as.numeric(f(x))), numeric(1))
   }
-  put("strat_frac_djf", .yr_stat(by_hy(djf |> dplyr::filter(is.finite(d_temp)), \(d) mean(d$d_temp >= 1))))
-  put("strat_longest_spell", .yr_stat(by_hy(sumr |> dplyr::filter(is.finite(d_temp)), \(d) {
-    e <- run_events(d$date, d$d_temp >= 1); if (nrow(e)) max(e$duration) else 0 }, 60)))
-  put("thermo_depth_djf", .yr_stat(by_hy(djf, \(d) stats::median(d$thermo_depth[d$d_temp >= 1], na.rm = TRUE), 30)))
+  put("strat_frac_djf", .yr_stat(by_hy(djf |> dplyr::filter(is.finite(d_rho)), \(d) mean(is_stratified(d$d_rho)))))
+  put("strat_longest_spell", .yr_stat(by_hy(sumr |> dplyr::filter(is.finite(d_rho)), \(d) {
+    e <- run_events(d$date, is_stratified(d$d_rho)); if (nrow(e)) max(e$duration) else 0 }, 60)))
+  put("thermo_depth_djf", .yr_stat(by_hy(djf, \(d) stats::median(d$thermo_depth[is_stratified(d$d_rho)], na.rm = TRUE), 30)))
   put("t_surf_djf", .yr_stat(by_hy(djf |> dplyr::filter(is.finite(t_surf)), \(d) mean(d$t_surf))))
   put("anox_frac_summer", .spread_stat(by_hy(sumr |> dplyr::filter(is.finite(do_bot)), \(d) mean(d$do_bot < 2), 60)))
   put("do_bot_min", .spread_stat(by_hy(pd |> dplyr::filter(is.finite(do_bot)), \(d) min(d$do_bot), 200)))
@@ -309,7 +312,7 @@ model_target_inputs <- function(sim, obs_chem, hyps, from = as.Date("2000-07-01"
     dplyr::left_join(lay(tmp, bot_min, 99) |> dplyr::rename(t_bot = v), by = "date") |>
     dplyr::left_join(lay(oxy, bot_min, 99) |> dplyr::rename(do_bot = v), by = "date")
   th <- tmp |> dplyr::transmute(source = "model", date, depth_m = depth, temp_c = value) |>
-    thermal_structure(hyps, source) |> dplyr::select(date, d_temp, thermo_depth)
+    thermal_structure(hyps, source) |> dplyr::select(date, d_temp, d_rho, thermo_depth)
 
   # chemistry sampled like the observations (mg/m3)
   vmap <- c(tp = "PHS_tp", tn = "NIT_tn", drp = "PHS_frp", nh4 = "NIT_amm", nnn = "NIT_nit", chla = "PHY_tchla")
@@ -326,8 +329,8 @@ model_target_inputs <- function(sim, obs_chem, hyps, from = as.Date("2000-07-01"
   chem_long <- keys |> dplyr::inner_join(chem, by = c("date", "layer", "variable"))
 
   # events and fluxes, computed exactly as for the observations
-  daily <- prof |> dplyr::mutate(d_temp = t_surf - t_bot)
-  strat <- run_events(daily$date, daily$d_temp > 1, min_len = 3, max_gap = 2)
+  daily <- prof |> dplyr::mutate(d_temp = t_surf - t_bot, d_rho = strat_drho(t_surf, t_bot))
+  strat <- run_events(daily$date, is_stratified(daily$d_rho), min_len = 3, max_gap = 2)
   hod <- oxygen_depletion(daily, th, strat, hyps)
   ctd_like <- tidyr::crossing(site = unique(obs_chem$site), th) |>
     dplyr::left_join(prof |> dplyr::select(date, t_bot), by = "date")
