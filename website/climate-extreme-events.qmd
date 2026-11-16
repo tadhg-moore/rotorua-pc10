@@ -31,11 +31,12 @@ This is a rebuild of an earlier version of this page, incorporating two changes 
 
 1.  **A rainfall unit bug fix.** [`met-source-comparison.qmd`](met-source-comparison.qmd) caught `MET_pprain` reading \~1000x too high from ERA5's raw units; every rainfall figure below is recomputed against the corrected series.
 2.  **Wind is now disaggregated as a plain scalar, not a vector.** `metscale::disaggregate_met_to_hourly()` was reshaping wind via its u/v vector components, which was found to inflate disaggregated hourly wind speed beyond its own delta-adjusted daily target. `apply_gcm_delta_to_baseline()` and the `scenario_hourly_met` target now strip `MET_wnduvu`/`MET_wnduvv`/`MET_wnddir` before disaggregation, so wind speed is shaped directly from the donor's own wind-speed pattern -- direction isn't needed for this lake model. See the wind section below for the corrected numbers.
-3.  **Rainfall thresholds now use the 125-year Whakarewarewa rain-gauge record** (`pc10_climate_met`, via BOPRC/PC10 -- see [`met-source-comparison.qmd`](met-source-comparison.qmd)) instead of the 20-year ERA5 window, and a return-level table is now possible for the first time.
+3.  **Rainfall thresholds now use the 126-year Whakarewarewa rain-gauge record** (`pc10_climate_met`, via BOPRC/PC10 -- see [`met-source-comparison.qmd`](met-source-comparison.qmd)) instead of the ERA5 reference window (1985-2014, 30 years; originally 1995-2014), and a return-level table is now possible for the first time.
+4.  **Measured data first.** The thresholds and the observed annual indices are built from the Whakarewarewa gauge, the airport and the lake buoy wherever they exist, with the bias-corrected ERA5 series only filling gaps (see *Measured data first* below). The scenarios themselves are still built from the bias-corrected ERA5 baseline.
 
 ## Method
 
-For every branch of `scenario_hourly_met`, and separately for the bias-corrected historical baseline (`era5_corrected_hourly`, 1995-2014), `compute_annual_extreme_indices()` ([R/summarise_climate_extremes.R](../R/summarise_climate_extremes.R)) computes one row per calendar year for:
+For every branch of `scenario_hourly_met`, and separately for the bias-corrected historical baseline (`era5_corrected_hourly`, reference years `scenario_ref_years`, 1985-2014), `compute_annual_extreme_indices()` ([R/summarise_climate_extremes.R](../R/summarise_climate_extremes.R)) computes one row per calendar year for:
 
 | Index | Definition |
 |------------------------------------|------------------------------------|
@@ -49,7 +50,7 @@ For every branch of `scenario_hourly_met`, and separately for the bias-corrected
 | `severe_wind_hours` | Hours/year above the historical p99 |
 | `storm_events` | Number of separate contiguous spells/year above the wind p95 threshold |
 
-Thresholds (`compute_extreme_thresholds()`) are fixed **once** and applied unchanged to every future branch, so "heavy rain" and "storm wind" mean the same absolute thing in every period -- a change in frequency is then a genuine intensification/frequency signal, not an artefact of a moving definition. Wind and temperature thresholds still come from the bias-corrected ERA5 hourly baseline (1995-2014) -- there's no long-record alternative for those at this site. **Rainfall thresholds now come from the 125-year Whakarewarewa daily rain-gauge record** (`compute_long_rain_thresholds()`, on `pc10_climate_met`) rather than the 20-year ERA5 window: 20 years is thin for estimating a p95/p99 event, and the long, independently-measured record is unaffected by anything in the reanalysis/bias-correction/delta-change chain the scenarios themselves are built from.
+Thresholds (`compute_extreme_thresholds_obs()`) are fixed **once** and applied unchanged to every future branch, so "heavy rain" and "storm wind" mean the same absolute thing in every period -- a change in frequency is then a genuine intensification/frequency signal, not an artefact of a moving definition. Wind and temperature thresholds now come from the measured records first (lake buoy, then the airport put on the lake scale) and only use the bias-corrected ERA5 hourly baseline where nothing was measured (see *Measured data first* below). **Rainfall thresholds now come from the 126-year Whakarewarewa daily rain-gauge record** (`compute_long_rain_thresholds()`, on `pc10_climate_met`) rather than the 20-year ERA5 window: 20 years is thin for estimating a p95/p99 event, and the long, independently-measured record is unaffected by anything in the reanalysis/bias-correction/delta-change chain the scenarios themselves are built from.
 
 ```{r}
 #| label: thresholds-table
@@ -57,6 +58,9 @@ Thresholds (`compute_extreme_thresholds()`) are fixed **once** and applied uncha
 
 th <- tar_read(extreme_thresholds)
 wr <- tar_read(whaka_rain_thresholds)
+ry <- tar_read(scenario_ref_years)
+src_wind <- sprintf("Lake buoy where measured (2007 on), bias-corrected ERA5 otherwise, %d-%d", min(ry), max(ry))
+src_temp <- sprintf("Lake buoy / airport where measured (1993 on), bias-corrected ERA5 otherwise, %d-%d", min(ry), max(ry))
 data.frame(
   Index = c("Rainfall p95 (wet days)", "Rainfall p99 (wet days)",
            "Hourly wind p95", "Hourly wind p99", "Daily max temperature p95"),
@@ -66,10 +70,63 @@ data.frame(
                      as.integer(format(wr$end, "%Y")), wr$n_years),
             sprintf("Whakarewarewa rain gauge, %d–%d (%d yr)", as.integer(format(wr$start, "%Y")),
                      as.integer(format(wr$end, "%Y")), wr$n_years),
-            "Bias-corrected ERA5, 1995-2014", "Bias-corrected ERA5, 1995-2014",
-            "Bias-corrected ERA5, 1995-2014")
+            src_wind, src_wind, src_temp)
 ) |>
   knitr::kable(caption = "Fixed extreme-event thresholds and their source record.")
+```
+
+### Measured data first
+
+The thresholds, and the observed annual indices used for context below, are built from the **measured records wherever they exist**, with the bias-corrected ERA5 hourly series (`era5_corrected_hourly`) used only to fill the gaps (`build_obs_priority_met()`, [R/obs_priority_met.R](../R/obs_priority_met.R); target `met_obs_priority`). The order is set variable by variable by which measured record is usable:
+
+-   **Rain (daily):** the Whakarewarewa rain gauge, then the MetService airport hourly rain (summed to days), then ERA5. The gauge is complete for the whole period, so ERA5 is never needed for rain. The lake buoy's own rain record is not used (its daily rain is close to zero; see `climate-scenario-workflow.qmd`).
+-   **Daily maximum air temperature:** the lake buoy (2007 on), then the MetService airport (1993 to 2023) put on the lake scale with the pipeline's own airport-to-buoy transfer function (`niwa_to_buoy_bias_correction`, as used to extend the buoy record for the ERA5 correction), then ERA5 before 1993. A day counts as measured only if it has at least 18 hourly values.
+-   **Hourly wind speed:** the lake buoy (2007 on, averaged to the hour), then ERA5. Airport wind is not used: it reads about 35% lower than the lake and the pipeline has no airport-to-buoy transfer for wind.
+
+```{r}
+#| label: obs-priority-coverage
+#| echo: false
+
+mo <- tar_read(met_obs_priority)
+cov_tab <- function(label, date, src, years = 1975:2025) {
+  yr <- as.integer(format(date, "%Y")); k <- yr %in% years
+  tb <- table(src[k]); data.frame(Variable = label, Source = names(tb), `Share of 1975-2025` = sprintf("%.0f%%", 100 * as.numeric(tb) / sum(tb)),
+    `First year` = vapply(names(tb), function(s) min(yr[k][src[k] == s]), 1L), check.names = FALSE)
+}
+rbind(cov_tab("Daily rain", mo$daily$date, mo$daily$rain_src),
+      cov_tab("Daily max temperature", mo$daily$date, mo$daily$tmax_src),
+      cov_tab("Hourly wind", mo$wind$Date, mo$wind$src)) |>
+  knitr::kable(row.names = FALSE, caption = "Where each variable of the measured-first record comes from, 1975 to 2025 (share of days or hours).")
+```
+
+```{r}
+#| label: obs-vs-era5-thresholds
+#| echo: false
+
+th_era5 <- tar_read(extreme_thresholds_era5)
+data.frame(Index = c("Rainfall p95 (wet days)", "Rainfall p99 (wet days)", "Hourly wind p95", "Hourly wind p99", "Daily max temperature p95"),
+           Units = c("mm/day", "mm/day", "m/s", "m/s", "°C"),
+           `Measured first (used)` = unlist(th[c("rain_p95", "rain_p99", "wind_p95", "wind_p99", "tmax_p95")]),
+           `Bias-corrected ERA5 only` = unlist(th_era5[c("rain_p95", "rain_p99", "wind_p95", "wind_p99", "tmax_p95")]),
+           check.names = FALSE) |>
+  knitr::kable(digits = 2, row.names = FALSE, caption = sprintf("Thresholds from the measured-first record and from bias-corrected ERA5 alone, reference years %d to %d (rainfall: the whole Whakarewarewa record in both).", min(ry), max(ry)))
+```
+
+```{r}
+#| label: obs-vs-era5-indices
+#| echo: false
+
+obs_ann <- tar_read(obs_annual_extremes)
+base_era5 <- tar_read(baseline_extreme_indices)
+idx_lab <- c(rx1day = "Max daily rain (mm)", heavy_rain_days = "Heavy rain days", extreme_rain_days = "Extreme rain days", hot_days = "Hot days",
+             wsdi = "Warm-spell days", max_wind = "Max hourly wind (m/s)", storm_wind_hours = "Storm wind hours", severe_wind_hours = "Severe wind hours",
+             storm_events = "Storm events")
+ref_rows <- obs_ann$year %in% ry
+data.frame(Index = unname(idx_lab),
+           `Measured first` = vapply(names(idx_lab), function(v) mean(obs_ann[[v]][ref_rows]), 0),
+           `Bias-corrected ERA5` = vapply(names(idx_lab), function(v) base_era5[[v]], 0), check.names = FALSE) |>
+  dplyr::mutate(`Difference (%)` = 100 * (`Bias-corrected ERA5` - `Measured first`) / `Measured first`) |>
+  knitr::kable(digits = 1, row.names = FALSE, caption = sprintf("Mean annual index over the %d to %d reference years from the measured-first record and from bias-corrected ERA5 (the scenario baseline). Where they agree, the delta-change scenarios start from a realistic present-day climate; where they do not (the rainfall extremes), the baseline of the scenario comparison is not realistic and the percentage changes should be read with that in mind.", min(ry), max(ry)))
 ```
 
 ### How much does the longer rainfall record change the threshold?
@@ -89,16 +146,17 @@ era5_p99 <- stats::quantile(era5_wet, 0.99, names = FALSE)
 
 data.frame(
   Threshold = c("p95", "p99"),
-  `Whakarewarewa (125 yr)` = sprintf("%.1f mm", c(wr$rain_p95, wr$rain_p99)),
-  `ERA5-only (15 yr, 2011-2025)` = sprintf("%.1f mm", c(era5_p95, era5_p99)),
+  Gauge = sprintf("%.1f mm", c(wr$rain_p95, wr$rain_p99)),
+  ERA5 = sprintf("%.1f mm", c(era5_p95, era5_p99)),
   check.names = FALSE
 ) |>
-  knitr::kable(caption = "Wet-day rainfall percentile thresholds: the 125-year Whakarewarewa gauge vs. the 15-year ERA5 baseline window used previously.")
+  setNames(c("Threshold", sprintf("Whakarewarewa (%d yr)", wr$n_years), sprintf("Bias-corrected ERA5 (%d yr, %d-%d)", length(ry), min(ry), max(ry)))) |>
+  knitr::kable(caption = "Wet-day rainfall percentile thresholds: the 126-year Whakarewarewa gauge vs. bias-corrected ERA5 over the reference years (see the column header for its length).")
 ```
 
 ### Long-record return levels
 
-With 125 years of daily rainfall, annual-maximum return levels can be estimated directly, well beyond what any 20-30 year GCM/reanalysis window here could support. `compute_rain_return_levels()` fits a Gumbel (extreme-value type I) distribution to the annual maxima by the method of moments:
+With 126 years of daily rainfall, annual-maximum return levels can be estimated directly, well beyond what any 20-30 year GCM/reanalysis window here could support. `compute_rain_return_levels()` fits a Gumbel (extreme-value type I) distribution to the annual maxima by the method of moments:
 
 ```{r}
 #| label: return-levels-table
@@ -175,9 +233,148 @@ fmt_index_table(names(wind_labels), wind_labels,
                 "Wind-storm extremes: GCM-ensemble mean (min–max range) [% change vs. baseline], by scenario and window.")
 ```
 
+## ENSO context: natural year-to-year variability
+
+A change in the frequency of extremes only matters relative to how much they already vary from year to year, and in New Zealand a large part of that variability is the El Niño–Southern Oscillation (ENSO) and the longer Interdecadal Pacific Oscillation (IPO). ENSO is analysed in full on [`enso-lake-rotorua.qmd`](enso-lake-rotorua.qmd); this section uses the same three ENSO targets to put the scenario changes above in context, over 1975 to the present:
+
+-   `soi_long`: the 3-month Southern Oscillation Index, the official [Stats NZ](https://www.stats.govt.nz/indicators/el-nino-southern-oscillation-data-to-2025/) series from 1990 and the NOAA SOI rescaled to it before 1990, with phases (El Niño at most -1, La Niña at least +1);
+-   `statsnz_soi`: the official Stats NZ series and phases alone (1990 on), which `soi_long` reproduces;
+-   `enso_indices`: the NOAA SOI and Oceanic Niño Index (ONI), the IPO tripole index and the Southern Annular Mode.
+
+The annual extreme indices come from the **measured-first record** (`obs_annual_extremes`: gauge, airport and buoy where they exist, bias-corrected ERA5 for the gaps; see above), for every complete calendar year 1975 to 2025.
+
+```{r}
+#| label: enso-indices-plot
+#| echo: false
+#| fig-width: 11
+#| fig-height: 7.5
+#| fig-cap: "ENSO and IPO indices, 1975 to the latest value. Top: 3-month SOI (`soi_long`; Stats NZ from 1990, NOAA rescaled before, paler) coloured by phase. Middle: ONI (NOAA, Niño3.4). Bottom: IPO tripole index (NOAA PSL), 12-month running mean."
+
+soi_lg  <- tar_read(soi_long)
+stnz    <- tar_read(statsnz_soi)
+enso_ix <- tar_read(enso_indices)
+phase_cols <- c("El Nino" = "#b2652b", Neutral = "grey65", "La Nina" = "#1b7f8a")
+p1 <- soi_lg |> dplyr::filter(date >= as.Date("1975-01-01")) |>
+  ggplot(aes(date, soi3, fill = phase, alpha = source)) + geom_col(width = 31) +
+  geom_hline(yintercept = c(-1, 1), linetype = 2, colour = "grey30") +
+  scale_fill_manual(values = phase_cols, labels = c("El Niño", "Neutral", "La Niña")) +
+  scale_alpha_manual(values = c("Stats NZ" = 1, "NOAA (rescaled)" = 0.55)) +
+  labs(x = NULL, y = "3-month SOI", fill = NULL, alpha = NULL) + theme_minimal(base_size = 11) + theme(legend.position = "top")
+oni <- enso_ix |> dplyr::filter(index == "ONI", date >= as.Date("1975-01-01"))
+p2 <- ggplot(oni, aes(date, value, fill = value > 0)) + geom_col(width = 31, show.legend = FALSE) +
+  geom_hline(yintercept = c(-0.5, 0.5), linetype = 2, colour = "grey30") +
+  scale_fill_manual(values = c("TRUE" = "#b2652b", "FALSE" = "#1b7f8a")) + labs(x = NULL, y = "ONI (°C)") + theme_minimal(base_size = 11)
+ipo <- enso_ix |> dplyr::filter(index == "IPO_TPI", date >= as.Date("1975-01-01")) |> dplyr::arrange(date) |>
+  dplyr::mutate(run = as.numeric(stats::filter(value, rep(1 / 12, 12), sides = 2)))
+p3 <- ggplot(ipo, aes(date, value)) + geom_col(width = 31, fill = "grey80") + geom_line(aes(y = run), colour = "grey20", na.rm = TRUE) +
+  labs(x = NULL, y = "IPO (TPI)") + theme_minimal(base_size = 11)
+if (requireNamespace("patchwork", quietly = TRUE)) print(p1 / p2 / p3) else print(p1)
+```
+
+```{r}
+#| label: enso-annual
+#| echo: false
+
+source(here::here("R", "summarise_climate_extremes.R"))
+obs_ann <- tar_read(obs_annual_extremes)
+oct_mar <- function(df, col) df |>
+  dplyr::mutate(m = as.integer(format(date, "%m")), y = as.integer(format(date, "%Y")), year = ifelse(m >= 10, y + 1L, y)) |>
+  dplyr::filter(m >= 10 | m <= 3) |> dplyr::group_by(year) |>
+  dplyr::summarise(v = mean(.data[[col]]), n = dplyr::n(), .groups = "drop") |> dplyr::filter(n == 6) |> dplyr::select(year, v)
+soi_y <- oct_mar(soi_lg, "soi3") |> dplyr::rename(soi = v)
+oni_y <- oct_mar(oni, "value") |> dplyr::rename(oni = v)
+ipo_y <- ipo |> dplyr::mutate(year = as.integer(format(date, "%Y"))) |> dplyr::group_by(year) |>
+  dplyr::summarise(ipo = mean(value), n = dplyr::n(), .groups = "drop") |> dplyr::filter(n == 12) |> dplyr::select(year, ipo)
+
+enso_idx_labels <- c(rx1day = "Max daily rain (mm)", heavy_rain_days = "Heavy rain days", extreme_rain_days = "Extreme rain days",
+                     hot_days = "Hot days", wsdi = "Warm-spell days", max_wind = "Max hourly wind (m/s)",
+                     storm_wind_hours = "Storm wind hours", severe_wind_hours = "Severe wind hours", storm_events = "Storm events")
+enso_d <- obs_ann |> dplyr::inner_join(soi_y, by = "year") |> dplyr::left_join(oni_y, by = "year") |> dplyr::left_join(ipo_y, by = "year") |>
+  dplyr::mutate(phase = factor(dplyr::case_when(soi <= -1 ~ "El Niño", soi >= 1 ~ "La Niña", TRUE ~ "Neutral"), c("El Niño", "Neutral", "La Niña")))
+detrend <- function(x, year) stats::residuals(stats::lm(x ~ year)) + mean(x)
+enso_dt <- enso_d
+for (v in names(enso_idx_labels)) enso_dt[[v]] <- detrend(enso_d[[v]], enso_d$year)
+n_ph <- table(enso_d$phase); yr_rng <- range(enso_d$year)
+```
+
+```{r}
+#| label: enso-annual-plot
+#| echo: false
+#| fig-width: 11
+#| fig-height: 8
+#| fig-cap: "Annual extreme indices from the measured-first record, coloured by the ENSO class of the October to March SOI ending in that year. Dashed line: mean of the 1985 to 2014 reference years."
+
+key_idx <- c("rx1day", "heavy_rain_days", "hot_days", "wsdi", "storm_wind_hours")
+base_idx <- tar_read(baseline_extreme_indices)
+pl <- enso_d |> tidyr::pivot_longer(dplyr::all_of(key_idx), names_to = "index", values_to = "value") |>
+  dplyr::mutate(index = factor(enso_idx_labels[index], unname(enso_idx_labels[key_idx])))
+bl <- data.frame(index = factor(enso_idx_labels[key_idx], unname(enso_idx_labels[key_idx])),
+                 base = vapply(key_idx, function(v) mean(obs_ann[[v]][obs_ann$year %in% ry]), 0))
+ggplot(pl, aes(year, value)) +
+  geom_hline(data = bl, aes(yintercept = base), linetype = 2, colour = "grey40") +
+  geom_line(colour = "grey80") + geom_point(aes(colour = phase), size = 2.4) +
+  scale_colour_manual(values = c("El Niño" = "#b2652b", "Neutral" = "grey55", "La Niña" = "#1b7f8a")) +
+  facet_wrap(~ index, ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = NULL, colour = "ENSO (Oct-Mar SOI)") +
+  theme_minimal(base_size = 12) + theme(legend.position = "top", strip.text = element_text(face = "bold", hjust = 0))
+```
+
+```{r}
+#| label: enso-phase-table
+#| echo: false
+
+sp <- function(x, y) { ok <- stats::complete.cases(x, y); ct <- suppressWarnings(stats::cor.test(x[ok], y[ok], method = "spearman", exact = FALSE)); c(r = unname(ct$estimate), p = ct$p.value) }
+enso_tab <- lapply(names(enso_idx_labels), function(v) {
+  x <- enso_dt[[v]]; ph <- enso_dt$phase
+  e <- x[ph == "El Niño"]; l <- x[ph == "La Niña"]
+  tt <- tryCatch(stats::t.test(l, e)$p.value, error = function(err) NA_real_)
+  s <- sp(enso_dt$soi, x); o <- sp(enso_dt$oni, x); i <- sp(enso_dt$ipo, x)
+  data.frame(Index = enso_idx_labels[[v]], `El Niño` = mean(e), Neutral = mean(x[ph == "Neutral"]), `La Niña` = mean(l),
+             `La Niña - El Niño` = mean(l) - mean(e), `p (difference)` = tt,
+             `r with SOI` = s[["r"]], `p (SOI)` = s[["p"]], `r with ONI` = o[["r"]], `p (ONI)` = o[["p"]], `r with IPO` = i[["r"]], `p (IPO)` = i[["p"]],
+             `Natural spread (SD)` = stats::sd(x), check.names = FALSE)
+}) |> dplyr::bind_rows()
+enso_tab |>
+  knitr::kable(digits = c(0, 2, 2, 2, 2, 2, 2, 3, 2, 3, 2, 3, 2),
+               caption = sprintf("Mean of each (detrended) annual index by ENSO class (Oct-Mar SOI), the La Niña minus El Niño difference (Welch t-test), Spearman correlations with the Oct-Mar SOI, the Oct-Mar ONI and the annual IPO, and the natural year-to-year spread. %d El Niño, %d neutral and %d La Niña years, %d to %d.", n_ph[1], n_ph[2], n_ph[3], yr_rng[1], yr_rng[2]))
+```
+
+```{r}
+#| label: enso-vs-scenario
+#| echo: false
+
+sc_mean <- extremes_df |>
+  tidyr::pivot_longer(dplyr::all_of(key_idx), names_to = "index", values_to = "value") |>
+  dplyr::group_by(scenario, window, index) |> dplyr::summarise(mean = mean(value, na.rm = TRUE), .groups = "drop")
+pick <- function(sc, w, v) sc_mean$mean[sc_mean$scenario == sc & sc_mean$window == w & sc_mean$index == v]
+cmp <- lapply(key_idx, function(v) {
+  x <- enso_dt[[v]]; ph <- enso_dt$phase; b <- base_idx[[v]]
+  d_mid <- pick("ssp245", "2041-2070", v) - b; d_end <- pick("ssp585", "2071-2100", v) - b
+  data.frame(Index = enso_idx_labels[[v]], `Baseline mean (1985-2014)` = b, `Natural spread (SD)` = stats::sd(x),
+             `La Niña - El Niño` = mean(x[ph == "La Niña"]) - mean(x[ph == "El Niño"]),
+             `Scenario change: ssp245, 2041-2070` = d_mid, `Scenario change: ssp585, 2071-2100` = d_end,
+             `ssp245 change / SD` = d_mid / stats::sd(x), `ssp585 change / SD` = d_end / stats::sd(x), check.names = FALSE)
+}) |> dplyr::bind_rows()
+cmp |> knitr::kable(digits = c(0, 1, 1, 1, 1, 1, 2, 2),
+                    caption = "The GCM-ensemble mean change in each index (scenario minus the bias-corrected ERA5 baseline, in the units of the index) next to the natural year-to-year spread and the ENSO contrast from the measured-first record. A ratio near or above 1 means the scenario shift is as large as a typical year-to-year swing.")
+```
+
+```{r}
+#| label: enso-text-numbers
+#| echo: false
+
+best <- enso_tab[which.min(enso_tab$`p (SOI)`), ]
+n_sig <- sum(c(enso_tab$`p (SOI)`, enso_tab$`p (ONI)`, enso_tab$`p (IPO)`) < 0.05, na.rm = TRUE)
+rain_row <- enso_tab[enso_tab$Index == "Heavy rain days", ]
+```
+
+**What the record shows.** Over `r yr_rng[1]` to `r yr_rng[2]` (`r n_ph[1]` El Niño, `r n_ph[2]` neutral and `r n_ph[3]` La Niña seasons) ENSO explains only a small part of the year-to-year spread in these indices. The strongest link to the October to March SOI is for **`r tolower(best$Index)`** (Spearman r = `r sprintf("%.2f", best[["r with SOI"]])`, p = `r sprintf("%.3f", best[["p (SOI)"]])`); of the 27 correlations in the table (9 indices against the SOI, ONI and IPO), `r n_sig` fall below p = 0.05, about what chance alone would give. For heavy-rain days, La Niña years have `r sprintf("%.1f", rain_row[["La Niña - El Niño"]])` more days than El Niño years against a natural spread of `r sprintf("%.1f", rain_row[["Natural spread (SD)"]])` days (p = `r sprintf("%.2f", rain_row[["p (difference)"]])`). With about 50 years and only a handful of El Niño and La Niña seasons the tests are weak, so treat the table as an indication of the size of the effect, not a firm result. This is consistent with [`enso-lake-rotorua.qmd`](enso-lake-rotorua.qmd), where the meteorological ENSO effect is within the spread of neutral years and clearer for rainfall totals than for single extremes.
+
+**Reading the scenario changes against it.** The last table puts the scenario shifts on the same scale as the natural spread. A shift of one standard deviation or more is outside what ENSO, the IPO or ordinary year-to-year variability produces in the present climate; a shift well below one standard deviation would be hard to tell from a run of El Niño or La Niña years in any single decade. The CMIP6 data used here are free-running and carry no ENSO phase (see `enso-lake-rotorua.qmd`), so the scenarios shift the *mean* climate only and do not change how often El Niño or La Niña years occur; a lake run through them should still be read against ENSO variability of about the size shown here.
+
 ## Discussion
 
-**Rainfall.** `heavy_rain_days` and `extreme_rain_days` increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for `rx1day` several GCMs project little change or a slight decrease at some windows (the ratio-based delta-change method rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in `climate-scenario-workflow.qmd`). Anchoring the rainfall thresholds to the 125-year Whakarewarewa record instead of the 20-year ERA5 window matters here specifically because a 20-year sample gives a noisy p95/p99 estimate -- with a long, independent record the "heavy"/"extreme" definitions themselves are far more stable, so a projected change in frequency is more trustworthy as an actual signal rather than partly an artefact of which 20 years happened to set the threshold.
+**Rainfall.** `heavy_rain_days` and `extreme_rain_days` increase modestly and roughly monotonically with emissions scenario and window, consistent with a warmer atmosphere holding more moisture -- but the ensemble range across GCMs is wide relative to the mean shift, and for `rx1day` several GCMs project little change or a slight decrease at some windows (the ratio-based delta-change method rescales the historical daily rainfall sequence rather than restructuring its day-to-day intermittency, so it cannot invent a heavier single-day extreme than proportional scaling of the historical record allows -- see the stationarity caveat in `climate-scenario-workflow.qmd`). Anchoring the rainfall thresholds to the 126-year Whakarewarewa record instead of the 30-year ERA5 window matters here specifically because a 30-year sample gives a noisy p95/p99 estimate -- with a long, independent record the "heavy"/"extreme" definitions themselves are far more stable, so a projected change in frequency is more trustworthy as an actual signal rather than partly an artefact of which 20 years happened to set the threshold.
 
 **Heat.** `hot_days` and `wsdi` (warm-spell duration) show the clearest, most consistent scenario/window gradient of the three groups -- both increase substantially and near-monotonically from `ssp126` to `ssp585` and from the near-term to the end-of-century window, with comparatively narrow GCM spread. This is the expected signature of a monotonic mean-warming delta applied to a fixed threshold: as the whole distribution shifts up, an increasing share of days cross a *fixed, historical* p95 threshold.
 
@@ -191,5 +388,5 @@ In addition to the caveats already noted in `climate-scenario-workflow.qmd` (sta
 
 -   The Whakarewarewa gauge is a land station, not over the lake; its absolute rainfall total may differ from true over-lake rainfall even though its long-run climatology is the best available basis for a stable extreme-event threshold at this site.
 -   The Gumbel method-of-moments fit is a simple, standard estimator but not the only reasonable choice (e.g. GEV with a shape parameter, or L-moments); treat the return-level table as indicative rather than a design-standard flood estimate.
--   Wind and temperature thresholds still come from only 20 years of ERA5 (1995-2014) -- no equivalently long, independent wind/temperature record exists at this site the way it does for rainfall.
+-   Wind and temperature thresholds use the lake buoy (2007 on) and the airport on the lake scale (1993 to 2006), with bias-corrected ERA5 only before 1993 and for gaps; the wind record is therefore mostly ERA5 before 2007, and airport wind cannot stand in for it.
 -   Extreme indices here are derived from the delta-changed *reanalysis* sequence, not from the GCM's own extremes -- by construction they inherit the historical record's actual extreme *events* (dates, storm tracks, event structure), rescaled by a smooth monthly climate signal, so they cannot represent a genuinely new type of extreme event outside the historical envelope.
