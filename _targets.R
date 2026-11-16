@@ -71,6 +71,7 @@ tar_source(
     here::here("R", "read_river_wq.R"),
     here::here("R", "wq_synthesis_helpers.R"),
     here::here("R", "wq_target_metrics.R"),
+    here::here("R", "strat_drivers.R"),
     here::here("R", "fill_bathy.R")
   )
 )
@@ -2428,6 +2429,13 @@ list(
       thermal_structure(lake_hyps, source)
   ),
   tar_target(hyp_flux, hypolimnetic_flux(wq_lake_long, ctd_thermal, lake_hyps)),
+  #* What starts and ends stratification (R/strat_drivers.R) ----
+  # Daily lake met (buoy, ERA5-BC fill and radiation), daily stability (Schmidt, Lake and
+  # Wedderburn numbers) and surface heat budget, and the onsets / breakdowns of buoy-recorded
+  # stratified periods with the forcing around each.
+  tar_target(lake_met_daily_tbl, lake_met_daily(all_buoy_met_data, era5_corrected_hourly)),
+  tar_target(lake_stability, lake_stability_daily(buoy_profile_long, lake_met_daily_tbl, lake_hyps, buoy_events$daily)),
+  tar_target(strat_drivers, strat_transitions(lake_stability, buoy_events$stratified)),
   tar_target(
     hod_events, {
       th <- buoy_thermal |>
