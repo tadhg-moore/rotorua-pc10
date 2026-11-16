@@ -1120,56 +1120,82 @@ e_56 <- eh |> filter(hour >= as.POSIXct("2015-02-05", tz = "Etc/GMT-12"), hour <
 
 ```{r}
 #| label: fig-int-load-season
-#| fig-cap: "Monthly medians (both sites) of NH4-N, DRP and TP in the bottom (BOT), hypolimnion (HYP) and integrated (INT) samples, for the pre-alum period, the first decade of dosing and the last decade. The lower panels show the bottom − integrated difference: the excess that internal loading builds up below the thermocline."
-#| fig-height: 9
+#| fig-cap: "Top: NH4-N, DRP and TP in the bottom (BOT) and integrated (INT) samples, for the pre-alum period, the first decade of dosing and the last decade. Lines are the median over years of each month's value (mean of Sites 2 and 5), and the bands the 25th–75th percentiles over years: a wide band means the median rests on a few unusual years. Numbers along the top are the years with a bottom sample in each month. Bottom: the bottom − integrated difference (the excess that internal loading builds up below the thermocline) for every hydrological year and month; blank tiles have no paired samples, and the dashed lines separate the three periods."
+#| fig-height: 11
 era_cut <- function(date) cut(date, as.Date(c("1980-01-01", "2006-07-01", "2016-07-01", "2030-01-01")),
                               labels = c("1990–2006 (pre-alum)", "2006–2016", "2016–2026"))
+mon_lev <- month.abb[c(7:12, 1:6)]
 lm_ <- lw |>
   filter(variable %in% c("nh4", "drp", "tp")) |>
-  mutate(era = era_cut(date),
-         month = factor(month.abb[as.integer(format(date, "%m"))], month.abb[c(7:12, 1:6)]),
+  mutate(era = era_cut(date), hy = wq_hy(date),
+         month = factor(month.abb[as.integer(format(date, "%m"))], mon_lev),
          variable = factor(var_lab[variable], var_lab[c("nh4", "drp", "tp")]))
-p_a <- lm_ |>
-  group_by(era, layer, month, variable) |>
-  summarise(med = median(value), .groups = "drop") |>
-  mutate(layer = factor(layer, c("INT", "HYP", "BOT"))) |>
-  ggplot(aes(month, med, colour = layer, group = layer)) +
-  geom_line() + geom_point(size = 0.8) +
-  facet_grid(variable ~ era, scales = "free_y") +
-  scale_colour_manual(values = pal_layer) +
-  labs(x = NULL, y = "Monthly median (mg/m³)", colour = "Layer") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
-p_b <- lm_ |>
+# one value per hydrological year and month (mean of the two sites); median and IQR over years
+lm_y <- lm_ |>
   filter(layer %in% c("BOT", "INT")) |>
-  group_by(era, site, date, month, variable, layer) |>
+  group_by(era, layer, variable, hy, month) |>
+  summarise(value = mean(value), .groups = "drop") |>
+  mutate(layer = factor(layer, c("INT", "BOT")))
+lm_q <- lm_y |> group_by(era, layer, variable, month) |>
+  summarise(med = median(value), q25 = quantile(value, .25), q75 = quantile(value, .75), n_yr = n(), .groups = "drop")
+p_a <- ggplot(lm_q, aes(month, med, colour = layer, fill = layer, group = layer)) +
+  geom_ribbon(aes(ymin = q25, ymax = q75), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) + geom_point(size = 0.9) +
+  geom_text(data = filter(lm_q, layer == "BOT"), aes(y = Inf, label = n_yr), vjust = 1.3, size = 2.2,
+            colour = "grey30", show.legend = FALSE) +
+  facet_grid(variable ~ era, scales = "free_y") +
+  scale_y_continuous(expand = expansion(mult = c(0.02, 0.14))) +
+  scale_colour_manual(values = pal_layer[c("INT", "BOT")], aesthetics = c("colour", "fill")) +
+  labs(x = NULL, y = "mg/m³ (median and IQR over years)", colour = "Layer", fill = "Layer") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7))
+# bottom - integrated excess per year and month
+exc_y <- lm_ |>
+  filter(layer %in% c("BOT", "INT")) |>
+  group_by(site, date, hy, month, variable, layer) |>
   summarise(value = mean(value), .groups = "drop") |>
   pivot_wider(names_from = layer, values_from = value) |>
   filter(is.finite(BOT), is.finite(INT)) |>
-  group_by(era, month, variable) |>
-  summarise(excess = median(BOT - INT), q75 = quantile(BOT - INT, .75), .groups = "drop") |>
-  ggplot(aes(month, excess, colour = era, group = era)) +
-  geom_hline(yintercept = 0, colour = "grey60") +
-  geom_line() + geom_point(size = 0.8) +
-  facet_wrap(~variable, scales = "free_y") +
-  scale_colour_manual(values = c("grey40", "#56B4E9", "#D55E00")) +
-  labs(x = NULL, y = "BOT − INT (mg/m³)", colour = NULL) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7), legend.position = "bottom")
-p_a / p_b + plot_layout(heights = c(2.2, 1))
+  group_by(hy, month, variable) |>
+  summarise(excess = mean(BOT - INT), .groups = "drop")
+exc_cap <- c(300, 40, 60)   # colour scale caps (NH4, DRP, TP); larger values shown at the cap
+heat_one <- function(k) {
+  v <- levels(exc_y$variable)[k]
+  ggplot(filter(exc_y, variable == v), aes(month, hy, fill = excess)) +
+    geom_tile() +
+    geom_hline(yintercept = c(2006.5, 2016.5), linetype = 2, colour = "grey30", linewidth = 0.3) +
+    scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", midpoint = 0,
+                         limits = c(-exc_cap[k] / 3, exc_cap[k]), oob = scales::squish, name = NULL) +
+    scale_y_reverse(breaks = seq(1990, 2026, 4), expand = c(0, 0)) +
+    scale_x_discrete(drop = FALSE) +
+    labs(x = NULL, y = if (k == 1) "Hydrological year" else NULL, title = paste("BOT − INT:", v)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 7), plot.title = element_text(size = 9),
+          legend.position = "bottom", legend.key.width = unit(1, "cm"), legend.key.height = unit(0.25, "cm"),
+          panel.grid = element_blank())
+}
+p_b <- heat_one(1) | heat_one(2) | heat_one(3)
+p_a / p_b + plot_layout(heights = c(1.6, 1.4))
 ```
 
 **The internal-loading signal follows stratification closely.**
 
-- The bottom-water excess over the surface water (BOT − INT) is near zero from April to September.
+- The bottom-water excess over the surface water (BOT − INT) is near zero from April to September in every year.
 - It builds from November or December and peaks in January–February, which is the timing of the longest stratified, anoxic periods.
 - It collapses again in March as the stratification breaks down. In the integrated surface samples, the released NH₄ and P then appear as the March–May peaks in @fig-seasonal.
 
+**How robust the seasonal cycle is** (bands and heatmaps in @fig-int-load-season).
+
+- **Sample size.** Before alum, only 2–5 years have paired bottom and surface samples in each summer month (2 in March, 3 in February), so the pre-alum curves rest on very few years. The heatmap shows which: almost all are from 2004–2006, just before Utuhina dosing began, plus single summers in 1993 and 2000. Each later decade has 9–10 years.
+- **NH₄ is a consistent seasonal cycle.** In the heatmap it forms a band of colour in nearly every summer: the bottom NH₄ excess exceeds 100 mg/m³ in 5 of the 6 pre-alum years, 9 of 10 in 2006–2016 and all 10 in 2016–2026.
+- **DRP and TP are carried by a few years.** In the heatmap they appear as isolated hot spots rather than a band. About half of the summers since 2006 have a short peak above 20 mg/m³: 2008–2010, 2015–2016, 2020–2022 and 2024–2025. The month of the peak varies from year to year, so the monthly medians stay low (0–6 mg/m³) and the upper quartile band is wide, even though release happens in many years.
+
 **Before and after alum.**
 
-- **Before alum,** the median December–March bottom DRP excess was 12–18 mg/m³.
-- **Since 2006,** it has been 0–5 mg/m³.
-- **NH₄** shows no such fall. Its summer bottom excess in 2016–2026 (up to about 210 mg/m³ in January) is larger than before alum, and it starts earlier, from November.
-- **TP.** The TP excess in 2016–2026 is again larger than in 2006–2016.
-- **Reading.** This pattern supports the view that alum caps the release of P from the sediment, but does not reduce the mineralisation of organic matter that supplies N.
+- **DRP.** The largest summer DRP excess in each year has a median of about 38 mg/m³ before alum (6 years), against about 19 in 2006–2016 and 26 in 2016–2026.
+  - Alum has reduced the P released from the sediment, but less than the monthly medians suggest (7–23 mg/m³ in December–March before alum, 0–6 since).
+  - Release still happens in about half of all summers.
+- **NH₄** shows no fall. The typical summer peak excess was about 240 mg/m³ before alum, 220 in 2006–2016 and 300 in 2016–2026. It also starts earlier, from November.
+- **TP.** The TP excess in 2016–2026 is again larger than in 2006–2016, mostly from the 2020–2022 summers.
+- **Reading.** This pattern supports the view that alum caps the release of P from the sediment, but does not reduce the mineralisation of organic matter that supplies N. It has made P release less frequent and smaller, but has not stopped it.
 
 ### Stratification strength and internal loading, year by year
 
