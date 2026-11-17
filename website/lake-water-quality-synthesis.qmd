@@ -30,6 +30,7 @@ library(patchwork)
 source(here::here("R", "wq_synthesis_helpers.R"))
 source(here::here("R", "read_river_wq.R"))
 source(here::here("R", "wq_target_metrics.R"))
+source(here::here("R", "zone_release.R"))
 
 store <- here::here("_targets")
 tr <- function(x) targets::tar_read_raw(x, store = store)
@@ -1420,6 +1421,119 @@ sstrat |>
 - They exclude release from the shallower sediments, which occupy the larger area.
 
 So these are conservative. Earlier whole-lake budgets put internal loading at a substantial share of the total P load. These monitoring-based rates are best treated as the floor of the range the model's sediment fluxes should reproduce.
+
+
+### Release rates by depth zone {#sec-zone-release}
+
+Burger et al. (2007) measured sediment release in chambers at 7, 14 and 20 m, and a more recent study at 10, 15 and 20 m. The model has separate sediment zones (8–13 m and 13 m to the bed, below the surface zones). This section asks whether the monitoring data can give release rates for separate depth zones too.
+
+- **Oxygen.** The new buoy (from February 2022) measures DO every 0.5 m from 1 to 21 m. In each 1 m layer that stays below the thermocline for a whole stratified period, DO falls at a rate made up of two parts:
+  - the demand in the water column;
+  - the sediment demand multiplied by the layer's sediment area per unit volume, which comes from the hypsograph and rises with depth.
+
+  Fitting the rates against the sediment area per volume across layers separates the two (Livingstone & Imboden 2009) and would give the sediment demand by depth.
+- **Nutrients.** Only the monthly hypolimnion and bottom samples are available below the thermocline (15 and 19 m at Site 2, 18 and 22 m at Site 5). They allow two layers:
+  - an upper layer, from the thermocline to midway between the two sampling depths;
+  - a lower layer, from there to the bed.
+
+  Accumulation in each layer is measured on stratified sample pairs, as in @tbl-flux-compare.
+- Code in `R/zone_release.R`; targets `zone_o2_demand` and `zone_nutrient_flux`.
+
+```{r}
+#| label: zone-data
+zo <- tr("zone_o2_demand"); znf <- tr("zone_nutrient_flux")
+zl <- zo$layers; ze <- zo$events
+z_alpha <- tibble(z = 8:20) |> rowwise() |> mutate(alpha = layer_alpha(hyps, z, z + 1)[["alpha"]]) |> ungroup()
+zones <- data.frame(zone = c("15 m (12–17 m)", "20 m (17–21 m)"), z0 = c(12, 17), z1 = c(17, 21))
+zsum <- zone_summary(zl, zones, "ja_all")
+rate_by_z <- zl |> group_by(z) |> summarise(rate = median(rate), n = n(), .groups = "drop")
+```
+
+```{r}
+#| label: fig-zone-o2
+#| fig-cap: "Oxygen depletion by depth in the stratified periods recorded by the new buoy (February 2022 – February 2026; periods of at least 7 days). (a) DO depletion rate in each 1 m layer below the thermocline; thin lines are individual stratified periods, the thick line the median over periods. (b) Sediment area per unit volume of each 1 m layer, from the hypsograph. If the sediment set the depletion rate in each layer, (a) would rise with depth roughly in proportion to (b)."
+#| fig-height: 4.5
+za <- ggplot(zl, aes(rate, z_mid)) +
+  geom_path(aes(group = event), colour = "#4393C3", alpha = 0.5) +
+  geom_point(colour = "#4393C3", size = 1, alpha = 0.6) +
+  geom_path(data = rate_by_z |> mutate(z_mid = z + 0.5), colour = "#08306B", linewidth = 1.1) +
+  scale_y_reverse(limits = c(21, 8)) +
+  labs(x = "DO depletion rate (g O₂/m³/d)", y = "Depth (m)", tag = "a")
+zb <- ggplot(z_alpha, aes(alpha, z + 0.5)) + geom_path(colour = "grey30") + geom_point(size = 1) +
+  scale_y_reverse(limits = c(21, 8)) +
+  labs(x = "Sediment area / volume (1/m)", y = NULL, tag = "b")
+za + zb + plot_layout(widths = c(1.4, 1))
+```
+
+```{r}
+#| label: zone-numbers
+z_rate_cv <- sd(rate_by_z$rate[rate_by_z$z >= 14]) / mean(rate_by_z$rate[rate_by_z$z >= 14])
+a14 <- z_alpha$alpha[z_alpha$z == 14]; a19 <- z_alpha$alpha[z_alpha$z == 19]
+ja_neg <- sum(ze$ja < 0); ja_n <- nrow(ze)
+zt_med <- median(ze$z_top)
+bz <- burger |> group_by(depth_m, chamber) |>
+  summarise(sod = median(sod_g_m2_d), nh4 = median(nh4_phase2_mg_m2_d), nh4_1 = median(nh4_phase1_mg_m2_d), srp = median(srp_mg_m2_d), .groups = "drop")
+bzv <- function(d, ch, v) { x <- bz[[v]][bz$depth_m == d & bz$chamber == ch]; if (length(x)) x else NA_real_ }
+sod_lbl <- function(d) if (is.na(bzv(d, "dark", "sod"))) sprintf("%.2f / – (light only)", bzv(d, "light", "sod")) else sprintf("%.2f / %.2f", bzv(d, "light", "sod"), bzv(d, "dark", "sod"))
+bed17 <- hyps_area(hyps, 17) / max(hyps$area)
+nfz <- znf |> group_by(variable, layer) |>
+  summarise(med = median(flux), q25 = quantile(flux, .25), q75 = quantile(flux, .75), n = n(), pos = mean(flux > 0),
+            z0 = median(z0), z1 = median(z1), .groups = "drop")
+nfv <- function(v, l, s = "med") nfz[[s]][nfz$variable == v & nfz$layer == l]
+zsv <- function(zn, s) { x <- zsum$v[zsum$zone == zn]; c(med = median(x), q25 = unname(quantile(x, .25)), q75 = unname(quantile(x, .75)), n = length(x))[[s]] }
+```
+
+```{r}
+#| label: tbl-zone-release
+#| tbl-cap: "Release rates by depth zone. Burger et al. (2007): chamber medians over the four 2003–2004 surveys (light and dark chambers), before alum dosing; NH4 in the secondary (longer-term) phase. Oxygen, this study: the upper bound (all of a layer's DO depletion assigned to its own sediment), median and interquartile range over the buoy's stratified periods 2022–2026, and the lake-wide AHOD (2007–2026). Nutrients, this study: two-layer accumulation from the monthly samples, 2003–2026 (median and interquartile range of the stratified sample pairs; negative values are net losses between samples)."
+fq <- function(m, a, b, d = 1) sprintf(paste0("%.", d, "f (%.", d, "f to %.", d, "f)"), m, a, b)
+tibble::tribble(
+  ~Zone, ~`Burger SOD, light / dark (g O₂/m²/d)`, ~`Burger NH4 (mg N/m²/d)`, ~`Burger SRP (mg P/m²/d)`,
+  ~`O₂ upper bound, this study (g/m²/d)`, ~`NH4, two-layer (mg N/m²/d)`, ~`DRP, two-layer (mg P/m²/d)`,
+  "7–10 m (Burger 7 m)",
+    sod_lbl(7), sprintf("%.0f", bzv(7, "light", "nh4")), sprintf("%.1f", bzv(7, "light", "srp")),
+    "not measurable (above the thermocline)", "not measurable", "not measurable",
+  "14–15 m (Burger 14 m)",
+    sod_lbl(14), sprintf("%.0f", bzv(14, "light", "nh4")), sprintf("%.1f", bzv(14, "light", "srp")),
+    sprintf("%s, n = %d", fq(zsv("15 m (12–17 m)", "med"), zsv("15 m (12–17 m)", "q25"), zsv("15 m (12–17 m)", "q75"), 2), zsv("15 m (12–17 m)", "n")),
+    sprintf("%s, upper layer %.0f–%.0f m", fq(nfv("nh4", "upper"), nfv("nh4", "upper", "q25"), nfv("nh4", "upper", "q75"), 0), nfv("nh4", "upper", "z0"), nfv("nh4", "upper", "z1")),
+    fq(nfv("drp", "upper"), nfv("drp", "upper", "q25"), nfv("drp", "upper", "q75")),
+  "20 m (Burger 20 m)",
+    sod_lbl(20), sprintf("%.0f", bzv(20, "light", "nh4")), sprintf("%.1f", bzv(20, "light", "srp")),
+    sprintf("%s, n = %d", fq(zsv("20 m (17–21 m)", "med"), zsv("20 m (17–21 m)", "q25"), zsv("20 m (17–21 m)", "q75"), 2), zsv("20 m (17–21 m)", "n")),
+    sprintf("%s, lower layer %.0f m–bed", fq(nfv("nh4", "lower"), nfv("nh4", "lower", "q25"), nfv("nh4", "lower", "q75"), 0), nfv("nh4", "lower", "z0")),
+    fq(nfv("drp", "lower"), nfv("drp", "lower", "q25"), nfv("drp", "lower", "q75")),
+  "Whole hypolimnion (lake-wide)",
+    "–", "–", "–", sprintf("AHOD %.1f", ahod_med), sprintf("%.0f (median of positive intervals)", pos("nh4")), sprintf("%.1f", pos("drp"))
+) |> kable()
+```
+
+**What the oxygen data show** (@fig-zone-o2).
+
+- **DO falls at about the same rate at every depth below the thermocline.** From 14 m to the bottom the median rate varies by only about `r scales::percent(z_rate_cv, 1)` between layers (about `r sprintf("%.2f", median(rate_by_z$rate[rate_by_z$z >= 14]))` g O₂/m³/d). Over the same depths, the sediment area per unit volume more than doubles (`r sprintf("%.2f", a14)` to `r sprintf("%.2f", a19)` per m).
+- **So the bottom layer is mixed faster than its oxygen is used.** The demand of the sediment at each depth is spread through the whole bottom layer within days. This is consistent with the thin bottom layer (mean thickness about 4–6 m) and the frequent partial mixing found in @sec-strat-drivers.
+- **The sediment demand cannot be split by depth from these data.** The regression across layers gives unstable results: the fitted sediment demand is negative in `r ja_neg` of `r ja_n` stratified periods. The water-column data constrain only the total demand of the bottom layer, the AHOD.
+- **The shallower zones are not reachable.** In the median stratified period, only the layers below about `r zt_med` m stayed below the thermocline throughout. A 7 or 10 m zone sits in the mixed layer for most of the summer. Release there is mixed into the surface water and cannot be measured as a build-up.
+- **The upper bound in @tbl-zone-release** assigns all of a layer's depletion to its own sediment. It is about 0.5–0.9 g O₂/m²/d below 12 m. It is higher in the 15 m zone than at 20 m only because the same depletion is divided by a smaller sediment area. It is not evidence that the demand is higher there.
+
+**What the nutrient data show.**
+
+- In the two-layer accumulation, the lower layer accumulates somewhat more NH₄ and DRP per unit sediment area than the upper layer: medians of `r sprintf("%.0f", nfv("nh4", "lower"))` against `r sprintf("%.0f", nfv("nh4", "upper"))` mg N/m²/d, and `r sprintf("%.1f", nfv("drp", "lower"))` against `r sprintf("%.1f", nfv("drp", "upper"))` mg P/m²/d.
+- The spread is wide. About a third to half of the sample pairs show a net loss, because mixing between monthly samples removes mass.
+- These are net accumulation rates. They are lower bounds of the gross release, and like the lake-wide rates they are well below the chamber rates.
+
+**What the chambers show.** Burger et al. (2007) is the only depth-resolved measurement:
+
+- **SOD:** similar at all three depths (light-chamber medians `r sprintf("%.1f", bzv(7, "light", "sod"))`, `r sprintf("%.1f", bzv(14, "light", "sod"))` and `r sprintf("%.1f", bzv(20, "light", "sod"))` g O₂/m²/d at 7, 14 and 20 m).
+- **NH₄ and SRP:** release was much higher at 20 m, in the pre-alum lake.
+  - NH₄: `r sprintf("%.0f", bzv(7, "light", "nh4"))`, `r sprintf("%.0f", bzv(14, "light", "nh4"))` and `r sprintf("%.0f", bzv(20, "light", "nh4"))` mg N/m²/d at 7, 14 and 20 m, about twice as high at 20 m.
+  - SRP: `r sprintf("%.0f", bzv(7, "light", "srp"))`, `r sprintf("%.0f", bzv(14, "light", "srp"))` and `r sprintf("%.0f", bzv(20, "light", "srp"))` mg P/m²/d, about five times as high at 20 m as at 7 m.
+
+**Implications for the model zones.**
+
+- **Oxygen.** The monitoring cannot tell the model's zone 2 (8–13 m) from zone 1 (13 m to the bed). It constrains only the total demand of the bottom layer (AHOD). The chambers suggest a similar SOD at all depths. Together these support keeping the zone `fsed_oxy` values close to each other, rather than the large mid-depth demand the calibration found (@sec-model-targets).
+- **Nutrients.** Both the chambers (strongly) and the two-layer data (weakly) point to higher NH₄ and P release in the deepest zone. That deepest zone (below about 17 m) holds only about `r scales::percent(bed17, 1)` of the lake bed.
+- **A zone-resolved measurement would need sediment chambers or cores**, as in Burger et al. (2007) and the recent 10/15/20 m study, not water-column monitoring.
 
 
 ## Sudden changes and events {#sec-events}
