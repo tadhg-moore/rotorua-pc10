@@ -72,6 +72,7 @@ tar_source(
     here::here("R", "wq_synthesis_helpers.R"),
     here::here("R", "wq_target_metrics.R"),
     here::here("R", "strat_drivers.R"),
+    here::here("R", "zone_release.R"),
     here::here("R", "fill_bathy.R")
   )
 )
@@ -2436,6 +2437,18 @@ list(
   tar_target(lake_met_daily_tbl, lake_met_daily(all_buoy_met_data, era5_corrected_hourly)),
   tar_target(lake_stability, lake_stability_daily(buoy_profile_long, lake_met_daily_tbl, lake_hyps, buoy_events$daily)),
   tar_target(strat_drivers, strat_transitions(lake_stability, buoy_events$stratified)),
+  #* Release rates by depth zone (R/zone_release.R) ----
+  # Layer-resolved oxygen depletion (new buoy, 0.5 m DO profiles, from Feb 2022) and two-layer
+  # hypolimnetic nutrient accumulation from the monthly HYP / BOT samples.
+  tar_target(
+    zone_o2_demand, {
+      a <- aeme_buoy_data |> dplyr::mutate(date = as.Date(Date))
+      prof <- function(v) a |> dplyr::filter(var_aeme == v) |> dplyr::group_by(date, depth) |>
+        dplyr::summarise(value = mean(value), .groups = "drop")
+      zone_oxygen_demand(prof("CHM_oxy"), prof("HYD_temp"), buoy_thermal, buoy_events$stratified, lake_hyps)
+    }
+  ),
+  tar_target(zone_nutrient_flux, two_layer_flux(wq_lake_long, ctd_thermal, lake_hyps)),
   # Hourly view of the 19 Dec 2014 - 8 Feb 2015 stratified period (old buoy, 15-min record)
   tar_target(strat_event_1415, buoy_event_hourly(rotorua_old_buoy_data, era5_corrected_hourly,
                                                  "2014-12-01", "2015-02-21")),
