@@ -140,7 +140,9 @@ The light data audit (`calibration/light/01_light_data.R`) gave priors for the a
 | Source | n | Result |
 |---|---|---|
 | VLEC against Secchi | 210 | VLEC = 1.85 / Secchi, r = 0.81 |
-| PAR-profile Kd against Secchi | 142 | k = 2.07, r = 0.39 (noisy; only a secondary target) |
+| PAR-profile Kd against Secchi | 244 | k = 1.94, r = 0.81 (dark-floor corrected fit; before the correction n = 142, r = 0.39) |
+| PAR-profile Kd against VLEC | 157 | Kd = 1.06 × VLEC, r = 0.95 |
+| Kd = Kw + a × chl + b × turbidity (PAR Kd) | 244 | Kw 0.36 m⁻¹ (95% CI 0.32–0.40), a = 0.010, b = 0.093, R² = 0.64 |
 | Kd = Kw + a × chl + b × turbidity (VLEC) | 186 | Kw 0.37 m⁻¹, a = 0.0076 m⁻¹ per mg/m³ chl, b = 0.093 m⁻¹ per NTU |
 | same, 1.7 / Secchi | 290 | Kw 0.36, a = 0.0058, b = 0.078 |
 

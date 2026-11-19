@@ -47,6 +47,8 @@ tar_source(
     here::here("R", "pc10_loads_helpers.R"),
     here::here("R", "render_data_inventory.R"),
     here::here("R", "read_alum_dosing.R"),
+    here::here("R", "read_sediment_chamber.R"),
+    here::here("R", "sed_zones.R"),
     here::here("R", "calc_alum_inflow.R"),
     here::here("R", "sync_aeme_onedrive.R"),
     here::here("R", "scenario_climate_workflow.R"),
@@ -443,6 +445,12 @@ list(
                                 "Rotorua alum dose data February 2026.xlsx"),
     format = "file"
   ),
+  # Benthic chamber nutrient flux + SOD, 17-20 March 2026 (10, 15, 20 m sites)
+  tar_target(
+    sediment_chamber_file, file.path(data_raw_dir, "sediment_chamber",
+                                     "Rotorua Nutrient Flux.xlsx"),
+    format = "file"
+  ),
   tar_target(
     bop_lake_level_zip_folder, file.path(data_raw_dir,
                                          "BulkExport-FL150407-20251215152116.zip"),
@@ -632,6 +640,32 @@ list(
   #* Load alum data ----
   tar_target(
     alum_dosing, read_alum_dosing(alum_dosing_file)
+  ),
+  tar_target(
+    sediment_chamber, read_sediment_chamber(sediment_chamber_file)
+  ),
+  #* Sediment zones and the flux data that constrain them (R/sed_zones.R) ----
+  # 5 zones on the GNS model hypsograph, one per chamber depth (zone 1 deepest): 17.5-25, 13-17.5, 8-13, 3.5-8, 0-3.5 m.
+  # Used by the 5-zone calibration base (calibration/hyps_gns/15_make_base_5zone.R, SED_NZONE=5 in calibration/all_stage/lib_all.R).
+  tar_target(sed_zones, define_sed_zones(gns_hyps_model)),
+  tar_target(sed_zone_glm_param, sed_zone_glm_params(sed_zones)),
+  # Chamber site locations (WGS84 as supplied, NZTM 2000, and the GNS bathymetry depth at each site)
+  tar_target(sediment_chamber_site, sediment_chamber_sites(rotorua_gns_bathymetry_filled_file)),
+  tar_target(
+    burger2007_flux_file, here::here("website", "data", "burger2007_chamber_fluxes.csv"), format = "file"
+  ),
+  tar_target(
+    burger2007_bw_file, here::here("website", "data", "burger2007_bottom_water.csv"), format = "file"
+  ),
+  # One row per chamber (2026) or chamber type x site x period (Burger 2003-04), with the overlying-water DO and temperature
+  tar_target(sed_flux_obs_all, sed_flux_obs(sediment_chamber, burger2007_flux_file, burger2007_bw_file, sed_zones)),
+  tar_target(sed_flux_obs_summary, sed_flux_summary(sed_flux_obs_all)),
+  # Per-zone AED fsed (maximum rate, mmol/m2/d) implied by the 2026 chambers through the AED O2 / temperature terms
+  # (ksed / theta of the out_gns_sodp best); start values and table rows for the 5-zone calibration
+  tar_target(sed_fsed_anchor_2026, sed_fsed_anchor(sed_flux_obs_all, sed_zones)),
+  # Bathymetry depth raster (20 m cells) for the zone maps
+  tar_target(
+    bathy_depth_20m, terra::wrap(bathy_depth_raster(rotorua_gns_bathymetry_filled_file, fact = 10))
   ),
   
   #* Unzip lake level folder and load data
@@ -846,6 +880,9 @@ list(
   ),
   tar_target(
     ctd_par, format_par_ts(ctd_data)
+  ),
+  tar_target(
+    ctd_par_site, fit_kd_sites(ctd_data)
   ),
   tar_target(
     ctd_aeme, format_ctd_for_aeme(ctd_data)
@@ -1507,6 +1544,8 @@ list(
         dplyr::summarise(
           par_n = dplyr::first(n),
           Kd = mean(Kd, na.rm = TRUE),
+          Kd_lo = dplyr::first(Kd_lo),
+          Kd_hi = dplyr::first(Kd_hi),
           chla = mean(chla, na.rm = TRUE),
           secchi = mean(secchi, na.rm = TRUE),
           turbidity = mean(turbidity, na.rm = TRUE)

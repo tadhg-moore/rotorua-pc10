@@ -721,10 +721,11 @@ c2 <- ggplot(ctdm, aes(date, d_rho, colour = site)) +
 
 ```{r}
 #| label: fig-light-chl
-#| fig-cap: "Left: light attenuation Kd from CTD PAR profiles (r² > 0.8). Right: daily surface (≤ 2 m) chlorophyll fluorescence, pH, turbidity and specific conductance from the new buoy."
+#| fig-cap: "Left: light attenuation Kd from CTD PAR profiles (dark-floor corrected; bars are 95% CI). Right: daily surface (≤ 2 m) chlorophyll fluorescence, pH, turbidity and specific conductance from the new buoy."
 #| fig-height: 5
 k1 <- kd |>
-  ggplot(aes(Date, Kd)) + geom_point(size = 0.8, colour = "grey30") +
+  ggplot(aes(Date, Kd)) + geom_linerange(aes(ymin = Kd_lo, ymax = Kd_hi), colour = "grey70") +
+  geom_point(size = 0.8, colour = "grey30") +
   geom_smooth(method = "loess", span = 0.3, se = FALSE, colour = "#0072B2") +
   labs(x = NULL, y = "Kd (m⁻¹)")
 k2 <- bpd |>
@@ -739,7 +740,7 @@ k2 <- bpd |>
 k1 + k2 + plot_layout(widths = c(1, 1.2))
 ```
 
-**Light attenuation.** Kd from the CTD PAR profiles shifts in steps: about 0.35 m⁻¹ in 2003–2008, about 0.9 m⁻¹ in 2010–2016, back to about 0.35 m⁻¹ in 2020–2022, then rising again. Secchi depth improved over 2010–2016, when Kd suggests the water became darker, so these steps are more likely changes in the PAR sensor or in how the profiles were processed. Kd should not be used for trend analysis without checking the instrument history.
+**Light attenuation.** Kd from the CTD PAR profiles fell from a median of about 0.87 m⁻¹ in 2003–09 to about 0.65 m⁻¹ in 2010–19 and 0.61 m⁻¹ in 2020–22, then rose slightly to about 0.68 m⁻¹ in 2023–25. The 95% CI on a single date is typically ±0.04–0.07 m⁻¹, so differences between dates are mostly real. An earlier version of this analysis reported step changes (~0.35 → 0.9 → 0.35 m⁻¹). Those came from fitting through the PAR sensor's dark floor, which differs between instrument eras, and they disappear once the floor is removed. The corrected record matches the Secchi improvement over 2010–2016.
 
 **New buoy, 2022–2026.**
 
@@ -1458,7 +1459,7 @@ za <- ggplot(zl, aes(rate, z_mid)) +
   geom_point(colour = "#4393C3", size = 1, alpha = 0.6) +
   geom_path(data = rate_by_z |> mutate(z_mid = z + 0.5), colour = "#08306B", linewidth = 1.1) +
   scale_y_reverse(limits = c(21, 8)) +
-  labs(x = "DO depletion rate (g O₂/m³/d)", y = "Depth (m)", tag = "a")
+  labs(x = expression("DO depletion rate (g O"[2]*" m"^-3*" d"^-1*")"), y = "Depth (m)", tag = "a")
 zb <- ggplot(z_alpha, aes(alpha, z + 0.5)) + geom_path(colour = "grey30") + geom_point(size = 1) +
   scale_y_reverse(limits = c(21, 8)) +
   labs(x = "Sediment area / volume (1/m)", y = NULL, tag = "b")
@@ -2320,11 +2321,95 @@ y <- function(h, v) d_yr[[v]][d_yr$hy == h]
    - Without anoxic periods the sediment did not release P, so the usual summer bottom-water build-up and the March–May surface peak that follows it did not happen. The March 2023 rise (24 mg/m³) was small.
 3. **The P released in 2021–2022 was still in the water column.** TP was at its highest in autumn 2022 (44–49 mg/m³), and much of it was particulate (TP − DRP of 20–40 mg/m³). It settled out once the lake mixed in winter, as it does every winter. The anomaly is that it was not replaced the following summer.
 
+**Using ammonium to separate mixing from alum.**
+
+Ammonium (NH₄) and phosphate are both released when organic matter in the sediment decomposes, and both build up in the bottom water during stratified periods. Alum binds phosphate but not ammonium, so NH₄ is a tracer of internal loading that alum does not affect. If the 2022/23 dip was caused by weak stratification, NH₄ should be suppressed as well. If it was caused by alum, NH₄ should look normal while P stays low.
+
+```{r}
+#| label: np-data
+np <- lw |> filter(variable %in% c("nh4", "drp"), layer %in% c("BOT", "INT")) |>
+  group_by(site, date, layer, variable) |> summarise(v = mean(value), .groups = "drop") |>
+  pivot_wider(names_from = c(layer, variable), values_from = v) |>
+  mutate(hy = wq_hy(date), m = as.integer(format(date, "%m")), ex_nh4 = BOT_nh4 - INT_nh4, ex_drp = BOT_drp - INT_drp) |>
+  filter(m %in% c(11, 12, 1, 2, 3, 4), is.finite(ex_nh4), is.finite(ex_drp)) |>
+  mutate(era = cut(hy, c(1980, 2006, 2010, 2018, 2022, 2030),
+                   labels = c("Pre-alum (to 2006)", "2007–2010", "2011–2018", "Pause 2019–2022", "2023–2026")))
+pn <- function(p, n) 1000 * (p / 30.97) / (n / 14.01)   # mol P per 1000 mol N
+np_yr <- np |> group_by(hy) |> summarise(nh4 = mean(ex_nh4), drp = mean(ex_drp), .groups = "drop") |> mutate(pn = pn(drp, nh4))
+np_y <- function(h, v) np_yr[[v]][np_yr$hy == h]
+np_era <- np |> group_by(era) |>
+  summarise(n = n(), rho = cor(ex_nh4, ex_drp, method = "spearman"),
+            np_molar = 1 / coef(lm(I(ex_drp / 30.97) ~ 0 + I(ex_nh4 / 14.01)))[[1]], .groups = "drop")
+np_rx <- np |> left_join(ctdm |> select(site, date, do_bot), by = c("site", "date")) |>
+  filter(is.finite(do_bot), ex_nh4 > 20) |>
+  mutate(redox = factor(ifelse(do_bot < 2, "Anoxic (< 2)", ifelse(do_bot < 5, "Low (2–5)", "Oxic (> 5)")),
+                        c("Anoxic (< 2)", "Low (2–5)", "Oxic (> 5)")),
+         pn = pn(ex_drp, ex_nh4))
+np_rx_s <- np_rx |> group_by(era, redox) |> summarise(n = n(), pn = median(pn), .groups = "drop")
+np_au <- lw |> filter(layer == "INT", variable %in% c("nh4", "drp"), as.integer(format(date, "%m")) %in% 3:6) |>
+  mutate(hy = wq_hy(date)) |> group_by(hy, variable) |> summarise(mx = max(value), .groups = "drop") |>
+  pivot_wider(names_from = variable, values_from = mx)
+np_aus <- function(h, v) np_au[[v]][np_au$hy == h]
+```
+
+```{r}
+#| label: fig-np-redox
+#| fig-cap: "Ammonium and phosphate released into the bottom water. (a) Bottom − integrated excess of NH4-N and DRP in each summer sample (November–April, both sites), by period; 2022/23 samples are circled. The dashed line is the Redfield ratio (N:P = 16 by mole), the release expected from decomposing algal organic matter with no P binding. (b) P released per N (mol P per 1000 mol N, median of samples with an NH4 excess above 20 mg/m³), by period and by bottom DO in the same-day CTD cast; numbers are the samples. Redfield is 62."
+#| fig-height: 5
+pal_era5 <- c("Pre-alum (to 2006)" = "grey30", "2007–2010" = "#92C5DE", "2011–2018" = "#2166AC", "Pause 2019–2022" = "#D55E00", "2023–2026" = "#1B9E77")
+na1 <- ggplot(np, aes(ex_nh4, ex_drp, colour = era)) +
+  geom_abline(slope = 30.97 / (16 * 14.01), linetype = 2, colour = "grey40") +
+  geom_point(size = 1.4, alpha = 0.8) +
+  geom_point(data = filter(np, hy == 2023), shape = 1, size = 3.5, colour = "black") +
+  scale_colour_manual(values = pal_era5) +
+  coord_cartesian(xlim = c(-50, 800), ylim = c(-5, 125)) +
+  labs(x = "Bottom NH4-N excess (mg/m³)", y = "Bottom DRP excess (mg/m³)", colour = NULL, tag = "a") +
+  theme(legend.position = c(0.25, 0.8), legend.background = element_blank())
+na2 <- ggplot(np_rx_s, aes(redox, pn, fill = era)) +
+  geom_hline(yintercept = 1000 / 16, linetype = 2, colour = "grey40") +
+  geom_col(position = position_dodge(width = 0.85), width = 0.8) +
+  geom_text(aes(label = n, y = pn + 2.5), position = position_dodge(width = 0.85), size = 2.5) +
+  scale_fill_manual(values = pal_era5, guide = "none") +
+  labs(x = "Bottom DO at sampling (g/m³)", y = "P per N released (mol P / 1000 mol N)", tag = "b")
+na1 + na2 + plot_layout(widths = c(1.15, 1))
+```
+
+**What the ammonium shows.**
+
+- **NH₄ release was halved, P release almost stopped.** In summer 2022/23 the mean bottom NH₄ excess was `r round(np_y(2023, "nh4"))` mg/m³, against `r round(np_y(2022, "nh4"))` the summer before. The DRP excess was `r sprintf("%.1f", np_y(2023, "drp"))` against `r round(np_y(2022, "drp"))`.
+  - So the weak, short stratification of 2022/23 roughly halved release overall, as seen in NH₄.
+  - P fell much further. P released per N dropped from `r round(np_y(2022, "pn"))` to `r round(np_y(2023, "pn"))` mol P per 1000 mol N; the Redfield ratio is 62.
+- **The surface water shows the same split.** The autumn (March–June) peak of integrated NH₄ in 2023 (`r round(np_aus(2023, "nh4"))` mg/m³) was as high as in 2021 and 2022 (`r round(np_aus(2021, "nh4"))` and `r round(np_aus(2022, "nh4"))`). Integrated DRP peaked at only `r sprintf("%.1f", np_aus(2023, "drp"))` mg/m³, against `r round(np_aus(2021, "drp"))`–`r round(np_aus(2022, "drp"))`. The NH₄ released during the summer still reached the surface, but P did not.
+- **NH₄ and P are released together when P is not bound** (@fig-np-redox a).
+  - Before alum, the bottom-water excesses were closely correlated (Spearman ρ = `r sprintf("%.2f", np_era$rho[1])`) at close to the Redfield ratio (N:P = `r round(np_era$np_molar[1])` by mole).
+  - During the dosing pause the ratio returned to N:P = `r round(np_era$np_molar[4])`.
+  - Under full dosing it rose to N:P = `r round(np_era$np_molar[3])` in 2011–2018 and `r round(np_era$np_molar[5])` in 2023–2026, and the correlation weakened (ρ = `r sprintf("%.2f", np_era$rho[3])`–`r sprintf("%.2f", np_era$rho[5])`).
+
+**Why ammonium alone cannot isolate the alum effect** (@fig-np-redox b).
+
+- **P release also depends on oxygen.** Much of the sediment P is bound to iron and is released only when the bottom water goes anoxic. NH₄ is released from decomposition with or without oxygen. A summer in which the bottom water stays oxygenated therefore lowers the P:N ratio on its own, without any alum.
+- **The data show this in every period.** P released per N is highest in anoxic samples and lowest in oxic ones.
+  - Before alum, oxygenated bottom water still released P (about `r round(np_rx_s$pn[np_rx_s$era == "Pre-alum (to 2006)" & np_rx_s$redox == "Oxic (> 5)"])` mol P per 1000 mol N, on few samples).
+  - From 2007 to 2024 it released almost none, including during the dosing pause and in 2022/23 itself.
+  - In summers 2024/25 and 2025/26, oxygenated samples again showed some P release (about 25 mol P per 1000 mol N, though small in absolute terms, about 2 mg/m³ of DRP). That may be an early sign that the sediment's binding capacity is declining again. It is worth watching now that Puarenga dosing has stopped (May 2026, @sec-pause).
+- **The bottom water stayed oxygenated through 2022/23** (no anoxia at the buoy, and CTD bottom DO of 6 g/m³ or more at both sites all summer). In the lake of 2007–2024, that alone predicts near-zero P release alongside continued NH₄ release, which is what happened. The 2022/23 dose specifically is not needed to explain the summer P.
+
+**What this means for the decline.**
+
+- About half of the reduction in summer internal loading came from the weak stratification itself: less release overall, as traced by NH₄.
+- The near-complete suppression of P came from the bottom water staying oxygenated. In the post-2006 lake, with its alum-amended sediment, little P comes out unless the bottom goes anoxic.
+- The fresh 2022/23 alum shows up elsewhere: in the winter–spring 2022 draw-down of the P already in the water column (the ~50 t retained in the sediment, @tbl-d23-budget).
+- Separating the effect of the 2022/23 dose from that of the earlier alum stored in the sediment would need a year with anoxia soon after a high dose. Summer 2023/24, when the bottom went anoxic and the P:N ratio rose again to `r round(np_y(2024, "pn"))`, is the closest the record has.
+- **Limits.**
+  - The P:N ratios rest on few samples in some groups, especially anoxic samples before 2011.
+  - Only one 2022/23 sample has both an NH₄ excess above 20 mg/m³ and a same-day CTD oxygen reading, so that summer is placed in the oxic group from the buoy and CTD records as a whole.
+  - NH₄ is not fully conservative: in oxygenated water part of it is nitrified to nitrate, so NH₄ understates release in oxic summers. That would make 2022/23 release closer to normal, and the P suppression stronger.
+
 **Reading.**
 
-- The 2022–2023 decline is best explained by two things acting together:
-  - the restored alum cap: renewed Puarenga dosing since November 2020, stepped up in September 2022 and delivering a record mass of aluminium with the high flows;
-  - a summer too cool and windy to stratify for long, so the weakened sediment had no anoxic periods in which to release P.
+- The 2022–2023 decline is best explained by two things acting together, at different times:
+  - **Winter–spring 2022: alum drew down the P already in the water.** The P released in 2021–2022 settled into the sediment and stayed there (about 50 t, three to four times the usual retention). This happened while Puarenga dosing stepped up and a record mass of aluminium entered with the high flows.
+  - **Summer 2022/23: the bottom water stayed oxygenated, so the sediment released almost no P.** The summer was too cool and windy to stratify for long. NH₄ shows that release from the sediment was roughly halved overall. P was suppressed almost completely, which is what the alum-amended, post-2006 sediment does whenever the bottom does not go anoxic.
 - Flushing and dilution were not the cause. The outflow removed only a fraction of the P, and the inflows were richer in P than the lake.
 - The two causes cannot be fully separated with one year. Summer 2023/24 offers a partial test: it stratified, with bottom anoxia (@fig-thermo-summers), yet surface TP stayed near 15 mg/m³ until February 2024. That is consistent with a sediment cap that had been rebuilt by then. The rise to 32 mg/m³ in March–April 2024 shows that internal loading returned once a strong stratified summer coincided with it.
 - **For the model:** the calibrated model has a constant sediment P release (@sec-pause), so it cannot reproduce a year in which the release switches off. This year, with record alum mass, record inflow and weak stratification, is a useful test for any sediment P scheme that is added.

@@ -69,26 +69,75 @@ format_ctd_for_aeme <- function(df) {
   
 }
 
-format_par_ts <- function(df) {
-  par_profiles <- df |> 
-    dplyr::filter(variable == "Photosynthetically Active Radiation (umol/m^2/s)") |> 
-    dplyr::mutate(depth = `Depth (m)`)
-  
-  kd_fits <- par_profiles |>
-    dplyr::filter(depth > 0.1) |>
+#' Fit Kd to a single PAR profile (one site, one date)
+#'
+#' The PAR sensor bottoms out at a dark floor (~0.04 umol/m2/s in 2003-09, ~0 in
+#' 2010-19, ~0.13 in 2020-24). Fitting log(PAR) ~ depth through that plateau
+#' flattens the slope and biases Kd low, so: (1) estimate the floor as the median
+#' of the deepest 5 readings, only if they have plateaued; (2) drop the 0 m
+#' reading and profiles with PAR(1 m) < `i0_min` (night/very dull casts);
+#' (3) fit log(PAR - floor) ~ depth from 1 m down to the first depth where PAR
+#' drops below `frac` x PAR(1 m) or `floor_x` x floor. The 95% CI is the
+#' t-interval on the slope; it ignores serial correlation in the residuals, so
+#' it is a lower bound on the profile uncertainty.
+fit_kd_profile <- function(depth, value, i0_min = 10, frac = 0.01,
+                           floor_x = 10, min_n = 4) {
+  na <- data.frame(n_fit = NA_integer_, floor = NA_real_, Kd = NA_real_,
+                   Kd_lo = NA_real_, Kd_hi = NA_real_, Kd_se = NA_real_,
+                   r2 = NA_real_, zmax = NA_real_)
+  o <- order(depth); depth <- depth[o]; value <- value[o]
+  deep <- utils::tail(value, 5)
+  floor <- if (diff(range(deep)) <= 0.2 * stats::median(deep) + 1e-6) stats::median(deep) else 0
+  na$floor <- floor
+  keep <- depth >= 1
+  depth <- depth[keep]; value <- value[keep]
+  if (length(value) < min_n || value[1] < i0_min) return(na)
+  ok <- value > frac * value[1] & value > floor_x * floor
+  last <- if (all(ok)) length(ok) else which(!ok)[1] - 1
+  na$n_fit <- last
+  if (last < min_n) return(na)
+  z <- depth[seq_len(last)]; y <- log(value[seq_len(last)] - floor)
+  m <- stats::lm(y ~ z); s <- summary(m)
+  ci <- stats::confint(m)["z", ]
+  data.frame(n_fit = last, floor = floor, Kd = -stats::coef(m)[["z"]],
+             Kd_lo = -ci[[2]], Kd_hi = -ci[[1]],
+             Kd_se = s$coefficients["z", 2], r2 = s$r.squared, zmax = max(z))
+}
+
+#' Per-site Kd fits for every CTD PAR profile
+fit_kd_sites <- function(df, ...) {
+  df |>
+    dplyr::filter(variable == "Photosynthetically Active Radiation (umol/m^2/s)") |>
+    dplyr::group_by(Date, Site) |>
+    dplyr::summarise(fit = list(fit_kd_profile(`Depth (m)`, value, ...)),
+                     .groups = "drop") |>
+    tidyr::unnest(fit)
+}
+
+#' Per-date Kd with 95% CI
+#'
+#' Inverse-variance mean of the site fits on each date. The SE adds the
+#' between-site variance to the within-profile SE, so the CI widens when the two
+#' sites disagree. `n` is the total number of depths used in the fits.
+format_par_ts <- function(df, ...) {
+  kd_fits <- fit_kd_sites(df, ...) |>
+    dplyr::filter(!is.na(Kd)) |>
     dplyr::group_by(Date) |>
-    dplyr::filter(dplyr::n() >= 3) |>
     dplyr::summarise(
-      fit = list(stats::lm(log(value) ~ depth)),
-      n = dplyr::n(),
+      n_sites = dplyr::n(),
+      n = sum(n_fit),
+      r2 = min(r2),
+      se_w = sqrt(1 / sum(1 / Kd_se^2)),
+      sd_between = if (dplyr::n() > 1) stats::sd(Kd) else 0,
+      Kd = sum(Kd / Kd_se^2) / sum(1 / Kd_se^2),
       .groups = "drop"
     ) |>
     dplyr::mutate(
-      Kd = -sapply(fit, function(f) stats::coef(f)[["depth"]]),
-      r2 = sapply(fit, function(f) stats::summary.lm(f)$r.squared)
-    ) |> 
-    dplyr::filter(r2 > 0.8) |>
-    dplyr::select(Date, Kd, r2, n)
+      Kd_se = sqrt(se_w^2 + sd_between^2 / n_sites),
+      Kd_lo = Kd - 1.96 * Kd_se,
+      Kd_hi = Kd + 1.96 * Kd_se
+    ) |>
+    dplyr::select(Date, Kd, Kd_lo, Kd_hi, Kd_se, n_sites, n, r2)
   return(kd_fits)
   plot(kd_fits$Date, kd_fits$Kd, type = "b", pch = 19, xlab = "Date", ylab = "Kd (1/m)")
   

@@ -125,7 +125,7 @@ time,Kd
 
 ## Diagnosing the observed Kd record
 
-`kd_fits` holds Kd values fitted from PAR profiles (`log(PAR) ~ depth`, filtered to r² \> 0.8), spanning 2003–2025.
+`ctd_par` holds Kd fitted to each CTD PAR profile (`fit_kd_profile()` in `R/read_ctd.R`), spanning 2003–2025. The sensor bottoms out at a dark floor (about 0.04 µmol m⁻² s⁻¹ in 2003–09, about 0 in 2010–19, about 0.13 in 2020–24). Each profile is fitted as `log(PAR − floor) ~ depth` from 1 m down to where PAR falls below 1% of the 1 m value or 10× the floor. The two sites are combined by inverse-variance weighting, and each date has a 95% CI (`Kd_lo`, `Kd_hi`). Before November 2026 the fit used `log(PAR) ~ depth` over the whole profile, dark plateau included, with an r² \> 0.8 filter. That biased Kd low by up to ~50% in eras with a non-zero floor, created false step changes between instrument eras, and threw out ~45% of dates. The analysis below uses the corrected record.
 
 ```{r}
 #| label: load-light-data
@@ -134,7 +134,7 @@ targets::tar_config_set(store = here::here("_targets"))
 targets::tar_load(light_data)
 ```
 
-`light_data` provides the same `Date`/`Kd` fields used throughout this analysis (fitted from PAR profiles via `log(PAR) ~ depth`, filtered to r² \> 0.8), spanning 2003–2025.
+`light_data` provides the same `Date`/`Kd` fields used throughout this analysis (dark-floor-corrected PAR profile fits, with 95% CI in `Kd_lo`/`Kd_hi`), spanning 2003–2025.
 
 ```{r}
 #| label: light-data-summary
@@ -201,10 +201,10 @@ plot(kd_recommendation)
 
 ### Key finding: interannual variability dominates over seasonality
 
--   Kd mean 0.71 m⁻¹, CV 0.52, range 0.25–1.92 m⁻¹.
--   **Year explains \~47% of total variance** — more than the seasonal cycle does. Annual means step from \~0.35–0.43 m⁻¹ (2003–2008) to a noisy 0.32–1.4 m⁻¹ regime from 2009 onward.
--   After removing each year's own mean, the detrended seasonal ratio is only \~1.6–1.85x, and mostly driven by a handful of bloom/turbidity events rather than a robust recurring monthly pattern.
--   A pooled multi-year **monthly climatology would blend a real interannual regime shift with a weak seasonal signal**, misrepresenting most individual years — hence the function's recommendation of a dated time-varying series over a monthly climatology *for a hindcast*.
+-   Kd mean 0.72 m⁻¹ (median 0.68), CV 0.27, range 0.34–1.38 m⁻¹ across 255 dates. On a single date the 95% CI is typically ±0.05 m⁻¹.
+-   **Year explains \~34% of total variance**, more than month does (\~10%). Annual means fall from 0.75–1.02 m⁻¹ in 2003–2010 to 0.60–0.72 m⁻¹ from 2011 onward. This is a gradual clearing that matches the Secchi improvement, not a step change between instrument eras.
+-   After removing each year's own mean, the seasonal ratio (max:min monthly mean) is only \~1.3x.
+-   A pooled multi-year **monthly climatology would blend a real interannual decline with a weak seasonal signal**, misrepresenting most individual years — hence the function's recommendation of a dated time-varying series over a monthly climatology *for a hindcast*.
 
 ## Decomposing observed Kd into background vs. biotic components
 
@@ -247,10 +247,11 @@ print(kw_decomp)
 
 ### Interpretation
 
--   Even after fixing the join (pseudo-replication), **R² = 0.067** — Chla and turbidity together explain under 7% of Kd variance. Chla alone is not significant (p = 0.167); only turbidity clears p \< 0.05, and its large coefficient combined with an 18% floor-clipping rate suggests the fit is being pulled around by a handful of high-turbidity events rather than reflecting a stable relationship.
+-   With the corrected Kd, **chl-a and turbidity explain 64% of Kd variance** (n = 244, R² = 0.64), and both terms are highly significant. Each mg/m³ of chl-a adds 0.010 m⁻¹ (95% CI 0.008–0.012) and each NTU adds 0.093 m⁻¹ (0.078–0.108). Only 2 of 244 background estimates hit the floor. The old fit gave R² = 0.067 because its Kd was mostly sensor artefact.
+-   The biotic share (chl-a + turbidity) averages about 50% of total Kd.
 -   `aed_noncohesive` is active in this AED configuration, computing its own suspended-sediment-driven extinction (`Ke_ss(i) * SS_conc(i)`) dynamically — so, unlike a setup with phytoplankton feedback alone, **both** the Chla- and turbidity-attributable terms are legitimately things AED will reconstruct, and both are fair to remove from the prescribed background. (Caveat: `aed_noncohesive`'s simulated SS is a mass concentration state, not the same quantity as measured NTU turbidity — the *decision* to exclude it is justified, but there's no guarantee the simulated SS dynamics reproduce the same magnitude/timing the regression attributed to turbidity.)
--   The **intercept is the one robust number here**: 0.368 m⁻¹ at p = 0.0013, much better constrained than either slope, since intercepts are anchored by the bulk of the data rather than a weak covariate relationship.
--   The Secchi–Kd relationship was also noted as weak, reinforcing that this system's optical signal is noisy relative to the predictors available.
+-   The **intercept (background Kw) is 0.363 m⁻¹ (95% CI 0.32–0.40)**. This is almost the same as the old estimate (0.368), and it now comes from a fit that explains most of the variance. VLEC (0.371) and 1.7/Secchi (0.363) give the same intercept (`calibration/light/01_light_data.R`).
+-   Corrected PAR Kd now agrees with the other optical measurements: Kd ≈ 1.94 / Secchi (r = 0.81, n = 244), and Kd ≈ 1.06 × VLEC (r = 0.95, n = 157).
 
 ## Recommendation for the climate scenario runs
 
@@ -258,8 +259,8 @@ For a **climate scenario** parameterisation (not a historical hindcast):
 
 1.  **Do not use observed Kd.** `bioshade_feedback` and `aed_noncohesive` are both active, so a Kw already containing today's biotic/SS signal would be double-counted against AED's own dynamic contribution.
 2.  **Do not use a dated time-varying background.** There is no calendar correspondence between a historical sampling date and a future scenario year — the "use the actual dated observations" option only applies to hindcast-style runs over the sampled period.
-3.  **Do not build a monthly background climatology.** The Chla/turbidity regression (R² = 0.067) and the Secchi–Kd relationship are both weak; imposing monthly structure on this background signal risks encoding noise as if it were a genuine recurring seasonal driver.
-4.  **Use a static background Kw**, set from the regression intercept (\~0.37 m⁻¹) — the most robust single number the data support. Let `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake's optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today's bloom/turbidity patterns indefinitely.
+3.  **Do not build a monthly background climatology.** After chl-a and turbidity are removed there is little seasonal signal left (the detrended seasonal ratio of total Kd is only \~1.3x, and most of that is the biotic part AED reproduces itself). A monthly background would mostly encode residual noise.
+4.  **Use a static background Kw**, set from the regression intercept (\~0.36–0.37 m⁻¹, 95% CI 0.32–0.40). PAR, VLEC and Secchi all give the same value. Let `bioshade_feedback` (phytoplankton) and `aed_noncohesive` (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake's optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today's bloom/turbidity patterns indefinitely.
 
 ``` fortran
 &light
@@ -277,7 +278,7 @@ For a **climate scenario** parameterisation (not a historical hindcast):
 
 ## Sensitivity check
 
-Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with `bioshade_feedback` on, vs. the old static *observed* mean Kw (0.71 m⁻¹) with `bioshade_feedback` off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it's worth investing more in constraining the background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity calibration for `aed_noncohesive`) before running the full scenario suite.
+Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with `bioshade_feedback` on, vs. the static *observed* mean Kd (0.72 m⁻¹) with `bioshade_feedback` off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it's worth investing more in constraining the background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity calibration for `aed_noncohesive`) before running the full scenario suite.
 
 The chunks below are scaffolding only (`eval: false`) — wire in your own nml paths, `glm.exe` invocation, and output-reading (e.g. `glmtools`/`ncdf4`) to run them.
 

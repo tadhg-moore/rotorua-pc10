@@ -23,7 +23,8 @@ file.copy(list.files(file.path(latest, "setup", "bcs"), full.names = TRUE), file
 r <- processx::run(exe, "glm4.nml", wd = lake_dir, error_on_status = FALSE); stopifnot(r$status == 0)
 nc <- file.path(lake_dir, "output", "output.nc"); stopifnot(file.exists(nc)); cat("model run", format(round(difftime(Sys.time(), t0, units = "mins"), 1)), "
 ")
-res <- aeme
+res <- AEME::read_glm_output(file = nc, raw_output = T)
+plot(res$sediment$OXY_oxy_dsf_Z)
 
 write_run_parquet(res, nc, path = work, out_dir = file.path(latest, "output", "model"), from = AEME::time(aeme)$start)
 arrow::write_parquet(observations_table(aeme), file.path(latest, "output", "observations.parquet"), compression = "gzip")
