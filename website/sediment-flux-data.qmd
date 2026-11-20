@@ -60,6 +60,7 @@ Source: Campbell (pers. comm., 2026), unpublished. The workbook is kept in the p
 - **Sites.** Coordinates are in the target `sediment_chamber_site` ([table](#tbl-sites), [map](#fig-zone-map)).
 - **Overlying water.** For 2026 it comes from the mid-day buoy casts during the deployment, interpolated to each chamber depth. DO was 7.3, 7.0 and 6.6 mg/L at 10, 15 and 20 m, at about 19.7 °C.
 
+<!--
 ```{r}
 #| label: tbl-chamber
 #| tbl-cap: "2026 chamber fluxes by depth, light and dark chambers together: median and number of chambers (Campbell, pers. comm., 2026; unpublished). The NOx fluxes were close to zero and are not used."
@@ -76,6 +77,8 @@ obs |> filter(source == "chamber_2026") |>
 sites |> transmute(Site = site, Latitude = sprintf("%.6f", lat), Longitude = sprintf("%.6f", lon),
                    `NZTM E` = round(x), `NZTM N` = round(y), `Bathymetry depth (m)` = bathy_depth_m)
 ```
+
+-->
 
 ```{r}
 #| label: fig-obs
