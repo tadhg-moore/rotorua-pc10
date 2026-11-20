@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-497586e0d2c03a13d3eeeb5726b27947.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -114,6 +114,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="www/styles.css">
 </head>
@@ -302,9 +331,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-zones" id="toc-sec-zones" class="nav-link" data-scroll-target="#sec-zones">Sediment zones on the bathymetry</a></li>
   <li><a href="#sec-aed" id="toc-sec-aed" class="nav-link" data-scroll-target="#sec-aed">How a chamber flux relates to AED’s <code>fsed</code></a></li>
   <li><a href="#comparison-with-the-calibrated-model" id="toc-comparison-with-the-calibrated-model" class="nav-link" data-scroll-target="#comparison-with-the-calibrated-model">Comparison with the calibrated model</a></li>
-  <li><a href="#sec-calibration" id="toc-sec-calibration" class="nav-link" data-scroll-target="#sec-calibration">Using the data in calibration</a></li>
-  <li><a href="#sec-forward" id="toc-sec-forward" class="nav-link" data-scroll-target="#sec-forward">Forward runs with chamber-based release</a></li>
-  <li><a href="#sec-cal-setup" id="toc-sec-cal-setup" class="nav-link" data-scroll-target="#sec-cal-setup">Calibration setup and smoke tests</a></li>
+  <li><a href="#sec-calibration" id="toc-sec-calibration" class="nav-link" data-scroll-target="#sec-calibration">Using the data in calibration</a>
+  <ul class="collapse">
+  <li><a href="#where-the-data-enter-glm-aed" id="toc-where-the-data-enter-glm-aed" class="nav-link" data-scroll-target="#where-the-data-enter-glm-aed">Where the data enter GLM-AED</a></li>
+  <li><a href="#the-chambers-as-a-prior" id="toc-the-chambers-as-a-prior" class="nav-link" data-scroll-target="#the-chambers-as-a-prior">The chambers as a prior</a></li>
+  <li><a href="#in-practice" id="toc-in-practice" class="nav-link" data-scroll-target="#in-practice">In practice</a></li>
+  <li><a href="#what-the-prior-adds" id="toc-what-the-prior-adds" class="nav-link" data-scroll-target="#what-the-prior-adds">What the prior adds</a></li>
+  </ul></li>
   <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats">Caveats</a></li>
   </ul>
 </nav>
@@ -342,7 +375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The 2026 benthic chamber data are unpublished results from a student project, used here with permission: <strong>Campbell (pers. comm., 2026)</strong>. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.</p>
+<p>The 2026 benthic chamber data are unpublished results from a PhD project, used here with permission: <strong>Campbell (pers. comm., 2026)</strong>. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.</p>
 </div>
 </div>
 <section id="summary" class="level2">
@@ -672,214 +705,74 @@ Table&nbsp;3: The 5-zone layout (target sed_zones). zone_height is GLM’s zone 
 <div id="fig-ksed" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ksed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="sediment-flux-data_files/figure-html/fig-ksed-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the out_gns_sodp best value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."><img src="sediment-flux-data_files/figure-html/fig-ksed-1.png" class="img-fluid figure-img" width="864"></a>
+<a href="sediment-flux-data_files/figure-html/fig-ksed-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the previous calibration’s value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."><img src="sediment-flux-data_files/figure-html/fig-ksed-1.png" class="img-fluid figure-img" width="864"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ksed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the out_gns_sodp best value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp.
+Figure&nbsp;4: AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the previous calibration’s value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 <ul>
-<li><strong>Oxygen sensitivity.</strong> The out_gns_sodp calibration chose a very low <code>ksed_frp</code> (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al.&nbsp;found SRP release “largely independent of DO”. In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With <code>ksed_frp</code> near 45 (the default), the chamber medians imply <code>fsed_frp</code> of 15–30 mg P/m²/d rather than 200–400.</li>
-<li><strong>Earlier starting values.</strong> These were taken directly from the measured fluxes as <code>fsed</code> (<code>meas_param</code>, <code>fsed_data_start()</code>), with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.</li>
+<li><strong>Oxygen sensitivity.</strong> The previous calibration chose a very low <code>ksed_frp</code> (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al.&nbsp;found SRP release “largely independent of DO”. In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With <code>ksed_frp</code> near 45 (the default), the chamber medians imply <code>fsed_frp</code> of 15–30 mg P/m²/d rather than 200–400.</li>
+<li><strong>Earlier starting values.</strong> These were taken directly from the measured fluxes as <code>fsed</code>, with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.</li>
 </ul>
 </section>
 <section id="comparison-with-the-calibrated-model" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-with-the-calibrated-model">Comparison with the calibrated model</h2>
-<p><code>calibration/hyps_gns/14_chamber_flux_compare.R</code> puts each member of the out_gns_sodp ensemble through these equations at the 2026 chamber conditions (4-zone model).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="figures/chamber_vs_model.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Chamber fluxes (median and interquartile range by depth; Campbell, pers. comm., 2026, unpublished) against the out_gns_sodp ensemble."><img src="figures/chamber_vs_model.png" class="img-fluid figure-img" alt="Chamber fluxes (median and interquartile range by depth; Campbell, pers. comm., 2026, unpublished) against the out_gns_sodp ensemble."></a></p>
-<figcaption>Chamber fluxes (median and interquartile range by depth; Campbell, pers. comm., 2026, unpublished) against the out_gns_sodp ensemble.</figcaption>
-</figure>
-</div>
+<p>Passing the previous calibration’s sediment parameters through the AED equations at the 2026 chamber conditions shows three things:</p>
 <ul>
-<li><strong>15–20 m (zone 1):</strong> posterior NH4 (~16 mg N/m²/d) and PO4 (~2 mg P/m²/d) are close to the chambers, through very high anoxic rates damped by oxygen.</li>
-<li><strong>10 m (zone 2, 8–13 m):</strong> the calibration turned release off (NH4 ~1, PO4 ~0.0001 vs 14 and 3.8 measured).</li>
-<li><strong>SOD:</strong> the model gives 2.5–3.7 g/m²/d at every depth vs 0.4–1.0 measured. The bulk hypolimnetic oxygen demand (AHOD, about 1.5 g/m²/d), which also includes water-column respiration, is being supplied almost entirely by the sediment.</li>
+<li><strong>Deep zone (15–20 m):</strong> NH4 and PO4 release are close to the chambers. They get there through very high anoxic rates that oxygen holds down.</li>
+<li><strong>10 m:</strong> the calibration had effectively switched release off. The chambers show release comparable to the deeper sites.</li>
+<li><strong>SOD:</strong> the model’s sediment oxygen demand is several times the measured value at every depth. Almost all of the hypolimnetic oxygen depletion was being supplied by the sediment, with little left for water-column respiration.</li>
 </ul>
+<p>The calibration fitted the in-lake data with sediment fluxes that are partly inconsistent with direct measurements. This is the motivation for using the chambers as a prior (<a href="#sec-calibration" class="quarto-xref">Section&nbsp;6</a>).</p>
 </section>
 <section id="sec-calibration" class="level2">
 <h2 class="anchored" data-anchor-id="sec-calibration">Using the data in calibration</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Piece</th>
-<th>Where</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Chamber data</td>
-<td>target <code>sediment_chamber</code> (<code>R/read_sediment_chamber.R</code>)</td>
-</tr>
-<tr class="even">
-<td>All flux observations with overlying DO and temperature</td>
-<td>target <code>sed_flux_obs_all</code> (2026 + Burger), summary <code>sed_flux_obs_summary</code></td>
-</tr>
-<tr class="odd">
-<td>Zone layout and GLM rows</td>
-<td>targets <code>sed_zones</code>, <code>sed_zone_glm_param</code> (<code>R/sed_zones.R</code>)</td>
-</tr>
-<tr class="even">
-<td>Implied <code>fsed</code> per zone (start values)</td>
-<td>target <code>sed_fsed_anchor_2026</code> (out_gns_sodp <code>ksed</code>/θ; zones 4–5 take zone 3)</td>
-</tr>
-<tr class="odd">
-<td>5-zone calibration base</td>
-<td><code>calibration/hyps_gns/15_make_base_5zone.R</code> → <code>base_long_gns_sed_5z.rds</code>, <code>sed_temp/override_est_5z.csv</code></td>
-</tr>
-<tr class="even">
-<td>Zone count</td>
-<td><code>SED_NZONE=5</code> (<code>calibration/00_config.R</code>; read by <code>sa_params.R</code>, <code>sa_common.R</code>, <code>lib_all.R</code>)</td>
-</tr>
-<tr class="odd">
-<td>Chamber objective terms</td>
-<td><code>ALL_CHAMBER=1</code> in <code>lib_all.R</code>: <code>c_&lt;SOD/NH4/PO4&gt;_z&lt;k&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>The chamber terms.</strong> They need only the parameters, not the model output. For each chamber, the member’s AED flux at that chamber’s DO and temperature is compared with the measured flux in log space. There is one term per variable and zone: the mean log ratio divided by a tolerance of √(0.3² + sd²/n), where 0.3 (about 35%) covers how well a few chambers represent a whole zone. Each term scores the actual release, so <code>ksed</code>, θ and <code>fsed</code> stay free together and are tied to the data at the oxygen and temperature it was measured at. <code>ALL_CHAMBER_SRC=chamber_2026,burger_2007</code> adds the 2003–04 survey. Its fluxes are pre-alum and several times higher, so it suits a run that is scored on the pre-alum period.</p>
-<p>A 5-zone recalibration run (the out_gns_sodp settings plus the chamber target):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="va">SED_NZONE</span><span class="op">=</span>5 <span class="va">ALL_CHAMBER</span><span class="op">=</span>1 <span class="va">ALL_FSED</span><span class="op">=</span>1 <span class="va">ALL_V2</span><span class="op">=</span>1 <span class="va">ALL_FSED_START</span><span class="op">=</span>data <span class="dt">\</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">PT_BASE</span><span class="op">=</span>calibration/hyps_gns/base_long_gns_sed_5z.rds <span class="dt">\</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_TAB_OVERRIDE</span><span class="op">=</span>calibration/hyps_gns/sed_temp/override_est_5z.csv <span class="dt">\</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_MIXHYP_LIM</span><span class="op">=</span>1.5,3 <span class="va">ALL_FSEDFRP_LIM</span><span class="op">=</span>1e-4,20 <span class="va">ALL_KSEDFRP_LIM</span><span class="op">=</span>1,500 <span class="dt">\</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_OUT</span><span class="op">=</span>calibration/all_stage/out_gns_5z <span class="ex">Rscript</span> calibration/all_stage/coord_all.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="where-the-data-enter-glm-aed" class="level3">
+<h3 class="anchored" data-anchor-id="where-the-data-enter-glm-aed">Where the data enter GLM-AED</h3>
+<p>GLM-AED’s Constant2d sediment model sets the sediment–water fluxes of oxygen, ammonium and phosphate separately for each sediment zone. Each zone has three parameters per flux:</p>
 <ul>
-<li>The fsed_frp upper bound is raised to 20 here because the zone 1–3 starting values (7–13 mmol/m²/d at the sodp <code>ksed_frp</code>) sit above the earlier limit of 5.</li>
-<li><code>ALL_FSEDOXY_ZLIM</code> refers to zones by number, so limits written for 4 zones do not carry over.</li>
+<li>a maximum rate (<code>fsed</code>);</li>
+<li>an oxygen half-saturation constant (<code>ksed</code>);</li>
+<li>a temperature coefficient (θ).</li>
 </ul>
-<div id="tbl-smoke" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-smoke-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;4: Check run: the out_gns_sodp best member on the 4-zone base and on the 5-zone base (zone 1 values copied to zones 1–2, so release rates are unchanged), with the chamber terms. Sum of squared terms (lower is better).
-</figcaption>
-<div aria-describedby="tbl-smoke-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"run_gnssodp_best.rds"</span>); f5 <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"run_gnssodp_5z.rds"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f4) <span class="sc">&amp;&amp;</span> <span class="fu">file.exists</span>(f5)) {</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  r4 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f4)<span class="sc">$</span>eval; r5 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f5)<span class="sc">$</span>eval; nc <span class="ot">&lt;-</span> <span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(r5<span class="sc">$</span>cal))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">Run =</span> <span class="fu">c</span>(<span class="st">"4 zones"</span>, <span class="st">"5 zones"</span>),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">cal (without chamber terms)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(r4<span class="sc">$</span>cal<span class="sc">^</span><span class="dv">2</span>), <span class="fu">sum</span>(r5<span class="sc">$</span>cal[<span class="sc">!</span>nc]<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">val (without chamber terms)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(r4<span class="sc">$</span>val<span class="sc">^</span><span class="dv">2</span>), <span class="fu">sum</span>(r5<span class="sc">$</span>val[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(r5<span class="sc">$</span>val))]<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">chamber terms</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">sum</span>(r5<span class="sc">$</span>cal[nc]<span class="sc">^</span><span class="dv">2</span>))) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">1</span>)))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-</figure>
-</div>
-<div id="tbl-smoke-terms" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-smoke-terms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5: Chamber terms of the check run on 5 zones (mean log ratio model/chamber in tolerance units; 0 = match, +2 = model about 2 tolerances high).
-</figcaption>
-<div aria-describedby="tbl-smoke-terms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f5)) { x <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f5)<span class="sc">$</span>eval<span class="sc">$</span>cal; x <span class="ot">&lt;-</span> x[<span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(x))]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">names</span>(x), <span class="at">z =</span> <span class="fu">round</span>(x, <span class="dv">2</span>)) <span class="sc">|&gt;</span> <span class="fu">separate</span>(term, <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"variable"</span>, <span class="st">"zone"</span>), <span class="at">sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> zone, <span class="at">values_from =</span> z) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-</figure>
-</div>
-<p>What the check run shows:</p>
+<p>Each zone then reacts to the average water conditions over its depth band. The chambers sit at 20, 15 and 10 m. With the five-zone layout (<a href="#sec-zones" class="quarto-xref">Section&nbsp;3</a>), each site falls in a different zone, so each zone with data gets its own local measurement. Zones 4 and 5 (0–8 m) have no 2026 data and stay loosely constrained.</p>
+<p>Constant2d rates do not change over time. A single parameter set cannot follow the drop in release between Burger et al.&nbsp;(2003–04) and 2026. The chamber data therefore describe the present-day (alum-era) sediment state. The Burger data describe the pre-alum state and suit a run that is scored on that period.</p>
+</section>
+<section id="the-chambers-as-a-prior" class="level3">
+<h3 class="anchored" data-anchor-id="the-chambers-as-a-prior">The chambers as a prior</h3>
+<p>A chamber measures the actual flux at its own oxygen and temperature, not <code>fsed</code> (<a href="#sec-aed" class="quarto-xref">Section&nbsp;4</a>). Converting a measured flux to <code>fsed</code> depends on <code>ksed</code>, and <code>ksed</code> is itself uncertain. So a prior placed directly on <code>fsed</code> would carry a hidden assumption about the oxygen dependence. A better prior is one on the <strong>flux the model would produce at the chamber’s conditions</strong>:</p>
+<p><span class="math display">\[
+\log F_\text{AED}(f_\text{sed}, k_\text{sed}, \theta \mid \text{DO}_\text{ch}, T_\text{ch}) \sim \mathcal{N}\left(\log \tilde F_\text{ch},\ \sigma^2\right),
+\qquad \sigma^2 = \sigma_\text{rep}^2 + s^2/n
+\]</span></p>
 <ul>
-<li><strong>Splitting the zone changes the model even with the same release rates.</strong> In AED each zone uses the average water conditions over its depth band. Total squared error: cal 71.0 → 69.4, val 92.0 → 75.0. Modelled AHOD fell from 1.71 to 1.41 g/m²/d (observed 1.50). Minimum bottom DO got worse (z 0.64 → 1.51). A 5-zone recalibration therefore starts from a different point, not just a finer one.</li>
-<li><strong>The chamber terms are far from zero for the 4-zone best member.</strong> The 10 m zone (zone 3) has almost no NH4 or PO4 release (z −14 and −28), and SOD is 3.5–6.3 tolerances too high at every depth. Together these terms (sum of squares about 1000) would dominate the objective at the start. <code>ALL_CHAMBER_W</code> of about 0.3 would keep them in proportion while the rates move toward the data.</li>
+<li><span class="math inline">\(\tilde F_\text{ch}\)</span> is the chamber median for the zone and variable.</li>
+<li><span class="math inline">\(s^2/n\)</span> is the sampling uncertainty of that median (spread between chambers, <em>n</em> chambers).</li>
+<li><span class="math inline">\(\sigma_\text{rep}\)</span> (about 0.3 in log units, roughly ±35%) covers how well a few chambers represent a whole zone and season.</li>
+</ul>
+<p>This is a joint prior on the three parameters. It ties them to the data only through the combination the chambers actually measured, at the oxygen and temperature they measured it. <code>fsed</code> and <code>ksed</code> can still trade off against each other: a high anoxic maximum with strong oxygen suppression, or a lower maximum with weak suppression. Which of these fits is left to the in-lake data. The hypolimnetic build-up of NH4 and DRP during stratification is what separates them. The chambers fix the flux under late-summer, partly oxygenated conditions; the hypolimnion record fixes how it changes as the bottom water goes anoxic.</p>
+</section>
+<section id="in-practice" class="level3">
+<h3 class="anchored" data-anchor-id="in-practice">In practice</h3>
+<ol type="1">
+<li><strong>Prior range.</strong> Each zone with data gets limits set as multiples of the chamber-implied <code>fsed</code> (for example 0.3–3×), rather than the wide limits used before. Zones without data keep wide limits, or borrow a weaker prior from the nearest measured zone.</li>
+<li><strong>Prior ensemble.</strong> In an ensemble calibration (ES-MDA), the starting members are drawn around the chamber-implied values. The ensemble therefore starts from measured rates rather than from earlier calibrated rates.</li>
+<li><strong>Prior term in the objective.</strong> Each member’s realized flux at the chamber conditions is computed from its parameters alone (no model run needed) and scored against the chamber median in log space. Because the term is a Gaussian log-likelihood in log space, adding it to the objective is equivalent to the Gaussian prior above. Its weight sets how strongly the prior holds against the lake data.</li>
+</ol>
+</section>
+<section id="what-the-prior-adds" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-prior-adds">What the prior adds</h3>
+<ul>
+<li><strong>Splitting oxygen demand.</strong> Bulk hypolimnetic oxygen depletion (AHOD) combines sediment and water-column demand. The lake profiles alone cannot separate them. The chamber SOD fixes the sediment share, so the rest has to come from water-column respiration of settling organic matter. This shifts calibration effort toward organic-matter supply and decay, rather than letting sediment demand absorb all of it.</li>
+<li><strong>Release at intermediate depths.</strong> Without a prior, the calibration can switch release off in a zone (as it did at 10 m) and make up for it elsewhere. The chamber prior keeps a measured, non-zero release at each sampled depth.</li>
+<li><strong>Oxygen dependence.</strong> The chambers and Burger et al.&nbsp;both point to weak oxygen control of P release. Together with the flux prior, a prior on <code>ksed_frp</code> centred well above the earlier calibrated value is consistent with both datasets.</li>
+<li><strong>A check on conflict with the lake data.</strong> If the posterior moves far from the chamber prior, the zone fluxes and the in-lake data disagree. That points to another process, such as the organic-matter supply, the mixing or the P sinks, rather than to wrong chamber values.</li>
 </ul>
 </section>
-<section id="sec-forward" class="level2">
-<h2 class="anchored" data-anchor-id="sec-forward">Forward runs with chamber-based release</h2>
-<p>These runs show how the model responds to sediment release set from the chamber data. Each starts from the out_gns_sodp best member; only the sediment parameters change, and nothing is recalibrated. They are full runs from 2002 to 2022 on the 5-zone base, with one 4-zone reference run.</p>
-<ul>
-<li><strong>Chamber values.</strong> The <code>fsed</code> values come from target <code>sed_fsed_anchor_2026</code>. They are set so that each zone’s release at the chamber DO and temperature equals the chamber median.</li>
-<li><strong>Shallow zones.</strong> Zones 4–5 (0–8 m) have no 2026 data. They take the 10 m values unless the run says “zones 1–3”.</li>
-<li><strong>Scripts.</strong> <code>calibration/hyps_gns/16_forward_5z_pars.R</code> builds the parameter sets, <code>run_forward_5z.sh</code> runs them, and <code>18_forward_compare.R</code> compares them.</li>
-</ul>
-<div id="tbl-fwd" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fwd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6: Forward runs: model value and z score (model − observed, in tolerance units) for the oxygen and nutrient targets, and total squared error (cal and val without the chamber terms; WQ = weighted target sum).
-</figcaption>
-<div aria-describedby="tbl-fwd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fz <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"fwd_zone"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_scores.csv"</span>))) {</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_scores.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  tt <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_totals.csv"</span>))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ahod"</span>, <span class="st">"anox_frac_summer"</span>, <span class="st">"do_bot_min"</span>, <span class="st">"hyp_flux_nh4"</span>, <span class="st">"hyp_flux_drp"</span>, <span class="st">"bot_drp_max"</span>, <span class="st">"tp_int_prealum"</span>, <span class="st">"tp_int_alum"</span>, <span class="st">"tp_pause_response"</span>, <span class="st">"chl_int_alum"</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> w[<span class="fu">match</span>(keep, w<span class="sc">$</span>metric), ]</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  tot <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Total squared error: cal / val / WQ"</span>, <span class="st">""</span>, <span class="fu">sprintf</span>(<span class="st">"%.0f / %.0f / %.0f"</span>, tt<span class="sc">$</span>cal, tt<span class="sc">$</span>val, tt<span class="sc">$</span>wq_weighted))</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">as.matrix</span>(w[, <span class="sc">-</span><span class="dv">1</span>]), tot); out[, <span class="st">"obs"</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">signif</span>(<span class="fu">as.numeric</span>(w<span class="sc">$</span>obs), <span class="dv">3</span>), <span class="st">""</span>)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(out)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Target"</span>, <span class="st">"Observed"</span>)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(out, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="figures/fwd_zoneflux.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Modelled March mean sediment release by zone (2008–2022) for four of the runs, against the 2026 chamber median and interquartile range (Campbell, pers. comm., 2026; unpublished)."><img src="figures/fwd_zoneflux.png" class="img-fluid figure-img" alt="Modelled March mean sediment release by zone (2008–2022) for four of the runs, against the 2026 chamber median and interquartile range (Campbell, pers. comm., 2026; unpublished)."></a></p>
-<figcaption>Modelled March mean sediment release by zone (2008–2022) for four of the runs, against the 2026 chamber median and interquartile range (Campbell, pers. comm., 2026; unpublished).</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="figures/fwd_annual.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Annual means (July–June) for the same four runs against the monitoring record."><img src="figures/fwd_annual.png" class="img-fluid figure-img" alt="Annual means (July–June) for the same four runs against the monitoring record."></a></p>
-<figcaption>Annual means (July–June) for the same four runs against the monitoring record.</figcaption>
-</figure>
-</div>
-<p>What the runs show:</p>
-<ul>
-<li><strong>The chamber SOD removes the anoxia.</strong> With the chamber values, sediment O2 demand is 0.3–1.1 g/m²/d.&nbsp;AHOD falls from 1.4 to 0.5 g/m²/d (observed 1.6), there are no anoxic summer days (observed 9%), and bottom DO stays above 3 mg/L. Hypolimnetic NH4 and DRP accumulation collapse with it. The chambers cover at most about a third of the observed AHOD, so the rest must come from water-column respiration below the thermocline. In the calibrated model, the sediment supplies almost all of it. Raising water-column demand (organic matter mineralisation, <code>rdom_minerl</code>, <code>rpoc_hydrol</code>, θ) is a precondition for using the chamber SOD.</li>
-<li><strong>Chamber nutrient release fits the hypolimnion when the oxygen dependence is weak.</strong> With the calibrated SOD (anoxia intact), the chamber NH4 and P release gives hypolimnetic NH4 accumulation of 20–28 mg/m²/d (observed 24). The P response depends on <code>ksed_frp</code>. With the calibrated 2.6, hypolimnetic DRP accumulation is 12.5 mg/m²/d, 5× the observed 2.4, and the summer bottom DRP maximum is 132 mg/m³. With <code>ksed_frp</code> 45 they are 3.3–3.6 and 50–83. This supports the weak oxygen dependence that Burger et al.&nbsp;(2007) reported.</li>
-<li><strong>Release at 10 m raises surface TP.</strong> The calibration set zone 3 (8–13 m) release to almost zero. At the chamber rate (about 2.4 mg P/m²/d averaged over the year), P released in the mostly mixed 8–13 m band reaches the surface. Surface TP rises from 40 to 64 mg/m³ before alum and from 16 to 25 under alum, even with zones 4–5 unchanged (z +5.4 and +3.7). Filling 0–8 m with the 10 m rate as well raises TP to 82 and 39. So either the 10 m chamber rate is a late-summer high that overstates the annual mean (2026 is one deployment), or the model lacks a P sink near the sediment, such as sorption, burial or alum binding, that offsets it in the real lake.</li>
-<li><strong>The TP response to the dosing pause appears only with chamber P release.</strong> Neither calibrated run reproduces it (−1.6 vs +13.6 mg/m³). The runs with chamber P release give +2 to +32, so sediment P release, rather than inflow load alone, may be the missing part of that response.</li>
-<li><strong>Chlorophyll does not respond.</strong> Surface chl-a under alum is 13.1–13.3 mg/m³ in every run, although surface TP nearly triples. The model’s phytoplankton are not limited by P at these concentrations, which needs checking separately.</li>
-<li><strong>Splitting the zone alone helps the fit.</strong> On the same release rates, the 5-zone base lowers the total error (val 92 → 75, WQ 184 → 172).</li>
-</ul>
-<p>What this means for calibration: putting all the chamber values in at once makes the fit much worse (WQ 172 → 760–1520), because the model’s oxygen and P budgets were tuned around a sediment that supplies most of the oxygen demand and little shallow P. The chamber terms (<code>ALL_CHAMBER=1</code>) should be combined with freeing the water-column oxygen demand, the P sinks and <code>ksed_frp</code> (bounds widened up to about 100). Expect the calibration to trade surface TP against the 10 m release.</p>
-</section>
-<section id="sec-cal-setup" class="level2">
-<h2 class="anchored" data-anchor-id="sec-cal-setup">Calibration setup and smoke tests</h2>
-<p>The calibration is set up in <code>calibration/all_stage/run_gns_5z.sh</code>. <code>bash … dry</code> writes the ranges and starting values without running the model; <code>bash … run</code> launches it, which has not been done.</p>
-<ul>
-<li><strong>Base and objective:</strong> 5 zones, plus the chamber terms with weight 0.3.</li>
-<li><strong>Zones 1–3 (the chamber depths):</strong> <code>fsed</code> limits are multiples of the chamber-implied value (<code>ALL_FSED_ANCHOR</code>), computed with <code>ksed_frp</code> 45. SOD ×0.5–3; NH4 and FRP ×0.33–3.</li>
-<li><strong>Zones 4–5:</strong> keep the wide absolute ranges.</li>
-<li><strong><code>ksed_frp</code>:</strong> 5–200, starting at 45.</li>
-<li><strong>Start point:</strong> the out_gns_sodp best member, with zones 1–3 set to the chamber values (<code>prev_gnssodp_5z_k45.rds</code>).</li>
-<li><strong>Water-column oxygen demand (<code>nm_dom</code>, <code>rpoc_hydrol</code>, <code>theta_minerl</code>) and the P sinks:</strong> stay free.</li>
-</ul>
-<p>The smoke runs (<code>calibration/hyps_gns/19_smoke_5z_pars.R</code>, <code>20_smoke_compare.R</code>) set zones 1–3 SOD at the start value and at both ends of its range, with and without more water-column oxygen demand (<code>rdom_minerl</code> at its upper bound ×4, <code>rpoc_hydrol</code> ×5).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="figures/smoke_z.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Target z scores for the smoke runs; grey band: within one tolerance."><img src="figures/smoke_z.png" class="img-fluid figure-img" alt="Target z scores for the smoke runs; grey band: within one tolerance."></a></p>
-<figcaption>Target z scores for the smoke runs; grey band: within one tolerance.</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="figures/smoke_bottom_do.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Bottom DO (19–23 m) and surface − bottom temperature difference, 2014–2019."><img src="figures/smoke_bottom_do.png" class="img-fluid figure-img" alt="Bottom DO (19–23 m) and surface − bottom temperature difference, 2014–2019."></a></p>
-<figcaption>Bottom DO (19–23 m) and surface − bottom temperature difference, 2014–2019.</figcaption>
-</figure>
-</div>
-<ul>
-<li><strong>Stratification does not respond.</strong> Share of stratified days, longest stratified spell, thermocline depth and surface temperature stay within ±0.6 tolerances in every run, and the surface − bottom temperature difference is the same in all runs. The sediment ranges act on oxygen and nutrients only.</li>
-<li><strong>Anoxia cannot be reached within the range as set.</strong> At the start value and the low bound there are no anoxic summer days, minimum bottom DO is 5–6 mg/L, and AHOD is 0.4–0.6 g/m²/d (observed 1.6). At the high bound (×3), bottom DO falls to 0.3–1 mg/L in the strongest stratified periods (2015, 2016, 2019) but does not reach the anoxia threshold, and AHOD is about 1.0. The calibrated sodp values sit at about 6.6× the chamber value in zones 1–2.</li>
-<li><strong>More water-column demand adds little.</strong> Raising <code>rdom_minerl</code> and <code>rpoc_hydrol</code> changes AHOD by only 0.03 g/m²/d, so oxygen demand in the hypolimnion seems limited by the supply of organic matter rather than its decay rate. That points to settling and hydrolysis of particulate matter (<code>w_pom</code>) or a sediment organic-matter flux, rather than the mineralisation rates.</li>
-<li><strong>TP is too high from the start</strong> (57–60 mg/m³ before alum, observed 41), because the 10 m release adds P (see <a href="#sec-forward">Forward runs</a>).</li>
-</ul>
 </section>
 <section id="caveats" class="level2">
 <h2 class="anchored" data-anchor-id="caveats">Caveats</h2>
@@ -1423,308 +1316,237 @@ Table&nbsp;6: Forward runs: model value and z score (model − observed, in tole
   <script type="application/javascript">
   window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sediment Flux Data"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Benthic chamber fluxes (2026 and 2003–04), the 5-zone sediment layout, and how the data constrain GLM-AED"</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"sed_zones.R"</span>))</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>chamber <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sediment_chamber)</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>obs     <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_flux_obs_all)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>summ    <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_flux_obs_summary)</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>zones5  <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_zones)</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>anchor  <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_fsed_anchor_2026)</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>hyps    <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(gns_hyps_model)</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>depth   <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">unwrap</span>(targets<span class="sc">::</span><span class="fu">tar_read</span>(bathy_depth_20m))</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>sites   <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sediment_chamber_site)</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>zones4  <span class="ot">&lt;-</span> <span class="fu">define_sed_zones</span>(hyps, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">8</span>, <span class="dv">13</span>))</span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>col_src <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">chamber_2026 =</span> <span class="st">"#2a78d6"</span>, <span class="at">burger_2007 =</span> <span class="st">"#eb6834"</span>)       <span class="co"># categorical slots 1-2</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>lab_src <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">chamber_2026 =</span> <span class="st">"Campbell, Mar 2026"</span>, <span class="at">burger_2007 =</span> <span class="st">"Burger et al. 2007 (2003–04)"</span>)</span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>lab_var <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">NH4 =</span> <span class="st">"NH4 release (mg N/m²/d)"</span>, <span class="at">PO4 =</span> <span class="st">"PO4 release (mg P/m²/d)"</span>, <span class="at">SOD =</span> <span class="st">"Sediment O2 demand (g O2/m²/d)"</span>)</span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>zone_cols <span class="ot">&lt;-</span> <span class="cf">function</span>(n) <span class="cf">if</span> (n <span class="sc">==</span> <span class="dv">5</span>) <span class="fu">c</span>(<span class="st">"#0d366b"</span>, <span class="st">"#1c5cab"</span>, <span class="st">"#3987e5"</span>, <span class="st">"#86b6ef"</span>, <span class="st">"#cde2fb"</span>) <span class="cf">else</span>   <span class="co"># sequential blue, zone 1 (deepest) darkest</span></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"#0d366b"</span>, <span class="st">"#256abf"</span>, <span class="st">"#6da7ec"</span>, <span class="st">"#cde2fb"</span>)</span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="dv">11</span>))</span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unpublished data</span></span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>The 2026 benthic chamber data are unpublished results from a student project, used here with permission: **Campbell (pers. comm., 2026)**. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.</span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Benthic chambers were deployed in Lake Rotorua (Campbell, pers. comm., 2026) on **17–20 March 2026** at **10, 15 and 20 m**, in light and dark chambers (17 chambers in all). They measured NH4, NOx and PO4 release and sediment oxygen demand (SOD).</span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The fluxes are much lower than in the 2003–04 survey by Burger et al. (2007). At 20 m, PO4 release is about 10× lower (median 4.6 vs 43 mg P/m²/d), NH4 about 6× lower, and SOD about 4× lower.</span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A chamber flux is the release that actually happened at the chamber's temperature and oxygen. GLM-AED's <span class="in">`fsed_*`</span> parameters are maximum rates that the model scales down by temperature and oxygen. The two can only be compared through those scaling terms (<span class="co">[</span><span class="ot">below</span><span class="co">](#sec-aed)</span>).</span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The model's 4-zone layout puts the 15 and 20 m chambers in one zone (13–25 m). A **5-zone layout** gives each chamber depth its own zone. It is set up as a target (<span class="in">`sed_zones`</span>) and a calibration base. A new calibration target (<span class="in">`ALL_CHAMBER=1`</span>) scores each run against the chamber fluxes.</span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## The data</span></span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>Source: Campbell (pers. comm., 2026), unpublished. The workbook is kept in the project's restricted OneDrive data folder and read by <span class="in">`read_sediment_chamber()`</span> into the target <span class="in">`sediment_chamber`</span>. This page shows only summaries of it.</span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Method.** Each rate is the linear-regression slope of chamber concentration over the deployment, times the chamber volume divided by the sediment area. SOD uses only the readings from the start until DO first reached 1 mg/L.</span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Units.** Nutrient fluxes are taken as mg N or mg P per m² per day; the workbook header says "mg/m/day". SOD is in g O2/m²/d.</span>
-<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Burger et al. (2007).** Chambers at 7, 14 and 20 m in four periods of 2003–04, with the bottom-water DO and temperature on each date (<span class="in">`website/data/burger2007_*.csv`</span>). Their secondary NH4 rate (12–48 h) is used, which the authors take as the natural release.</span>
-<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sites.** Coordinates are in the target <span class="in">`sediment_chamber_site`</span> (<span class="co">[</span><span class="ot">table</span><span class="co">](#tbl-sites)</span>, <span class="co">[</span><span class="ot">map</span><span class="co">](#fig-zone-map)</span>).</span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Overlying water.** For 2026 it comes from the mid-day buoy casts during the deployment, interpolated to each chamber depth. DO was 7.3, 7.0 and 6.6 mg/L at 10, 15 and 20 m, at about 19.7 °C.</span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-chamber</span></span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "2026 chamber fluxes by depth, light and dark chambers together: median and number of chambers (Campbell, pers. comm., 2026; unpublished). The NOx fluxes were close to zero and are not used."</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">Depth =</span> <span class="fu">paste</span>(depth_m, <span class="st">"m"</span>), variable) <span class="sc">|&gt;</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">v =</span> <span class="fu">sprintf</span>(<span class="st">"%.2g (n = %d)"</span>, <span class="fu">median</span>(value), <span class="fu">n</span>()), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> variable, <span class="at">values_from =</span> v) <span class="sc">|&gt;</span></span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">NH4 (mg N/m²/d)</span><span class="st">`</span> <span class="ot">=</span> NH4, <span class="st">`</span><span class="at">PO4 (mg P/m²/d)</span><span class="st">`</span> <span class="ot">=</span> PO4, <span class="st">`</span><span class="at">SOD (g O2/m²/d)</span><span class="st">`</span> <span class="ot">=</span> SOD)</span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-sites</span></span>
-<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "2026 chamber sites (WGS84 and NZTM 2000), with the depth at each site on the GNS bathymetry (m below the raster surface, 2 m cells)."</span></span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>sites <span class="sc">|&gt;</span> <span class="fu">transmute</span>(<span class="at">Site =</span> site, <span class="at">Latitude =</span> <span class="fu">sprintf</span>(<span class="st">"%.6f"</span>, lat), <span class="at">Longitude =</span> <span class="fu">sprintf</span>(<span class="st">"%.6f"</span>, lon),</span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>                   <span class="st">`</span><span class="at">NZTM E</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(x), <span class="st">`</span><span class="at">NZTM N</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(y), <span class="st">`</span><span class="at">Bathymetry depth (m)</span><span class="st">`</span> <span class="ot">=</span> bathy_depth_m)</span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obs</span></span>
-<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Chamber fluxes by depth (log scale). 2026 (Campbell, pers. comm., 2026; unpublished): median and interquartile range of the light and dark chambers at each depth; individual chambers are not shown. Burger et al. (2007): published site × period means (points) and their box plot."</span></span>
-<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>o <span class="ot">&lt;-</span> obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(value <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">factor</span>(lab_var[variable], lab_var))</span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>c26 <span class="ot">&lt;-</span> o <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(lab, depth_m) <span class="sc">|&gt;</span></span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(value), <span class="at">lo =</span> <span class="fu">quantile</span>(value, <span class="fl">0.25</span>), <span class="at">hi =</span> <span class="fu">quantile</span>(value, <span class="fl">0.75</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>b07 <span class="ot">&lt;-</span> o <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"burger_2007"</span>)</span>
-<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">data =</span> b07, <span class="fu">aes</span>(depth_m, value, <span class="at">group =</span> depth_m), <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">width =</span> <span class="fl">0.45</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>, <span class="at">fill =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> b07, <span class="fu">aes</span>(depth_m, value, <span class="at">colour =</span> <span class="st">"burger_2007"</span>, <span class="at">shape =</span> light), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">seed =</span> <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="at">data =</span> c26, <span class="fu">aes</span>(depth_m, med, <span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi, <span class="at">colour =</span> <span class="st">"chamber_2026"</span>), <span class="at">size =</span> <span class="fl">0.6</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span></span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_number</span>(<span class="at">drop0trailing =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_src, <span class="at">labels =</span> lab_src, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Dark =</span> <span class="dv">16</span>, <span class="at">Light =</span> <span class="dv">1</span>), <span class="at">name =</span> <span class="st">"Burger chambers"</span>) <span class="sc">+</span></span>
-<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lab, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"chamber depth (m)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The fall since 2003–04 is consistent with the alum-era drop in hypolimnetic P (see the <span class="co">[</span><span class="ot">Lake Water Quality Synthesis</span><span class="co">](lake-water-quality-synthesis.qmd)</span>). Both surveys were short deployments, though: one season in 2026 and four in 2003–04.</span>
-<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Both surveys find higher release at 20 m than at 14–15 m. 2026 PO4 is the exception: the 10 m chambers released about as much as the 20 m ones.</span>
-<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Light and dark chambers differ little in 2026. Most chambers, light ones included, drew DO down to about 1 mg/L during the deployment, so the oxygen contrast between them is weak.</span>
-<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sediment zones on the bathymetry {#sec-zones}</span></span>
-<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>GLM-AED gives each sediment zone one set of release rates. In AED, each zone's release also uses the average water conditions over that zone's depth band. The current model has 4 zones. Its deepest zone covers 13–25 m (29 km²) and so mixes water at 15 m, which stays oxygenated, with the anoxic bottom.</span>
-<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a>The 2026 sites lie on a west–east line from the western shelf to just west of Mokoia Island, about 3.4 km end to end. On the bathymetry their depths are 9.3, 15.6 and 22.2 m. The 20 m site is therefore a little deeper than its name, but it stays in the deepest zone in both layouts.</span>
-<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>The 5-zone layout splits that zone at 17.5 m. This is about where the hypolimnion stays below the thermocline (see the zone release section of the <span class="co">[</span><span class="ot">synthesis page</span><span class="co">](lake-water-quality-synthesis.qmd#sec-zone-release)</span>), and it gives each chamber depth its own zone.</span>
-<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-zone-map</span></span>
-<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sediment zones on the GNS bathymetry (20 m cells, depth below the surface). Left: the current 4 zones; right: the 5-zone layout. Contours at the chamber depths (10, 15, 20 m); yellow points: the 2026 chamber sites. The hydrothermal pit below 25 m is part of zone 1 in both (the model hypsograph is cut at 25 m)."</span></span>
-<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
-<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">plot_sed_zone_map</span>(depth, zones4, sites, <span class="at">contours =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">zone_cols</span>(<span class="dv">4</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"4 zones (current)"</span>)</span>
-<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">plot_sed_zone_map</span>(depth, zones5, sites, <span class="at">contours =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">zone_cols</span>(<span class="dv">5</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"5 zones (chamber depths)"</span>)</span>
-<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>m4 <span class="sc">+</span> m5</span>
-<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-map</span></span>
-<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Lake Rotorua bathymetry (m below the surface) with 5 m contours and the 2026 chamber sites."</span></span>
-<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 7</span></span>
-<span id="cb12-137"><a href="#cb12-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
-<span id="cb12-138"><a href="#cb12-138" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(depth, <span class="at">xy =</span> <span class="cn">TRUE</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dd, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">fill =</span> depth)) <span class="sc">+</span></span>
-<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour</span>(<span class="fu">aes</span>(<span class="at">z =</span> depth), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">5</span>, <span class="dv">50</span>, <span class="dv">5</span>), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#cde2fb"</span>, <span class="at">high =</span> <span class="st">"#0d366b"</span>, <span class="at">name =</span> <span class="st">"depth (m)"</span>) <span class="sc">+</span></span>
-<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_chamber_sites</span>(sites) <span class="sc">+</span></span>
-<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">theme_void</span>(<span class="dv">11</span>)</span>
-<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-148"><a href="#cb12-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-zones</span></span>
-<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "The 5-zone layout (target sed_zones). zone_height is GLM's zone top in m above the bed (median modelled level 25.5 m above the bed)."</span></span>
-<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a>zones5 <span class="sc">|&gt;</span> <span class="fu">left_join</span>(obs <span class="sc">|&gt;</span> <span class="fu">distinct</span>(zone, source, depth_m) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(zone) <span class="sc">|&gt;</span></span>
-<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">summarise</span>(<span class="at">Chambers =</span> <span class="fu">paste</span>(<span class="fu">sprintf</span>(<span class="st">"%g m (%s)"</span>, depth_m, <span class="fu">ifelse</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>, <span class="st">"2026"</span>, <span class="st">"Burger"</span>)), <span class="at">collapse =</span> <span class="st">", "</span>)), <span class="at">by =</span> <span class="st">"zone"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Zone =</span> zone, <span class="st">`</span><span class="at">Depth (m)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste</span>(top_m, <span class="st">"–"</span>, bot_m), <span class="st">`</span><span class="at">Area (km²)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(area_km2, <span class="dv">1</span>), zone_height, <span class="at">Chambers =</span> <span class="fu">coalesce</span>(Chambers, <span class="st">"none"</span>))</span>
-<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## How a chamber flux relates to AED's `fsed` {#sec-aed}</span></span>
-<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a>The chamber method (as in Burger et al. 2007) measures a **net flux under the chamber conditions**: concentration change × chamber volume / sediment area. AED's Constant2d model applies a **maximum rate** <span class="in">`fsed`</span>, scaled by temperature and by the oxygen in the water above the sediment (mmol/m²/d, O2 in mmol/m³):</span>
-<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Flux <span class="pp">|</span> AED rate <span class="pp">|</span></span>
-<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> SOD <span class="pp">|</span> <span class="in">`fsed_oxy × O2/(ksed_oxy + O2) × θ_oxy^(T−20)`</span> <span class="pp">|</span></span>
-<span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> NH4 <span class="pp">|</span> <span class="in">`fsed_amm × ksed_amm/(ksed_amm + O2) × θ_amm^(T−20)`</span> <span class="pp">|</span></span>
-<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP <span class="pp">|</span> <span class="in">`fsed_frp × ksed_frp/(ksed_frp + O2) × θ_frp^(T−20)`</span> <span class="pp">|</span></span>
-<span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a>So a chamber flux equals the model's *actual* flux at the chamber's DO and temperature. It equals <span class="in">`fsed`</span> only in anoxic water at 20 °C. To get <span class="in">`fsed`</span> from a chamber flux, divide by the oxygen and temperature factor, which depends on the half-saturation constant <span class="in">`ksed`</span>. <span class="in">`ksed`</span> is itself a calibration parameter.</span>
-<span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ksed</span></span>
-<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the out_gns_sodp best value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."</span></span>
-<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3.8</span></span>
-<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> summ <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>, variable <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"NH4"</span>, <span class="st">"PO4"</span>))</span>
-<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a>ks <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">2.7</span>, <span class="at">length.out =</span> <span class="dv">60</span>)</span>
-<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">crossing</span>(cm, <span class="at">ksed =</span> ks) <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">k =</span> <span class="fu">list</span>(<span class="fu">modifyList</span>(SED_K_SODP, <span class="cf">if</span> (variable <span class="sc">==</span> <span class="st">"NH4"</span>) <span class="fu">list</span>(<span class="at">ksed_amm =</span> ksed) <span class="cf">else</span> <span class="fu">list</span>(<span class="at">ksed_frp =</span> ksed))),</span>
-<span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a>         <span class="at">fsed_mg =</span> median <span class="sc">/</span> <span class="fu">aed_sed_factor</span>(variable, do_mg_l, temp_c, k)) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>()</span>
-<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(K, <span class="fu">aes</span>(ksed, fsed_mg, <span class="at">colour =</span> <span class="fu">factor</span>(depth_m))) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"NH4"</span>, <span class="st">"PO4"</span>), <span class="at">v =</span> <span class="fu">c</span>(SED_K_SODP<span class="sc">$</span>ksed_amm, SED_K_SODP<span class="sc">$</span>ksed_frp)), <span class="fu">aes</span>(<span class="at">xintercept =</span> v), <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
-<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span> variable, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">labeller =</span> <span class="fu">as_labeller</span>(<span class="fu">c</span>(<span class="at">NH4 =</span> <span class="st">"fsed_amm (mg N/m²/d)"</span>, <span class="at">PO4 =</span> <span class="st">"fsed_frp (mg P/m²/d)"</span>))) <span class="sc">+</span></span>
-<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">10</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#6da7ec"</span>, <span class="st">`</span><span class="at">15</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#2a78d6"</span>, <span class="st">`</span><span class="at">20</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#104281"</span>), <span class="at">name =</span> <span class="st">"depth (m)"</span>) <span class="sc">+</span></span>
-<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"ksed (mmol O2/m³)"</span>, <span class="at">y =</span> <span class="st">"implied fsed"</span>)</span>
-<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Oxygen sensitivity.** The out_gns_sodp calibration chose a very low <span class="in">`ksed_frp`</span> (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al. found SRP release "largely independent of DO". In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With <span class="in">`ksed_frp`</span> near 45 (the default), the chamber medians imply <span class="in">`fsed_frp`</span> of 15–30 mg P/m²/d rather than 200–400.</span>
-<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Earlier starting values.** These were taken directly from the measured fluxes as <span class="in">`fsed`</span> (<span class="in">`meas_param`</span>, <span class="in">`fsed_data_start()`</span>), with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.</span>
-<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison with the calibrated model</span></span>
-<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a><span class="in">`calibration/hyps_gns/14_chamber_flux_compare.R`</span> puts each member of the out_gns_sodp ensemble through these equations at the 2026 chamber conditions (4-zone model).</span>
-<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a><span class="al">![Chamber fluxes (median and interquartile range by depth; Campbell, pers. comm., 2026, unpublished) against the out_gns_sodp ensemble.](figures/chamber_vs_model.png)</span></span>
-<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**15–20 m (zone 1):** posterior NH4 (~16 mg N/m²/d) and PO4 (~2 mg P/m²/d) are close to the chambers, through very high anoxic rates damped by oxygen.</span>
-<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**10 m (zone 2, 8–13 m):** the calibration turned release off (NH4 ~1, PO4 ~0.0001 vs 14 and 3.8 measured).</span>
-<span id="cb12-198"><a href="#cb12-198" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SOD:** the model gives 2.5–3.7 g/m²/d at every depth vs 0.4–1.0 measured. The bulk hypolimnetic oxygen demand (AHOD, about 1.5 g/m²/d), which also includes water-column respiration, is being supplied almost entirely by the sediment.</span>
-<span id="cb12-199"><a href="#cb12-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Using the data in calibration {#sec-calibration}</span></span>
-<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Piece <span class="pp">|</span> Where <span class="pp">|</span></span>
-<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb12-204"><a href="#cb12-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Chamber data <span class="pp">|</span> target <span class="in">`sediment_chamber`</span> (<span class="in">`R/read_sediment_chamber.R`</span>) <span class="pp">|</span></span>
-<span id="cb12-205"><a href="#cb12-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> All flux observations with overlying DO and temperature <span class="pp">|</span> target <span class="in">`sed_flux_obs_all`</span> (2026 + Burger), summary <span class="in">`sed_flux_obs_summary`</span> <span class="pp">|</span></span>
-<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Zone layout and GLM rows <span class="pp">|</span> targets <span class="in">`sed_zones`</span>, <span class="in">`sed_zone_glm_param`</span> (<span class="in">`R/sed_zones.R`</span>) <span class="pp">|</span></span>
-<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Implied <span class="in">`fsed`</span> per zone (start values) <span class="pp">|</span> target <span class="in">`sed_fsed_anchor_2026`</span> (out_gns_sodp <span class="in">`ksed`</span>/θ; zones 4–5 take zone 3) <span class="pp">|</span></span>
-<span id="cb12-208"><a href="#cb12-208" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> 5-zone calibration base <span class="pp">|</span> <span class="in">`calibration/hyps_gns/15_make_base_5zone.R`</span> → <span class="in">`base_long_gns_sed_5z.rds`</span>, <span class="in">`sed_temp/override_est_5z.csv`</span> <span class="pp">|</span></span>
-<span id="cb12-209"><a href="#cb12-209" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Zone count <span class="pp">|</span> <span class="in">`SED_NZONE=5`</span> (<span class="in">`calibration/00_config.R`</span>; read by <span class="in">`sa_params.R`</span>, <span class="in">`sa_common.R`</span>, <span class="in">`lib_all.R`</span>) <span class="pp">|</span></span>
-<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Chamber objective terms <span class="pp">|</span> <span class="in">`ALL_CHAMBER=1`</span> in <span class="in">`lib_all.R`</span>: <span class="in">`c_&lt;SOD/NH4/PO4&gt;_z&lt;k&gt;`</span> <span class="pp">|</span></span>
-<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a>**The chamber terms.** They need only the parameters, not the model output. For each chamber, the member's AED flux at that chamber's DO and temperature is compared with the measured flux in log space. There is one term per variable and zone: the mean log ratio divided by a tolerance of √(0.3² + sd²/n), where 0.3 (about 35%) covers how well a few chambers represent a whole zone. Each term scores the actual release, so <span class="in">`ksed`</span>, θ and <span class="in">`fsed`</span> stay free together and are tied to the data at the oxygen and temperature it was measured at. <span class="in">`ALL_CHAMBER_SRC=chamber_2026,burger_2007`</span> adds the 2003–04 survey. Its fluxes are pre-alum and several times higher, so it suits a run that is scored on the pre-alum period.</span>
-<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a>A 5-zone recalibration run (the out_gns_sodp settings plus the chamber target):</span>
-<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-216"><a href="#cb12-216" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb12-217"><a href="#cb12-217" aria-hidden="true" tabindex="-1"></a><span class="va">SED_NZONE</span><span class="op">=</span>5 <span class="va">ALL_CHAMBER</span><span class="op">=</span>1 <span class="va">ALL_FSED</span><span class="op">=</span>1 <span class="va">ALL_V2</span><span class="op">=</span>1 <span class="va">ALL_FSED_START</span><span class="op">=</span>data <span class="dt">\</span></span>
-<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a>  <span class="va">PT_BASE</span><span class="op">=</span>calibration/hyps_gns/base_long_gns_sed_5z.rds <span class="dt">\</span></span>
-<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_TAB_OVERRIDE</span><span class="op">=</span>calibration/hyps_gns/sed_temp/override_est_5z.csv <span class="dt">\</span></span>
-<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_MIXHYP_LIM</span><span class="op">=</span>1.5,3 <span class="va">ALL_FSEDFRP_LIM</span><span class="op">=</span>1e-4,20 <span class="va">ALL_KSEDFRP_LIM</span><span class="op">=</span>1,500 <span class="dt">\</span></span>
-<span id="cb12-221"><a href="#cb12-221" aria-hidden="true" tabindex="-1"></a>  <span class="va">ALL_OUT</span><span class="op">=</span>calibration/all_stage/out_gns_5z <span class="ex">Rscript</span> calibration/all_stage/coord_all.R</span>
-<span id="cb12-222"><a href="#cb12-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-223"><a href="#cb12-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The fsed_frp upper bound is raised to 20 here because the zone 1–3 starting values (7–13 mmol/m²/d at the sodp <span class="in">`ksed_frp`</span>) sit above the earlier limit of 5.</span>
-<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`ALL_FSEDOXY_ZLIM`</span> refers to zones by number, so limits written for 4 zones do not carry over.</span>
-<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-smoke</span></span>
-<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Check run: the out_gns_sodp best member on the 4-zone base and on the 5-zone base (zone 1 values copied to zones 1–2, so release rates are unchanged), with the chamber terms. Sum of squared terms (lower is better)."</span></span>
-<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"run_gnssodp_best.rds"</span>); f5 <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"run_gnssodp_5z.rds"</span>)</span>
-<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f4) <span class="sc">&amp;&amp;</span> <span class="fu">file.exists</span>(f5)) {</span>
-<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a>  r4 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f4)<span class="sc">$</span>eval; r5 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f5)<span class="sc">$</span>eval; nc <span class="ot">&lt;-</span> <span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(r5<span class="sc">$</span>cal))</span>
-<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">Run =</span> <span class="fu">c</span>(<span class="st">"4 zones"</span>, <span class="st">"5 zones"</span>),</span>
-<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">cal (without chamber terms)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(r4<span class="sc">$</span>cal<span class="sc">^</span><span class="dv">2</span>), <span class="fu">sum</span>(r5<span class="sc">$</span>cal[<span class="sc">!</span>nc]<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">val (without chamber terms)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(r4<span class="sc">$</span>val<span class="sc">^</span><span class="dv">2</span>), <span class="fu">sum</span>(r5<span class="sc">$</span>val[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(r5<span class="sc">$</span>val))]<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">chamber terms</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">sum</span>(r5<span class="sc">$</span>cal[nc]<span class="sc">^</span><span class="dv">2</span>))) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">1</span>)))</span>
-<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-smoke-terms</span></span>
-<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Chamber terms of the check run on 5 zones (mean log ratio model/chamber in tolerance units; 0 = match, +2 = model about 2 tolerances high)."</span></span>
-<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(f5)) { x <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(f5)<span class="sc">$</span>eval<span class="sc">$</span>cal; x <span class="ot">&lt;-</span> x[<span class="fu">grepl</span>(<span class="st">"^c_"</span>, <span class="fu">names</span>(x))]</span>
-<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">term =</span> <span class="fu">names</span>(x), <span class="at">z =</span> <span class="fu">round</span>(x, <span class="dv">2</span>)) <span class="sc">|&gt;</span> <span class="fu">separate</span>(term, <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"variable"</span>, <span class="st">"zone"</span>), <span class="at">sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> zone, <span class="at">values_from =</span> z) }</span>
-<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a>What the check run shows:</span>
-<span id="cb12-252"><a href="#cb12-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-253"><a href="#cb12-253" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Splitting the zone changes the model even with the same release rates.** In AED each zone uses the average water conditions over its depth band. Total squared error: cal 71.0 → 69.4, val 92.0 → 75.0. Modelled AHOD fell from 1.71 to 1.41 g/m²/d (observed 1.50). Minimum bottom DO got worse (z 0.64 → 1.51). A 5-zone recalibration therefore starts from a different point, not just a finer one.</span>
-<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The chamber terms are far from zero for the 4-zone best member.** The 10 m zone (zone 3) has almost no NH4 or PO4 release (z −14 and −28), and SOD is 3.5–6.3 tolerances too high at every depth. Together these terms (sum of squares about 1000) would dominate the objective at the start. <span class="in">`ALL_CHAMBER_W`</span> of about 0.3 would keep them in proportion while the rates move toward the data.</span>
-<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a><span class="fu">## Forward runs with chamber-based release {#sec-forward}</span></span>
-<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-258"><a href="#cb12-258" aria-hidden="true" tabindex="-1"></a>These runs show how the model responds to sediment release set from the chamber data. Each starts from the out_gns_sodp best member; only the sediment parameters change, and nothing is recalibrated. They are full runs from 2002 to 2022 on the 5-zone base, with one 4-zone reference run.</span>
-<span id="cb12-259"><a href="#cb12-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-260"><a href="#cb12-260" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chamber values.** The <span class="in">`fsed`</span> values come from target <span class="in">`sed_fsed_anchor_2026`</span>. They are set so that each zone's release at the chamber DO and temperature equals the chamber median.</span>
-<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Shallow zones.** Zones 4–5 (0–8 m) have no 2026 data. They take the 10 m values unless the run says "zones 1–3".</span>
-<span id="cb12-262"><a href="#cb12-262" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Scripts.** <span class="in">`calibration/hyps_gns/16_forward_5z_pars.R`</span> builds the parameter sets, <span class="in">`run_forward_5z.sh`</span> runs them, and <span class="in">`18_forward_compare.R`</span> compares them.</span>
-<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-fwd</span></span>
-<span id="cb12-268"><a href="#cb12-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Forward runs: model value and z score (model − observed, in tolerance units) for the oxygen and nutrient targets, and total squared error (cal and val without the chamber terms; WQ = weighted target sum)."</span></span>
-<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a>fz <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"calibration"</span>, <span class="st">"hyps_gns"</span>, <span class="st">"fwd_zone"</span>)</span>
-<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_scores.csv"</span>))) {</span>
-<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_scores.csv"</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-272"><a href="#cb12-272" aria-hidden="true" tabindex="-1"></a>  tt <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(fz, <span class="st">"fwd_totals.csv"</span>))</span>
-<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a>  keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ahod"</span>, <span class="st">"anox_frac_summer"</span>, <span class="st">"do_bot_min"</span>, <span class="st">"hyp_flux_nh4"</span>, <span class="st">"hyp_flux_drp"</span>, <span class="st">"bot_drp_max"</span>, <span class="st">"tp_int_prealum"</span>, <span class="st">"tp_int_alum"</span>, <span class="st">"tp_pause_response"</span>, <span class="st">"chl_int_alum"</span>)</span>
-<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> w[<span class="fu">match</span>(keep, w<span class="sc">$</span>metric), ]</span>
-<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a>  tot <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Total squared error: cal / val / WQ"</span>, <span class="st">""</span>, <span class="fu">sprintf</span>(<span class="st">"%.0f / %.0f / %.0f"</span>, tt<span class="sc">$</span>cal, tt<span class="sc">$</span>val, tt<span class="sc">$</span>wq_weighted))</span>
-<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">as.matrix</span>(w[, <span class="sc">-</span><span class="dv">1</span>]), tot); out[, <span class="st">"obs"</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">signif</span>(<span class="fu">as.numeric</span>(w<span class="sc">$</span>obs), <span class="dv">3</span>), <span class="st">""</span>)</span>
-<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(out)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Target"</span>, <span class="st">"Observed"</span>)</span>
-<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(out, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a><span class="al">![Modelled March mean sediment release by zone (2008–2022) for four of the runs, against the 2026 chamber median and interquartile range (Campbell, pers. comm., 2026; unpublished).](figures/fwd_zoneflux.png)</span></span>
-<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a><span class="al">![Annual means (July–June) for the same four runs against the monitoring record.](figures/fwd_annual.png)</span></span>
-<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a>What the runs show:</span>
-<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The chamber SOD removes the anoxia.** With the chamber values, sediment O2 demand is 0.3–1.1 g/m²/d. AHOD falls from 1.4 to 0.5 g/m²/d (observed 1.6), there are no anoxic summer days (observed 9%), and bottom DO stays above 3 mg/L. Hypolimnetic NH4 and DRP accumulation collapse with it. The chambers cover at most about a third of the observed AHOD, so the rest must come from water-column respiration below the thermocline. In the calibrated model, the sediment supplies almost all of it. Raising water-column demand (organic matter mineralisation, <span class="in">`rdom_minerl`</span>, <span class="in">`rpoc_hydrol`</span>, θ) is a precondition for using the chamber SOD.</span>
-<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chamber nutrient release fits the hypolimnion when the oxygen dependence is weak.** With the calibrated SOD (anoxia intact), the chamber NH4 and P release gives hypolimnetic NH4 accumulation of 20–28 mg/m²/d (observed 24). The P response depends on <span class="in">`ksed_frp`</span>. With the calibrated 2.6, hypolimnetic DRP accumulation is 12.5 mg/m²/d, 5× the observed 2.4, and the summer bottom DRP maximum is 132 mg/m³. With <span class="in">`ksed_frp`</span> 45 they are 3.3–3.6 and 50–83. This supports the weak oxygen dependence that Burger et al. (2007) reported.</span>
-<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Release at 10 m raises surface TP.** The calibration set zone 3 (8–13 m) release to almost zero. At the chamber rate (about 2.4 mg P/m²/d averaged over the year), P released in the mostly mixed 8–13 m band reaches the surface. Surface TP rises from 40 to 64 mg/m³ before alum and from 16 to 25 under alum, even with zones 4–5 unchanged (z +5.4 and +3.7). Filling 0–8 m with the 10 m rate as well raises TP to 82 and 39. So either the 10 m chamber rate is a late-summer high that overstates the annual mean (2026 is one deployment), or the model lacks a P sink near the sediment, such as sorption, burial or alum binding, that offsets it in the real lake.</span>
-<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The TP response to the dosing pause appears only with chamber P release.** Neither calibrated run reproduces it (−1.6 vs +13.6 mg/m³). The runs with chamber P release give +2 to +32, so sediment P release, rather than inflow load alone, may be the missing part of that response.</span>
-<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chlorophyll does not respond.** Surface chl-a under alum is 13.1–13.3 mg/m³ in every run, although surface TP nearly triples. The model's phytoplankton are not limited by P at these concentrations, which needs checking separately.</span>
-<span id="cb12-293"><a href="#cb12-293" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Splitting the zone alone helps the fit.** On the same release rates, the 5-zone base lowers the total error (val 92 → 75, WQ 184 → 172).</span>
-<span id="cb12-294"><a href="#cb12-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-295"><a href="#cb12-295" aria-hidden="true" tabindex="-1"></a>What this means for calibration: putting all the chamber values in at once makes the fit much worse (WQ 172 → 760–1520), because the model's oxygen and P budgets were tuned around a sediment that supplies most of the oxygen demand and little shallow P. The chamber terms (<span class="in">`ALL_CHAMBER=1`</span>) should be combined with freeing the water-column oxygen demand, the P sinks and <span class="in">`ksed_frp`</span> (bounds widened up to about 100). Expect the calibration to trade surface TP against the 10 m release.</span>
-<span id="cb12-296"><a href="#cb12-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-297"><a href="#cb12-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Calibration setup and smoke tests {#sec-cal-setup}</span></span>
-<span id="cb12-298"><a href="#cb12-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-299"><a href="#cb12-299" aria-hidden="true" tabindex="-1"></a>The calibration is set up in <span class="in">`calibration/all_stage/run_gns_5z.sh`</span>. <span class="in">`bash … dry`</span> writes the ranges and starting values without running the model; <span class="in">`bash … run`</span> launches it, which has not been done.</span>
-<span id="cb12-300"><a href="#cb12-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-301"><a href="#cb12-301" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Base and objective:** 5 zones, plus the chamber terms with weight 0.3.</span>
-<span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zones 1–3 (the chamber depths):** <span class="in">`fsed`</span> limits are multiples of the chamber-implied value (<span class="in">`ALL_FSED_ANCHOR`</span>), computed with <span class="in">`ksed_frp`</span> 45. SOD ×0.5–3; NH4 and FRP ×0.33–3.</span>
-<span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Zones 4–5:** keep the wide absolute ranges.</span>
-<span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**`ksed_frp`:** 5–200, starting at 45.</span>
-<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Start point:** the out_gns_sodp best member, with zones 1–3 set to the chamber values (<span class="in">`prev_gnssodp_5z_k45.rds`</span>).</span>
-<span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Water-column oxygen demand (`nm_dom`, `rpoc_hydrol`, `theta_minerl`) and the P sinks:** stay free.</span>
-<span id="cb12-307"><a href="#cb12-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-308"><a href="#cb12-308" aria-hidden="true" tabindex="-1"></a>The smoke runs (<span class="in">`calibration/hyps_gns/19_smoke_5z_pars.R`</span>, <span class="in">`20_smoke_compare.R`</span>) set zones 1–3 SOD at the start value and at both ends of its range, with and without more water-column oxygen demand (<span class="in">`rdom_minerl`</span> at its upper bound ×4, <span class="in">`rpoc_hydrol`</span> ×5).</span>
-<span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a><span class="al">![Target z scores for the smoke runs; grey band: within one tolerance.](figures/smoke_z.png)</span></span>
-<span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a><span class="al">![Bottom DO (19–23 m) and surface − bottom temperature difference, 2014–2019.](figures/smoke_bottom_do.png)</span></span>
-<span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Stratification does not respond.** Share of stratified days, longest stratified spell, thermocline depth and surface temperature stay within ±0.6 tolerances in every run, and the surface − bottom temperature difference is the same in all runs. The sediment ranges act on oxygen and nutrients only.</span>
-<span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Anoxia cannot be reached within the range as set.** At the start value and the low bound there are no anoxic summer days, minimum bottom DO is 5–6 mg/L, and AHOD is 0.4–0.6 g/m²/d (observed 1.6). At the high bound (×3), bottom DO falls to 0.3–1 mg/L in the strongest stratified periods (2015, 2016, 2019) but does not reach the anoxia threshold, and AHOD is about 1.0. The calibrated sodp values sit at about 6.6× the chamber value in zones 1–2.</span>
-<span id="cb12-316"><a href="#cb12-316" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**More water-column demand adds little.** Raising <span class="in">`rdom_minerl`</span> and <span class="in">`rpoc_hydrol`</span> changes AHOD by only 0.03 g/m²/d, so oxygen demand in the hypolimnion seems limited by the supply of organic matter rather than its decay rate. That points to settling and hydrolysis of particulate matter (<span class="in">`w_pom`</span>) or a sediment organic-matter flux, rather than the mineralisation rates.</span>
-<span id="cb12-317"><a href="#cb12-317" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**TP is too high from the start** (57–60 mg/m³ before alum, observed 41), because the 10 m release adds P (see <span class="co">[</span><span class="ot">Forward runs</span><span class="co">](#sec-forward)</span>).</span>
-<span id="cb12-318"><a href="#cb12-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-319"><a href="#cb12-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
-<span id="cb12-320"><a href="#cb12-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-321"><a href="#cb12-321" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data status.** The 2026 chamber data are unpublished (Campbell, pers. comm., 2026). Keep the page to summaries until they are published, and check the published values when they appear.</span>
-<span id="cb12-322"><a href="#cb12-322" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chamber DO.** Each nutrient flux is a regression over the whole deployment, while the DO in the chamber was falling. Using the lake DO as the chamber condition overstates the oxygen. The raw chamber time series (concentration and DO over time) would allow the oxygen dependence (<span class="in">`ksed`</span>) to be fitted directly.</span>
-<span id="cb12-323"><a href="#cb12-323" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**One deployment.** The 2026 data cover one late-summer deployment. Seasonal and year-to-year variation (a factor of about 5 between periods in Burger et al.) is not sampled. The 0.3 log tolerance is a judgement and could be widened.</span>
-<span id="cb12-324"><a href="#cb12-324" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No data for 0–3.5 m.** Zone 5 has no measurements, and zone 4 (3.5–8 m) has only Burger's 2003–04 data.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sediment Flux Data"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Benthic chamber fluxes (2026 and 2003–04), the 5-zone sediment layout, and how the data constrain GLM-AED"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"sed_zones.R"</span>))</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>chamber <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sediment_chamber)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>obs     <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_flux_obs_all)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>summ    <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_flux_obs_summary)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>zones5  <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_zones)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>anchor  <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sed_fsed_anchor_2026)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>hyps    <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(gns_hyps_model)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>depth   <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">unwrap</span>(targets<span class="sc">::</span><span class="fu">tar_read</span>(bathy_depth_20m))</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>sites   <span class="ot">&lt;-</span> targets<span class="sc">::</span><span class="fu">tar_read</span>(sediment_chamber_site)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>zones4  <span class="ot">&lt;-</span> <span class="fu">define_sed_zones</span>(hyps, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="fl">3.5</span>, <span class="dv">8</span>, <span class="dv">13</span>))</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>col_src <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">chamber_2026 =</span> <span class="st">"#2a78d6"</span>, <span class="at">burger_2007 =</span> <span class="st">"#eb6834"</span>)       <span class="co"># categorical slots 1-2</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>lab_src <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">chamber_2026 =</span> <span class="st">"Campbell, Mar 2026"</span>, <span class="at">burger_2007 =</span> <span class="st">"Burger et al. 2007 (2003–04)"</span>)</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>lab_var <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">NH4 =</span> <span class="st">"NH4 release (mg N/m²/d)"</span>, <span class="at">PO4 =</span> <span class="st">"PO4 release (mg P/m²/d)"</span>, <span class="at">SOD =</span> <span class="st">"Sediment O2 demand (g O2/m²/d)"</span>)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>zone_cols <span class="ot">&lt;-</span> <span class="cf">function</span>(n) <span class="cf">if</span> (n <span class="sc">==</span> <span class="dv">5</span>) <span class="fu">c</span>(<span class="st">"#0d366b"</span>, <span class="st">"#1c5cab"</span>, <span class="st">"#3987e5"</span>, <span class="st">"#86b6ef"</span>, <span class="st">"#cde2fb"</span>) <span class="cf">else</span>   <span class="co"># sequential blue, zone 1 (deepest) darkest</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"#0d366b"</span>, <span class="st">"#256abf"</span>, <span class="st">"#6da7ec"</span>, <span class="st">"#cde2fb"</span>)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="dv">11</span>))</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unpublished data</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>The 2026 benthic chamber data are unpublished results from a PhD project, used here with permission: **Campbell (pers. comm., 2026)**. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Benthic chambers were deployed in Lake Rotorua (Campbell, pers. comm., 2026) on **17–20 March 2026** at **10, 15 and 20 m**, in light and dark chambers (17 chambers in all). They measured NH4, NOx and PO4 release and sediment oxygen demand (SOD).</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The fluxes are much lower than in the 2003–04 survey by Burger et al. (2007). At 20 m, PO4 release is about 10× lower (median 4.6 vs 43 mg P/m²/d), NH4 about 6× lower, and SOD about 4× lower.</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A chamber flux is the release that actually happened at the chamber's temperature and oxygen. GLM-AED's <span class="in">`fsed_*`</span> parameters are maximum rates that the model scales down by temperature and oxygen. The two can only be compared through those scaling terms (<span class="co">[</span><span class="ot">below</span><span class="co">](#sec-aed)</span>).</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The model's 4-zone layout puts the 15 and 20 m chambers in one zone (13–25 m). A **5-zone layout** gives each chamber depth its own zone. It is set up as a target (<span class="in">`sed_zones`</span>) and a calibration base. A new calibration target (<span class="in">`ALL_CHAMBER=1`</span>) scores each run against the chamber fluxes.</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## The data</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>Source: Campbell (pers. comm., 2026), unpublished. The workbook is kept in the project's restricted OneDrive data folder and read by <span class="in">`read_sediment_chamber()`</span> into the target <span class="in">`sediment_chamber`</span>. This page shows only summaries of it.</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Method.** Each rate is the linear-regression slope of chamber concentration over the deployment, times the chamber volume divided by the sediment area. SOD uses only the readings from the start until DO first reached 1 mg/L.</span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Units.** Nutrient fluxes are taken as mg N or mg P per m² per day; the workbook header says "mg/m/day". SOD is in g O2/m²/d.</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Burger et al. (2007).** Chambers at 7, 14 and 20 m in four periods of 2003–04, with the bottom-water DO and temperature on each date (<span class="in">`website/data/burger2007_*.csv`</span>). Their secondary NH4 rate (12–48 h) is used, which the authors take as the natural release.</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sites.** Coordinates are in the target <span class="in">`sediment_chamber_site`</span> (<span class="co">[</span><span class="ot">table</span><span class="co">](#tbl-sites)</span>, <span class="co">[</span><span class="ot">map</span><span class="co">](#fig-zone-map)</span>).</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Overlying water.** For 2026 it comes from the mid-day buoy casts during the deployment, interpolated to each chamber depth. DO was 7.3, 7.0 and 6.6 mg/L at 10, 15 and 20 m, at about 19.7 °C.</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-chamber</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "2026 chamber fluxes by depth, light and dark chambers together: median and number of chambers (Campbell, pers. comm., 2026; unpublished). The NOx fluxes were close to zero and are not used."</span></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">Depth =</span> <span class="fu">paste</span>(depth_m, <span class="st">"m"</span>), variable) <span class="sc">|&gt;</span></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">v =</span> <span class="fu">sprintf</span>(<span class="st">"%.2g (n = %d)"</span>, <span class="fu">median</span>(value), <span class="fu">n</span>()), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> variable, <span class="at">values_from =</span> v) <span class="sc">|&gt;</span></span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">NH4 (mg N/m²/d)</span><span class="st">`</span> <span class="ot">=</span> NH4, <span class="st">`</span><span class="at">PO4 (mg P/m²/d)</span><span class="st">`</span> <span class="ot">=</span> PO4, <span class="st">`</span><span class="at">SOD (g O2/m²/d)</span><span class="st">`</span> <span class="ot">=</span> SOD)</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-sites</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "2026 chamber sites (WGS84 and NZTM 2000), with the depth at each site on the GNS bathymetry (m below the raster surface, 2 m cells)."</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>sites <span class="sc">|&gt;</span> <span class="fu">transmute</span>(<span class="at">Site =</span> site, <span class="at">Latitude =</span> <span class="fu">sprintf</span>(<span class="st">"%.6f"</span>, lat), <span class="at">Longitude =</span> <span class="fu">sprintf</span>(<span class="st">"%.6f"</span>, lon),</span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>                   <span class="st">`</span><span class="at">NZTM E</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(x), <span class="st">`</span><span class="at">NZTM N</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(y), <span class="st">`</span><span class="at">Bathymetry depth (m)</span><span class="st">`</span> <span class="ot">=</span> bathy_depth_m)</span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-obs</span></span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Chamber fluxes by depth (log scale). 2026 (Campbell, pers. comm., 2026; unpublished): median and interquartile range of the light and dark chambers at each depth; individual chambers are not shown. Burger et al. (2007): published site × period means (points) and their box plot."</span></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>o <span class="ot">&lt;-</span> obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(value <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">factor</span>(lab_var[variable], lab_var))</span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>c26 <span class="ot">&lt;-</span> o <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(lab, depth_m) <span class="sc">|&gt;</span></span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(value), <span class="at">lo =</span> <span class="fu">quantile</span>(value, <span class="fl">0.25</span>), <span class="at">hi =</span> <span class="fu">quantile</span>(value, <span class="fl">0.75</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>b07 <span class="ot">&lt;-</span> o <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"burger_2007"</span>)</span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">data =</span> b07, <span class="fu">aes</span>(depth_m, value, <span class="at">group =</span> depth_m), <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">width =</span> <span class="fl">0.45</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>, <span class="at">fill =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> b07, <span class="fu">aes</span>(depth_m, value, <span class="at">colour =</span> <span class="st">"burger_2007"</span>, <span class="at">shape =</span> light), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">seed =</span> <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="at">data =</span> c26, <span class="fu">aes</span>(depth_m, med, <span class="at">ymin =</span> lo, <span class="at">ymax =</span> hi, <span class="at">colour =</span> <span class="st">"chamber_2026"</span>), <span class="at">size =</span> <span class="fl">0.6</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span></span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_number</span>(<span class="at">drop0trailing =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_src, <span class="at">labels =</span> lab_src, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Dark =</span> <span class="dv">16</span>, <span class="at">Light =</span> <span class="dv">1</span>), <span class="at">name =</span> <span class="st">"Burger chambers"</span>) <span class="sc">+</span></span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lab, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"chamber depth (m)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The fall since 2003–04 is consistent with the alum-era drop in hypolimnetic P (see the <span class="co">[</span><span class="ot">Lake Water Quality Synthesis</span><span class="co">](lake-water-quality-synthesis.qmd)</span>). Both surveys were short deployments, though: one season in 2026 and four in 2003–04.</span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Both surveys find higher release at 20 m than at 14–15 m. 2026 PO4 is the exception: the 10 m chambers released about as much as the 20 m ones.</span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Light and dark chambers differ little in 2026. Most chambers, light ones included, drew DO down to about 1 mg/L during the deployment, so the oxygen contrast between them is weak.</span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sediment zones on the bathymetry {#sec-zones}</span></span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a>GLM-AED gives each sediment zone one set of release rates. In AED, each zone's release also uses the average water conditions over that zone's depth band. The current model has 4 zones. Its deepest zone covers 13–25 m (29 km²) and so mixes water at 15 m, which stays oxygenated, with the anoxic bottom.</span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>The 2026 sites lie on a west–east line from the western shelf to just west of Mokoia Island, about 3.4 km end to end. On the bathymetry their depths are 9.3, 15.6 and 22.2 m. The 20 m site is therefore a little deeper than its name, but it stays in the deepest zone in both layouts.</span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a>The 5-zone layout splits that zone at 17.5 m. This is about where the hypolimnion stays below the thermocline (see the zone release section of the <span class="co">[</span><span class="ot">synthesis page</span><span class="co">](lake-water-quality-synthesis.qmd#sec-zone-release)</span>), and it gives each chamber depth its own zone.</span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-zone-map</span></span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Sediment zones on the GNS bathymetry (20 m cells, depth below the surface). Left: the current 4 zones; right: the 5-zone layout. Contours at the chamber depths (10, 15, 20 m); yellow points: the 2026 chamber sites. The hydrothermal pit below 25 m is part of zone 1 in both (the model hypsograph is cut at 25 m)."</span></span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">plot_sed_zone_map</span>(depth, zones4, sites, <span class="at">contours =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">zone_cols</span>(<span class="dv">4</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"4 zones (current)"</span>)</span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">plot_sed_zone_map</span>(depth, zones5, sites, <span class="at">contours =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">zone_cols</span>(<span class="dv">5</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"5 zones (chamber depths)"</span>)</span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a>m4 <span class="sc">+</span> m5</span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-depth-map</span></span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Lake Rotorua bathymetry (m below the surface) with 5 m contours and the 2026 chamber sites."</span></span>
+<span id="cb8-136"><a href="#cb8-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 7</span></span>
+<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(depth, <span class="at">xy =</span> <span class="cn">TRUE</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dd, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">fill =</span> depth)) <span class="sc">+</span></span>
+<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour</span>(<span class="fu">aes</span>(<span class="at">z =</span> depth), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">5</span>, <span class="dv">50</span>, <span class="dv">5</span>), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#cde2fb"</span>, <span class="at">high =</span> <span class="st">"#0d366b"</span>, <span class="at">name =</span> <span class="st">"depth (m)"</span>) <span class="sc">+</span></span>
+<span id="cb8-142"><a href="#cb8-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_chamber_sites</span>(sites) <span class="sc">+</span></span>
+<span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">theme_void</span>(<span class="dv">11</span>)</span>
+<span id="cb8-144"><a href="#cb8-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-145"><a href="#cb8-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-zones</span></span>
+<span id="cb8-150"><a href="#cb8-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "The 5-zone layout (target sed_zones). zone_height is GLM's zone top in m above the bed (median modelled level 25.5 m above the bed)."</span></span>
+<span id="cb8-151"><a href="#cb8-151" aria-hidden="true" tabindex="-1"></a>zones5 <span class="sc">|&gt;</span> <span class="fu">left_join</span>(obs <span class="sc">|&gt;</span> <span class="fu">distinct</span>(zone, source, depth_m) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(zone) <span class="sc">|&gt;</span></span>
+<span id="cb8-152"><a href="#cb8-152" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">summarise</span>(<span class="at">Chambers =</span> <span class="fu">paste</span>(<span class="fu">sprintf</span>(<span class="st">"%g m (%s)"</span>, depth_m, <span class="fu">ifelse</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>, <span class="st">"2026"</span>, <span class="st">"Burger"</span>)), <span class="at">collapse =</span> <span class="st">", "</span>)), <span class="at">by =</span> <span class="st">"zone"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Zone =</span> zone, <span class="st">`</span><span class="at">Depth (m)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste</span>(top_m, <span class="st">"–"</span>, bot_m), <span class="st">`</span><span class="at">Area (km²)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(area_km2, <span class="dv">1</span>), zone_height, <span class="at">Chambers =</span> <span class="fu">coalesce</span>(Chambers, <span class="st">"none"</span>))</span>
+<span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-155"><a href="#cb8-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-156"><a href="#cb8-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## How a chamber flux relates to AED's `fsed` {#sec-aed}</span></span>
+<span id="cb8-157"><a href="#cb8-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-158"><a href="#cb8-158" aria-hidden="true" tabindex="-1"></a>The chamber method (as in Burger et al. 2007) measures a **net flux under the chamber conditions**: concentration change × chamber volume / sediment area. AED's Constant2d model applies a **maximum rate** <span class="in">`fsed`</span>, scaled by temperature and by the oxygen in the water above the sediment (mmol/m²/d, O2 in mmol/m³):</span>
+<span id="cb8-159"><a href="#cb8-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-160"><a href="#cb8-160" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Flux <span class="pp">|</span> AED rate <span class="pp">|</span></span>
+<span id="cb8-161"><a href="#cb8-161" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> SOD <span class="pp">|</span> <span class="in">`fsed_oxy × O2/(ksed_oxy + O2) × θ_oxy^(T−20)`</span> <span class="pp">|</span></span>
+<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> NH4 <span class="pp">|</span> <span class="in">`fsed_amm × ksed_amm/(ksed_amm + O2) × θ_amm^(T−20)`</span> <span class="pp">|</span></span>
+<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> FRP <span class="pp">|</span> <span class="in">`fsed_frp × ksed_frp/(ksed_frp + O2) × θ_frp^(T−20)`</span> <span class="pp">|</span></span>
+<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-166"><a href="#cb8-166" aria-hidden="true" tabindex="-1"></a>So a chamber flux equals the model's *actual* flux at the chamber's DO and temperature. It equals <span class="in">`fsed`</span> only in anoxic water at 20 °C. To get <span class="in">`fsed`</span> from a chamber flux, divide by the oxygen and temperature factor, which depends on the half-saturation constant <span class="in">`ksed`</span>. <span class="in">`ksed`</span> is itself a calibration parameter.</span>
+<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-ksed</span></span>
+<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the previous calibration's value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."</span></span>
+<span id="cb8-173"><a href="#cb8-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3.8</span></span>
+<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> summ <span class="sc">|&gt;</span> <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"chamber_2026"</span>, variable <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"NH4"</span>, <span class="st">"PO4"</span>))</span>
+<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a>ks <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">2.7</span>, <span class="at">length.out =</span> <span class="dv">60</span>)</span>
+<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">crossing</span>(cm, <span class="at">ksed =</span> ks) <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">k =</span> <span class="fu">list</span>(<span class="fu">modifyList</span>(SED_K_SODP, <span class="cf">if</span> (variable <span class="sc">==</span> <span class="st">"NH4"</span>) <span class="fu">list</span>(<span class="at">ksed_amm =</span> ksed) <span class="cf">else</span> <span class="fu">list</span>(<span class="at">ksed_frp =</span> ksed))),</span>
+<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a>         <span class="at">fsed_mg =</span> median <span class="sc">/</span> <span class="fu">aed_sed_factor</span>(variable, do_mg_l, temp_c, k)) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>()</span>
+<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(K, <span class="fu">aes</span>(ksed, fsed_mg, <span class="at">colour =</span> <span class="fu">factor</span>(depth_m))) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb8-181"><a href="#cb8-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"NH4"</span>, <span class="st">"PO4"</span>), <span class="at">v =</span> <span class="fu">c</span>(SED_K_SODP<span class="sc">$</span>ksed_amm, SED_K_SODP<span class="sc">$</span>ksed_frp)), <span class="fu">aes</span>(<span class="at">xintercept =</span> v), <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb8-182"><a href="#cb8-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span> variable, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">labeller =</span> <span class="fu">as_labeller</span>(<span class="fu">c</span>(<span class="at">NH4 =</span> <span class="st">"fsed_amm (mg N/m²/d)"</span>, <span class="at">PO4 =</span> <span class="st">"fsed_frp (mg P/m²/d)"</span>))) <span class="sc">+</span></span>
+<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">10</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#6da7ec"</span>, <span class="st">`</span><span class="at">15</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#2a78d6"</span>, <span class="st">`</span><span class="at">20</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#104281"</span>), <span class="at">name =</span> <span class="st">"depth (m)"</span>) <span class="sc">+</span></span>
+<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"ksed (mmol O2/m³)"</span>, <span class="at">y =</span> <span class="st">"implied fsed"</span>)</span>
+<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-187"><a href="#cb8-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Oxygen sensitivity.** The previous calibration chose a very low <span class="in">`ksed_frp`</span> (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al. found SRP release "largely independent of DO". In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With <span class="in">`ksed_frp`</span> near 45 (the default), the chamber medians imply <span class="in">`fsed_frp`</span> of 15–30 mg P/m²/d rather than 200–400.</span>
+<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Earlier starting values.** These were taken directly from the measured fluxes as <span class="in">`fsed`</span>, with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.</span>
+<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison with the calibrated model</span></span>
+<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a>Passing the previous calibration's sediment parameters through the AED equations at the 2026 chamber conditions shows three things:</span>
+<span id="cb8-193"><a href="#cb8-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-194"><a href="#cb8-194" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Deep zone (15–20 m):** NH4 and PO4 release are close to the chambers. They get there through very high anoxic rates that oxygen holds down.</span>
+<span id="cb8-195"><a href="#cb8-195" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**10 m:** the calibration had effectively switched release off. The chambers show release comparable to the deeper sites.</span>
+<span id="cb8-196"><a href="#cb8-196" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SOD:** the model's sediment oxygen demand is several times the measured value at every depth. Almost all of the hypolimnetic oxygen depletion was being supplied by the sediment, with little left for water-column respiration.</span>
+<span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a>The calibration fitted the in-lake data with sediment fluxes that are partly inconsistent with direct measurements. This is the motivation for using the chambers as a prior (@sec-calibration).</span>
+<span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Using the data in calibration {#sec-calibration}</span></span>
+<span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-202"><a href="#cb8-202" aria-hidden="true" tabindex="-1"></a><span class="fu">### Where the data enter GLM-AED</span></span>
+<span id="cb8-203"><a href="#cb8-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a>GLM-AED's Constant2d sediment model sets the sediment–water fluxes of oxygen, ammonium and phosphate separately for each sediment zone. Each zone has three parameters per flux:</span>
+<span id="cb8-205"><a href="#cb8-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-206"><a href="#cb8-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a maximum rate (<span class="in">`fsed`</span>);</span>
+<span id="cb8-207"><a href="#cb8-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>an oxygen half-saturation constant (<span class="in">`ksed`</span>);</span>
+<span id="cb8-208"><a href="#cb8-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a temperature coefficient (θ).</span>
+<span id="cb8-209"><a href="#cb8-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-210"><a href="#cb8-210" aria-hidden="true" tabindex="-1"></a>Each zone then reacts to the average water conditions over its depth band. The chambers sit at 20, 15 and 10 m. With the five-zone layout (@sec-zones), each site falls in a different zone, so each zone with data gets its own local measurement. Zones 4 and 5 (0–8 m) have no 2026 data and stay loosely constrained.</span>
+<span id="cb8-211"><a href="#cb8-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-212"><a href="#cb8-212" aria-hidden="true" tabindex="-1"></a>Constant2d rates do not change over time. A single parameter set cannot follow the drop in release between Burger et al. (2003–04) and 2026. The chamber data therefore describe the present-day (alum-era) sediment state. The Burger data describe the pre-alum state and suit a run that is scored on that period.</span>
+<span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a><span class="fu">### The chambers as a prior</span></span>
+<span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a>A chamber measures the actual flux at its own oxygen and temperature, not <span class="in">`fsed`</span> (@sec-aed). Converting a measured flux to <span class="in">`fsed`</span> depends on <span class="in">`ksed`</span>, and <span class="in">`ksed`</span> is itself uncertain. So a prior placed directly on <span class="in">`fsed`</span> would carry a hidden assumption about the oxygen dependence. A better prior is one on the **flux the model would produce at the chamber's conditions**:</span>
+<span id="cb8-217"><a href="#cb8-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-218"><a href="#cb8-218" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a>\log F_\text{AED}(f_\text{sed}, k_\text{sed}, \theta \mid \text{DO}_\text{ch}, T_\text{ch}) \sim \mathcal{N}\left(\log \tilde F_\text{ch},\ \sigma^2\right),</span>
+<span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a>\qquad \sigma^2 = \sigma_\text{rep}^2 + s^2/n</span>
+<span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\tilde F_\text{ch}$ is the chamber median for the zone and variable.</span>
+<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$s^2/n$ is the sampling uncertainty of that median (spread between chambers, *n* chambers).</span>
+<span id="cb8-225"><a href="#cb8-225" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sigma_\text{rep}$ (about 0.3 in log units, roughly ±35%) covers how well a few chambers represent a whole zone and season.</span>
+<span id="cb8-226"><a href="#cb8-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-227"><a href="#cb8-227" aria-hidden="true" tabindex="-1"></a>This is a joint prior on the three parameters. It ties them to the data only through the combination the chambers actually measured, at the oxygen and temperature they measured it. <span class="in">`fsed`</span> and <span class="in">`ksed`</span> can still trade off against each other: a high anoxic maximum with strong oxygen suppression, or a lower maximum with weak suppression. Which of these fits is left to the in-lake data. The hypolimnetic build-up of NH4 and DRP during stratification is what separates them. The chambers fix the flux under late-summer, partly oxygenated conditions; the hypolimnion record fixes how it changes as the bottom water goes anoxic.</span>
+<span id="cb8-228"><a href="#cb8-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-229"><a href="#cb8-229" aria-hidden="true" tabindex="-1"></a><span class="fu">### In practice</span></span>
+<span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Prior range.** Each zone with data gets limits set as multiples of the chamber-implied <span class="in">`fsed`</span> (for example 0.3–3×), rather than the wide limits used before. Zones without data keep wide limits, or borrow a weaker prior from the nearest measured zone.</span>
+<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Prior ensemble.** In an ensemble calibration (ES-MDA), the starting members are drawn around the chamber-implied values. The ensemble therefore starts from measured rates rather than from earlier calibrated rates.</span>
+<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Prior term in the objective.** Each member's realized flux at the chamber conditions is computed from its parameters alone (no model run needed) and scored against the chamber median in log space. Because the term is a Gaussian log-likelihood in log space, adding it to the objective is equivalent to the Gaussian prior above. Its weight sets how strongly the prior holds against the lake data.</span>
+<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-235"><a href="#cb8-235" aria-hidden="true" tabindex="-1"></a><span class="fu">### What the prior adds</span></span>
+<span id="cb8-236"><a href="#cb8-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-237"><a href="#cb8-237" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Splitting oxygen demand.** Bulk hypolimnetic oxygen depletion (AHOD) combines sediment and water-column demand. The lake profiles alone cannot separate them. The chamber SOD fixes the sediment share, so the rest has to come from water-column respiration of settling organic matter. This shifts calibration effort toward organic-matter supply and decay, rather than letting sediment demand absorb all of it.</span>
+<span id="cb8-238"><a href="#cb8-238" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Release at intermediate depths.** Without a prior, the calibration can switch release off in a zone (as it did at 10 m) and make up for it elsewhere. The chamber prior keeps a measured, non-zero release at each sampled depth.</span>
+<span id="cb8-239"><a href="#cb8-239" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Oxygen dependence.** The chambers and Burger et al. both point to weak oxygen control of P release. Together with the flux prior, a prior on <span class="in">`ksed_frp`</span> centred well above the earlier calibrated value is consistent with both datasets.</span>
+<span id="cb8-240"><a href="#cb8-240" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A check on conflict with the lake data.** If the posterior moves far from the chamber prior, the zone fluxes and the in-lake data disagree. That points to another process, such as the organic-matter supply, the mixing or the P sinks, rather than to wrong chamber values.</span>
+<span id="cb8-241"><a href="#cb8-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-242"><a href="#cb8-242" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats</span></span>
+<span id="cb8-243"><a href="#cb8-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-244"><a href="#cb8-244" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Data status.** The 2026 chamber data are unpublished (Campbell, pers. comm., 2026). Keep the page to summaries until they are published, and check the published values when they appear.</span>
+<span id="cb8-245"><a href="#cb8-245" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Chamber DO.** Each nutrient flux is a regression over the whole deployment, while the DO in the chamber was falling. Using the lake DO as the chamber condition overstates the oxygen. The raw chamber time series (concentration and DO over time) would allow the oxygen dependence (<span class="in">`ksed`</span>) to be fitted directly.</span>
+<span id="cb8-246"><a href="#cb8-246" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**One deployment.** The 2026 data cover one late-summer deployment. Seasonal and year-to-year variation (a factor of about 5 between periods in Burger et al.) is not sampled. The 0.3 log tolerance is a judgement and could be widened.</span>
+<span id="cb8-247"><a href="#cb8-247" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No data for 0–3.5 m.** Zone 5 has no measurements, and zone 4 (3.5–8 m) has only Burger's 2003–04 data.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
