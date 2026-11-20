@@ -40,7 +40,7 @@ theme_set(theme_bw(11))
 
 ::: {.callout-important}
 ## Unpublished data
-The 2026 benthic chamber data are unpublished results from a student project, used here with permission: **Campbell (pers. comm., 2026)**. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.
+The 2026 benthic chamber data are unpublished results from a PhD project, used here with permission: **Campbell (pers. comm., 2026)**. They are shown only as summaries (medians and interquartile ranges by depth). Do not reuse, copy or redistribute them until the results are published.
 :::
 
 ## Summary
@@ -153,7 +153,7 @@ So a chamber flux equals the model's *actual* flux at the chamber's DO and tempe
 
 ```{r}
 #| label: fig-ksed
-#| fig-cap: "AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the out_gns_sodp best value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."
+#| fig-cap: "AED maximum rate implied by the 2026 chamber medians, against the half-saturation constant, at the chamber DO and temperature. Lines are zones 1–3 (20, 15, 10 m). Dashed: the previous calibration's value (ksed_frp 2.6, ksed_amm 29). The implied fsed_frp ranges over two orders of magnitude depending on ksed_frp."
 #| fig-width: 9
 #| fig-height: 3.8
 cm <- summ |> filter(source == "chamber_2026", variable %in% c("NH4", "PO4"))
@@ -168,131 +168,60 @@ ggplot(K, aes(ksed, fsed_mg, colour = factor(depth_m))) + geom_line(linewidth = 
   labs(x = "ksed (mmol O2/m³)", y = "implied fsed")
 ```
 
-- **Oxygen sensitivity.** The out_gns_sodp calibration chose a very low `ksed_frp` (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al. found SRP release "largely independent of DO". In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With `ksed_frp` near 45 (the default), the chamber medians imply `fsed_frp` of 15–30 mg P/m²/d rather than 200–400.
-- **Earlier starting values.** These were taken directly from the measured fluxes as `fsed` (`meas_param`, `fsed_data_start()`), with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.
+- **Oxygen sensitivity.** The previous calibration chose a very low `ksed_frp` (2.6), so P release is about 80× faster without oxygen than at 7 mg/L. Burger et al. found SRP release "largely independent of DO". In the 2026 data, dark and light chambers release similar PO4 even though DO fell during the deployment. Both point to a weaker oxygen dependence. With `ksed_frp` near 45 (the default), the chamber medians imply `fsed_frp` of 15–30 mg P/m²/d rather than 200–400.
+- **Earlier starting values.** These were taken directly from the measured fluxes as `fsed`, with an oxygen correction for SOD only. If those measurements were made in oxygenated water, the NH4 and P starting values were too low by this factor.
 
 ## Comparison with the calibrated model
 
-`calibration/hyps_gns/14_chamber_flux_compare.R` puts each member of the out_gns_sodp ensemble through these equations at the 2026 chamber conditions (4-zone model).
+Passing the previous calibration's sediment parameters through the AED equations at the 2026 chamber conditions shows three things:
 
-![Chamber fluxes (median and interquartile range by depth; Campbell, pers. comm., 2026, unpublished) against the out_gns_sodp ensemble.](figures/chamber_vs_model.png)
+- **Deep zone (15–20 m):** NH4 and PO4 release are close to the chambers. They get there through very high anoxic rates that oxygen holds down.
+- **10 m:** the calibration had effectively switched release off. The chambers show release comparable to the deeper sites.
+- **SOD:** the model's sediment oxygen demand is several times the measured value at every depth. Almost all of the hypolimnetic oxygen depletion was being supplied by the sediment, with little left for water-column respiration.
 
-- **15–20 m (zone 1):** posterior NH4 (~16 mg N/m²/d) and PO4 (~2 mg P/m²/d) are close to the chambers, through very high anoxic rates damped by oxygen.
-- **10 m (zone 2, 8–13 m):** the calibration turned release off (NH4 ~1, PO4 ~0.0001 vs 14 and 3.8 measured).
-- **SOD:** the model gives 2.5–3.7 g/m²/d at every depth vs 0.4–1.0 measured. The bulk hypolimnetic oxygen demand (AHOD, about 1.5 g/m²/d), which also includes water-column respiration, is being supplied almost entirely by the sediment.
+The calibration fitted the in-lake data with sediment fluxes that are partly inconsistent with direct measurements. This is the motivation for using the chambers as a prior (@sec-calibration).
 
 ## Using the data in calibration {#sec-calibration}
 
-| Piece | Where |
-|---|---|
-| Chamber data | target `sediment_chamber` (`R/read_sediment_chamber.R`) |
-| All flux observations with overlying DO and temperature | target `sed_flux_obs_all` (2026 + Burger), summary `sed_flux_obs_summary` |
-| Zone layout and GLM rows | targets `sed_zones`, `sed_zone_glm_param` (`R/sed_zones.R`) |
-| Implied `fsed` per zone (start values) | target `sed_fsed_anchor_2026` (out_gns_sodp `ksed`/θ; zones 4–5 take zone 3) |
-| 5-zone calibration base | `calibration/hyps_gns/15_make_base_5zone.R` → `base_long_gns_sed_5z.rds`, `sed_temp/override_est_5z.csv` |
-| Zone count | `SED_NZONE=5` (`calibration/00_config.R`; read by `sa_params.R`, `sa_common.R`, `lib_all.R`) |
-| Chamber objective terms | `ALL_CHAMBER=1` in `lib_all.R`: `c_<SOD/NH4/PO4>_z<k>` |
+### Where the data enter GLM-AED
 
-**The chamber terms.** They need only the parameters, not the model output. For each chamber, the member's AED flux at that chamber's DO and temperature is compared with the measured flux in log space. There is one term per variable and zone: the mean log ratio divided by a tolerance of √(0.3² + sd²/n), where 0.3 (about 35%) covers how well a few chambers represent a whole zone. Each term scores the actual release, so `ksed`, θ and `fsed` stay free together and are tied to the data at the oxygen and temperature it was measured at. `ALL_CHAMBER_SRC=chamber_2026,burger_2007` adds the 2003–04 survey. Its fluxes are pre-alum and several times higher, so it suits a run that is scored on the pre-alum period.
+GLM-AED's Constant2d sediment model sets the sediment–water fluxes of oxygen, ammonium and phosphate separately for each sediment zone. Each zone has three parameters per flux:
 
-A 5-zone recalibration run (the out_gns_sodp settings plus the chamber target):
+- a maximum rate (`fsed`);
+- an oxygen half-saturation constant (`ksed`);
+- a temperature coefficient (θ).
 
-```bash
-SED_NZONE=5 ALL_CHAMBER=1 ALL_FSED=1 ALL_V2=1 ALL_FSED_START=data \
-  PT_BASE=calibration/hyps_gns/base_long_gns_sed_5z.rds \
-  ALL_TAB_OVERRIDE=calibration/hyps_gns/sed_temp/override_est_5z.csv \
-  ALL_MIXHYP_LIM=1.5,3 ALL_FSEDFRP_LIM=1e-4,20 ALL_KSEDFRP_LIM=1,500 \
-  ALL_OUT=calibration/all_stage/out_gns_5z Rscript calibration/all_stage/coord_all.R
-```
+Each zone then reacts to the average water conditions over its depth band. The chambers sit at 20, 15 and 10 m. With the five-zone layout (@sec-zones), each site falls in a different zone, so each zone with data gets its own local measurement. Zones 4 and 5 (0–8 m) have no 2026 data and stay loosely constrained.
 
-- The fsed_frp upper bound is raised to 20 here because the zone 1–3 starting values (7–13 mmol/m²/d at the sodp `ksed_frp`) sit above the earlier limit of 5.
-- `ALL_FSEDOXY_ZLIM` refers to zones by number, so limits written for 4 zones do not carry over.
+Constant2d rates do not change over time. A single parameter set cannot follow the drop in release between Burger et al. (2003–04) and 2026. The chamber data therefore describe the present-day (alum-era) sediment state. The Burger data describe the pre-alum state and suit a run that is scored on that period.
 
-```{r}
-#| label: tbl-smoke
-#| tbl-cap: "Check run: the out_gns_sodp best member on the 4-zone base and on the 5-zone base (zone 1 values copied to zones 1–2, so release rates are unchanged), with the chamber terms. Sum of squared terms (lower is better)."
-f4 <- here::here("calibration", "hyps_gns", "run_gnssodp_best.rds"); f5 <- here::here("calibration", "hyps_gns", "run_gnssodp_5z.rds")
-if (file.exists(f4) && file.exists(f5)) {
-  r4 <- readRDS(f4)$eval; r5 <- readRDS(f5)$eval; nc <- grepl("^c_", names(r5$cal))
-  tibble::tibble(Run = c("4 zones", "5 zones"),
-                 `cal (without chamber terms)` = c(sum(r4$cal^2), sum(r5$cal[!nc]^2)),
-                 `val (without chamber terms)` = c(sum(r4$val^2), sum(r5$val[!grepl("^c_", names(r5$val))]^2)),
-                 `chamber terms` = c(NA, sum(r5$cal[nc]^2))) |> mutate(across(where(is.numeric), ~ round(.x, 1)))
-}
-```
+### The chambers as a prior
 
-```{r}
-#| label: tbl-smoke-terms
-#| tbl-cap: "Chamber terms of the check run on 5 zones (mean log ratio model/chamber in tolerance units; 0 = match, +2 = model about 2 tolerances high)."
-if (file.exists(f5)) { x <- readRDS(f5)$eval$cal; x <- x[grepl("^c_", names(x))]
-  tibble::tibble(term = names(x), z = round(x, 2)) |> separate(term, c(NA, "variable", "zone"), sep = "_") |> pivot_wider(names_from = zone, values_from = z) }
-```
+A chamber measures the actual flux at its own oxygen and temperature, not `fsed` (@sec-aed). Converting a measured flux to `fsed` depends on `ksed`, and `ksed` is itself uncertain. So a prior placed directly on `fsed` would carry a hidden assumption about the oxygen dependence. A better prior is one on the **flux the model would produce at the chamber's conditions**:
 
-What the check run shows:
+$$
+\log F_\text{AED}(f_\text{sed}, k_\text{sed}, \theta \mid \text{DO}_\text{ch}, T_\text{ch}) \sim \mathcal{N}\left(\log \tilde F_\text{ch},\ \sigma^2\right),
+\qquad \sigma^2 = \sigma_\text{rep}^2 + s^2/n
+$$
 
-- **Splitting the zone changes the model even with the same release rates.** In AED each zone uses the average water conditions over its depth band. Total squared error: cal 71.0 → 69.4, val 92.0 → 75.0. Modelled AHOD fell from 1.71 to 1.41 g/m²/d (observed 1.50). Minimum bottom DO got worse (z 0.64 → 1.51). A 5-zone recalibration therefore starts from a different point, not just a finer one.
-- **The chamber terms are far from zero for the 4-zone best member.** The 10 m zone (zone 3) has almost no NH4 or PO4 release (z −14 and −28), and SOD is 3.5–6.3 tolerances too high at every depth. Together these terms (sum of squares about 1000) would dominate the objective at the start. `ALL_CHAMBER_W` of about 0.3 would keep them in proportion while the rates move toward the data.
+- $\tilde F_\text{ch}$ is the chamber median for the zone and variable.
+- $s^2/n$ is the sampling uncertainty of that median (spread between chambers, *n* chambers).
+- $\sigma_\text{rep}$ (about 0.3 in log units, roughly ±35%) covers how well a few chambers represent a whole zone and season.
 
-## Forward runs with chamber-based release {#sec-forward}
+This is a joint prior on the three parameters. It ties them to the data only through the combination the chambers actually measured, at the oxygen and temperature they measured it. `fsed` and `ksed` can still trade off against each other: a high anoxic maximum with strong oxygen suppression, or a lower maximum with weak suppression. Which of these fits is left to the in-lake data. The hypolimnetic build-up of NH4 and DRP during stratification is what separates them. The chambers fix the flux under late-summer, partly oxygenated conditions; the hypolimnion record fixes how it changes as the bottom water goes anoxic.
 
-These runs show how the model responds to sediment release set from the chamber data. Each starts from the out_gns_sodp best member; only the sediment parameters change, and nothing is recalibrated. They are full runs from 2002 to 2022 on the 5-zone base, with one 4-zone reference run.
+### In practice
 
-- **Chamber values.** The `fsed` values come from target `sed_fsed_anchor_2026`. They are set so that each zone's release at the chamber DO and temperature equals the chamber median.
-- **Shallow zones.** Zones 4–5 (0–8 m) have no 2026 data. They take the 10 m values unless the run says "zones 1–3".
-- **Scripts.** `calibration/hyps_gns/16_forward_5z_pars.R` builds the parameter sets, `run_forward_5z.sh` runs them, and `18_forward_compare.R` compares them.
+1. **Prior range.** Each zone with data gets limits set as multiples of the chamber-implied `fsed` (for example 0.3–3×), rather than the wide limits used before. Zones without data keep wide limits, or borrow a weaker prior from the nearest measured zone.
+2. **Prior ensemble.** In an ensemble calibration (ES-MDA), the starting members are drawn around the chamber-implied values. The ensemble therefore starts from measured rates rather than from earlier calibrated rates.
+3. **Prior term in the objective.** Each member's realized flux at the chamber conditions is computed from its parameters alone (no model run needed) and scored against the chamber median in log space. Because the term is a Gaussian log-likelihood in log space, adding it to the objective is equivalent to the Gaussian prior above. Its weight sets how strongly the prior holds against the lake data.
 
-```{r}
-#| label: tbl-fwd
-#| tbl-cap: "Forward runs: model value and z score (model − observed, in tolerance units) for the oxygen and nutrient targets, and total squared error (cal and val without the chamber terms; WQ = weighted target sum)."
-fz <- here::here("calibration", "hyps_gns", "fwd_zone")
-if (file.exists(file.path(fz, "fwd_scores.csv"))) {
-  w <- read.csv(file.path(fz, "fwd_scores.csv"), check.names = FALSE)
-  tt <- read.csv(file.path(fz, "fwd_totals.csv"))
-  keep <- c("ahod", "anox_frac_summer", "do_bot_min", "hyp_flux_nh4", "hyp_flux_drp", "bot_drp_max", "tp_int_prealum", "tp_int_alum", "tp_pause_response", "chl_int_alum")
-  w <- w[match(keep, w$metric), ]
-  tot <- c("Total squared error: cal / val / WQ", "", sprintf("%.0f / %.0f / %.0f", tt$cal, tt$val, tt$wq_weighted))
-  out <- rbind(as.matrix(w[, -1]), tot); out[, "obs"] <- c(signif(as.numeric(w$obs), 3), "")
-  colnames(out)[1:2] <- c("Target", "Observed")
-  knitr::kable(out, row.names = FALSE)
-}
-```
+### What the prior adds
 
-![Modelled March mean sediment release by zone (2008–2022) for four of the runs, against the 2026 chamber median and interquartile range (Campbell, pers. comm., 2026; unpublished).](figures/fwd_zoneflux.png)
-
-![Annual means (July–June) for the same four runs against the monitoring record.](figures/fwd_annual.png)
-
-What the runs show:
-
-- **The chamber SOD removes the anoxia.** With the chamber values, sediment O2 demand is 0.3–1.1 g/m²/d. AHOD falls from 1.4 to 0.5 g/m²/d (observed 1.6), there are no anoxic summer days (observed 9%), and bottom DO stays above 3 mg/L. Hypolimnetic NH4 and DRP accumulation collapse with it. The chambers cover at most about a third of the observed AHOD, so the rest must come from water-column respiration below the thermocline. In the calibrated model, the sediment supplies almost all of it. Raising water-column demand (organic matter mineralisation, `rdom_minerl`, `rpoc_hydrol`, θ) is a precondition for using the chamber SOD.
-- **Chamber nutrient release fits the hypolimnion when the oxygen dependence is weak.** With the calibrated SOD (anoxia intact), the chamber NH4 and P release gives hypolimnetic NH4 accumulation of 20–28 mg/m²/d (observed 24). The P response depends on `ksed_frp`. With the calibrated 2.6, hypolimnetic DRP accumulation is 12.5 mg/m²/d, 5× the observed 2.4, and the summer bottom DRP maximum is 132 mg/m³. With `ksed_frp` 45 they are 3.3–3.6 and 50–83. This supports the weak oxygen dependence that Burger et al. (2007) reported.
-- **Release at 10 m raises surface TP.** The calibration set zone 3 (8–13 m) release to almost zero. At the chamber rate (about 2.4 mg P/m²/d averaged over the year), P released in the mostly mixed 8–13 m band reaches the surface. Surface TP rises from 40 to 64 mg/m³ before alum and from 16 to 25 under alum, even with zones 4–5 unchanged (z +5.4 and +3.7). Filling 0–8 m with the 10 m rate as well raises TP to 82 and 39. So either the 10 m chamber rate is a late-summer high that overstates the annual mean (2026 is one deployment), or the model lacks a P sink near the sediment, such as sorption, burial or alum binding, that offsets it in the real lake.
-- **The TP response to the dosing pause appears only with chamber P release.** Neither calibrated run reproduces it (−1.6 vs +13.6 mg/m³). The runs with chamber P release give +2 to +32, so sediment P release, rather than inflow load alone, may be the missing part of that response.
-- **Chlorophyll does not respond.** Surface chl-a under alum is 13.1–13.3 mg/m³ in every run, although surface TP nearly triples. The model's phytoplankton are not limited by P at these concentrations, which needs checking separately.
-- **Splitting the zone alone helps the fit.** On the same release rates, the 5-zone base lowers the total error (val 92 → 75, WQ 184 → 172).
-
-What this means for calibration: putting all the chamber values in at once makes the fit much worse (WQ 172 → 760–1520), because the model's oxygen and P budgets were tuned around a sediment that supplies most of the oxygen demand and little shallow P. The chamber terms (`ALL_CHAMBER=1`) should be combined with freeing the water-column oxygen demand, the P sinks and `ksed_frp` (bounds widened up to about 100). Expect the calibration to trade surface TP against the 10 m release.
-
-## Calibration setup and smoke tests {#sec-cal-setup}
-
-The calibration is set up in `calibration/all_stage/run_gns_5z.sh`. `bash … dry` writes the ranges and starting values without running the model; `bash … run` launches it, which has not been done.
-
-- **Base and objective:** 5 zones, plus the chamber terms with weight 0.3.
-- **Zones 1–3 (the chamber depths):** `fsed` limits are multiples of the chamber-implied value (`ALL_FSED_ANCHOR`), computed with `ksed_frp` 45. SOD ×0.5–3; NH4 and FRP ×0.33–3.
-- **Zones 4–5:** keep the wide absolute ranges.
-- **`ksed_frp`:** 5–200, starting at 45.
-- **Start point:** the out_gns_sodp best member, with zones 1–3 set to the chamber values (`prev_gnssodp_5z_k45.rds`).
-- **Water-column oxygen demand (`nm_dom`, `rpoc_hydrol`, `theta_minerl`) and the P sinks:** stay free.
-
-The smoke runs (`calibration/hyps_gns/19_smoke_5z_pars.R`, `20_smoke_compare.R`) set zones 1–3 SOD at the start value and at both ends of its range, with and without more water-column oxygen demand (`rdom_minerl` at its upper bound ×4, `rpoc_hydrol` ×5).
-
-![Target z scores for the smoke runs; grey band: within one tolerance.](figures/smoke_z.png)
-
-![Bottom DO (19–23 m) and surface − bottom temperature difference, 2014–2019.](figures/smoke_bottom_do.png)
-
-- **Stratification does not respond.** Share of stratified days, longest stratified spell, thermocline depth and surface temperature stay within ±0.6 tolerances in every run, and the surface − bottom temperature difference is the same in all runs. The sediment ranges act on oxygen and nutrients only.
-- **Anoxia cannot be reached within the range as set.** At the start value and the low bound there are no anoxic summer days, minimum bottom DO is 5–6 mg/L, and AHOD is 0.4–0.6 g/m²/d (observed 1.6). At the high bound (×3), bottom DO falls to 0.3–1 mg/L in the strongest stratified periods (2015, 2016, 2019) but does not reach the anoxia threshold, and AHOD is about 1.0. The calibrated sodp values sit at about 6.6× the chamber value in zones 1–2.
-- **More water-column demand adds little.** Raising `rdom_minerl` and `rpoc_hydrol` changes AHOD by only 0.03 g/m²/d, so oxygen demand in the hypolimnion seems limited by the supply of organic matter rather than its decay rate. That points to settling and hydrolysis of particulate matter (`w_pom`) or a sediment organic-matter flux, rather than the mineralisation rates.
-- **TP is too high from the start** (57–60 mg/m³ before alum, observed 41), because the 10 m release adds P (see [Forward runs](#sec-forward)).
+- **Splitting oxygen demand.** Bulk hypolimnetic oxygen depletion (AHOD) combines sediment and water-column demand. The lake profiles alone cannot separate them. The chamber SOD fixes the sediment share, so the rest has to come from water-column respiration of settling organic matter. This shifts calibration effort toward organic-matter supply and decay, rather than letting sediment demand absorb all of it.
+- **Release at intermediate depths.** Without a prior, the calibration can switch release off in a zone (as it did at 10 m) and make up for it elsewhere. The chamber prior keeps a measured, non-zero release at each sampled depth.
+- **Oxygen dependence.** The chambers and Burger et al. both point to weak oxygen control of P release. Together with the flux prior, a prior on `ksed_frp` centred well above the earlier calibrated value is consistent with both datasets.
+- **A check on conflict with the lake data.** If the posterior moves far from the chamber prior, the zone fluxes and the in-lake data disagree. That points to another process, such as the organic-matter supply, the mixing or the P sinks, rather than to wrong chamber values.
 
 ## Caveats
 
