@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1ceba77659b33a8aa15976cd64a5f6b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2c2e6b17071c8e6136a06af97ecc94c0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -414,8 +414,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="diagnosing-the-observed-kd-record" class="level2">
 <h2 class="anchored" data-anchor-id="diagnosing-the-observed-kd-record">Diagnosing the observed Kd record</h2>
-<p><code>kd_fits</code> holds Kd values fitted from PAR profiles (<code>log(PAR) ~ depth</code>, filtered to r² &gt; 0.8), spanning 2003–2025.</p>
-<p><code>light_data</code> provides the same <code>Date</code>/<code>Kd</code> fields used throughout this analysis (fitted from PAR profiles via <code>log(PAR) ~ depth</code>, filtered to r² &gt; 0.8), spanning 2003–2025.</p>
+<p><code>ctd_par</code> holds Kd fitted to each CTD PAR profile (<code>fit_kd_profile()</code> in <code>R/read_ctd.R</code>), spanning 2003–2025. The sensor bottoms out at a dark floor (about 0.04 µmol m⁻² s⁻¹ in 2003–09, about 0 in 2010–19, about 0.13 in 2020–24). Each profile is fitted as <code>log(PAR − floor) ~ depth</code> from 1 m down to where PAR falls below 1% of the 1 m value or 10× the floor. The two sites are combined by inverse-variance weighting, and each date has a 95% CI (<code>Kd_lo</code>, <code>Kd_hi</code>). Before November 2026 the fit used <code>log(PAR) ~ depth</code> over the whole profile, dark plateau included, with an r² &gt; 0.8 filter. That biased Kd low by up to ~50% in eras with a non-zero floor, created false step changes between instrument eras, and threw out ~45% of dates. The analysis below uses the corrected record.</p>
+<p><code>light_data</code> provides the same <code>Date</code>/<code>Kd</code> fields used throughout this analysis (dark-floor-corrected PAR profile fits, with 95% CI in <code>Kd_lo</code>/<code>Kd_hi</code>), spanning 2003–2025.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -423,21 +423,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>      Date                         par_n             Kd        
- Min.   :2003-08-20 00:00:00   Min.   :12.00   Min.   :0.2498  
- 1st Qu.:2011-07-05 12:00:00   1st Qu.:40.00   1st Qu.:0.3896  
- Median :2015-06-17 00:00:00   Median :42.00   Median :0.6012  
- Mean   :2015-05-26 15:50:12   Mean   :41.84   Mean   :0.7144  
- 3rd Qu.:2019-11-30 12:00:00   3rd Qu.:47.00   3rd Qu.:0.9658  
- Max.   :2025-08-20 00:00:00   Max.   :64.00   Max.   :1.9187  
+ Min.   :2003-03-19 00:00:00   Min.   : 4.00   Min.   :0.3352  
+ 1st Qu.:2009-01-31 12:00:00   1st Qu.:11.00   1st Qu.:0.6012  
+ Median :2014-10-21 00:00:00   Median :14.00   Median :0.6798  
+ Mean   :2014-10-11 08:11:17   Mean   :13.76   Mean   :0.7212  
+ 3rd Qu.:2020-08-05 00:00:00   3rd Qu.:16.00   3rd Qu.:0.8344  
+ Max.   :2025-12-16 00:00:00   Max.   :27.00   Max.   :1.3812  
                                                                
-      chla            secchi        turbidity          Kd_est      
- Min.   : 2.600   Min.   :1.725   Min.   :0.8367   Min.   :0.3269  
- 1st Qu.: 7.537   1st Qu.:2.556   1st Qu.:1.5890   1st Qu.:0.4964  
- Median :10.775   Median :3.002   Median :1.9183   Median :0.5662  
- Mean   :11.733   Mean   :3.052   Mean   :2.0185   Mean   :0.5811  
- 3rd Qu.:13.787   3rd Qu.:3.425   3rd Qu.:2.3333   3rd Qu.:0.6650  
- Max.   :45.750   Max.   :5.200   Max.   :4.5333   Max.   :0.9855  
- NAs    :5        NAs    :5       NAs    :5        NAs    :5       </code></pre>
+     Kd_lo            Kd_hi             chla            secchi     
+ Min.   :0.1970   Min.   :0.3567   Min.   : 2.600   Min.   :1.262  
+ 1st Qu.:0.5228   1st Qu.:0.6456   1st Qu.: 8.887   1st Qu.:2.344  
+ Median :0.6198   Median :0.7454   Median :11.975   Median :2.775  
+ Mean   :0.6482   Mean   :0.7943   Mean   :14.149   Mean   :2.871  
+ 3rd Qu.:0.7623   3rd Qu.:0.9041   3rd Qu.:17.275   3rd Qu.:3.315  
+ Max.   :1.2265   Max.   :1.5360   Max.   :77.600   Max.   :5.200  
+                                   NAs    :11       NAs    :11     
+   turbidity          Kd_est      
+ Min.   :0.8367   Min.   :0.3269  
+ 1st Qu.:1.7283   1st Qu.:0.5128  
+ Median :2.0667   Median :0.6126  
+ Mean   :2.3331   Mean   :0.6298  
+ 3rd Qu.:2.6000   3rd Qu.:0.7251  
+ Max.   :8.7450   Max.   :1.3465  
+ NAs    :10       NAs    :11      </code></pre>
 </div>
 </div>
 <p>When Kd and secchi depth are plotted over time, the <strong>interannual variability dominates over any seasonal signal</strong>:</p>
@@ -502,24 +510,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Light extinction parameterisation recommendation
 --------------------------------------------------
-Input:              kw (n = 147, 0 dropped for NA/ordering)
-Date range:         2003-08-20 to 2025-08-20 (23 distinct year(s))
-Median sample gap:  35 days (max 426 days)
-Kw:                 mean 0.714, median 0.601, sd 0.373, CV 0.52 (m^-1)
-Interannual R^2:    47% of variance explained by year
-Seasonal ratio:     1.62x (max:min monthly mean, detrended by year)
+Input:              kw (n = 255, 0 dropped for NA/ordering)
+Date range:         2003-03-19 to 2025-12-16 (23 distinct year(s))
+Median sample gap:  29 days (max 134 days)
+Kw:                 mean 0.721, median 0.680, sd 0.198, CV 0.27 (m^-1)
+Interannual R^2:    34% of variance explained by year
+Seasonal ratio:     1.29x (max:min monthly mean, detrended by year)
 
 Recommendation: DATED TIME-VARYING Kw (use observed time series directly)
 
-Year explains 47% of total variance in Kw, more than the seasonal cycle does
+Year explains 34% of total variance in Kw, more than the seasonal cycle does
 (interannual regime shifts / trends dominate over any recurring monthly
-pattern, detrended seasonal ratio = 1.62x). A generic monthly climatology
+pattern, detrended seasonal ratio = 1.29x). A generic monthly climatology
 would blend these regimes together and misrepresent most individual years.
 Recommend driving GLM with the actual dated observations (interpolated/held
 constant between sampling dates) for the specific years being simulated,
 rather than a synthetic 'typical year' climatology. If a single
 representative value is still needed (e.g. for scenario runs outside the
-observed period), use the static mean/median (0.714 / 0.601 m^-1) with the
+observed period), use the static mean/median (0.721 / 0.680 m^-1) with the
 caveat that it will still miss whichever regime the simulated period actually
 falls into.</code></pre>
 </div>
@@ -540,10 +548,10 @@ falls into.</code></pre>
 <section id="key-finding-interannual-variability-dominates-over-seasonality" class="level3">
 <h3 class="anchored" data-anchor-id="key-finding-interannual-variability-dominates-over-seasonality">Key finding: interannual variability dominates over seasonality</h3>
 <ul>
-<li>Kd mean 0.71 m⁻¹, CV 0.52, range 0.25–1.92 m⁻¹.</li>
-<li><strong>Year explains ~47% of total variance</strong> — more than the seasonal cycle does. Annual means step from ~0.35–0.43 m⁻¹ (2003–2008) to a noisy 0.32–1.4 m⁻¹ regime from 2009 onward.</li>
-<li>After removing each year’s own mean, the detrended seasonal ratio is only ~1.6–1.85x, and mostly driven by a handful of bloom/turbidity events rather than a robust recurring monthly pattern.</li>
-<li>A pooled multi-year <strong>monthly climatology would blend a real interannual regime shift with a weak seasonal signal</strong>, misrepresenting most individual years — hence the function’s recommendation of a dated time-varying series over a monthly climatology <em>for a hindcast</em>.</li>
+<li>Kd mean 0.72 m⁻¹ (median 0.68), CV 0.27, range 0.34–1.38 m⁻¹ across 255 dates. On a single date the 95% CI is typically ±0.05 m⁻¹.</li>
+<li><strong>Year explains ~34% of total variance</strong>, more than month does (~10%). Annual means fall from 0.75–1.02 m⁻¹ in 2003–2010 to 0.60–0.72 m⁻¹ from 2011 onward. This is a gradual clearing that matches the Secchi improvement, not a step change between instrument eras.</li>
+<li>After removing each year’s own mean, the seasonal ratio (max:min monthly mean) is only ~1.3x.</li>
+<li>A pooled multi-year <strong>monthly climatology would blend a real interannual decline with a weak seasonal signal</strong>, misrepresenting most individual years — hence the function’s recommendation of a dated time-varying series over a monthly climatology <em>for a hindcast</em>.</li>
 </ul>
 </section>
 </section>
@@ -574,19 +582,19 @@ falls into.</code></pre>
 <pre><code>Kw decomposition: background vs. biotic extinction
 --------------------------------------------------
 Model:              kw ~ chla + turbidity
-n used:             142 (5 dropped for missing values)
-R^2 / adj R^2:      0.067 / 0.054
+n used:             244 (11 dropped for missing values)
+R^2 / adj R^2:      0.642 / 0.639
 
 Coefficients (p-value):
-  (Intercept)     0.36815   (p = 0.0013)
-  chla            0.00705   (p = 0.1669)
-  turbidity       0.12692   (p = 0.0165)
+  (Intercept)     0.36262   (p = 0.0000)
+  chla            0.01007   (p = 0.0000)
+  turbidity       0.09307   (p = 0.0000)
 
-Mean total Kw:      0.707 m^-1
-Mean biotic Kw:     0.339 m^-1 (48% of total)
-Mean background Kw: 0.382 m^-1 (intercept = 0.368)
+Mean total Kw:      0.722 m^-1
+Mean biotic Kw:     0.360 m^-1 (50% of total)
+Mean background Kw: 0.363 m^-1 (intercept = 0.363)
 
-NOTE: 26 of 142 background estimates were below the 0.020 m^-1 floor and
+NOTE: 2 of 244 background estimates were below the 0.020 m^-1 floor and
 were clipped (see `$data$background_kw_raw` for the unclipped values) — this can
 indicate the regression is over-attributing extinction to the biotic term on
 some dates (e.g. collinearity, or a bloom event outside the fitted range).
@@ -620,19 +628,19 @@ fully dated, pass it on to:
 <pre><code>Kw decomposition: background vs. biotic extinction
 --------------------------------------------------
 Model:              kw ~ chla + turbidity
-n used:             142 (5 dropped for missing values)
-R^2 / adj R^2:      0.067 / 0.054
+n used:             244 (11 dropped for missing values)
+R^2 / adj R^2:      0.642 / 0.639
 
 Coefficients (p-value):
-  (Intercept)     0.36815   (p = 0.0013)
-  chla            0.00705   (p = 0.1669)
-  turbidity       0.12692   (p = 0.0165)
+  (Intercept)     0.36262   (p = 0.0000)
+  chla            0.01007   (p = 0.0000)
+  turbidity       0.09307   (p = 0.0000)
 
-Mean total Kw:      0.707 m^-1
-Mean biotic Kw:     0.339 m^-1 (48% of total)
-Mean background Kw: 0.382 m^-1 (intercept = 0.368)
+Mean total Kw:      0.722 m^-1
+Mean biotic Kw:     0.360 m^-1 (50% of total)
+Mean background Kw: 0.363 m^-1 (intercept = 0.363)
 
-NOTE: 26 of 142 background estimates were below the 0.020 m^-1 floor and
+NOTE: 2 of 244 background estimates were below the 0.020 m^-1 floor and
 were clipped (see `$data$background_kw_raw` for the unclipped values) — this can
 indicate the regression is over-attributing extinction to the biotic term on
 some dates (e.g. collinearity, or a bloom event outside the fitted range).
@@ -646,10 +654,11 @@ fully dated, pass it on to:
 <section id="interpretation" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
 <ul>
-<li>Even after fixing the join (pseudo-replication), <strong>R² = 0.067</strong> — Chla and turbidity together explain under 7% of Kd variance. Chla alone is not significant (p = 0.167); only turbidity clears p &lt; 0.05, and its large coefficient combined with an 18% floor-clipping rate suggests the fit is being pulled around by a handful of high-turbidity events rather than reflecting a stable relationship.</li>
+<li>With the corrected Kd, <strong>chl-a and turbidity explain 64% of Kd variance</strong> (n = 244, R² = 0.64), and both terms are highly significant. Each mg/m³ of chl-a adds 0.010 m⁻¹ (95% CI 0.008–0.012) and each NTU adds 0.093 m⁻¹ (0.078–0.108). Only 2 of 244 background estimates hit the floor. The old fit gave R² = 0.067 because its Kd was mostly sensor artefact.</li>
+<li>The biotic share (chl-a + turbidity) averages about 50% of total Kd.</li>
 <li><code>aed_noncohesive</code> is active in this AED configuration, computing its own suspended-sediment-driven extinction (<code>Ke_ss(i) * SS_conc(i)</code>) dynamically — so, unlike a setup with phytoplankton feedback alone, <strong>both</strong> the Chla- and turbidity-attributable terms are legitimately things AED will reconstruct, and both are fair to remove from the prescribed background. (Caveat: <code>aed_noncohesive</code>’s simulated SS is a mass concentration state, not the same quantity as measured NTU turbidity — the <em>decision</em> to exclude it is justified, but there’s no guarantee the simulated SS dynamics reproduce the same magnitude/timing the regression attributed to turbidity.)</li>
-<li>The <strong>intercept is the one robust number here</strong>: 0.368 m⁻¹ at p = 0.0013, much better constrained than either slope, since intercepts are anchored by the bulk of the data rather than a weak covariate relationship.</li>
-<li>The Secchi–Kd relationship was also noted as weak, reinforcing that this system’s optical signal is noisy relative to the predictors available.</li>
+<li>The <strong>intercept (background Kw) is 0.363 m⁻¹ (95% CI 0.32–0.40)</strong>. This is almost the same as the old estimate (0.368), and it now comes from a fit that explains most of the variance. VLEC (0.371) and 1.7/Secchi (0.363) give the same intercept (<code>calibration/light/01_light_data.R</code>).</li>
+<li>Corrected PAR Kd now agrees with the other optical measurements: Kd ≈ 1.94 / Secchi (r = 0.81, n = 244), and Kd ≈ 1.06 × VLEC (r = 0.95, n = 157).</li>
 </ul>
 </section>
 </section>
@@ -659,8 +668,8 @@ fully dated, pass it on to:
 <ol type="1">
 <li><strong>Do not use observed Kd.</strong> <code>bioshade_feedback</code> and <code>aed_noncohesive</code> are both active, so a Kw already containing today’s biotic/SS signal would be double-counted against AED’s own dynamic contribution.</li>
 <li><strong>Do not use a dated time-varying background.</strong> There is no calendar correspondence between a historical sampling date and a future scenario year — the “use the actual dated observations” option only applies to hindcast-style runs over the sampled period.</li>
-<li><strong>Do not build a monthly background climatology.</strong> The Chla/turbidity regression (R² = 0.067) and the Secchi–Kd relationship are both weak; imposing monthly structure on this background signal risks encoding noise as if it were a genuine recurring seasonal driver.</li>
-<li><strong>Use a static background Kw</strong>, set from the regression intercept (~0.37 m⁻¹) — the most robust single number the data support. Let <code>bioshade_feedback</code> (phytoplankton) and <code>aed_noncohesive</code> (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake’s optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today’s bloom/turbidity patterns indefinitely.</li>
+<li><strong>Do not build a monthly background climatology.</strong> After chl-a and turbidity are removed there is little seasonal signal left (the detrended seasonal ratio of total Kd is only ~1.3x, and most of that is the biotic part AED reproduces itself). A monthly background would mostly encode residual noise.</li>
+<li><strong>Use a static background Kw</strong>, set from the regression intercept (~0.36–0.37 m⁻¹, 95% CI 0.32–0.40). PAR, VLEC and Secchi all give the same value. Let <code>bioshade_feedback</code> (phytoplankton) and <code>aed_noncohesive</code> (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake’s optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today’s bloom/turbidity patterns indefinitely.</li>
 </ol>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode fortran code-with-copy"><code class="sourceCode fortranfixed"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&amp;</span>light</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>   light_mode       <span class="kw">=</span> <span class="dv">0</span></span>
@@ -676,7 +685,7 @@ fully dated, pass it on to:
 </section>
 <section id="sensitivity-check" class="level2">
 <h2 class="anchored" data-anchor-id="sensitivity-check">Sensitivity check</h2>
-<p>Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with <code>bioshade_feedback</code> on, vs.&nbsp;the old static <em>observed</em> mean Kw (0.71 m⁻¹) with <code>bioshade_feedback</code> off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it’s worth investing more in constraining the background estimate (e.g.&nbsp;more Chla/TSS sampling, a better SS-turbidity calibration for <code>aed_noncohesive</code>) before running the full scenario suite.</p>
+<p>Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with <code>bioshade_feedback</code> on, vs.&nbsp;the static <em>observed</em> mean Kd (0.72 m⁻¹) with <code>bioshade_feedback</code> off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it’s worth investing more in constraining the background estimate (e.g.&nbsp;more Chla/TSS sampling, a better SS-turbidity calibration for <code>aed_noncohesive</code>) before running the full scenario suite.</p>
 <p>The chunks below are scaffolding only (<code>eval: false</code>) — wire in your own nml paths, <code>glm.exe</code> invocation, and output-reading (e.g.&nbsp;<code>glmtools</code>/<code>ncdf4</code>) to run them.</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1468,7 +1477,7 @@ fully dated, pass it on to:
 <span id="cb24-127"><a href="#cb24-127" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-128"><a href="#cb24-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Diagnosing the observed Kd record</span></span>
 <span id="cb24-129"><a href="#cb24-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-130"><a href="#cb24-130" aria-hidden="true" tabindex="-1"></a><span class="in">`kd_fits`</span> holds Kd values fitted from PAR profiles (<span class="in">`log(PAR) ~ depth`</span>, filtered to r² <span class="sc">\&gt;</span> 0.8), spanning 2003–2025.</span>
+<span id="cb24-130"><a href="#cb24-130" aria-hidden="true" tabindex="-1"></a><span class="in">`ctd_par`</span> holds Kd fitted to each CTD PAR profile (<span class="in">`fit_kd_profile()`</span> in <span class="in">`R/read_ctd.R`</span>), spanning 2003–2025. The sensor bottoms out at a dark floor (about 0.04 µmol m⁻² s⁻¹ in 2003–09, about 0 in 2010–19, about 0.13 in 2020–24). Each profile is fitted as <span class="in">`log(PAR − floor) ~ depth`</span> from 1 m down to where PAR falls below 1% of the 1 m value or 10× the floor. The two sites are combined by inverse-variance weighting, and each date has a 95% CI (<span class="in">`Kd_lo`</span>, <span class="in">`Kd_hi`</span>). Before November 2026 the fit used <span class="in">`log(PAR) ~ depth`</span> over the whole profile, dark plateau included, with an r² <span class="sc">\&gt;</span> 0.8 filter. That biased Kd low by up to ~50% in eras with a non-zero floor, created false step changes between instrument eras, and threw out ~45% of dates. The analysis below uses the corrected record.</span>
 <span id="cb24-131"><a href="#cb24-131" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-134"><a href="#cb24-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb24-135"><a href="#cb24-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-light-data</span></span>
@@ -1477,7 +1486,7 @@ fully dated, pass it on to:
 <span id="cb24-138"><a href="#cb24-138" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_load</span>(light_data)</span>
 <span id="cb24-139"><a href="#cb24-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb24-140"><a href="#cb24-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-141"><a href="#cb24-141" aria-hidden="true" tabindex="-1"></a><span class="in">`light_data`</span> provides the same <span class="in">`Date`</span>/<span class="in">`Kd`</span> fields used throughout this analysis (fitted from PAR profiles via <span class="in">`log(PAR) ~ depth`</span>, filtered to r² <span class="sc">\&gt;</span> 0.8), spanning 2003–2025.</span>
+<span id="cb24-141"><a href="#cb24-141" aria-hidden="true" tabindex="-1"></a><span class="in">`light_data`</span> provides the same <span class="in">`Date`</span>/<span class="in">`Kd`</span> fields used throughout this analysis (dark-floor-corrected PAR profile fits, with 95% CI in <span class="in">`Kd_lo`</span>/<span class="in">`Kd_hi`</span>), spanning 2003–2025.</span>
 <span id="cb24-142"><a href="#cb24-142" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-145"><a href="#cb24-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb24-146"><a href="#cb24-146" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: light-data-summary</span></span>
@@ -1544,10 +1553,10 @@ fully dated, pass it on to:
 <span id="cb24-215"><a href="#cb24-215" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-216"><a href="#cb24-216" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key finding: interannual variability dominates over seasonality</span></span>
 <span id="cb24-217"><a href="#cb24-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-218"><a href="#cb24-218" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Kd mean 0.71 m⁻¹, CV 0.52, range 0.25–1.92 m⁻¹.</span>
-<span id="cb24-219"><a href="#cb24-219" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Year explains \~47% of total variance** — more than the seasonal cycle does. Annual means step from \~0.35–0.43 m⁻¹ (2003–2008) to a noisy 0.32–1.4 m⁻¹ regime from 2009 onward.</span>
-<span id="cb24-220"><a href="#cb24-220" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>After removing each year's own mean, the detrended seasonal ratio is only \~1.6–1.85x, and mostly driven by a handful of bloom/turbidity events rather than a robust recurring monthly pattern.</span>
-<span id="cb24-221"><a href="#cb24-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A pooled multi-year **monthly climatology would blend a real interannual regime shift with a weak seasonal signal**, misrepresenting most individual years — hence the function's recommendation of a dated time-varying series over a monthly climatology *for a hindcast*.</span>
+<span id="cb24-218"><a href="#cb24-218" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Kd mean 0.72 m⁻¹ (median 0.68), CV 0.27, range 0.34–1.38 m⁻¹ across 255 dates. On a single date the 95% CI is typically ±0.05 m⁻¹.</span>
+<span id="cb24-219"><a href="#cb24-219" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Year explains \~34% of total variance**, more than month does (\~10%). Annual means fall from 0.75–1.02 m⁻¹ in 2003–2010 to 0.60–0.72 m⁻¹ from 2011 onward. This is a gradual clearing that matches the Secchi improvement, not a step change between instrument eras.</span>
+<span id="cb24-220"><a href="#cb24-220" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>After removing each year's own mean, the seasonal ratio (max:min monthly mean) is only \~1.3x.</span>
+<span id="cb24-221"><a href="#cb24-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A pooled multi-year **monthly climatology would blend a real interannual decline with a weak seasonal signal**, misrepresenting most individual years — hence the function's recommendation of a dated time-varying series over a monthly climatology *for a hindcast*.</span>
 <span id="cb24-222"><a href="#cb24-222" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-223"><a href="#cb24-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decomposing observed Kd into background vs. biotic components</span></span>
 <span id="cb24-224"><a href="#cb24-224" aria-hidden="true" tabindex="-1"></a></span>
@@ -1590,135 +1599,136 @@ fully dated, pass it on to:
 <span id="cb24-269"><a href="#cb24-269" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-270"><a href="#cb24-270" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
 <span id="cb24-271"><a href="#cb24-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-272"><a href="#cb24-272" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Even after fixing the join (pseudo-replication), **R² = 0.067** — Chla and turbidity together explain under 7% of Kd variance. Chla alone is not significant (p = 0.167); only turbidity clears p <span class="sc">\&lt;</span> 0.05, and its large coefficient combined with an 18% floor-clipping rate suggests the fit is being pulled around by a handful of high-turbidity events rather than reflecting a stable relationship.</span>
-<span id="cb24-273"><a href="#cb24-273" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`aed_noncohesive`</span> is active in this AED configuration, computing its own suspended-sediment-driven extinction (<span class="in">`Ke_ss(i) * SS_conc(i)`</span>) dynamically — so, unlike a setup with phytoplankton feedback alone, **both** the Chla- and turbidity-attributable terms are legitimately things AED will reconstruct, and both are fair to remove from the prescribed background. (Caveat: <span class="in">`aed_noncohesive`</span>'s simulated SS is a mass concentration state, not the same quantity as measured NTU turbidity — the *decision* to exclude it is justified, but there's no guarantee the simulated SS dynamics reproduce the same magnitude/timing the regression attributed to turbidity.)</span>
-<span id="cb24-274"><a href="#cb24-274" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The **intercept is the one robust number here**: 0.368 m⁻¹ at p = 0.0013, much better constrained than either slope, since intercepts are anchored by the bulk of the data rather than a weak covariate relationship.</span>
-<span id="cb24-275"><a href="#cb24-275" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The Secchi–Kd relationship was also noted as weak, reinforcing that this system's optical signal is noisy relative to the predictors available.</span>
-<span id="cb24-276"><a href="#cb24-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-277"><a href="#cb24-277" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommendation for the climate scenario runs</span></span>
-<span id="cb24-278"><a href="#cb24-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-279"><a href="#cb24-279" aria-hidden="true" tabindex="-1"></a>For a **climate scenario** parameterisation (not a historical hindcast):</span>
-<span id="cb24-280"><a href="#cb24-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-281"><a href="#cb24-281" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Do not use observed Kd.** <span class="in">`bioshade_feedback`</span> and <span class="in">`aed_noncohesive`</span> are both active, so a Kw already containing today's biotic/SS signal would be double-counted against AED's own dynamic contribution.</span>
-<span id="cb24-282"><a href="#cb24-282" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Do not use a dated time-varying background.** There is no calendar correspondence between a historical sampling date and a future scenario year — the "use the actual dated observations" option only applies to hindcast-style runs over the sampled period.</span>
-<span id="cb24-283"><a href="#cb24-283" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Do not build a monthly background climatology.** The Chla/turbidity regression (R² = 0.067) and the Secchi–Kd relationship are both weak; imposing monthly structure on this background signal risks encoding noise as if it were a genuine recurring seasonal driver.</span>
-<span id="cb24-284"><a href="#cb24-284" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Use a static background Kw**, set from the regression intercept (\~0.37 m⁻¹) — the most robust single number the data support. Let <span class="in">`bioshade_feedback`</span> (phytoplankton) and <span class="in">`aed_noncohesive`</span> (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake's optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today's bloom/turbidity patterns indefinitely.</span>
-<span id="cb24-285"><a href="#cb24-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-286"><a href="#cb24-286" aria-hidden="true" tabindex="-1"></a><span class="in">``` fortran</span></span>
-<span id="cb24-287"><a href="#cb24-287" aria-hidden="true" tabindex="-1"></a><span class="in">&amp;light</span></span>
-<span id="cb24-288"><a href="#cb24-288" aria-hidden="true" tabindex="-1"></a><span class="in">   light_mode       = 0</span></span>
-<span id="cb24-289"><a href="#cb24-289" aria-hidden="true" tabindex="-1"></a><span class="in">   Kw               = 0.37   ! static background Kw (regression intercept)</span></span>
-<span id="cb24-290"><a href="#cb24-290" aria-hidden="true" tabindex="-1"></a><span class="in">   n_bands          = 2</span></span>
-<span id="cb24-291"><a href="#cb24-291" aria-hidden="true" tabindex="-1"></a><span class="in">   light_extc       = 1.0, 0.5</span></span>
-<span id="cb24-292"><a href="#cb24-292" aria-hidden="true" tabindex="-1"></a><span class="in">   energy_frac      = 0.5, 0.5</span></span>
-<span id="cb24-293"><a href="#cb24-293" aria-hidden="true" tabindex="-1"></a><span class="in">   Benthic_Imin     = 10</span></span>
-<span id="cb24-294"><a href="#cb24-294" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_mode      = 1</span></span>
-<span id="cb24-295"><a href="#cb24-295" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_mean      = 0.08</span></span>
-<span id="cb24-296"><a href="#cb24-296" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_amplitude = 0.02</span></span>
-<span id="cb24-297"><a href="#cb24-297" aria-hidden="true" tabindex="-1"></a><span class="in">/</span></span>
-<span id="cb24-298"><a href="#cb24-298" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-299"><a href="#cb24-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-300"><a href="#cb24-300" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sensitivity check</span></span>
-<span id="cb24-301"><a href="#cb24-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-302"><a href="#cb24-302" aria-hidden="true" tabindex="-1"></a>Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with <span class="in">`bioshade_feedback`</span> on, vs. the old static *observed* mean Kw (0.71 m⁻¹) with <span class="in">`bioshade_feedback`</span> off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it's worth investing more in constraining the background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity calibration for <span class="in">`aed_noncohesive`</span>) before running the full scenario suite.</span>
-<span id="cb24-303"><a href="#cb24-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-304"><a href="#cb24-304" aria-hidden="true" tabindex="-1"></a>The chunks below are scaffolding only (<span class="in">`eval: false`</span>) — wire in your own nml paths, <span class="in">`glm.exe`</span> invocation, and output-reading (e.g. <span class="in">`glmtools`</span>/<span class="in">`ncdf4`</span>) to run them.</span>
-<span id="cb24-305"><a href="#cb24-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-308"><a href="#cb24-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-309"><a href="#cb24-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-setup</span></span>
-<span id="cb24-310"><a href="#cb24-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="cb24-311"><a href="#cb24-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-312"><a href="#cb24-312" aria-hidden="true" tabindex="-1"></a>lake_dir <span class="ot">&lt;-</span> <span class="fu">get_lake_dir</span>(aeme)</span>
-<span id="cb24-313"><a href="#cb24-313" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">"glm_aed"</span></span>
-<span id="cb24-314"><a href="#cb24-314" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(lake_dir, model) <span class="co"># get_model_path(aeme)</span></span>
-<span id="cb24-315"><a href="#cb24-315" aria-hidden="true" tabindex="-1"></a>tgt_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HYD_temp"</span>, <span class="st">"PHY_tchla"</span>, <span class="st">"LKE_photic"</span>, <span class="st">"HYD_thmcln"</span>)</span>
-<span id="cb24-316"><a href="#cb24-316" aria-hidden="true" tabindex="-1"></a>scenarios <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb24-317"><a href="#cb24-317" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Static - feedback</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb24-318"><a href="#cb24-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">Kw =</span> <span class="fl">0.37</span>, <span class="co"># static background Kw (regression intercept)</span></span>
-<span id="cb24-319"><a href="#cb24-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">bioshade_feedback =</span> <span class="cn">TRUE</span></span>
-<span id="cb24-320"><a href="#cb24-320" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb24-321"><a href="#cb24-321" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Static - no feedback</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb24-322"><a href="#cb24-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">light_mode =</span> <span class="dv">0</span>,</span>
-<span id="cb24-323"><a href="#cb24-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">Kw =</span> <span class="fl">0.71</span>, <span class="co"># static observed mean Kw</span></span>
-<span id="cb24-324"><a href="#cb24-324" aria-hidden="true" tabindex="-1"></a>    <span class="at">bioshade_feedback =</span> <span class="cn">FALSE</span></span>
-<span id="cb24-325"><a href="#cb24-325" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb24-326"><a href="#cb24-326" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-327"><a href="#cb24-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-328"><a href="#cb24-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-329"><a href="#cb24-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-332"><a href="#cb24-332" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-333"><a href="#cb24-333" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-run</span></span>
-<span id="cb24-334"><a href="#cb24-334" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="cb24-335"><a href="#cb24-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-336"><a href="#cb24-336" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(scenarios), <span class="cf">function</span>(scn) {</span>
-<span id="cb24-337"><a href="#cb24-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">run_model_test</span>(<span class="at">model =</span> model, <span class="at">path =</span> model_path, <span class="at">param_overrides =</span> scenarios[[scn]], </span>
-<span id="cb24-338"><a href="#cb24-338" aria-hidden="true" tabindex="-1"></a>                 <span class="at">tgt_vars =</span> tgt_vars)</span>
-<span id="cb24-339"><a href="#cb24-339" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb24-340"><a href="#cb24-340" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(out) <span class="ot">&lt;-</span> <span class="fu">names</span>(scenarios)</span>
-<span id="cb24-341"><a href="#cb24-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-342"><a href="#cb24-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-343"><a href="#cb24-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-346"><a href="#cb24-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-347"><a href="#cb24-347" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-compare-temp</span></span>
-<span id="cb24-348"><a href="#cb24-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="cb24-349"><a href="#cb24-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-350"><a href="#cb24-350" aria-hidden="true" tabindex="-1"></a>plot_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tgt_vars, \(v) {</span>
-<span id="cb24-351"><a href="#cb24-351" aria-hidden="true" tabindex="-1"></a>  var_lims <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(out, <span class="cf">function</span>(lst) {</span>
-<span id="cb24-352"><a href="#cb24-352" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(lst[[v]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-353"><a href="#cb24-353" aria-hidden="true" tabindex="-1"></a>  })), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-354"><a href="#cb24-354" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (v <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"LKE_photic"</span>, <span class="st">"HYD_thmcln"</span>)) {</span>
-<span id="cb24-355"><a href="#cb24-355" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> <span class="fu">lapply</span>(out, <span class="cf">function</span>(lst) {</span>
-<span id="cb24-356"><a href="#cb24-356" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">Date =</span> lst<span class="sc">$</span>Date, <span class="at">value =</span> lst[[v]])</span>
-<span id="cb24-357"><a href="#cb24-357" aria-hidden="true" tabindex="-1"></a>    }) <span class="sc">|&gt;</span> </span>
-<span id="cb24-358"><a href="#cb24-358" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"scenario"</span>)</span>
-<span id="cb24-359"><a href="#cb24-359" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb24-360"><a href="#cb24-360" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> value, <span class="at">colour =</span> scenario)) <span class="sc">+</span></span>
-<span id="cb24-361"><a href="#cb24-361" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> v) <span class="sc">+</span></span>
-<span id="cb24-362"><a href="#cb24-362" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_colour_viridis_d</span>(<span class="at">name =</span> <span class="st">"Scenario"</span>) <span class="sc">+</span></span>
-<span id="cb24-363"><a href="#cb24-363" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb24-364"><a href="#cb24-364" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_y_reverse</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_lims)))</span>
-<span id="cb24-365"><a href="#cb24-365" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(p)</span>
-<span id="cb24-366"><a href="#cb24-366" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb24-367"><a href="#cb24-367" aria-hidden="true" tabindex="-1"></a>  plist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(out), <span class="cf">function</span>(scn) {</span>
-<span id="cb24-368"><a href="#cb24-368" aria-hidden="true" tabindex="-1"></a>    lst <span class="ot">&lt;-</span> out[[scn]]</span>
-<span id="cb24-369"><a href="#cb24-369" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_model_output</span>(lst, <span class="at">var_sim =</span> v, <span class="at">var_lims =</span> var_lims) <span class="sc">+</span></span>
-<span id="cb24-370"><a href="#cb24-370" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="at">label  =</span> <span class="fu">paste</span>(<span class="st">"Scenario:"</span>, scn))</span>
-<span id="cb24-371"><a href="#cb24-371" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb24-372"><a href="#cb24-372" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wrap_plots</span>(plist, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb24-373"><a href="#cb24-373" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Comparison of"</span>, v, <span class="st">"between scenarios"</span>))</span>
-<span id="cb24-374"><a href="#cb24-374" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb24-375"><a href="#cb24-375" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plot_list) <span class="ot">&lt;-</span> tgt_vars</span>
-<span id="cb24-376"><a href="#cb24-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-272"><a href="#cb24-272" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>With the corrected Kd, **chl-a and turbidity explain 64% of Kd variance** (n = 244, R² = 0.64), and both terms are highly significant. Each mg/m³ of chl-a adds 0.010 m⁻¹ (95% CI 0.008–0.012) and each NTU adds 0.093 m⁻¹ (0.078–0.108). Only 2 of 244 background estimates hit the floor. The old fit gave R² = 0.067 because its Kd was mostly sensor artefact.</span>
+<span id="cb24-273"><a href="#cb24-273" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The biotic share (chl-a + turbidity) averages about 50% of total Kd.</span>
+<span id="cb24-274"><a href="#cb24-274" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`aed_noncohesive`</span> is active in this AED configuration, computing its own suspended-sediment-driven extinction (<span class="in">`Ke_ss(i) * SS_conc(i)`</span>) dynamically — so, unlike a setup with phytoplankton feedback alone, **both** the Chla- and turbidity-attributable terms are legitimately things AED will reconstruct, and both are fair to remove from the prescribed background. (Caveat: <span class="in">`aed_noncohesive`</span>'s simulated SS is a mass concentration state, not the same quantity as measured NTU turbidity — the *decision* to exclude it is justified, but there's no guarantee the simulated SS dynamics reproduce the same magnitude/timing the regression attributed to turbidity.)</span>
+<span id="cb24-275"><a href="#cb24-275" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The **intercept (background Kw) is 0.363 m⁻¹ (95% CI 0.32–0.40)**. This is almost the same as the old estimate (0.368), and it now comes from a fit that explains most of the variance. VLEC (0.371) and 1.7/Secchi (0.363) give the same intercept (<span class="in">`calibration/light/01_light_data.R`</span>).</span>
+<span id="cb24-276"><a href="#cb24-276" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Corrected PAR Kd now agrees with the other optical measurements: Kd ≈ 1.94 / Secchi (r = 0.81, n = 244), and Kd ≈ 1.06 × VLEC (r = 0.95, n = 157).</span>
+<span id="cb24-277"><a href="#cb24-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-278"><a href="#cb24-278" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommendation for the climate scenario runs</span></span>
+<span id="cb24-279"><a href="#cb24-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-280"><a href="#cb24-280" aria-hidden="true" tabindex="-1"></a>For a **climate scenario** parameterisation (not a historical hindcast):</span>
+<span id="cb24-281"><a href="#cb24-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-282"><a href="#cb24-282" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Do not use observed Kd.** <span class="in">`bioshade_feedback`</span> and <span class="in">`aed_noncohesive`</span> are both active, so a Kw already containing today's biotic/SS signal would be double-counted against AED's own dynamic contribution.</span>
+<span id="cb24-283"><a href="#cb24-283" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Do not use a dated time-varying background.** There is no calendar correspondence between a historical sampling date and a future scenario year — the "use the actual dated observations" option only applies to hindcast-style runs over the sampled period.</span>
+<span id="cb24-284"><a href="#cb24-284" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Do not build a monthly background climatology.** After chl-a and turbidity are removed there is little seasonal signal left (the detrended seasonal ratio of total Kd is only \~1.3x, and most of that is the biotic part AED reproduces itself). A monthly background would mostly encode residual noise.</span>
+<span id="cb24-285"><a href="#cb24-285" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Use a static background Kw**, set from the regression intercept (\~0.36–0.37 m⁻¹, 95% CI 0.32–0.40). PAR, VLEC and Secchi all give the same value. Let <span class="in">`bioshade_feedback`</span> (phytoplankton) and <span class="in">`aed_noncohesive`</span> (suspended sediment) supply the dynamic, climate-responsive part of the light environment, rather than freezing it to the historical record. This is also the conceptually correct setup for a scenario run: it lets the lake's optical response evolve mechanistically under whatever the scenario does to nutrients, temperature, and hydrology, instead of repeating today's bloom/turbidity patterns indefinitely.</span>
+<span id="cb24-286"><a href="#cb24-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-287"><a href="#cb24-287" aria-hidden="true" tabindex="-1"></a><span class="in">``` fortran</span></span>
+<span id="cb24-288"><a href="#cb24-288" aria-hidden="true" tabindex="-1"></a><span class="in">&amp;light</span></span>
+<span id="cb24-289"><a href="#cb24-289" aria-hidden="true" tabindex="-1"></a><span class="in">   light_mode       = 0</span></span>
+<span id="cb24-290"><a href="#cb24-290" aria-hidden="true" tabindex="-1"></a><span class="in">   Kw               = 0.37   ! static background Kw (regression intercept)</span></span>
+<span id="cb24-291"><a href="#cb24-291" aria-hidden="true" tabindex="-1"></a><span class="in">   n_bands          = 2</span></span>
+<span id="cb24-292"><a href="#cb24-292" aria-hidden="true" tabindex="-1"></a><span class="in">   light_extc       = 1.0, 0.5</span></span>
+<span id="cb24-293"><a href="#cb24-293" aria-hidden="true" tabindex="-1"></a><span class="in">   energy_frac      = 0.5, 0.5</span></span>
+<span id="cb24-294"><a href="#cb24-294" aria-hidden="true" tabindex="-1"></a><span class="in">   Benthic_Imin     = 10</span></span>
+<span id="cb24-295"><a href="#cb24-295" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_mode      = 1</span></span>
+<span id="cb24-296"><a href="#cb24-296" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_mean      = 0.08</span></span>
+<span id="cb24-297"><a href="#cb24-297" aria-hidden="true" tabindex="-1"></a><span class="in">   albedo_amplitude = 0.02</span></span>
+<span id="cb24-298"><a href="#cb24-298" aria-hidden="true" tabindex="-1"></a><span class="in">/</span></span>
+<span id="cb24-299"><a href="#cb24-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-300"><a href="#cb24-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-301"><a href="#cb24-301" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sensitivity check</span></span>
+<span id="cb24-302"><a href="#cb24-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-303"><a href="#cb24-303" aria-hidden="true" tabindex="-1"></a>Before committing to this, a direct sensitivity comparison is worth running: static background Kw (0.37 m⁻¹) with <span class="in">`bioshade_feedback`</span> on, vs. the static *observed* mean Kd (0.72 m⁻¹) with <span class="in">`bioshade_feedback`</span> off. If key scenario outputs (surface temperature, stratification onset/breakdown, chlorophyll, hypolimnetic DO) are not materially different between the two, the choice matters less than the analysis above might suggest; if they diverge substantially, it's worth investing more in constraining the background estimate (e.g. more Chla/TSS sampling, a better SS-turbidity calibration for <span class="in">`aed_noncohesive`</span>) before running the full scenario suite.</span>
+<span id="cb24-304"><a href="#cb24-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-305"><a href="#cb24-305" aria-hidden="true" tabindex="-1"></a>The chunks below are scaffolding only (<span class="in">`eval: false`</span>) — wire in your own nml paths, <span class="in">`glm.exe`</span> invocation, and output-reading (e.g. <span class="in">`glmtools`</span>/<span class="in">`ncdf4`</span>) to run them.</span>
+<span id="cb24-306"><a href="#cb24-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-309"><a href="#cb24-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-310"><a href="#cb24-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-setup</span></span>
+<span id="cb24-311"><a href="#cb24-311" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb24-312"><a href="#cb24-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-313"><a href="#cb24-313" aria-hidden="true" tabindex="-1"></a>lake_dir <span class="ot">&lt;-</span> <span class="fu">get_lake_dir</span>(aeme)</span>
+<span id="cb24-314"><a href="#cb24-314" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">"glm_aed"</span></span>
+<span id="cb24-315"><a href="#cb24-315" aria-hidden="true" tabindex="-1"></a>model_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(lake_dir, model) <span class="co"># get_model_path(aeme)</span></span>
+<span id="cb24-316"><a href="#cb24-316" aria-hidden="true" tabindex="-1"></a>tgt_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HYD_temp"</span>, <span class="st">"PHY_tchla"</span>, <span class="st">"LKE_photic"</span>, <span class="st">"HYD_thmcln"</span>)</span>
+<span id="cb24-317"><a href="#cb24-317" aria-hidden="true" tabindex="-1"></a>scenarios <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb24-318"><a href="#cb24-318" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Static - feedback</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb24-319"><a href="#cb24-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">Kw =</span> <span class="fl">0.37</span>, <span class="co"># static background Kw (regression intercept)</span></span>
+<span id="cb24-320"><a href="#cb24-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">bioshade_feedback =</span> <span class="cn">TRUE</span></span>
+<span id="cb24-321"><a href="#cb24-321" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb24-322"><a href="#cb24-322" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Static - no feedback</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb24-323"><a href="#cb24-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">light_mode =</span> <span class="dv">0</span>,</span>
+<span id="cb24-324"><a href="#cb24-324" aria-hidden="true" tabindex="-1"></a>    <span class="at">Kw =</span> <span class="fl">0.71</span>, <span class="co"># static observed mean Kw</span></span>
+<span id="cb24-325"><a href="#cb24-325" aria-hidden="true" tabindex="-1"></a>    <span class="at">bioshade_feedback =</span> <span class="cn">FALSE</span></span>
+<span id="cb24-326"><a href="#cb24-326" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-327"><a href="#cb24-327" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-328"><a href="#cb24-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-329"><a href="#cb24-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-330"><a href="#cb24-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-333"><a href="#cb24-333" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-334"><a href="#cb24-334" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-run</span></span>
+<span id="cb24-335"><a href="#cb24-335" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb24-336"><a href="#cb24-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-337"><a href="#cb24-337" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(scenarios), <span class="cf">function</span>(scn) {</span>
+<span id="cb24-338"><a href="#cb24-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">run_model_test</span>(<span class="at">model =</span> model, <span class="at">path =</span> model_path, <span class="at">param_overrides =</span> scenarios[[scn]], </span>
+<span id="cb24-339"><a href="#cb24-339" aria-hidden="true" tabindex="-1"></a>                 <span class="at">tgt_vars =</span> tgt_vars)</span>
+<span id="cb24-340"><a href="#cb24-340" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb24-341"><a href="#cb24-341" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(out) <span class="ot">&lt;-</span> <span class="fu">names</span>(scenarios)</span>
+<span id="cb24-342"><a href="#cb24-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-343"><a href="#cb24-343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-344"><a href="#cb24-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-347"><a href="#cb24-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-348"><a href="#cb24-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-compare-temp</span></span>
+<span id="cb24-349"><a href="#cb24-349" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb24-350"><a href="#cb24-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-351"><a href="#cb24-351" aria-hidden="true" tabindex="-1"></a>plot_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tgt_vars, \(v) {</span>
+<span id="cb24-352"><a href="#cb24-352" aria-hidden="true" tabindex="-1"></a>  var_lims <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(out, <span class="cf">function</span>(lst) {</span>
+<span id="cb24-353"><a href="#cb24-353" aria-hidden="true" tabindex="-1"></a>    <span class="fu">range</span>(lst[[v]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-354"><a href="#cb24-354" aria-hidden="true" tabindex="-1"></a>  })), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-355"><a href="#cb24-355" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (v <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"LKE_photic"</span>, <span class="st">"HYD_thmcln"</span>)) {</span>
+<span id="cb24-356"><a href="#cb24-356" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> <span class="fu">lapply</span>(out, <span class="cf">function</span>(lst) {</span>
+<span id="cb24-357"><a href="#cb24-357" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">Date =</span> lst<span class="sc">$</span>Date, <span class="at">value =</span> lst[[v]])</span>
+<span id="cb24-358"><a href="#cb24-358" aria-hidden="true" tabindex="-1"></a>    }) <span class="sc">|&gt;</span> </span>
+<span id="cb24-359"><a href="#cb24-359" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"scenario"</span>)</span>
+<span id="cb24-360"><a href="#cb24-360" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb24-361"><a href="#cb24-361" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> value, <span class="at">colour =</span> scenario)) <span class="sc">+</span></span>
+<span id="cb24-362"><a href="#cb24-362" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> v) <span class="sc">+</span></span>
+<span id="cb24-363"><a href="#cb24-363" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_colour_viridis_d</span>(<span class="at">name =</span> <span class="st">"Scenario"</span>) <span class="sc">+</span></span>
+<span id="cb24-364"><a href="#cb24-364" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb24-365"><a href="#cb24-365" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_y_reverse</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(var_lims)))</span>
+<span id="cb24-366"><a href="#cb24-366" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(p)</span>
+<span id="cb24-367"><a href="#cb24-367" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-368"><a href="#cb24-368" aria-hidden="true" tabindex="-1"></a>  plist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(out), <span class="cf">function</span>(scn) {</span>
+<span id="cb24-369"><a href="#cb24-369" aria-hidden="true" tabindex="-1"></a>    lst <span class="ot">&lt;-</span> out[[scn]]</span>
+<span id="cb24-370"><a href="#cb24-370" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_model_output</span>(lst, <span class="at">var_sim =</span> v, <span class="at">var_lims =</span> var_lims) <span class="sc">+</span></span>
+<span id="cb24-371"><a href="#cb24-371" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="at">label  =</span> <span class="fu">paste</span>(<span class="st">"Scenario:"</span>, scn))</span>
+<span id="cb24-372"><a href="#cb24-372" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb24-373"><a href="#cb24-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wrap_plots</span>(plist, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb24-374"><a href="#cb24-374" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Comparison of"</span>, v, <span class="st">"between scenarios"</span>))</span>
+<span id="cb24-375"><a href="#cb24-375" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb24-376"><a href="#cb24-376" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plot_list) <span class="ot">&lt;-</span> tgt_vars</span>
 <span id="cb24-377"><a href="#cb24-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-378"><a href="#cb24-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-379"><a href="#cb24-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-382"><a href="#cb24-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-383"><a href="#cb24-383" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-plot-temp</span></span>
-<span id="cb24-384"><a href="#cb24-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="cb24-385"><a href="#cb24-385" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb24-386"><a href="#cb24-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
-<span id="cb24-387"><a href="#cb24-387" aria-hidden="true" tabindex="-1"></a>plot_list<span class="sc">$</span>HYD_temp</span>
-<span id="cb24-388"><a href="#cb24-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-389"><a href="#cb24-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-392"><a href="#cb24-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb24-393"><a href="#cb24-393" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-plot-photic-depth</span></span>
-<span id="cb24-394"><a href="#cb24-394" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="cb24-395"><a href="#cb24-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb24-396"><a href="#cb24-396" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
-<span id="cb24-397"><a href="#cb24-397" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Photic depth (m) comparison between scenarios"</span></span>
-<span id="cb24-398"><a href="#cb24-398" aria-hidden="true" tabindex="-1"></a>plot_list<span class="sc">$</span>LKE_photic</span>
-<span id="cb24-399"><a href="#cb24-399" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-400"><a href="#cb24-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-401"><a href="#cb24-401" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb24-402"><a href="#cb24-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-403"><a href="#cb24-403" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Question <span class="pp">|</span> Answer <span class="pp">|</span></span>
-<span id="cb24-404"><a href="#cb24-404" aria-hidden="true" tabindex="-1"></a><span class="pp">|------------------------------------|------------------------------------|</span></span>
-<span id="cb24-405"><a href="#cb24-405" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Static vs. time-varying Kw (general)? <span class="pp">|</span> Time-varying is better *if* the seasonal signal is real and well-sampled; here, interannual variability (47% of variance) dominates over seasonality, so a pooled monthly climatology would misrepresent most years. <span class="pp">|</span></span>
-<span id="cb24-406"><a href="#cb24-406" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Does AED feedback interact with Kw? <span class="pp">|</span> Yes — <span class="in">`bioshade_feedback`</span> (phytoplankton) and <span class="in">`aed_noncohesive`</span> (suspended sediment) both add their own simulated extinction on top of the prescribed <span class="in">`Kw`</span>, additively. <span class="pp">|</span></span>
-<span id="cb24-407"><a href="#cb24-407" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Should prescribed Kw include the biotic signal? <span class="pp">|</span> No, not when both feedbacks are active — it double-counts. <span class="pp">|</span></span>
-<span id="cb24-408"><a href="#cb24-408" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Can the biotic component be estimated from data? <span class="pp">|</span> Weakly. <span class="in">`Kd ~ Chla + Turbidity`</span> gives R² = 0.067; only the intercept (background Kw ≈ 0.37 m⁻¹) is well-constrained. <span class="pp">|</span></span>
-<span id="cb24-409"><a href="#cb24-409" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Is calibrating AED's biotic light coefficients a good idea? <span class="pp">|</span> Not as a first move — risks equifinality/circularity with growth and mortality parameters; better to fix it from the empirical estimate and reserve calibration for parameters not otherwise measurable. <span class="pp">|</span></span>
-<span id="cb24-410"><a href="#cb24-410" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> What should the climate scenario runs use? <span class="pp">|</span> A **static background Kw** (\~0.37 m⁻¹), with <span class="in">`bioshade_feedback`</span> and <span class="in">`aed_noncohesive`</span> supplying the dynamic, climate-responsive part of light extinction. <span class="pp">|</span></span>
+<span id="cb24-378"><a href="#cb24-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-379"><a href="#cb24-379" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-380"><a href="#cb24-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-383"><a href="#cb24-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-384"><a href="#cb24-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-plot-temp</span></span>
+<span id="cb24-385"><a href="#cb24-385" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb24-386"><a href="#cb24-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb24-387"><a href="#cb24-387" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb24-388"><a href="#cb24-388" aria-hidden="true" tabindex="-1"></a>plot_list<span class="sc">$</span>HYD_temp</span>
+<span id="cb24-389"><a href="#cb24-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-390"><a href="#cb24-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-393"><a href="#cb24-393" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-394"><a href="#cb24-394" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity-plot-photic-depth</span></span>
+<span id="cb24-395"><a href="#cb24-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb24-396"><a href="#cb24-396" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb24-397"><a href="#cb24-397" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.5</span></span>
+<span id="cb24-398"><a href="#cb24-398" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Photic depth (m) comparison between scenarios"</span></span>
+<span id="cb24-399"><a href="#cb24-399" aria-hidden="true" tabindex="-1"></a>plot_list<span class="sc">$</span>LKE_photic</span>
+<span id="cb24-400"><a href="#cb24-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-401"><a href="#cb24-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-402"><a href="#cb24-402" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb24-403"><a href="#cb24-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-404"><a href="#cb24-404" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Question <span class="pp">|</span> Answer <span class="pp">|</span></span>
+<span id="cb24-405"><a href="#cb24-405" aria-hidden="true" tabindex="-1"></a><span class="pp">|------------------------------------|------------------------------------|</span></span>
+<span id="cb24-406"><a href="#cb24-406" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Static vs. time-varying Kw (general)? <span class="pp">|</span> Time-varying is better *if* the seasonal signal is real and well-sampled; here, interannual variability (47% of variance) dominates over seasonality, so a pooled monthly climatology would misrepresent most years. <span class="pp">|</span></span>
+<span id="cb24-407"><a href="#cb24-407" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Does AED feedback interact with Kw? <span class="pp">|</span> Yes — <span class="in">`bioshade_feedback`</span> (phytoplankton) and <span class="in">`aed_noncohesive`</span> (suspended sediment) both add their own simulated extinction on top of the prescribed <span class="in">`Kw`</span>, additively. <span class="pp">|</span></span>
+<span id="cb24-408"><a href="#cb24-408" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Should prescribed Kw include the biotic signal? <span class="pp">|</span> No, not when both feedbacks are active — it double-counts. <span class="pp">|</span></span>
+<span id="cb24-409"><a href="#cb24-409" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Can the biotic component be estimated from data? <span class="pp">|</span> Weakly. <span class="in">`Kd ~ Chla + Turbidity`</span> gives R² = 0.067; only the intercept (background Kw ≈ 0.37 m⁻¹) is well-constrained. <span class="pp">|</span></span>
+<span id="cb24-410"><a href="#cb24-410" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Is calibrating AED's biotic light coefficients a good idea? <span class="pp">|</span> Not as a first move — risks equifinality/circularity with growth and mortality parameters; better to fix it from the empirical estimate and reserve calibration for parameters not otherwise measurable. <span class="pp">|</span></span>
+<span id="cb24-411"><a href="#cb24-411" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> What should the climate scenario runs use? <span class="pp">|</span> A **static background Kw** (\~0.37 m⁻¹), with <span class="in">`bioshade_feedback`</span> and <span class="in">`aed_noncohesive`</span> supplying the dynamic, climate-responsive part of light extinction. <span class="pp">|</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
