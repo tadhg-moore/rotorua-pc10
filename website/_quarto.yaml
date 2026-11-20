@@ -84,6 +84,8 @@ website:
           text: "Ōhau Channel Water Quality"
         - href: lake-water-quality-synthesis.qmd
           text: "Lake Water Quality Synthesis"
+        - href: sediment-flux-data.qmd
+          text: "Sediment Flux Data"
     - id: background
       title: "Background Info"
       style: docked
