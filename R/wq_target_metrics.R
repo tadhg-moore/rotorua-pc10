@@ -131,11 +131,22 @@ wq_pointwise_definitions <- function() {
 log_scale_metrics <- c("bot_nh4_max", "bot_drp_max", "hyp_flux_nh4", "hyp_flux_drp", "ahod")
 
 #' Compute all signatures (see wq_target_definitions()) from one set of inputs
-wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NULL, hflux = NULL) {
+#'
+#' @param years optional hydrological years (wq_hy(), July-June, labelled by the June year) to compute the
+#'   signatures over, e.g. 2004:2006 for the pre-alum record. Every input is cut to these years, and the
+#'   alum-era cut (hy >= 2007) of the bottom maxima, BOT - INT excess and seasonality is then not applied.
+#'   Metrics whose fixed periods fall outside the years come out NA. NULL (default): the full record as before.
+wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NULL, hflux = NULL, years = NULL) {
   out <- list()
   put <- function(m, s) out[[m]] <<- s
   mon <- function(d) as.integer(format(d, "%m"))
   hy <- wq_hy
+  hy_min <- 2007
+  if (!is.null(years)) {
+    keep <- function(d, col = "date") if (is.null(d) || !nrow(d)) d else d[wq_hy(as.Date(d[[col]])) %in% years, , drop = FALSE]
+    prof_daily <- keep(prof_daily); thermal_daily <- keep(thermal_daily); chem_long <- keep(chem_long)
+    hod <- keep(hod, "start"); hflux <- keep(hflux); hy_min <- -Inf
+  }
 
   # ---- profiles
   pd <- prof_daily |>
@@ -184,13 +195,13 @@ wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NUL
   put("tli3_alum", .yr_stat(tl$tli3, mean))
 
   # bottom maxima (mean of sites per year)
-  botmax <- function(v) ch |> dplyr::filter(layer == "BOT", variable == v, hy >= 2007) |>
+  botmax <- function(v) ch |> dplyr::filter(layer == "BOT", variable == v, hy >= hy_min) |>
     dplyr::group_by(site, hy) |> dplyr::summarise(mx = max(value), .groups = "drop") |>
     dplyr::group_by(hy) |> dplyr::summarise(mx = mean(mx), .groups = "drop") |> dplyr::pull(mx)
   put("bot_nh4_max", .log_stat(botmax("nh4")))
   put("bot_drp_max", .log_stat(botmax("drp")))
   excess <- function(v) {
-    e <- ch |> dplyr::filter(variable == v, layer %in% c("BOT", "INT"), m %in% 1:2, hy >= 2007) |>
+    e <- ch |> dplyr::filter(variable == v, layer %in% c("BOT", "INT"), m %in% 1:2, hy >= hy_min) |>
       dplyr::group_by(site, date, hy, layer) |> dplyr::summarise(value = mean(value), .groups = "drop") |>
       tidyr::pivot_wider(names_from = layer, values_from = value) |>
       dplyr::filter(is.finite(BOT), is.finite(INT))
@@ -201,7 +212,7 @@ wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NUL
 
   # seasonality (month of maximum of the monthly-median climatology, alum era)
   peak_month <- function(v) {
-    cl <- ch |> dplyr::filter(layer == "INT", variable == v, hy >= 2007) |>
+    cl <- ch |> dplyr::filter(layer == "INT", variable == v, hy >= hy_min) |>
       dplyr::group_by(m) |> dplyr::summarise(x = stats::median(value), .groups = "drop")
     c(value = cl$m[which.max(cl$x)], tol = 1, n = nrow(cl))
   }
@@ -214,9 +225,10 @@ wq_target_signatures <- function(prof_daily, thermal_daily, chem_long, hod = NUL
   put("nnn_winter", s)
   rt <- ch |> dplyr::filter(layer == "INT", variable %in% c("tn", "tp"), hy %in% 2012:2020) |>
     dplyr::group_by(site, date, variable) |> dplyr::summarise(value = mean(value), .groups = "drop") |>
-    tidyr::pivot_wider(names_from = variable, values_from = value) |>
-    dplyr::mutate(r = (tn / 14.007) / (tp / 30.974), hy = hy(date)) |> dplyr::filter(is.finite(r))
-  s <- .yr_stat(tapply(rt$r, rt$hy, stats::median)); s[["value"]] <- stats::median(rt$r)
+    tidyr::pivot_wider(names_from = variable, values_from = value)
+  for (v in c("tn", "tp")) if (!v %in% names(rt)) rt[[v]] <- rep(NA_real_, nrow(rt))   # none in the years (e.g. years = pre-alum)
+  rt <- rt |> dplyr::mutate(r = (.data$tn / 14.007) / (.data$tp / 30.974), hy = hy(date)) |> dplyr::filter(is.finite(r))
+  s <- .yr_stat(tapply(rt$r, rt$hy, stats::median)); s[["value"]] <- if (nrow(rt)) stats::median(rt$r) else NA_real_
   put("tn_tp_alum", s)
   trend <- function(v) {
     d <- ch |> dplyr::filter(layer == "INT", variable == v, date >= as.Date("2016-07-01"))
@@ -310,7 +322,8 @@ model_target_inputs <- function(sim, obs_chem, hyps, from = as.Date("2000-07-01"
     dplyr::group_by(date) |> dplyr::summarise(v = mean(value), .groups = "drop")
   prof <- lay(tmp, 0, 1.5) |> dplyr::rename(t_surf = v) |>
     dplyr::left_join(lay(tmp, bot_min, 99) |> dplyr::rename(t_bot = v), by = "date") |>
-    dplyr::left_join(lay(oxy, bot_min, 99) |> dplyr::rename(do_bot = v), by = "date")
+    dplyr::left_join(lay(oxy, bot_min, 99) |> dplyr::rename(do_bot = v), by = "date") |>
+    dplyr::left_join(lay(oxy, 0, 1.5) |> dplyr::rename(do_surf = v), by = "date")
   th <- tmp |> dplyr::transmute(source = "model", date, depth_m = depth, temp_c = value) |>
     thermal_structure(hyps, source) |> dplyr::select(date, d_temp, d_rho, thermo_depth)
 
