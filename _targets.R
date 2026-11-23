@@ -2512,6 +2512,19 @@ list(
       wq_target_signatures(buoy_events$daily, th, wq_lake_long, hod_events, hyp_flux)
     }
   ),
+  # Pre-alum record (hydrological years 2004-2006: CTD from 2003, alum dosing from June 2006) for the stage 2
+  # pre-alum sediment calibration. No buoy before 2007, so the daily profile metrics (stratification, anoxia,
+  # oxygen depletion) come out NA; the chemistry and hypolimnetic accumulation metrics remain.
+  tar_target(
+    wq_obs_targets_prealum, {
+      th <- buoy_thermal |>
+        dplyr::group_by(date) |>
+        dplyr::summarise(d_temp = mean(d_temp), d_rho = mean(d_rho), thermo_depth = mean(thermo_depth, na.rm = TRUE),
+                         .groups = "drop") |>
+        dplyr::mutate(thermo_depth = ifelse(is.nan(thermo_depth), NA_real_, thermo_depth))
+      wq_target_signatures(buoy_events$daily, th, wq_lake_long, hod_events, hyp_flux, years = 2004:2006)
+    }
+  ),
 
   #* Meteorology events and annual summaries (ERA5 bias-corrected, 1976-) ----
   tar_target(
