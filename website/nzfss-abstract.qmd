@@ -10,21 +10,17 @@ Presentation Type: Oral presentation
 
 Theme: Freshwater in a Time of Change
 
-Sub Theme: Modelling to inform decision-making 
+Sub Theme: Modelling to inform decision-making
 
 Authors:
 
-1. Dr Tadhg Moore
-2. Chris McBride
-3. Prof Deniz Özkundakci
-4. Dr Kamilla Kurucz
-5. Dr Matthew R. Hipsey
+1.  Dr Tadhg Moore^1^
+2.  Chris McBride^2^
+3.  Prof Deniz Özkundakci^1^
+4.  Dr Kamilla Kurucz^3^
+5.  Dr Matthew R. Hipsey^3^
 
-Affiliations:
-1. University of Waikato
-2. Limnotrack
-3. University of Waikato
-4. The University of Western Australia 
+Affiliations: 1. University of Waikato 2. Limnotrack 3. The University of Western Australia
 
 Abstract:
 
