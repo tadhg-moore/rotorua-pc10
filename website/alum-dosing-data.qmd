@@ -1,0 +1,365 @@
+---
+title: "Alum Dosing of Lake Rotorua"
+subtitle: "Background on aluminium sulphate treatment of lakes, and the Utuhina and Puarenga dosing record (2006 to 2026)"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    df-print: kable
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(lubridate)
+library(scales)
+theme_set(theme_bw(11))
+
+col_stream <- c(Utuhina = "#2a78d6", Puarenga = "#eb6834")
+
+# Conversion constants stored in the dosing workbook (cells B2:B3 of the Rotorua sheet)
+alum_density <- 1.323485   # kg alum solution per litre
+alum_pct_al  <- 4.263136   # % Al by weight
+kg_al_per_L  <- alum_density * alum_pct_al / 100
+mw_Al <- 26.981539; mw_P <- 30.973762
+
+dose_file   <- here::here("data", "raw", "alum_dosing", "Rotorua alum dose data February 2026.xlsx")
+portal_file <- list.files(here::here("data", "raw", "Alum"), pattern = "\\.xlsx$", full.names = TRUE)[1]
+other_file  <- here::here("data", "raw", "alum_dosing", "Daily aluminium to Rotorua, Okar & Rotoehu to end of 2024.xlsx")
+
+# --- Main record: 15 Jun 2006 to 28 Feb 2026 (daily L/day of liquid alum; kg Al/day) -------------
+raw <- suppressMessages(read_excel(dose_file, sheet = "Rotorua", col_types = "text"))
+names(raw) <- c("a", "b", "Date", "Year", "TLI_year", "U_L", "U_kg", "U_t", "P_L", "P_kg", "P_t", "T_kg")
+main <- raw |>
+  transmute(Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
+            Utuhina  = as.numeric(U_kg),
+            Puarenga = as.numeric(P_kg)) |>
+  mutate(across(c(Utuhina, Puarenga), \(x) pmax(replace_na(x, 0), 0)))
+
+# --- Newer record: Environmental Data Portal, 1 Jan 2022 to 29 Jul 2026 (L/day) ----------------
+portal <- suppressMessages(read_excel(portal_file, sheet = 1, skip = 2,
+                                      col_names = c("Date", "P_Lhr", "P_Ld", "U_Lhr", "U_Ld", "T_Lhr", "T_Ld"),
+                                      col_types = c("date", rep("numeric", 6)))) |>
+  filter(!is.na(Date), !is.na(P_Ld) | !is.na(U_Ld)) |>
+  transmute(Date = as.Date(Date),
+            Utuhina  = pmax(replace_na(U_Ld, 0), 0) * kg_al_per_L,
+            Puarenga = pmax(replace_na(P_Ld, 0), 0) * kg_al_per_L)
+
+# Combined series: main workbook to 28 Feb 2026, then the portal extract
+dose <- bind_rows(main, filter(portal, Date > max(main$Date))) |>
+  arrange(Date) |>
+  mutate(Total = Utuhina + Puarenga,
+         year = year(Date))
+
+dose_long <- dose |>
+  pivot_longer(c(Utuhina, Puarenga), names_to = "stream", values_to = "kg_al") |>
+  mutate(stream = factor(stream, levels = c("Utuhina", "Puarenga")))
+
+annual <- dose_long |>
+  group_by(year, stream) |>
+  summarise(t_al = sum(kg_al) / 1e3, days = sum(kg_al > 0), n = n(), .groups = "drop")
+
+tot_t   <- sum(dose$Total) / 1e3
+to2023  <- sum(dose$Total[dose$year <= 2023]) / 1e3
+```
+
+## Summary
+
+- **Alum (aluminium sulphate) is dosed into two streams that feed Lake Rotorua**: the Utuhina (since 2006) and the Puarenga (since 2010). The aim is to convert dissolved reactive phosphorus (DRP) to particulate, aluminium-bound forms before it reaches the lake, and to carry aluminium floc into the lake where it keeps working on phosphorus.
+- **The record we hold runs from 15 June 2006 to 29 July 2026.** In total about **`r round(tot_t)` tonnes of aluminium** have been dosed, `r round(to2023)` t of it to the end of 2023 (the figure quoted by Tempero 2026).
+- **Dosing is large relative to the external P load.** At a molar Al:P of 1:1, the aluminium dosed in a typical recent year could in principle bind roughly twice the 37 t TP/yr sustainable load. Real efficiency in streams is much lower than 1:1 (Al:P around 7:1 operationally), so the capacity is not all used on phosphorus.
+- **The two streams are dosed very differently.** The Utuhina receives a steady, low dose; the Puarenga receives a larger and more variable dose, and was **barely dosed from late 2018 to 2020** (no dose at all in 2019), which matters for interpreting the lake water quality record.
+- This page gives the background, describes the data, and summarises how the record enters the GLM-AED model. The report summaries are on the [Inflows and Alum](rotorua-inflows-alum.qmd) page and the jar-test work is on the [Sanila thesis notes](alum-dosing-sanila-msc-thesis.qmd).
+
+## Background: alum dosing of lakes
+
+### What alum is and what it does to phosphorus
+
+Alum is aluminium sulphate, Al₂(SO₄)₃ (usually sold as the hydrated salt or as a liquid solution). When it enters water the aluminium dissolves as Al³⁺ and hydrolyses within seconds to minutes, forming amorphous aluminium hydroxide, Al(OH)₃, as a gelatinous floc. That floc removes phosphorus from the water in three ways:
+
+1. **Adsorption and precipitation of dissolved phosphate.** Phosphate binds to the surface of the Al(OH)₃ floc (and forms aluminium-phosphate precipitates), turning DRP into particulate P.
+2. **Coagulation of particles.** The floc sweeps up suspended particles, including particulate P and algal cells, and carries them to the bed.
+3. **Sediment sealing.** Floc that settles forms a layer on the sediment that adsorbs phosphate diffusing out of the bed and can reduce internal loading. It also reduces the organic matter reaching the sediment (and so the oxygen demand) if flocculation speeds up the removal of organic particles from the water.
+
+```{mermaid}
+flowchart LR
+  A["Alum<br/>Al2(SO4)3 solution"] --> B["Al3+ released<br/>pH falls (acid)"]
+  B --> C["Al(OH)3 floc<br/>forms in minutes"]
+  C --> D["Adsorbs DRP<br/>(dissolved to particulate)"]
+  C --> E["Sweeps up<br/>suspended particles"]
+  D --> F["Floc settles<br/>(tens of m/day)"]
+  E --> F
+  F --> G["Sediment layer:<br/>binds P released<br/>from the bed"]
+  F --> H["Resuspension and<br/>export downstream<br/>(Ōhau Channel)"]
+```
+
+### Chemistry that controls how well it works
+
+- **Dose relative to P.** Laboratory jar tests on Lake Rotorua water bind phosphate at close to **0.7 mol Al per mol P** (Sanila 2026). In practice, in turbulent streams with short contact times, much more aluminium is needed: roughly **7:1** has been used operationally on the Utuhina and Puarenga (McDowell and Hawke 2006).
+- **pH and alkalinity.** Alum is acidic. In low-alkalinity water (Lake Rotorua and the Puarenga are about 19 mg CaCO₃/L) a dose can pull pH down, and pH recovers only slowly. Phosphate binding is efficient at about **pH 6 to 8**. Below about pH 6 dissolved aluminium rises and can be toxic to aquatic life; above about pH 8 the aluminium becomes soluble again as aluminate. For this reason doses are limited by what the receiving water can buffer.
+- **Competition.** Dissolved organic carbon and other anions compete with phosphate for binding sites. Rotorua's low DOC (about 2 mg/L) helps.
+- **Floc properties.** Flocs settle quickly (jar tests: mostly 20 to 60 m/day) but are fragile. Wind-driven turbulence can break them and resuspend them.
+- **Phosphate binding is not permanent in all conditions.** Under anoxia the iron-bound fraction of sediment P is released, but aluminium-bound P stays bound, which is the reason alum is favoured in lakes with seasonal bottom-water anoxia.
+
+### Ways alum is applied to lakes
+
+| Approach | How it works | Typical use |
+|---|---|---|
+| **Sediment inactivation (in-lake)** | Alum is applied to the lake surface or at depth, settles, and forms a sealing layer on the bed | Lakes dominated by internal P loading, often a one-off or repeated treatment |
+| **Hypolimnetic dosing** | Alum is injected into the bottom water during stratification | Stratified lakes with anoxic sediment release |
+| **Inflow dosing** | Alum is dosed continuously into a stream upstream of the lake so floc forms in the stream and the lake receives treated water | Lakes with large, P-rich inflows; **the Lake Rotorua approach** |
+
+The Rotorua lakes programme has used alum in several lakes. Lake Ōkaro and Lake Rotoehu are also in the dosing workbook (Rotoehu is dosed at the Soda Springs inflow, from 2011, with 128 t Al in the record we hold), and Lake Rotorua is treated by inflow dosing at the Utuhina and Puarenga streams.
+
+### Why dose Lake Rotorua?
+
+Lake Rotorua is a large, shallow lake that stratifies intermittently, with a long history of nutrient enrichment, including treated wastewater discharge until 1991. Its TLI target is 4.2. Catchment load reductions take years to appear in the lake, because groundwater delays are long and the sediments hold a large store of legacy P. Alum dosing was introduced to cut the P reaching the lake from two of its largest surface inflows and to reduce internal loading in the near term. Hamilton et al. (2015) and McBride et al. (2019) conclude that alum is the most likely cause of the improvement in lake P since about 2010 that external load changes do not explain; the model reports a reduction in sediment P release of about 50% (about 16 t P/yr) to reproduce it. See [Inflows and Alum](rotorua-inflows-alum.qmd#sec-reports) for the detail.
+
+### Known issues with the approach
+
+- **Aluminium is not showing up in the main basin sediments.** The 2024 sediment survey (Tempero 2026, ERI 178) found about 5 g Al/kg in the main basin, no higher than before dosing started, even though 993 t of Al had been dosed by the end of 2023. The aluminium is thought to deposit near shore (under 10 m), to be resuspended in storms and to be exported through the Ōhau Channel.
+- **Free aluminium and pH.** The Puarenga dose has at times exceeded the Al:DRP ratio needed to bind all DRP, so some aluminium may reach the lake unbound (Hamilton et al. 2015).
+- **Effect on total P in the stream is small.** Alum moves P between forms (dissolved to particulate); TP in the stream stays similar, so the benefit depends on what happens to the particulate P in the lake.
+- **Duration.** The effect on sediment release is thought to last a few years after dosing, so continuing treatment is needed. The 2018 to 2020 Puarenga pause provides a natural test of that.
+
+## The dosing data
+
+### Sources
+
+| File | Period | Content | Used for |
+|---|---|---|---|
+| `Rotorua alum dose data February 2026.xlsx` (sheet *Rotorua*) | 15 Jun 2006 to 28 Feb 2026 | Daily liquid alum (L/day) for each stream, converted to kg Al/day with density 1.3235 kg/L and 4.263% Al | Model inflow files (`alum_dosing` target); this page for 2006 to Feb 2026 |
+| `Lake Rotorua alum dosing data Jan 2022 to Jul 2026 incl Puarenga DRP data.xlsx` | 1 Jan 2022 to 29 Jul 2026 | Daily mean dose rate from the BOPRC Environmental Data Portal (L/hr and L/day) and a small Puarenga compliance data set (pH, TP, DRP, Al upstream and downstream of the wastewater plant) | This page, to extend the series to Jul 2026 |
+| `Daily aluminium to Rotorua, Okar & Rotoehu to end of 2024.xlsx` | 2002 to 2024 | Older version of the Rotorua sheet plus Ōkaro and Rotoehu dosing | Cross-check; Rotoehu context |
+
+Liquid alum is converted to aluminium mass with the two constants stored in the workbook: density **1.3235 kg/L** and **4.263% Al by weight**, which gives **`r round(kg_al_per_L, 4)` kg Al per litre**. The doses reported here are mass of aluminium, not mass of the alum solution.
+
+Dosing sites (from the project targets) are at the Utuhina (−38.1346, 176.2378) and Puarenga (−38.1440, 176.2677) streams.
+
+### Annual dose
+
+```{r}
+#| label: fig-annual
+#| fig-cap: "Aluminium dosed to Lake Rotorua each calendar year, by stream. 2026 is partial (to 29 July)."
+#| fig-height: 4.2
+#| fig-width: 8
+ggplot(annual, aes(factor(year), t_al, fill = stream)) +
+  geom_col(width = 0.8) +
+  scale_fill_manual(values = col_stream, name = NULL) +
+  labs(x = NULL, y = "Aluminium dosed (t Al per year)") +
+  theme(legend.position = "top", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| label: tbl-annual
+#| tbl-cap: "Annual aluminium dosed (t Al) and the number of days with dosing."
+annual |>
+  mutate(t_al = round(t_al, 1)) |>
+  pivot_wider(names_from = stream, values_from = c(t_al, days), names_glue = "{stream} {.value}") |>
+  mutate(`Total t Al` = `Utuhina t_al` + `Puarenga t_al`) |>
+  select(Year = year, `Utuhina (t Al)` = `Utuhina t_al`, `Utuhina (days dosed)` = `Utuhina days`,
+         `Puarenga (t Al)` = `Puarenga t_al`, `Puarenga (days dosed)` = `Puarenga days`, `Total (t Al)` = `Total t Al`)
+```
+
+Things to note in @fig-annual and @tbl-annual:
+
+- **2006 to 2009: Utuhina only.** About 18 to 33 t Al per year.
+- **2010 onward: both streams.** The Puarenga started in 2010 (the Hamilton et al. 2015 report says 2009; see the caveats below).
+- **2011 and 2012 are the peak and the trough.** Dosing peaked in 2011 (about 120 t Al, with the highest daily doses above 900 kg Al/day) and was reduced in 2012, when the Utuhina was dosed on only about a third of days.
+- **2018 to 2020: the Puarenga dosing stopped** (30 t in 2018 over 239 days, 0 t in 2019, 4 t in 2020), while the Utuhina continued at its usual rate. Dosing resumed in 2021.
+- **2023 was the largest year since 2011** at about 96 t Al.
+
+### Daily time series
+
+```{r}
+#| label: fig-daily
+#| fig-cap: "Daily aluminium dose (grey) with a 30-day centred rolling mean (coloured), by stream."
+#| fig-height: 5.5
+#| fig-width: 8
+roll <- dose_long |>
+  group_by(stream) |>
+  arrange(Date, .by_group = TRUE) |>
+  mutate(roll = zoo::rollmean(kg_al, 30, fill = NA, align = "center")) |>
+  ungroup()
+
+ggplot(roll, aes(Date)) +
+  geom_line(aes(y = kg_al), colour = "grey70", linewidth = 0.2) +
+  geom_line(aes(y = roll, colour = stream), linewidth = 0.8, show.legend = FALSE) +
+  facet_wrap(~stream, ncol = 1) +
+  scale_colour_manual(values = col_stream) +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  labs(x = NULL, y = "Aluminium dose (kg Al/day)")
+```
+
+The Utuhina dose is steady, whereas the Puarenga dose is more variable and larger. In the portal data from 2022 the median Utuhina dose is about `r round(median(portal$Utuhina[portal$Utuhina > 0]))` kg Al/day and the median Puarenga dose about `r round(median(portal$Puarenga[portal$Puarenga > 0]))` kg Al/day.
+
+```{r}
+#| label: tbl-periods
+#| tbl-cap: "Daily dose statistics (kg Al/day) on days with dosing."
+dose_long |>
+  filter(kg_al > 0) |>
+  mutate(period = case_when(year <= 2009 ~ "2006-2009",
+                            year <= 2017 ~ "2010-2017",
+                            year <= 2020 ~ "2018-2020",
+                            TRUE ~ "2021-2026")) |>
+  group_by(stream, period) |>
+  summarise(days = n(), mean = mean(kg_al), median = median(kg_al),
+            p95 = quantile(kg_al, 0.95), max = max(kg_al), .groups = "drop") |>
+  mutate(across(mean:max, \(x) round(x, 0)))
+```
+
+### Cumulative dose
+
+```{r}
+#| label: fig-cum
+#| fig-cap: "Cumulative aluminium dosed to Lake Rotorua since June 2006."
+#| fig-height: 3.8
+#| fig-width: 8
+cum <- dose_long |>
+  arrange(Date) |>
+  group_by(stream) |>
+  mutate(cum_t = cumsum(kg_al) / 1e3) |>
+  ungroup()
+
+ggplot(cum, aes(Date, cum_t, colour = stream)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = to2023, linetype = 2, colour = "grey40") +
+  annotate("text", x = as.Date("2007-01-01"), y = to2023, vjust = -0.6, hjust = 0, size = 3,
+           label = "993 t Al by end 2023 (Tempero 2026)") +
+  geom_line(data = dose |> arrange(Date) |> mutate(cum_t = cumsum(Total) / 1e3),
+            aes(Date, cum_t), colour = "black", linewidth = 0.9, inherit.aes = FALSE) +
+  scale_colour_manual(values = col_stream, name = NULL) +
+  labs(x = NULL, y = "Cumulative Al (t)") +
+  theme(legend.position = "top")
+```
+
+The black line is the total. It reaches **`r round(to2023)` t at the end of 2023**, matching the 993 t in Tempero (2026), and **`r round(tot_t)` t by July 2026**.
+
+### Seasonality
+
+```{r}
+#| label: fig-season
+#| fig-cap: "Monthly mean daily aluminium dose by stream since 2010 (both streams dosed). Bars show the mean of all days, including those with no dosing."
+#| fig-height: 3.8
+#| fig-width: 8
+dose_long |>
+  filter(year >= 2010, year != 2026 | month(Date) <= 7) |>
+  mutate(month = factor(month(Date, label = TRUE))) |>
+  group_by(stream, month) |>
+  summarise(kg = mean(kg_al), .groups = "drop") |>
+  ggplot(aes(month, kg, fill = stream)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = col_stream, name = NULL) +
+  labs(x = NULL, y = "Mean dose (kg Al/day)") +
+  theme(legend.position = "top")
+```
+
+### Scale relative to the P load
+
+```{r}
+#| label: tbl-capacity
+#| tbl-cap: "Aluminium dosed per year expressed as the P it could bind at a molar Al:P of 1:1, compared with the 37 t TP/yr sustainable load. Full years only."
+annual |>
+  filter(year >= 2007, year <= 2025) |>
+  group_by(year) |>
+  summarise(t_al = sum(t_al), .groups = "drop") |>
+  mutate(`Al (Mmol)` = round(t_al * 1e6 / mw_Al / 1e6, 2),
+         `P bound at 1:1 (t P)` = round(t_al * 1e6 / mw_Al * mw_P / 1e6, 0),
+         `P bound at 7:1 (t P)` = round(`P bound at 1:1 (t P)` / 7, 0),
+         `Al (t)` = round(t_al, 1)) |>
+  select(Year = year, `Al (t)`, `Al (Mmol)`, `P bound at 1:1 (t P)`, `P bound at 7:1 (t P)`)
+```
+
+The comparison shows why the **Al:P ratio actually achieved** is a central unknown. If it were near 1:1, the dosed aluminium could bind more P than enters the lake in a year. At the operational 7:1 it corresponds to roughly a third of the 37 t TP/yr sustainable load. The model has to represent both the in-stream reaction and the aluminium that is left over once it reaches the lake.
+
+### Cross-check between the two files
+
+```{r}
+#| label: fig-check
+#| fig-cap: "Daily dose in the February 2026 workbook against the Environmental Data Portal extract, Jan 2022 to Feb 2026."
+#| fig-height: 4
+#| fig-width: 8
+ck <- inner_join(
+  main |> pivot_longer(-Date, names_to = "stream", values_to = "wb"),
+  portal |> pivot_longer(c(Utuhina, Puarenga), names_to = "stream", values_to = "portal"),
+  by = c("Date", "stream"))
+
+ggplot(ck, aes(wb, portal, colour = stream)) +
+  geom_abline(slope = 1, intercept = 0, colour = "grey40") +
+  geom_point(alpha = 0.3, size = 0.8) +
+  scale_colour_manual(values = col_stream, name = NULL) +
+  labs(x = "February 2026 workbook (kg Al/day)", y = "Portal extract (kg Al/day)") +
+  theme(legend.position = "top")
+```
+
+```{r}
+#| label: ck-stats
+ck_stats <- ck |> group_by(stream) |>
+  summarise(n = n(), r = cor(wb, portal), bias = mean(portal - wb), ratio = sum(portal) / sum(wb))
+```
+
+The two sources agree to a correlation of `r round(ck_stats$r[ck_stats$stream == "Utuhina"], 2)` (Utuhina) and `r round(ck_stats$r[ck_stats$stream == "Puarenga"], 2)` (Puarenga) over `r ck_stats$n[1]` overlapping days, with the portal total being `r round(100 * (ck_stats$ratio[ck_stats$stream == "Utuhina"] - 1), 1)`% (Utuhina) and `r round(100 * (ck_stats$ratio[ck_stats$stream == "Puarenga"] - 1), 1)`% (Puarenga) different from the workbook. Any systematic offset should be settled with BOPRC before the 2026 data are used for calibration or scenarios.
+
+### Puarenga monitoring around the dosing
+
+The portal workbook also holds 13 paired samples (Aug 2025 to Aug 2026) from two Puarenga compliance sites, one upstream of the wastewater plant (site "Puarenga @ FRI") and one downstream of it (about 250 m from the final effluent ponds). They record pH, TP, DRP and total Al.
+
+```{r}
+#| label: fig-puarenga
+#| fig-cap: "Puarenga compliance monitoring, upstream and downstream of the wastewater plant (BOPRC)."
+#| fig-height: 4.2
+#| fig-width: 8
+cm <- suppressMessages(read_excel(portal_file, sheet = 2, skip = 4, col_names = FALSE, col_types = "text"))
+cm <- bind_rows(
+  cm |> select(1:5) |> setNames(c("dt", "pH", "TP", "DRP", "Al")) |> mutate(site = "Downstream of plant"),
+  cm |> select(7:11) |> setNames(c("dt", "pH", "TP", "DRP", "Al")) |> mutate(site = "Upstream of plant")
+) |>
+  mutate(across(c(dt, pH, TP, DRP, Al), \(x) suppressWarnings(as.numeric(x)))) |>
+  filter(!is.na(dt), dt > 40000) |>
+  mutate(Date = as.Date(dt, origin = "1899-12-30")) |>
+  pivot_longer(c(pH, TP, DRP, Al), names_to = "var", values_to = "value") |>
+  mutate(var = factor(var, levels = c("pH", "TP", "DRP", "Al"),
+                      labels = c("pH", "TP (mg/L)", "DRP (mg/L)", "Total Al (mg/L)")))
+
+ggplot(cm, aes(Date, value, colour = site)) +
+  geom_line(linewidth = 0.4) + geom_point(size = 1.4) +
+  facet_wrap(~var, scales = "free_y") +
+  scale_colour_manual(values = c("Downstream of plant" = "#eb6834", "Upstream of plant" = "#2a78d6"), name = NULL) +
+  labs(x = NULL, y = NULL) +
+  theme(legend.position = "top")
+```
+
+From August 2025 to April 2026 total Al downstream of the plant was high (about 1 to 2 mg/L) and DRP low, while upstream DRP was higher and Al about 0.3 to 0.5 mg/L. The pH downstream is lower, around 5.6 to 6.3, which is at or below the lower end of the 6 to 8 window for efficient binding. From May 2026 downstream Al drops to 0.4 to 0.6 mg/L and DRP rises towards upstream values; the cause is not stated in the file (a change in dosing is one possibility). The April 2026 sample (probably a storm event) shows a TP and Al spike at both sites. These are only a few samples and the sampling locations are for wastewater compliance, not for the dosing itself, so they are indicative.
+
+## How the data are used in the model
+
+1. **Dose to inflow concentration.** The daily dose (L/day) and the daily stream flow set the concentration of the aluminium tracer `ALU_ala` in the Utuhina and Puarenga inflow files. `calc_alum_inflow()` in `R/calc_alum_inflow.R` converts litres of alum to mmol of Al and divides by the daily flow volume. The tracer is expressed as P-binding capacity, so it is multiplied by a molar ratio of binding capacity per Al (`ratio_Al_P`, set when the inflow files are built).
+2. **Untreated nutrient inflows.** Because the model simulates the alum itself, the inflows must hold the *untreated* P forms. The Utuhina is sampled downstream of the dosing and the Puarenga upstream, so the two need opposite corrections ([Inflows and Alum](rotorua-inflows-alum.qmd)).
+3. **The `&aed_alum` module.** Within the lake, the module binds DRP onto the aluminium, settles the floc, and optionally resuspends it. The relevant parameters (binding half-saturation, binding rate, settling velocity, resuspension) are discussed on the [Alum Model](alum-model.qmd) and [Simplified Alum Module](aed-alum-module.qmd) pages and constrained by the jar-test results.
+4. **Calibration and scenarios.** The dosing record drives the historical calibration ([Alum calibration history](alum-calibration-history.qmd)), and the scenario runs change it ([Alum Scenarios](rotorua-alum-scenarios.qmd)).
+
+## Caveats and open questions
+
+- **Puarenga start date.** Hamilton et al. (2015) give 2009; the dosing workbook and the later reports show the first Puarenga dose in 2010 (about 16 t Al that year). We use the workbook.
+- **The record after February 2026** comes from the Environmental Data Portal extract and is not yet in the model files, which use the February 2026 workbook (to 28 Feb 2026).
+- **Missing values are treated as zero dose.** In the workbook the Puarenga column is empty before 2010, and a few other gaps are assumed to be no dosing. The portal extract has about 12 missing days.
+- **Dose is a reported volume, not a measured Al load.** The conversion to Al uses fixed density and Al content. If product strength changed over time that would not show here.
+- **Where in the stream the aluminium is added matters.** Contact time, turbulence and pH between the dosing point and the lake affect how much DRP is bound before the water enters the lake. The Utuhina and Puarenga sites differ in this respect.
+- **Overlap with other changes.** The Puarenga DRP decline from about 2009 also coincides with changes at the Rotorua wastewater treatment plant (Hamilton et al. 2015), and the 2018 to 2020 pause is the best natural contrast for separating the alum effect.
+
+## References
+
+- Hamilton, D.P., McBride, C.G. and Jones, H.F.E. (2015). *Assessing the effects of alum dosing of two inflows to Lake Rotorua against external nutrient load reductions: model simulations for 2001–2012.* ERI Report 49, University of Waikato.
+- McBride, C.G., Abell, J.M. and Hamilton, D.P. (2019). *Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017.* ERI Report 123.
+- McBride, C.G., Allan, M.G. and Hamilton, D.P. (2019). *Assessing the effects of nutrient load reductions to Lake Rotorua: model simulations for 2001–2015.* ERI Report 128.
+- McDowell, R.W. and Hawke, M. (2006). Alum dosing of the Utuhina and Puarenga streams (as cited in Sanila 2026).
+- Sanila, S. (2026). *Evaluation of aluminium–phosphorus binding and pH responses to alum dosing of three New Zealand lakes.* MSc thesis, University of Waikato.
+- Tempero, G. (2026). *Aluminium in Lake Rotorua sediments, 2024 survey.* ERI Report 178.

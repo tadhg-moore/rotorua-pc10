@@ -86,6 +86,8 @@ website:
           text: "Lake Water Quality Synthesis"
         - href: sediment-flux-data.qmd
           text: "Sediment Flux Data"
+        - href: alum-dosing-data.qmd
+          text: "Alum Dosing Data"
     - id: background
       title: "Background Info"
       style: docked
@@ -93,6 +95,8 @@ website:
       contents:
         - href: burger-2007-benthic-fluxes.qmd
           text: "Benthic Fluxes (Burger 2007)"
+        - href: alum-dosing-data.qmd
+          text: "Alum Dosing (background and data)"
         - href: rotorua-inflows-alum.qmd
           text: "Inflows and Alum (report summaries)"
         - href: alum-dosing-sanila-msc-thesis.qmd
@@ -146,6 +150,8 @@ website:
           text: "Calibration Report"
         - href: alum-calibration-stage-1.qmd
           text: "Alum calibration stage 1"
+        - href: calibration-stage2-sediment.qmd
+          text: "Stage 2: Sediment fluxes"
         - href: alum-calibration-history.qmd
           text: "Alum calibration: stage history"
         - href: rotorua-phyto-investigation.qmd
