@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Alum Dosing of Lake Rotorua – Rotorua Lake Modelling</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./www/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-1ceba77659b33a8aa15976cd64a5f6b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Rotorua Lake Modelling</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./gantt.html"> 
+<span class="menu-text">Project admin</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./data.html" aria-current="page"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./burger-2007-benthic-fluxes.html"> 
+<span class="menu-text">Background info</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./rotorua-glm-config_v4.html"> 
+<span class="menu-text">Model setup</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./alum-model.html"> 
+<span class="menu-text">Alum model</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./aed_calibration_sa_plan.html"> 
+<span class="menu-text">Sensitivity &amp; calibration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./climate-impact-strategy.html"> 
+<span class="menu-text">Climate change</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./presentations.html"> 
+<span class="menu-text">Presentations</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/tadhg-moore/rotorua-pc10"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./alum-dosing-data.html">Alum Dosing Data</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Section">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-request.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Request</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./met-source-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Met Source Comparison</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-extreme-events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extreme &amp; Storm Events</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enso-lake-rotorua.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ENSO and Lake Rotorua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./light-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Light Data (Kw)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utuhina-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Utuhina Stream Flow</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rotorua-inflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inflows</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pc10-loads-2026.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PC10 Loads 2026</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ph-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">pH &amp; Alkalinity</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ohau-channel-water-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ōhau Channel Water Quality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lake-water-quality-synthesis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lake Water Quality Synthesis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sediment-flux-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sediment Flux Data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./alum-dosing-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Alum Dosing Data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#background-alum-dosing-of-lakes" id="toc-background-alum-dosing-of-lakes" class="nav-link" data-scroll-target="#background-alum-dosing-of-lakes">Background: alum dosing of lakes</a>
+  <ul class="collapse">
+  <li><a href="#what-alum-is-and-what-it-does-to-phosphorus" id="toc-what-alum-is-and-what-it-does-to-phosphorus" class="nav-link" data-scroll-target="#what-alum-is-and-what-it-does-to-phosphorus">What alum is and what it does to phosphorus</a></li>
+  <li><a href="#chemistry-that-controls-how-well-it-works" id="toc-chemistry-that-controls-how-well-it-works" class="nav-link" data-scroll-target="#chemistry-that-controls-how-well-it-works">Chemistry that controls how well it works</a></li>
+  <li><a href="#ways-alum-is-applied-to-lakes" id="toc-ways-alum-is-applied-to-lakes" class="nav-link" data-scroll-target="#ways-alum-is-applied-to-lakes">Ways alum is applied to lakes</a></li>
+  <li><a href="#why-dose-lake-rotorua" id="toc-why-dose-lake-rotorua" class="nav-link" data-scroll-target="#why-dose-lake-rotorua">Why dose Lake Rotorua?</a></li>
+  <li><a href="#known-issues-with-the-approach" id="toc-known-issues-with-the-approach" class="nav-link" data-scroll-target="#known-issues-with-the-approach">Known issues with the approach</a></li>
+  </ul></li>
+  <li><a href="#the-dosing-data" id="toc-the-dosing-data" class="nav-link" data-scroll-target="#the-dosing-data">The dosing data</a>
+  <ul class="collapse">
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  <li><a href="#annual-dose" id="toc-annual-dose" class="nav-link" data-scroll-target="#annual-dose">Annual dose</a></li>
+  <li><a href="#daily-time-series" id="toc-daily-time-series" class="nav-link" data-scroll-target="#daily-time-series">Daily time series</a></li>
+  <li><a href="#cumulative-dose" id="toc-cumulative-dose" class="nav-link" data-scroll-target="#cumulative-dose">Cumulative dose</a></li>
+  <li><a href="#seasonality" id="toc-seasonality" class="nav-link" data-scroll-target="#seasonality">Seasonality</a></li>
+  <li><a href="#scale-relative-to-the-p-load" id="toc-scale-relative-to-the-p-load" class="nav-link" data-scroll-target="#scale-relative-to-the-p-load">Scale relative to the P load</a></li>
+  <li><a href="#cross-check-between-the-two-files" id="toc-cross-check-between-the-two-files" class="nav-link" data-scroll-target="#cross-check-between-the-two-files">Cross-check between the two files</a></li>
+  <li><a href="#puarenga-monitoring-around-the-dosing" id="toc-puarenga-monitoring-around-the-dosing" class="nav-link" data-scroll-target="#puarenga-monitoring-around-the-dosing">Puarenga monitoring around the dosing</a></li>
+  </ul></li>
+  <li><a href="#how-the-data-are-used-in-the-model" id="toc-how-the-data-are-used-in-the-model" class="nav-link" data-scroll-target="#how-the-data-are-used-in-the-model">How the data are used in the model</a></li>
+  <li><a href="#caveats-and-open-questions" id="toc-caveats-and-open-questions" class="nav-link" data-scroll-target="#caveats-and-open-questions">Caveats and open questions</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Alum Dosing of Lake Rotorua</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Background on aluminium sulphate treatment of lakes, and the Utuhina and Puarenga dosing record (2006 to 2026)</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<ul>
+<li><strong>Alum (aluminium sulphate) is dosed into two streams that feed Lake Rotorua</strong>: the Utuhina (since 2006) and the Puarenga (since 2010). The aim is to convert dissolved reactive phosphorus (DRP) to particulate, aluminium-bound forms before it reaches the lake, and to carry aluminium floc into the lake where it keeps working on phosphorus.</li>
+<li><strong>The record we hold runs from 15 June 2006 to 29 July 2026.</strong> In total about <strong>1171 tonnes of aluminium</strong> have been dosed, 993 t of it to the end of 2023 (the figure quoted by Tempero 2026).</li>
+<li><strong>Dosing is large relative to the external P load.</strong> At a molar Al:P of 1:1, the aluminium dosed in a typical recent year could in principle bind roughly twice the 37 t TP/yr sustainable load. Real efficiency in streams is much lower than 1:1 (Al:P around 7:1 operationally), so the capacity is not all used on phosphorus.</li>
+<li><strong>The two streams are dosed very differently.</strong> The Utuhina receives a steady, low dose; the Puarenga receives a larger and more variable dose, and was <strong>barely dosed from late 2018 to 2020</strong> (no dose at all in 2019), which matters for interpreting the lake water quality record.</li>
+<li>This page gives the background, describes the data, and summarises how the record enters the GLM-AED model. The report summaries are on the <a href="./rotorua-inflows-alum.html">Inflows and Alum</a> page and the jar-test work is on the <a href="./alum-dosing-sanila-msc-thesis.html">Sanila thesis notes</a>.</li>
+</ul>
+</section>
+<section id="background-alum-dosing-of-lakes" class="level2">
+<h2 class="anchored" data-anchor-id="background-alum-dosing-of-lakes">Background: alum dosing of lakes</h2>
+<section id="what-alum-is-and-what-it-does-to-phosphorus" class="level3">
+<h3 class="anchored" data-anchor-id="what-alum-is-and-what-it-does-to-phosphorus">What alum is and what it does to phosphorus</h3>
+<p>Alum is aluminium sulphate, Al₂(SO₄)₃ (usually sold as the hydrated salt or as a liquid solution). When it enters water the aluminium dissolves as Al³⁺ and hydrolyses within seconds to minutes, forming amorphous aluminium hydroxide, Al(OH)₃, as a gelatinous floc. That floc removes phosphorus from the water in three ways:</p>
+<ol type="1">
+<li><strong>Adsorption and precipitation of dissolved phosphate.</strong> Phosphate binds to the surface of the Al(OH)₃ floc (and forms aluminium-phosphate precipitates), turning DRP into particulate P.</li>
+<li><strong>Coagulation of particles.</strong> The floc sweeps up suspended particles, including particulate P and algal cells, and carries them to the bed.</li>
+<li><strong>Sediment sealing.</strong> Floc that settles forms a layer on the sediment that adsorbs phosphate diffusing out of the bed and can reduce internal loading. It also reduces the organic matter reaching the sediment (and so the oxygen demand) if flocculation speeds up the removal of organic particles from the water.</li>
+</ol>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+
+<pre class="mermaid mermaid-js">flowchart LR
+  A["Alum&lt;br/&gt;Al2(SO4)3 solution"] --&gt; B["Al3+ released&lt;br/&gt;pH falls (acid)"]
+  B --&gt; C["Al(OH)3 floc&lt;br/&gt;forms in minutes"]
+  C --&gt; D["Adsorbs DRP&lt;br/&gt;(dissolved to particulate)"]
+  C --&gt; E["Sweeps up&lt;br/&gt;suspended particles"]
+  D --&gt; F["Floc settles&lt;br/&gt;(tens of m/day)"]
+  E --&gt; F
+  F --&gt; G["Sediment layer:&lt;br/&gt;binds P released&lt;br/&gt;from the bed"]
+  F --&gt; H["Resuspension and&lt;br/&gt;export downstream&lt;br/&gt;(Ōhau Channel)"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="chemistry-that-controls-how-well-it-works" class="level3">
+<h3 class="anchored" data-anchor-id="chemistry-that-controls-how-well-it-works">Chemistry that controls how well it works</h3>
+<ul>
+<li><strong>Dose relative to P.</strong> Laboratory jar tests on Lake Rotorua water bind phosphate at close to <strong>0.7 mol Al per mol P</strong> (Sanila 2026). In practice, in turbulent streams with short contact times, much more aluminium is needed: roughly <strong>7:1</strong> has been used operationally on the Utuhina and Puarenga (McDowell and Hawke 2006).</li>
+<li><strong>pH and alkalinity.</strong> Alum is acidic. In low-alkalinity water (Lake Rotorua and the Puarenga are about 19 mg CaCO₃/L) a dose can pull pH down, and pH recovers only slowly. Phosphate binding is efficient at about <strong>pH 6 to 8</strong>. Below about pH 6 dissolved aluminium rises and can be toxic to aquatic life; above about pH 8 the aluminium becomes soluble again as aluminate. For this reason doses are limited by what the receiving water can buffer.</li>
+<li><strong>Competition.</strong> Dissolved organic carbon and other anions compete with phosphate for binding sites. Rotorua’s low DOC (about 2 mg/L) helps.</li>
+<li><strong>Floc properties.</strong> Flocs settle quickly (jar tests: mostly 20 to 60 m/day) but are fragile. Wind-driven turbulence can break them and resuspend them.</li>
+<li><strong>Phosphate binding is not permanent in all conditions.</strong> Under anoxia the iron-bound fraction of sediment P is released, but aluminium-bound P stays bound, which is the reason alum is favoured in lakes with seasonal bottom-water anoxia.</li>
+</ul>
+</section>
+<section id="ways-alum-is-applied-to-lakes" class="level3">
+<h3 class="anchored" data-anchor-id="ways-alum-is-applied-to-lakes">Ways alum is applied to lakes</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>How it works</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sediment inactivation (in-lake)</strong></td>
+<td>Alum is applied to the lake surface or at depth, settles, and forms a sealing layer on the bed</td>
+<td>Lakes dominated by internal P loading, often a one-off or repeated treatment</td>
+</tr>
+<tr class="even">
+<td><strong>Hypolimnetic dosing</strong></td>
+<td>Alum is injected into the bottom water during stratification</td>
+<td>Stratified lakes with anoxic sediment release</td>
+</tr>
+<tr class="odd">
+<td><strong>Inflow dosing</strong></td>
+<td>Alum is dosed continuously into a stream upstream of the lake so floc forms in the stream and the lake receives treated water</td>
+<td>Lakes with large, P-rich inflows; <strong>the Lake Rotorua approach</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The Rotorua lakes programme has used alum in several lakes. Lake Ōkaro and Lake Rotoehu are also in the dosing workbook (Rotoehu is dosed at the Soda Springs inflow, from 2011, with 128 t Al in the record we hold), and Lake Rotorua is treated by inflow dosing at the Utuhina and Puarenga streams.</p>
+</section>
+<section id="why-dose-lake-rotorua" class="level3">
+<h3 class="anchored" data-anchor-id="why-dose-lake-rotorua">Why dose Lake Rotorua?</h3>
+<p>Lake Rotorua is a large, shallow lake that stratifies intermittently, with a long history of nutrient enrichment, including treated wastewater discharge until 1991. Its TLI target is 4.2. Catchment load reductions take years to appear in the lake, because groundwater delays are long and the sediments hold a large store of legacy P. Alum dosing was introduced to cut the P reaching the lake from two of its largest surface inflows and to reduce internal loading in the near term. Hamilton et al.&nbsp;(2015) and McBride et al.&nbsp;(2019) conclude that alum is the most likely cause of the improvement in lake P since about 2010 that external load changes do not explain; the model reports a reduction in sediment P release of about 50% (about 16 t P/yr) to reproduce it. See <a href="./rotorua-inflows-alum.html#sec-reports">Inflows and Alum</a> for the detail.</p>
+</section>
+<section id="known-issues-with-the-approach" class="level3">
+<h3 class="anchored" data-anchor-id="known-issues-with-the-approach">Known issues with the approach</h3>
+<ul>
+<li><strong>Aluminium is not showing up in the main basin sediments.</strong> The 2024 sediment survey (Tempero 2026, ERI 178) found about 5 g Al/kg in the main basin, no higher than before dosing started, even though 993 t of Al had been dosed by the end of 2023. The aluminium is thought to deposit near shore (under 10 m), to be resuspended in storms and to be exported through the Ōhau Channel.</li>
+<li><strong>Free aluminium and pH.</strong> The Puarenga dose has at times exceeded the Al:DRP ratio needed to bind all DRP, so some aluminium may reach the lake unbound (Hamilton et al.&nbsp;2015).</li>
+<li><strong>Effect on total P in the stream is small.</strong> Alum moves P between forms (dissolved to particulate); TP in the stream stays similar, so the benefit depends on what happens to the particulate P in the lake.</li>
+<li><strong>Duration.</strong> The effect on sediment release is thought to last a few years after dosing, so continuing treatment is needed. The 2018 to 2020 Puarenga pause provides a natural test of that.</li>
+</ul>
+</section>
+</section>
+<section id="the-dosing-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-dosing-data">The dosing data</h2>
+<section id="sources" class="level3">
+<h3 class="anchored" data-anchor-id="sources">Sources</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Period</th>
+<th>Content</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Rotorua alum dose data February 2026.xlsx</code> (sheet <em>Rotorua</em>)</td>
+<td>15 Jun 2006 to 28 Feb 2026</td>
+<td>Daily liquid alum (L/day) for each stream, converted to kg Al/day with density 1.3235 kg/L and 4.263% Al</td>
+<td>Model inflow files (<code>alum_dosing</code> target); this page for 2006 to Feb 2026</td>
+</tr>
+<tr class="even">
+<td><code>Lake Rotorua alum dosing data Jan 2022 to Jul 2026 incl Puarenga DRP data.xlsx</code></td>
+<td>1 Jan 2022 to 29 Jul 2026</td>
+<td>Daily mean dose rate from the BOPRC Environmental Data Portal (L/hr and L/day) and a small Puarenga compliance data set (pH, TP, DRP, Al upstream and downstream of the wastewater plant)</td>
+<td>This page, to extend the series to Jul 2026</td>
+</tr>
+<tr class="odd">
+<td><code>Daily aluminium to Rotorua, Okar &amp; Rotoehu to end of 2024.xlsx</code></td>
+<td>2002 to 2024</td>
+<td>Older version of the Rotorua sheet plus Ōkaro and Rotoehu dosing</td>
+<td>Cross-check; Rotoehu context</td>
+</tr>
+</tbody>
+</table>
+<p>Liquid alum is converted to aluminium mass with the two constants stored in the workbook: density <strong>1.3235 kg/L</strong> and <strong>4.263% Al by weight</strong>, which gives <strong>0.0564 kg Al per litre</strong>. The doses reported here are mass of aluminium, not mass of the alum solution.</p>
+<p>Dosing sites (from the project targets) are at the Utuhina (−38.1346, 176.2378) and Puarenga (−38.1440, 176.2677) streams.</p>
+</section>
+<section id="annual-dose" class="level3">
+<h3 class="anchored" data-anchor-id="annual-dose">Annual dose</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(annual, <span class="fu">aes</span>(<span class="fu">factor</span>(year), t_al, <span class="at">fill =</span> stream)) <span class="sc">+</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Aluminium dosed (t Al per year)"</span>) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>, <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-annual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-annual-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Aluminium dosed to Lake Rotorua each calendar year, by stream. 2026 is partial (to 29 July)."><img src="alum-dosing-data_files/figure-html/fig-annual-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Aluminium dosed to Lake Rotorua each calendar year, by stream. 2026 is partial (to 29 July).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>annual <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">t_al =</span> <span class="fu">round</span>(t_al, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stream, <span class="at">values_from =</span> <span class="fu">c</span>(t_al, days), <span class="at">names_glue =</span> <span class="st">"{stream} {.value}"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Total t Al</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina t_al</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Puarenga t_al</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Year =</span> year, <span class="st">`</span><span class="at">Utuhina (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina t_al</span><span class="st">`</span>, <span class="st">`</span><span class="at">Utuhina (days dosed)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina days</span><span class="st">`</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Puarenga (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Puarenga t_al</span><span class="st">`</span>, <span class="st">`</span><span class="at">Puarenga (days dosed)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Puarenga days</span><span class="st">`</span>, <span class="st">`</span><span class="at">Total (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Total t Al</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-annual" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Annual aluminium dosed (t Al) and the number of days with dosing.
+</figcaption>
+<div aria-describedby="tbl-annual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Utuhina (t Al)</th>
+<th style="text-align: right;">Utuhina (days dosed)</th>
+<th style="text-align: right;">Puarenga (t Al)</th>
+<th style="text-align: right;">Puarenga (days dosed)</th>
+<th style="text-align: right;">Total (t Al)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">18.1</td>
+<td style="text-align: right;">193</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2007</td>
+<td style="text-align: right;">33.3</td>
+<td style="text-align: right;">304</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">33.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2008</td>
+<td style="text-align: right;">24.2</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">24.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2009</td>
+<td style="text-align: right;">29.5</td>
+<td style="text-align: right;">337</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">29.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">24.9</td>
+<td style="text-align: right;">329</td>
+<td style="text-align: right;">16.0</td>
+<td style="text-align: right;">264</td>
+<td style="text-align: right;">40.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2011</td>
+<td style="text-align: right;">43.7</td>
+<td style="text-align: right;">345</td>
+<td style="text-align: right;">77.1</td>
+<td style="text-align: right;">350</td>
+<td style="text-align: right;">120.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">8.8</td>
+<td style="text-align: right;">119</td>
+<td style="text-align: right;">71.8</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: right;">80.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">363</td>
+<td style="text-align: right;">33.2</td>
+<td style="text-align: right;">327</td>
+<td style="text-align: right;">57.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2014</td>
+<td style="text-align: right;">20.8</td>
+<td style="text-align: right;">358</td>
+<td style="text-align: right;">42.2</td>
+<td style="text-align: right;">340</td>
+<td style="text-align: right;">63.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">22.8</td>
+<td style="text-align: right;">363</td>
+<td style="text-align: right;">45.3</td>
+<td style="text-align: right;">362</td>
+<td style="text-align: right;">68.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">23.0</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">48.8</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">71.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">19.5</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">40.3</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">59.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">23.0</td>
+<td style="text-align: right;">332</td>
+<td style="text-align: right;">29.8</td>
+<td style="text-align: right;">239</td>
+<td style="text-align: right;">52.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">30.6</td>
+<td style="text-align: right;">342</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">30.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">21.8</td>
+<td style="text-align: right;">311</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">25.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">14.6</td>
+<td style="text-align: right;">347</td>
+<td style="text-align: right;">38.9</td>
+<td style="text-align: right;">335</td>
+<td style="text-align: right;">53.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">22.3</td>
+<td style="text-align: right;">290</td>
+<td style="text-align: right;">44.8</td>
+<td style="text-align: right;">290</td>
+<td style="text-align: right;">67.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">40.0</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: right;">55.6</td>
+<td style="text-align: right;">351</td>
+<td style="text-align: right;">95.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">33.1</td>
+<td style="text-align: right;">364</td>
+<td style="text-align: right;">44.8</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">77.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">20.8</td>
+<td style="text-align: right;">311</td>
+<td style="text-align: right;">47.2</td>
+<td style="text-align: right;">364</td>
+<td style="text-align: right;">68.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2026</td>
+<td style="text-align: right;">16.1</td>
+<td style="text-align: right;">199</td>
+<td style="text-align: right;">15.7</td>
+<td style="text-align: right;">122</td>
+<td style="text-align: right;">31.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Things to note in <a href="#fig-annual" class="quarto-xref">Figure&nbsp;1</a> and <a href="#tbl-annual" class="quarto-xref">Table&nbsp;1</a>:</p>
+<ul>
+<li><strong>2006 to 2009: Utuhina only.</strong> About 18 to 33 t Al per year.</li>
+<li><strong>2010 onward: both streams.</strong> The Puarenga started in 2010 (the Hamilton et al.&nbsp;2015 report says 2009; see the caveats below).</li>
+<li><strong>2011 and 2012 are the peak and the trough.</strong> Dosing peaked in 2011 (about 120 t Al, with the highest daily doses above 900 kg Al/day) and was reduced in 2012, when the Utuhina was dosed on only about a third of days.</li>
+<li><strong>2018 to 2020: the Puarenga dosing stopped</strong> (30 t in 2018 over 239 days, 0 t in 2019, 4 t in 2020), while the Utuhina continued at its usual rate. Dosing resumed in 2021.</li>
+<li><strong>2023 was the largest year since 2011</strong> at about 96 t Al.</li>
+</ul>
+</section>
+<section id="daily-time-series" class="level3">
+<h3 class="anchored" data-anchor-id="daily-time-series">Daily time series</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>roll <span class="ot">&lt;-</span> dose_long <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">roll =</span> zoo<span class="sc">::</span><span class="fu">rollmean</span>(kg_al, <span class="dv">30</span>, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">"center"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roll, <span class="fu">aes</span>(Date)) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> kg_al), <span class="at">colour =</span> <span class="st">"grey70"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> roll, <span class="at">colour =</span> stream), <span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stream, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"2 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Aluminium dose (kg Al/day)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-daily" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-daily-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-daily-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Daily aluminium dose (grey) with a 30-day centred rolling mean (coloured), by stream."><img src="alum-dosing-data_files/figure-html/fig-daily-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-daily-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Daily aluminium dose (grey) with a 30-day centred rolling mean (coloured), by stream.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Utuhina dose is steady, whereas the Puarenga dose is more variable and larger. In the portal data from 2022 the median Utuhina dose is about 81 kg Al/day and the median Puarenga dose about 130 kg Al/day.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dose_long <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(kg_al <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">case_when</span>(year <span class="sc">&lt;=</span> <span class="dv">2009</span> <span class="sc">~</span> <span class="st">"2006-2009"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                            year <span class="sc">&lt;=</span> <span class="dv">2017</span> <span class="sc">~</span> <span class="st">"2010-2017"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                            year <span class="sc">&lt;=</span> <span class="dv">2020</span> <span class="sc">~</span> <span class="st">"2018-2020"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                            <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"2021-2026"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream, period) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">days =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(kg_al), <span class="at">median =</span> <span class="fu">median</span>(kg_al),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">p95 =</span> <span class="fu">quantile</span>(kg_al, <span class="fl">0.95</span>), <span class="at">max =</span> <span class="fu">max</span>(kg_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(mean<span class="sc">:</span>max, \(x) <span class="fu">round</span>(x, <span class="dv">0</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-periods" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-periods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Daily dose statistics (kg Al/day) on days with dosing.
+</figcaption>
+<div aria-describedby="tbl-periods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">stream</th>
+<th style="text-align: left;">period</th>
+<th style="text-align: right;">days</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">p95</th>
+<th style="text-align: right;">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">2006-2009</td>
+<td style="text-align: right;">1058</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">261</td>
+<td style="text-align: right;">784</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">2010-2017</td>
+<td style="text-align: right;">2607</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">706</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">2018-2020</td>
+<td style="text-align: right;">985</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">108</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Utuhina</td>
+<td style="text-align: left;">2021-2026</td>
+<td style="text-align: right;">1867</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">162</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">2010-2017</td>
+<td style="text-align: right;">2688</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: right;">287</td>
+<td style="text-align: right;">412</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">2018-2020</td>
+<td style="text-align: right;">278</td>
+<td style="text-align: right;">122</td>
+<td style="text-align: right;">119</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">140</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Puarenga</td>
+<td style="text-align: left;">2021-2026</td>
+<td style="text-align: right;">1822</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">242</td>
+<td style="text-align: right;">284</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="cumulative-dose" class="level3">
+<h3 class="anchored" data-anchor-id="cumulative-dose">Cumulative dose</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cum <span class="ot">&lt;-</span> dose_long <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cum_t =</span> <span class="fu">cumsum</span>(kg_al) <span class="sc">/</span> <span class="fl">1e3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cum, <span class="fu">aes</span>(Date, cum_t, <span class="at">colour =</span> stream)) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> to2023, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">as.Date</span>(<span class="st">"2007-01-01"</span>), <span class="at">y =</span> to2023, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.6</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"993 t Al by end 2023 (Tempero 2026)"</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dose <span class="sc">|&gt;</span> <span class="fu">arrange</span>(Date) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">cum_t =</span> <span class="fu">cumsum</span>(Total) <span class="sc">/</span> <span class="fl">1e3</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(Date, cum_t), <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Cumulative Al (t)"</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-cum" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-cum-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Cumulative aluminium dosed to Lake Rotorua since June 2006."><img src="alum-dosing-data_files/figure-html/fig-cum-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Cumulative aluminium dosed to Lake Rotorua since June 2006.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The black line is the total. It reaches <strong>993 t at the end of 2023</strong>, matching the 993 t in Tempero (2026), and <strong>1171 t by July 2026</strong>.</p>
+</section>
+<section id="seasonality" class="level3">
+<h3 class="anchored" data-anchor-id="seasonality">Seasonality</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dose_long <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2010</span>, year <span class="sc">!=</span> <span class="dv">2026</span> <span class="sc">|</span> <span class="fu">month</span>(Date) <span class="sc">&lt;=</span> <span class="dv">7</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">month</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream, month) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">kg =</span> <span class="fu">mean</span>(kg_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month, kg, <span class="at">fill =</span> stream)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean dose (kg Al/day)"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-season" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-season-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-season-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Monthly mean daily aluminium dose by stream since 2010 (both streams dosed). Bars show the mean of all days, including those with no dosing."><img src="alum-dosing-data_files/figure-html/fig-season-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-season-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Monthly mean daily aluminium dose by stream since 2010 (both streams dosed). Bars show the mean of all days, including those with no dosing.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="scale-relative-to-the-p-load" class="level3">
+<h3 class="anchored" data-anchor-id="scale-relative-to-the-p-load">Scale relative to the P load</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>annual <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2007</span>, year <span class="sc">&lt;=</span> <span class="dv">2025</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">t_al =</span> <span class="fu">sum</span>(t_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Al (Mmol)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> mw_Al <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">2</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> mw_Al <span class="sc">*</span> mw_P <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">0</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">P bound at 7:1 (t P)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span> <span class="sc">/</span> <span class="dv">7</span>, <span class="dv">0</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Al (t)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Year =</span> year, <span class="st">`</span><span class="at">Al (t)</span><span class="st">`</span>, <span class="st">`</span><span class="at">Al (Mmol)</span><span class="st">`</span>, <span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span>, <span class="st">`</span><span class="at">P bound at 7:1 (t P)</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-capacity" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-capacity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Aluminium dosed per year expressed as the P it could bind at a molar Al:P of 1:1, compared with the 37 t TP/yr sustainable load. Full years only.
+</figcaption>
+<div aria-describedby="tbl-capacity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Al (t)</th>
+<th style="text-align: right;">Al (Mmol)</th>
+<th style="text-align: right;">P bound at 1:1 (t P)</th>
+<th style="text-align: right;">P bound at 7:1 (t P)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2007</td>
+<td style="text-align: right;">33.3</td>
+<td style="text-align: right;">1.23</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2008</td>
+<td style="text-align: right;">24.2</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2009</td>
+<td style="text-align: right;">29.5</td>
+<td style="text-align: right;">1.09</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">40.9</td>
+<td style="text-align: right;">1.52</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2011</td>
+<td style="text-align: right;">120.7</td>
+<td style="text-align: right;">4.48</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">80.6</td>
+<td style="text-align: right;">2.99</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">57.6</td>
+<td style="text-align: right;">2.14</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2014</td>
+<td style="text-align: right;">63.0</td>
+<td style="text-align: right;">2.34</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">68.2</td>
+<td style="text-align: right;">2.53</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">71.8</td>
+<td style="text-align: right;">2.66</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">59.9</td>
+<td style="text-align: right;">2.22</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">52.8</td>
+<td style="text-align: right;">1.96</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">30.6</td>
+<td style="text-align: right;">1.13</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">53.6</td>
+<td style="text-align: right;">1.99</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">67.1</td>
+<td style="text-align: right;">2.49</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">95.6</td>
+<td style="text-align: right;">3.54</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">77.9</td>
+<td style="text-align: right;">2.89</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">68.1</td>
+<td style="text-align: right;">2.52</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The comparison shows why the <strong>Al:P ratio actually achieved</strong> is a central unknown. If it were near 1:1, the dosed aluminium could bind more P than enters the lake in a year. At the operational 7:1 it corresponds to roughly a third of the 37 t TP/yr sustainable load. The model has to represent both the in-stream reaction and the aluminium that is left over once it reaches the lake.</p>
+</section>
+<section id="cross-check-between-the-two-files" class="level3">
+<h3 class="anchored" data-anchor-id="cross-check-between-the-two-files">Cross-check between the two files</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  main <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Date, <span class="at">names_to =</span> <span class="st">"stream"</span>, <span class="at">values_to =</span> <span class="st">"wb"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  portal <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Utuhina, Puarenga), <span class="at">names_to =</span> <span class="st">"stream"</span>, <span class="at">values_to =</span> <span class="st">"portal"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"stream"</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ck, <span class="fu">aes</span>(wb, portal, <span class="at">colour =</span> stream)) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"February 2026 workbook (kg Al/day)"</span>, <span class="at">y =</span> <span class="st">"Portal extract (kg Al/day)"</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-check" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-check-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Daily dose in the February 2026 workbook against the Environmental Data Portal extract, Jan 2022 to Feb 2026."><img src="alum-dosing-data_files/figure-html/fig-check-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Daily dose in the February 2026 workbook against the Environmental Data Portal extract, Jan 2022 to Feb 2026.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ck_stats <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">r =</span> <span class="fu">cor</span>(wb, portal), <span class="at">bias =</span> <span class="fu">mean</span>(portal <span class="sc">-</span> wb), <span class="at">ratio =</span> <span class="fu">sum</span>(portal) <span class="sc">/</span> <span class="fu">sum</span>(wb))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The two sources agree to a correlation of 0.84 (Utuhina) and 0.94 (Puarenga) over 1520 overlapping days, with the portal total being -0.5% (Utuhina) and 0.2% (Puarenga) different from the workbook. Any systematic offset should be settled with BOPRC before the 2026 data are used for calibration or scenarios.</p>
+</section>
+<section id="puarenga-monitoring-around-the-dosing" class="level3">
+<h3 class="anchored" data-anchor-id="puarenga-monitoring-around-the-dosing">Puarenga monitoring around the dosing</h3>
+<p>The portal workbook also holds 13 paired samples (Aug 2025 to Aug 2026) from two Puarenga compliance sites, one upstream of the wastewater plant (site “Puarenga @ FRI”) and one downstream of it (about 250 m from the final effluent ponds). They record pH, TP, DRP and total Al.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">read_excel</span>(portal_file, <span class="at">sheet =</span> <span class="dv">2</span>, <span class="at">skip =</span> <span class="dv">4</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, <span class="at">col_types =</span> <span class="st">"text"</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  cm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"dt"</span>, <span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">site =</span> <span class="st">"Downstream of plant"</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  cm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>) <span class="sc">|&gt;</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"dt"</span>, <span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">site =</span> <span class="st">"Upstream of plant"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(dt, pH, TP, DRP, Al), \(x) <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(x)))) <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(dt), dt <span class="sc">&gt;</span> <span class="dv">40000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(dt, <span class="at">origin =</span> <span class="st">"1899-12-30"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(pH, TP, DRP, Al), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(var, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"pH"</span>, <span class="st">"TP (mg/L)"</span>, <span class="st">"DRP (mg/L)"</span>, <span class="st">"Total Al (mg/L)"</span>)))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cm, <span class="fu">aes</span>(Date, value, <span class="at">colour =</span> site)) <span class="sc">+</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.4</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Downstream of plant"</span> <span class="ot">=</span> <span class="st">"#eb6834"</span>, <span class="st">"Upstream of plant"</span> <span class="ot">=</span> <span class="st">"#2a78d6"</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-puarenga" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-puarenga-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="alum-dosing-data_files/figure-html/fig-puarenga-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Puarenga compliance monitoring, upstream and downstream of the wastewater plant (BOPRC)."><img src="alum-dosing-data_files/figure-html/fig-puarenga-1.png" class="img-fluid figure-img" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-puarenga-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Puarenga compliance monitoring, upstream and downstream of the wastewater plant (BOPRC).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>From August 2025 to April 2026 total Al downstream of the plant was high (about 1 to 2 mg/L) and DRP low, while upstream DRP was higher and Al about 0.3 to 0.5 mg/L. The pH downstream is lower, around 5.6 to 6.3, which is at or below the lower end of the 6 to 8 window for efficient binding. From May 2026 downstream Al drops to 0.4 to 0.6 mg/L and DRP rises towards upstream values; the cause is not stated in the file (a change in dosing is one possibility). The April 2026 sample (probably a storm event) shows a TP and Al spike at both sites. These are only a few samples and the sampling locations are for wastewater compliance, not for the dosing itself, so they are indicative.</p>
+</section>
+</section>
+<section id="how-the-data-are-used-in-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-data-are-used-in-the-model">How the data are used in the model</h2>
+<ol type="1">
+<li><strong>Dose to inflow concentration.</strong> The daily dose (L/day) and the daily stream flow set the concentration of the aluminium tracer <code>ALU_ala</code> in the Utuhina and Puarenga inflow files. <code>calc_alum_inflow()</code> in <code>R/calc_alum_inflow.R</code> converts litres of alum to mmol of Al and divides by the daily flow volume. The tracer is expressed as P-binding capacity, so it is multiplied by a molar ratio of binding capacity per Al (<code>ratio_Al_P</code>, set when the inflow files are built).</li>
+<li><strong>Untreated nutrient inflows.</strong> Because the model simulates the alum itself, the inflows must hold the <em>untreated</em> P forms. The Utuhina is sampled downstream of the dosing and the Puarenga upstream, so the two need opposite corrections (<a href="./rotorua-inflows-alum.html">Inflows and Alum</a>).</li>
+<li><strong>The <code>&amp;aed_alum</code> module.</strong> Within the lake, the module binds DRP onto the aluminium, settles the floc, and optionally resuspends it. The relevant parameters (binding half-saturation, binding rate, settling velocity, resuspension) are discussed on the <a href="./alum-model.html">Alum Model</a> and <a href="./aed-alum-module.html">Simplified Alum Module</a> pages and constrained by the jar-test results.</li>
+<li><strong>Calibration and scenarios.</strong> The dosing record drives the historical calibration (<a href="./alum-calibration-history.html">Alum calibration history</a>), and the scenario runs change it (<a href="./rotorua-alum-scenarios.html">Alum Scenarios</a>).</li>
+</ol>
+</section>
+<section id="caveats-and-open-questions" class="level2">
+<h2 class="anchored" data-anchor-id="caveats-and-open-questions">Caveats and open questions</h2>
+<ul>
+<li><strong>Puarenga start date.</strong> Hamilton et al.&nbsp;(2015) give 2009; the dosing workbook and the later reports show the first Puarenga dose in 2010 (about 16 t Al that year). We use the workbook.</li>
+<li><strong>The record after February 2026</strong> comes from the Environmental Data Portal extract and is not yet in the model files, which use the February 2026 workbook (to 28 Feb 2026).</li>
+<li><strong>Missing values are treated as zero dose.</strong> In the workbook the Puarenga column is empty before 2010, and a few other gaps are assumed to be no dosing. The portal extract has about 12 missing days.</li>
+<li><strong>Dose is a reported volume, not a measured Al load.</strong> The conversion to Al uses fixed density and Al content. If product strength changed over time that would not show here.</li>
+<li><strong>Where in the stream the aluminium is added matters.</strong> Contact time, turbulence and pH between the dosing point and the lake affect how much DRP is bound before the water enters the lake. The Utuhina and Puarenga sites differ in this respect.</li>
+<li><strong>Overlap with other changes.</strong> The Puarenga DRP decline from about 2009 also coincides with changes at the Rotorua wastewater treatment plant (Hamilton et al.&nbsp;2015), and the 2018 to 2020 pause is the best natural contrast for separating the alum effect.</li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Hamilton, D.P., McBride, C.G. and Jones, H.F.E. (2015). <em>Assessing the effects of alum dosing of two inflows to Lake Rotorua against external nutrient load reductions: model simulations for 2001–2012.</em> ERI Report 49, University of Waikato.</li>
+<li>McBride, C.G., Abell, J.M. and Hamilton, D.P. (2019). <em>Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017.</em> ERI Report 123.</li>
+<li>McBride, C.G., Allan, M.G. and Hamilton, D.P. (2019). <em>Assessing the effects of nutrient load reductions to Lake Rotorua: model simulations for 2001–2015.</em> ERI Report 128.</li>
+<li>McDowell, R.W. and Hawke, M. (2006). Alum dosing of the Utuhina and Puarenga streams (as cited in Sanila 2026).</li>
+<li>Sanila, S. (2026). <em>Evaluation of aluminium–phosphorus binding and pH responses to alum dosing of three New Zealand lakes.</em> MSc thesis, University of Waikato.</li>
+<li>Tempero, G. (2026). <em>Aluminium in Lake Rotorua sediments, 2024 survey.</em> ERI Report 178.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Alum Dosing of Lake Rotorua"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Background on aluminium sulphate treatment of lakes, and the Utuhina and Puarenga dosing record (2006 to 2026)"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="dv">11</span>))</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>col_stream <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">Utuhina =</span> <span class="st">"#2a78d6"</span>, <span class="at">Puarenga =</span> <span class="st">"#eb6834"</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Conversion constants stored in the dosing workbook (cells B2:B3 of the Rotorua sheet)</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>alum_density <span class="ot">&lt;-</span> <span class="fl">1.323485</span>   <span class="co"># kg alum solution per litre</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>alum_pct_al  <span class="ot">&lt;-</span> <span class="fl">4.263136</span>   <span class="co"># % Al by weight</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>kg_al_per_L  <span class="ot">&lt;-</span> alum_density <span class="sc">*</span> alum_pct_al <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>mw_Al <span class="ot">&lt;-</span> <span class="fl">26.981539</span>; mw_P <span class="ot">&lt;-</span> <span class="fl">30.973762</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>dose_file   <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"alum_dosing"</span>, <span class="st">"Rotorua alum dose data February 2026.xlsx"</span>)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>portal_file <span class="ot">&lt;-</span> <span class="fu">list.files</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"Alum"</span>), <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.xlsx$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>other_file  <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"alum_dosing"</span>, <span class="st">"Daily aluminium to Rotorua, Okar &amp; Rotoehu to end of 2024.xlsx"</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Main record: 15 Jun 2006 to 28 Feb 2026 (daily L/day of liquid alum; kg Al/day) -------------</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">read_excel</span>(dose_file, <span class="at">sheet =</span> <span class="st">"Rotorua"</span>, <span class="at">col_types =</span> <span class="st">"text"</span>))</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(raw) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"Date"</span>, <span class="st">"Year"</span>, <span class="st">"TLI_year"</span>, <span class="st">"U_L"</span>, <span class="st">"U_kg"</span>, <span class="st">"U_t"</span>, <span class="st">"P_L"</span>, <span class="st">"P_kg"</span>, <span class="st">"P_t"</span>, <span class="st">"T_kg"</span>)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>main <span class="ot">&lt;-</span> raw <span class="sc">|&gt;</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(<span class="fu">as.numeric</span>(Date), <span class="at">origin =</span> <span class="st">"1899-12-30"</span>),</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>            <span class="at">Utuhina  =</span> <span class="fu">as.numeric</span>(U_kg),</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>            <span class="at">Puarenga =</span> <span class="fu">as.numeric</span>(P_kg)) <span class="sc">|&gt;</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(Utuhina, Puarenga), \(x) <span class="fu">pmax</span>(<span class="fu">replace_na</span>(x, <span class="dv">0</span>), <span class="dv">0</span>)))</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Newer record: Environmental Data Portal, 1 Jan 2022 to 29 Jul 2026 (L/day) ----------------</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>portal <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">read_excel</span>(portal_file, <span class="at">sheet =</span> <span class="dv">1</span>, <span class="at">skip =</span> <span class="dv">2</span>,</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"P_Lhr"</span>, <span class="st">"P_Ld"</span>, <span class="st">"U_Lhr"</span>, <span class="st">"U_Ld"</span>, <span class="st">"T_Lhr"</span>, <span class="st">"T_Ld"</span>),</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">"date"</span>, <span class="fu">rep</span>(<span class="st">"numeric"</span>, <span class="dv">6</span>)))) <span class="sc">|&gt;</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Date), <span class="sc">!</span><span class="fu">is.na</span>(P_Ld) <span class="sc">|</span> <span class="sc">!</span><span class="fu">is.na</span>(U_Ld)) <span class="sc">|&gt;</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(Date),</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>            <span class="at">Utuhina  =</span> <span class="fu">pmax</span>(<span class="fu">replace_na</span>(U_Ld, <span class="dv">0</span>), <span class="dv">0</span>) <span class="sc">*</span> kg_al_per_L,</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>            <span class="at">Puarenga =</span> <span class="fu">pmax</span>(<span class="fu">replace_na</span>(P_Ld, <span class="dv">0</span>), <span class="dv">0</span>) <span class="sc">*</span> kg_al_per_L)</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Combined series: main workbook to 28 Feb 2026, then the portal extract</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>dose <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(main, <span class="fu">filter</span>(portal, Date <span class="sc">&gt;</span> <span class="fu">max</span>(main<span class="sc">$</span>Date))) <span class="sc">|&gt;</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total =</span> Utuhina <span class="sc">+</span> Puarenga,</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(Date))</span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>dose_long <span class="ot">&lt;-</span> dose <span class="sc">|&gt;</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Utuhina, Puarenga), <span class="at">names_to =</span> <span class="st">"stream"</span>, <span class="at">values_to =</span> <span class="st">"kg_al"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">stream =</span> <span class="fu">factor</span>(stream, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Utuhina"</span>, <span class="st">"Puarenga"</span>)))</span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>annual <span class="ot">&lt;-</span> dose_long <span class="sc">|&gt;</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, stream) <span class="sc">|&gt;</span></span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">t_al =</span> <span class="fu">sum</span>(kg_al) <span class="sc">/</span> <span class="fl">1e3</span>, <span class="at">days =</span> <span class="fu">sum</span>(kg_al <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>tot_t   <span class="ot">&lt;-</span> <span class="fu">sum</span>(dose<span class="sc">$</span>Total) <span class="sc">/</span> <span class="fl">1e3</span></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>to2023  <span class="ot">&lt;-</span> <span class="fu">sum</span>(dose<span class="sc">$</span>Total[dose<span class="sc">$</span>year <span class="sc">&lt;=</span> <span class="dv">2023</span>]) <span class="sc">/</span> <span class="fl">1e3</span></span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Alum (aluminium sulphate) is dosed into two streams that feed Lake Rotorua**: the Utuhina (since 2006) and the Puarenga (since 2010). The aim is to convert dissolved reactive phosphorus (DRP) to particulate, aluminium-bound forms before it reaches the lake, and to carry aluminium floc into the lake where it keeps working on phosphorus.</span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The record we hold runs from 15 June 2006 to 29 July 2026.** In total about **`r round(tot_t)` tonnes of aluminium** have been dosed, <span class="in">`r round(to2023)`</span> t of it to the end of 2023 (the figure quoted by Tempero 2026).</span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dosing is large relative to the external P load.** At a molar Al:P of 1:1, the aluminium dosed in a typical recent year could in principle bind roughly twice the 37 t TP/yr sustainable load. Real efficiency in streams is much lower than 1:1 (Al:P around 7:1 operationally), so the capacity is not all used on phosphorus.</span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The two streams are dosed very differently.** The Utuhina receives a steady, low dose; the Puarenga receives a larger and more variable dose, and was **barely dosed from late 2018 to 2020** (no dose at all in 2019), which matters for interpreting the lake water quality record.</span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>This page gives the background, describes the data, and summarises how the record enters the GLM-AED model. The report summaries are on the <span class="co">[</span><span class="ot">Inflows and Alum</span><span class="co">](rotorua-inflows-alum.qmd)</span> page and the jar-test work is on the <span class="co">[</span><span class="ot">Sanila thesis notes</span><span class="co">](alum-dosing-sanila-msc-thesis.qmd)</span>.</span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a><span class="fu">## Background: alum dosing of lakes</span></span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a><span class="fu">### What alum is and what it does to phosphorus</span></span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a>Alum is aluminium sulphate, Al₂(SO₄)₃ (usually sold as the hydrated salt or as a liquid solution). When it enters water the aluminium dissolves as Al³⁺ and hydrolyses within seconds to minutes, forming amorphous aluminium hydroxide, Al(OH)₃, as a gelatinous floc. That floc removes phosphorus from the water in three ways:</span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Adsorption and precipitation of dissolved phosphate.** Phosphate binds to the surface of the Al(OH)₃ floc (and forms aluminium-phosphate precipitates), turning DRP into particulate P.</span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Coagulation of particles.** The floc sweeps up suspended particles, including particulate P and algal cells, and carries them to the bed.</span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Sediment sealing.** Floc that settles forms a layer on the sediment that adsorbs phosphate diffusing out of the bed and can reduce internal loading. It also reduces the organic matter reaching the sediment (and so the oxygen demand) if flocculation speeds up the removal of organic particles from the water.</span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a>  A[<span class="ot">"</span><span class="st">Alum&lt;br/&gt;Al2(SO4)3 solution</span><span class="ot">"</span>] --&gt; B[<span class="ot">"</span><span class="st">Al3+ released&lt;br/&gt;pH falls (acid)</span><span class="ot">"</span>]</span>
+<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a>  B --&gt; C[<span class="ot">"</span><span class="st">Al(OH)3 floc&lt;br/&gt;forms in minutes</span><span class="ot">"</span>]</span>
+<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a>  C --&gt; D[<span class="ot">"</span><span class="st">Adsorbs DRP&lt;br/&gt;(dissolved to particulate)</span><span class="ot">"</span>]</span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a>  C --&gt; E[<span class="ot">"</span><span class="st">Sweeps up&lt;br/&gt;suspended particles</span><span class="ot">"</span>]</span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a>  D --&gt; F[<span class="ot">"</span><span class="st">Floc settles&lt;br/&gt;(tens of m/day)</span><span class="ot">"</span>]</span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a>  E --&gt; F</span>
+<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a>  F --&gt; G[<span class="ot">"</span><span class="st">Sediment layer:&lt;br/&gt;binds P released&lt;br/&gt;from the bed</span><span class="ot">"</span>]</span>
+<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a>  F --&gt; H[<span class="ot">"</span><span class="st">Resuspension and&lt;br/&gt;export downstream&lt;br/&gt;(Ōhau Channel)</span><span class="ot">"</span>]</span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chemistry that controls how well it works</span></span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dose relative to P.** Laboratory jar tests on Lake Rotorua water bind phosphate at close to **0.7 mol Al per mol P** (Sanila 2026). In practice, in turbulent streams with short contact times, much more aluminium is needed: roughly **7:1** has been used operationally on the Utuhina and Puarenga (McDowell and Hawke 2006).</span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**pH and alkalinity.** Alum is acidic. In low-alkalinity water (Lake Rotorua and the Puarenga are about 19 mg CaCO₃/L) a dose can pull pH down, and pH recovers only slowly. Phosphate binding is efficient at about **pH 6 to 8**. Below about pH 6 dissolved aluminium rises and can be toxic to aquatic life; above about pH 8 the aluminium becomes soluble again as aluminate. For this reason doses are limited by what the receiving water can buffer.</span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Competition.** Dissolved organic carbon and other anions compete with phosphate for binding sites. Rotorua's low DOC (about 2 mg/L) helps.</span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Floc properties.** Flocs settle quickly (jar tests: mostly 20 to 60 m/day) but are fragile. Wind-driven turbulence can break them and resuspend them.</span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Phosphate binding is not permanent in all conditions.** Under anoxia the iron-bound fraction of sediment P is released, but aluminium-bound P stays bound, which is the reason alum is favoured in lakes with seasonal bottom-water anoxia.</span>
+<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ways alum is applied to lakes</span></span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Approach <span class="pp">|</span> How it works <span class="pp">|</span> Typical use <span class="pp">|</span></span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Sediment inactivation (in-lake)** <span class="pp">|</span> Alum is applied to the lake surface or at depth, settles, and forms a sealing layer on the bed <span class="pp">|</span> Lakes dominated by internal P loading, often a one-off or repeated treatment <span class="pp">|</span></span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Hypolimnetic dosing** <span class="pp">|</span> Alum is injected into the bottom water during stratification <span class="pp">|</span> Stratified lakes with anoxic sediment release <span class="pp">|</span></span>
+<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Inflow dosing** | Alum is dosed continuously into a stream upstream of the lake so floc forms in the stream and the lake receives treated water | Lakes with large, P-rich inflows; **the Lake Rotorua approach** <span class="pp">|</span></span>
+<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a>The Rotorua lakes programme has used alum in several lakes. Lake Ōkaro and Lake Rotoehu are also in the dosing workbook (Rotoehu is dosed at the Soda Springs inflow, from 2011, with 128 t Al in the record we hold), and Lake Rotorua is treated by inflow dosing at the Utuhina and Puarenga streams.</span>
+<span id="cb11-125"><a href="#cb11-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-126"><a href="#cb11-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why dose Lake Rotorua?</span></span>
+<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a>Lake Rotorua is a large, shallow lake that stratifies intermittently, with a long history of nutrient enrichment, including treated wastewater discharge until 1991. Its TLI target is 4.2. Catchment load reductions take years to appear in the lake, because groundwater delays are long and the sediments hold a large store of legacy P. Alum dosing was introduced to cut the P reaching the lake from two of its largest surface inflows and to reduce internal loading in the near term. Hamilton et al. (2015) and McBride et al. (2019) conclude that alum is the most likely cause of the improvement in lake P since about 2010 that external load changes do not explain; the model reports a reduction in sediment P release of about 50% (about 16 t P/yr) to reproduce it. See <span class="co">[</span><span class="ot">Inflows and Alum</span><span class="co">](rotorua-inflows-alum.qmd#sec-reports)</span> for the detail.</span>
+<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a><span class="fu">### Known issues with the approach</span></span>
+<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Aluminium is not showing up in the main basin sediments.** The 2024 sediment survey (Tempero 2026, ERI 178) found about 5 g Al/kg in the main basin, no higher than before dosing started, even though 993 t of Al had been dosed by the end of 2023. The aluminium is thought to deposit near shore (under 10 m), to be resuspended in storms and to be exported through the Ōhau Channel.</span>
+<span id="cb11-133"><a href="#cb11-133" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Free aluminium and pH.** The Puarenga dose has at times exceeded the Al:DRP ratio needed to bind all DRP, so some aluminium may reach the lake unbound (Hamilton et al. 2015).</span>
+<span id="cb11-134"><a href="#cb11-134" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Effect on total P in the stream is small.** Alum moves P between forms (dissolved to particulate); TP in the stream stays similar, so the benefit depends on what happens to the particulate P in the lake.</span>
+<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Duration.** The effect on sediment release is thought to last a few years after dosing, so continuing treatment is needed. The 2018 to 2020 Puarenga pause provides a natural test of that.</span>
+<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## The dosing data</span></span>
+<span id="cb11-138"><a href="#cb11-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-139"><a href="#cb11-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sources</span></span>
+<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-141"><a href="#cb11-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> File <span class="pp">|</span> Period <span class="pp">|</span> Content <span class="pp">|</span> Used for <span class="pp">|</span></span>
+<span id="cb11-142"><a href="#cb11-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb11-143"><a href="#cb11-143" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Rotorua alum dose data February 2026.xlsx`</span> (sheet *Rotorua*) <span class="pp">|</span> 15 Jun 2006 to 28 Feb 2026 <span class="pp">|</span> Daily liquid alum (L/day) for each stream, converted to kg Al/day with density 1.3235 kg/L and 4.263% Al <span class="pp">|</span> Model inflow files (<span class="in">`alum_dosing`</span> target); this page for 2006 to Feb 2026 <span class="pp">|</span></span>
+<span id="cb11-144"><a href="#cb11-144" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Lake Rotorua alum dosing data Jan 2022 to Jul 2026 incl Puarenga DRP data.xlsx`</span> <span class="pp">|</span> 1 Jan 2022 to 29 Jul 2026 <span class="pp">|</span> Daily mean dose rate from the BOPRC Environmental Data Portal (L/hr and L/day) and a small Puarenga compliance data set (pH, TP, DRP, Al upstream and downstream of the wastewater plant) <span class="pp">|</span> This page, to extend the series to Jul 2026 <span class="pp">|</span></span>
+<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Daily aluminium to Rotorua, Okar &amp; Rotoehu to end of 2024.xlsx`</span> <span class="pp">|</span> 2002 to 2024 <span class="pp">|</span> Older version of the Rotorua sheet plus Ōkaro and Rotoehu dosing <span class="pp">|</span> Cross-check; Rotoehu context <span class="pp">|</span></span>
+<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a>Liquid alum is converted to aluminium mass with the two constants stored in the workbook: density **1.3235 kg/L** and **4.263% Al by weight**, which gives **`r round(kg_al_per_L, 4)` kg Al per litre**. The doses reported here are mass of aluminium, not mass of the alum solution.</span>
+<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a>Dosing sites (from the project targets) are at the Utuhina (−38.1346, 176.2378) and Puarenga (−38.1440, 176.2677) streams.</span>
+<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a><span class="fu">### Annual dose</span></span>
+<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-155"><a href="#cb11-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-156"><a href="#cb11-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-annual</span></span>
+<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Aluminium dosed to Lake Rotorua each calendar year, by stream. 2026 is partial (to 29 July)."</span></span>
+<span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(annual, <span class="fu">aes</span>(<span class="fu">factor</span>(year), t_al, <span class="at">fill =</span> stream)) <span class="sc">+</span></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Aluminium dosed (t Al per year)"</span>) <span class="sc">+</span></span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>, <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span>
+<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-169"><a href="#cb11-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-170"><a href="#cb11-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-annual</span></span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Annual aluminium dosed (t Al) and the number of days with dosing."</span></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a>annual <span class="sc">|&gt;</span></span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">t_al =</span> <span class="fu">round</span>(t_al, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stream, <span class="at">values_from =</span> <span class="fu">c</span>(t_al, days), <span class="at">names_glue =</span> <span class="st">"{stream} {.value}"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Total t Al</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina t_al</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Puarenga t_al</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Year =</span> year, <span class="st">`</span><span class="at">Utuhina (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina t_al</span><span class="st">`</span>, <span class="st">`</span><span class="at">Utuhina (days dosed)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Utuhina days</span><span class="st">`</span>,</span>
+<span id="cb11-177"><a href="#cb11-177" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Puarenga (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Puarenga t_al</span><span class="st">`</span>, <span class="st">`</span><span class="at">Puarenga (days dosed)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Puarenga days</span><span class="st">`</span>, <span class="st">`</span><span class="at">Total (t Al)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Total t Al</span><span class="st">`</span>)</span>
+<span id="cb11-178"><a href="#cb11-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-179"><a href="#cb11-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a>Things to note in @fig-annual and @tbl-annual:</span>
+<span id="cb11-181"><a href="#cb11-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2006 to 2009: Utuhina only.** About 18 to 33 t Al per year.</span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2010 onward: both streams.** The Puarenga started in 2010 (the Hamilton et al. 2015 report says 2009; see the caveats below).</span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2011 and 2012 are the peak and the trough.** Dosing peaked in 2011 (about 120 t Al, with the highest daily doses above 900 kg Al/day) and was reduced in 2012, when the Utuhina was dosed on only about a third of days.</span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2018 to 2020: the Puarenga dosing stopped** (30 t in 2018 over 239 days, 0 t in 2019, 4 t in 2020), while the Utuhina continued at its usual rate. Dosing resumed in 2021.</span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**2023 was the largest year since 2011** at about 96 t Al.</span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a><span class="fu">### Daily time series</span></span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-192"><a href="#cb11-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-193"><a href="#cb11-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-daily</span></span>
+<span id="cb11-194"><a href="#cb11-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily aluminium dose (grey) with a 30-day centred rolling mean (coloured), by stream."</span></span>
+<span id="cb11-195"><a href="#cb11-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5.5</span></span>
+<span id="cb11-196"><a href="#cb11-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-197"><a href="#cb11-197" aria-hidden="true" tabindex="-1"></a>roll <span class="ot">&lt;-</span> dose_long <span class="sc">|&gt;</span></span>
+<span id="cb11-198"><a href="#cb11-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb11-199"><a href="#cb11-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">roll =</span> zoo<span class="sc">::</span><span class="fu">rollmean</span>(kg_al, <span class="dv">30</span>, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">"center"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(roll, <span class="fu">aes</span>(Date)) <span class="sc">+</span></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> kg_al), <span class="at">colour =</span> <span class="st">"grey70"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> roll, <span class="at">colour =</span> stream), <span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>stream, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream) <span class="sc">+</span></span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"2 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb11-209"><a href="#cb11-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Aluminium dose (kg Al/day)"</span>)</span>
+<span id="cb11-210"><a href="#cb11-210" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-211"><a href="#cb11-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-212"><a href="#cb11-212" aria-hidden="true" tabindex="-1"></a>The Utuhina dose is steady, whereas the Puarenga dose is more variable and larger. In the portal data from 2022 the median Utuhina dose is about <span class="in">`r round(median(portal$Utuhina[portal$Utuhina &gt; 0]))`</span> kg Al/day and the median Puarenga dose about <span class="in">`r round(median(portal$Puarenga[portal$Puarenga &gt; 0]))`</span> kg Al/day.</span>
+<span id="cb11-213"><a href="#cb11-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-216"><a href="#cb11-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-217"><a href="#cb11-217" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-periods</span></span>
+<span id="cb11-218"><a href="#cb11-218" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Daily dose statistics (kg Al/day) on days with dosing."</span></span>
+<span id="cb11-219"><a href="#cb11-219" aria-hidden="true" tabindex="-1"></a>dose_long <span class="sc">|&gt;</span></span>
+<span id="cb11-220"><a href="#cb11-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(kg_al <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-221"><a href="#cb11-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">case_when</span>(year <span class="sc">&lt;=</span> <span class="dv">2009</span> <span class="sc">~</span> <span class="st">"2006-2009"</span>,</span>
+<span id="cb11-222"><a href="#cb11-222" aria-hidden="true" tabindex="-1"></a>                            year <span class="sc">&lt;=</span> <span class="dv">2017</span> <span class="sc">~</span> <span class="st">"2010-2017"</span>,</span>
+<span id="cb11-223"><a href="#cb11-223" aria-hidden="true" tabindex="-1"></a>                            year <span class="sc">&lt;=</span> <span class="dv">2020</span> <span class="sc">~</span> <span class="st">"2018-2020"</span>,</span>
+<span id="cb11-224"><a href="#cb11-224" aria-hidden="true" tabindex="-1"></a>                            <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"2021-2026"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-225"><a href="#cb11-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream, period) <span class="sc">|&gt;</span></span>
+<span id="cb11-226"><a href="#cb11-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">days =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(kg_al), <span class="at">median =</span> <span class="fu">median</span>(kg_al),</span>
+<span id="cb11-227"><a href="#cb11-227" aria-hidden="true" tabindex="-1"></a>            <span class="at">p95 =</span> <span class="fu">quantile</span>(kg_al, <span class="fl">0.95</span>), <span class="at">max =</span> <span class="fu">max</span>(kg_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-228"><a href="#cb11-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(mean<span class="sc">:</span>max, \(x) <span class="fu">round</span>(x, <span class="dv">0</span>)))</span>
+<span id="cb11-229"><a href="#cb11-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-230"><a href="#cb11-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-231"><a href="#cb11-231" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cumulative dose</span></span>
+<span id="cb11-232"><a href="#cb11-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-235"><a href="#cb11-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-236"><a href="#cb11-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-cum</span></span>
+<span id="cb11-237"><a href="#cb11-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Cumulative aluminium dosed to Lake Rotorua since June 2006."</span></span>
+<span id="cb11-238"><a href="#cb11-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3.8</span></span>
+<span id="cb11-239"><a href="#cb11-239" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-240"><a href="#cb11-240" aria-hidden="true" tabindex="-1"></a>cum <span class="ot">&lt;-</span> dose_long <span class="sc">|&gt;</span></span>
+<span id="cb11-241"><a href="#cb11-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb11-242"><a href="#cb11-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb11-243"><a href="#cb11-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cum_t =</span> <span class="fu">cumsum</span>(kg_al) <span class="sc">/</span> <span class="fl">1e3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-244"><a href="#cb11-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-245"><a href="#cb11-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-246"><a href="#cb11-246" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cum, <span class="fu">aes</span>(Date, cum_t, <span class="at">colour =</span> stream)) <span class="sc">+</span></span>
+<span id="cb11-247"><a href="#cb11-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb11-248"><a href="#cb11-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> to2023, <span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb11-249"><a href="#cb11-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">as.Date</span>(<span class="st">"2007-01-01"</span>), <span class="at">y =</span> to2023, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.6</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb11-250"><a href="#cb11-250" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"993 t Al by end 2023 (Tempero 2026)"</span>) <span class="sc">+</span></span>
+<span id="cb11-251"><a href="#cb11-251" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dose <span class="sc">|&gt;</span> <span class="fu">arrange</span>(Date) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">cum_t =</span> <span class="fu">cumsum</span>(Total) <span class="sc">/</span> <span class="fl">1e3</span>),</span>
+<span id="cb11-252"><a href="#cb11-252" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(Date, cum_t), <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb11-253"><a href="#cb11-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-254"><a href="#cb11-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Cumulative Al (t)"</span>) <span class="sc">+</span></span>
+<span id="cb11-255"><a href="#cb11-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb11-256"><a href="#cb11-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-257"><a href="#cb11-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-258"><a href="#cb11-258" aria-hidden="true" tabindex="-1"></a>The black line is the total. It reaches **`r round(to2023)` t at the end of 2023**, matching the 993 t in Tempero (2026), and **`r round(tot_t)` t by July 2026**.</span>
+<span id="cb11-259"><a href="#cb11-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-260"><a href="#cb11-260" aria-hidden="true" tabindex="-1"></a><span class="fu">### Seasonality</span></span>
+<span id="cb11-261"><a href="#cb11-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-264"><a href="#cb11-264" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-265"><a href="#cb11-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-season</span></span>
+<span id="cb11-266"><a href="#cb11-266" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Monthly mean daily aluminium dose by stream since 2010 (both streams dosed). Bars show the mean of all days, including those with no dosing."</span></span>
+<span id="cb11-267"><a href="#cb11-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3.8</span></span>
+<span id="cb11-268"><a href="#cb11-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-269"><a href="#cb11-269" aria-hidden="true" tabindex="-1"></a>dose_long <span class="sc">|&gt;</span></span>
+<span id="cb11-270"><a href="#cb11-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2010</span>, year <span class="sc">!=</span> <span class="dv">2026</span> <span class="sc">|</span> <span class="fu">month</span>(Date) <span class="sc">&lt;=</span> <span class="dv">7</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-271"><a href="#cb11-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">factor</span>(<span class="fu">month</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb11-272"><a href="#cb11-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stream, month) <span class="sc">|&gt;</span></span>
+<span id="cb11-273"><a href="#cb11-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">kg =</span> <span class="fu">mean</span>(kg_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-274"><a href="#cb11-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month, kg, <span class="at">fill =</span> stream)) <span class="sc">+</span></span>
+<span id="cb11-275"><a href="#cb11-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb11-276"><a href="#cb11-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean dose (kg Al/day)"</span>) <span class="sc">+</span></span>
+<span id="cb11-278"><a href="#cb11-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb11-279"><a href="#cb11-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-280"><a href="#cb11-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-281"><a href="#cb11-281" aria-hidden="true" tabindex="-1"></a><span class="fu">### Scale relative to the P load</span></span>
+<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-285"><a href="#cb11-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-286"><a href="#cb11-286" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-capacity</span></span>
+<span id="cb11-287"><a href="#cb11-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Aluminium dosed per year expressed as the P it could bind at a molar Al:P of 1:1, compared with the 37 t TP/yr sustainable load. Full years only."</span></span>
+<span id="cb11-288"><a href="#cb11-288" aria-hidden="true" tabindex="-1"></a>annual <span class="sc">|&gt;</span></span>
+<span id="cb11-289"><a href="#cb11-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2007</span>, year <span class="sc">&lt;=</span> <span class="dv">2025</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-290"><a href="#cb11-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb11-291"><a href="#cb11-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">t_al =</span> <span class="fu">sum</span>(t_al), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-292"><a href="#cb11-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Al (Mmol)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> mw_Al <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">2</span>),</span>
+<span id="cb11-293"><a href="#cb11-293" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> mw_Al <span class="sc">*</span> mw_P <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">0</span>),</span>
+<span id="cb11-294"><a href="#cb11-294" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">P bound at 7:1 (t P)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span> <span class="sc">/</span> <span class="dv">7</span>, <span class="dv">0</span>),</span>
+<span id="cb11-295"><a href="#cb11-295" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Al (t)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(t_al, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-296"><a href="#cb11-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Year =</span> year, <span class="st">`</span><span class="at">Al (t)</span><span class="st">`</span>, <span class="st">`</span><span class="at">Al (Mmol)</span><span class="st">`</span>, <span class="st">`</span><span class="at">P bound at 1:1 (t P)</span><span class="st">`</span>, <span class="st">`</span><span class="at">P bound at 7:1 (t P)</span><span class="st">`</span>)</span>
+<span id="cb11-297"><a href="#cb11-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-298"><a href="#cb11-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-299"><a href="#cb11-299" aria-hidden="true" tabindex="-1"></a>The comparison shows why the **Al:P ratio actually achieved** is a central unknown. If it were near 1:1, the dosed aluminium could bind more P than enters the lake in a year. At the operational 7:1 it corresponds to roughly a third of the 37 t TP/yr sustainable load. The model has to represent both the in-stream reaction and the aluminium that is left over once it reaches the lake.</span>
+<span id="cb11-300"><a href="#cb11-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-301"><a href="#cb11-301" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cross-check between the two files</span></span>
+<span id="cb11-302"><a href="#cb11-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-305"><a href="#cb11-305" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-306"><a href="#cb11-306" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-check</span></span>
+<span id="cb11-307"><a href="#cb11-307" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Daily dose in the February 2026 workbook against the Environmental Data Portal extract, Jan 2022 to Feb 2026."</span></span>
+<span id="cb11-308"><a href="#cb11-308" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb11-309"><a href="#cb11-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-310"><a href="#cb11-310" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<span id="cb11-311"><a href="#cb11-311" aria-hidden="true" tabindex="-1"></a>  main <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>Date, <span class="at">names_to =</span> <span class="st">"stream"</span>, <span class="at">values_to =</span> <span class="st">"wb"</span>),</span>
+<span id="cb11-312"><a href="#cb11-312" aria-hidden="true" tabindex="-1"></a>  portal <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Utuhina, Puarenga), <span class="at">names_to =</span> <span class="st">"stream"</span>, <span class="at">values_to =</span> <span class="st">"portal"</span>),</span>
+<span id="cb11-313"><a href="#cb11-313" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"stream"</span>))</span>
+<span id="cb11-314"><a href="#cb11-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-315"><a href="#cb11-315" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ck, <span class="fu">aes</span>(wb, portal, <span class="at">colour =</span> stream)) <span class="sc">+</span></span>
+<span id="cb11-316"><a href="#cb11-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb11-317"><a href="#cb11-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-318"><a href="#cb11-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> col_stream, <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-319"><a href="#cb11-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"February 2026 workbook (kg Al/day)"</span>, <span class="at">y =</span> <span class="st">"Portal extract (kg Al/day)"</span>) <span class="sc">+</span></span>
+<span id="cb11-320"><a href="#cb11-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb11-321"><a href="#cb11-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-322"><a href="#cb11-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-325"><a href="#cb11-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-326"><a href="#cb11-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: ck-stats</span></span>
+<span id="cb11-327"><a href="#cb11-327" aria-hidden="true" tabindex="-1"></a>ck_stats <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">group_by</span>(stream) <span class="sc">|&gt;</span></span>
+<span id="cb11-328"><a href="#cb11-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">r =</span> <span class="fu">cor</span>(wb, portal), <span class="at">bias =</span> <span class="fu">mean</span>(portal <span class="sc">-</span> wb), <span class="at">ratio =</span> <span class="fu">sum</span>(portal) <span class="sc">/</span> <span class="fu">sum</span>(wb))</span>
+<span id="cb11-329"><a href="#cb11-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-330"><a href="#cb11-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-331"><a href="#cb11-331" aria-hidden="true" tabindex="-1"></a>The two sources agree to a correlation of <span class="in">`r round(ck_stats$r[ck_stats$stream == "Utuhina"], 2)`</span> (Utuhina) and <span class="in">`r round(ck_stats$r[ck_stats$stream == "Puarenga"], 2)`</span> (Puarenga) over <span class="in">`r ck_stats$n[1]`</span> overlapping days, with the portal total being <span class="in">`r round(100 * (ck_stats$ratio[ck_stats$stream == "Utuhina"] - 1), 1)`</span>% (Utuhina) and <span class="in">`r round(100 * (ck_stats$ratio[ck_stats$stream == "Puarenga"] - 1), 1)`</span>% (Puarenga) different from the workbook. Any systematic offset should be settled with BOPRC before the 2026 data are used for calibration or scenarios.</span>
+<span id="cb11-332"><a href="#cb11-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-333"><a href="#cb11-333" aria-hidden="true" tabindex="-1"></a><span class="fu">### Puarenga monitoring around the dosing</span></span>
+<span id="cb11-334"><a href="#cb11-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-335"><a href="#cb11-335" aria-hidden="true" tabindex="-1"></a>The portal workbook also holds 13 paired samples (Aug 2025 to Aug 2026) from two Puarenga compliance sites, one upstream of the wastewater plant (site "Puarenga @ FRI") and one downstream of it (about 250 m from the final effluent ponds). They record pH, TP, DRP and total Al.</span>
+<span id="cb11-336"><a href="#cb11-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-puarenga</span></span>
+<span id="cb11-341"><a href="#cb11-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Puarenga compliance monitoring, upstream and downstream of the wastewater plant (BOPRC)."</span></span>
+<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">read_excel</span>(portal_file, <span class="at">sheet =</span> <span class="dv">2</span>, <span class="at">skip =</span> <span class="dv">4</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, <span class="at">col_types =</span> <span class="st">"text"</span>))</span>
+<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a>  cm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"dt"</span>, <span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">site =</span> <span class="st">"Downstream of plant"</span>),</span>
+<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>  cm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>) <span class="sc">|&gt;</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"dt"</span>, <span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>)) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">site =</span> <span class="st">"Upstream of plant"</span>)</span>
+<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(dt, pH, TP, DRP, Al), \(x) <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(x)))) <span class="sc">|&gt;</span></span>
+<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(dt), dt <span class="sc">&gt;</span> <span class="dv">40000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.Date</span>(dt, <span class="at">origin =</span> <span class="st">"1899-12-30"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(pH, TP, DRP, Al), <span class="at">names_to =</span> <span class="st">"var"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">var =</span> <span class="fu">factor</span>(var, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"pH"</span>, <span class="st">"TP"</span>, <span class="st">"DRP"</span>, <span class="st">"Al"</span>),</span>
+<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"pH"</span>, <span class="st">"TP (mg/L)"</span>, <span class="st">"DRP (mg/L)"</span>, <span class="st">"Total Al (mg/L)"</span>)))</span>
+<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-356"><a href="#cb11-356" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cm, <span class="fu">aes</span>(Date, value, <span class="at">colour =</span> site)) <span class="sc">+</span></span>
+<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.4</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>var, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Downstream of plant"</span> <span class="ot">=</span> <span class="st">"#eb6834"</span>, <span class="st">"Upstream of plant"</span> <span class="ot">=</span> <span class="st">"#2a78d6"</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb11-361"><a href="#cb11-361" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb11-362"><a href="#cb11-362" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-363"><a href="#cb11-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-364"><a href="#cb11-364" aria-hidden="true" tabindex="-1"></a>From August 2025 to April 2026 total Al downstream of the plant was high (about 1 to 2 mg/L) and DRP low, while upstream DRP was higher and Al about 0.3 to 0.5 mg/L. The pH downstream is lower, around 5.6 to 6.3, which is at or below the lower end of the 6 to 8 window for efficient binding. From May 2026 downstream Al drops to 0.4 to 0.6 mg/L and DRP rises towards upstream values; the cause is not stated in the file (a change in dosing is one possibility). The April 2026 sample (probably a storm event) shows a TP and Al spike at both sites. These are only a few samples and the sampling locations are for wastewater compliance, not for the dosing itself, so they are indicative.</span>
+<span id="cb11-365"><a href="#cb11-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-366"><a href="#cb11-366" aria-hidden="true" tabindex="-1"></a><span class="fu">## How the data are used in the model</span></span>
+<span id="cb11-367"><a href="#cb11-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-368"><a href="#cb11-368" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Dose to inflow concentration.** The daily dose (L/day) and the daily stream flow set the concentration of the aluminium tracer <span class="in">`ALU_ala`</span> in the Utuhina and Puarenga inflow files. <span class="in">`calc_alum_inflow()`</span> in <span class="in">`R/calc_alum_inflow.R`</span> converts litres of alum to mmol of Al and divides by the daily flow volume. The tracer is expressed as P-binding capacity, so it is multiplied by a molar ratio of binding capacity per Al (<span class="in">`ratio_Al_P`</span>, set when the inflow files are built).</span>
+<span id="cb11-369"><a href="#cb11-369" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Untreated nutrient inflows.** Because the model simulates the alum itself, the inflows must hold the *untreated* P forms. The Utuhina is sampled downstream of the dosing and the Puarenga upstream, so the two need opposite corrections (<span class="co">[</span><span class="ot">Inflows and Alum</span><span class="co">](rotorua-inflows-alum.qmd)</span>).</span>
+<span id="cb11-370"><a href="#cb11-370" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**The `&amp;aed_alum` module.** Within the lake, the module binds DRP onto the aluminium, settles the floc, and optionally resuspends it. The relevant parameters (binding half-saturation, binding rate, settling velocity, resuspension) are discussed on the <span class="co">[</span><span class="ot">Alum Model</span><span class="co">](alum-model.qmd)</span> and <span class="co">[</span><span class="ot">Simplified Alum Module</span><span class="co">](aed-alum-module.qmd)</span> pages and constrained by the jar-test results.</span>
+<span id="cb11-371"><a href="#cb11-371" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Calibration and scenarios.** The dosing record drives the historical calibration (<span class="co">[</span><span class="ot">Alum calibration history</span><span class="co">](alum-calibration-history.qmd)</span>), and the scenario runs change it (<span class="co">[</span><span class="ot">Alum Scenarios</span><span class="co">](rotorua-alum-scenarios.qmd)</span>).</span>
+<span id="cb11-372"><a href="#cb11-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-373"><a href="#cb11-373" aria-hidden="true" tabindex="-1"></a><span class="fu">## Caveats and open questions</span></span>
+<span id="cb11-374"><a href="#cb11-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-375"><a href="#cb11-375" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Puarenga start date.** Hamilton et al. (2015) give 2009; the dosing workbook and the later reports show the first Puarenga dose in 2010 (about 16 t Al that year). We use the workbook.</span>
+<span id="cb11-376"><a href="#cb11-376" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The record after February 2026** comes from the Environmental Data Portal extract and is not yet in the model files, which use the February 2026 workbook (to 28 Feb 2026).</span>
+<span id="cb11-377"><a href="#cb11-377" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Missing values are treated as zero dose.** In the workbook the Puarenga column is empty before 2010, and a few other gaps are assumed to be no dosing. The portal extract has about 12 missing days.</span>
+<span id="cb11-378"><a href="#cb11-378" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Dose is a reported volume, not a measured Al load.** The conversion to Al uses fixed density and Al content. If product strength changed over time that would not show here.</span>
+<span id="cb11-379"><a href="#cb11-379" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Where in the stream the aluminium is added matters.** Contact time, turbulence and pH between the dosing point and the lake affect how much DRP is bound before the water enters the lake. The Utuhina and Puarenga sites differ in this respect.</span>
+<span id="cb11-380"><a href="#cb11-380" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Overlap with other changes.** The Puarenga DRP decline from about 2009 also coincides with changes at the Rotorua wastewater treatment plant (Hamilton et al. 2015), and the 2018 to 2020 pause is the best natural contrast for separating the alum effect.</span>
+<span id="cb11-381"><a href="#cb11-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-382"><a href="#cb11-382" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb11-383"><a href="#cb11-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-384"><a href="#cb11-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Hamilton, D.P., McBride, C.G. and Jones, H.F.E. (2015). *Assessing the effects of alum dosing of two inflows to Lake Rotorua against external nutrient load reductions: model simulations for 2001–2012.* ERI Report 49, University of Waikato.</span>
+<span id="cb11-385"><a href="#cb11-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>McBride, C.G., Abell, J.M. and Hamilton, D.P. (2019). *Long-term nutrient loads and water quality for Lake Rotorua: 1965 to 2017.* ERI Report 123.</span>
+<span id="cb11-386"><a href="#cb11-386" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>McBride, C.G., Allan, M.G. and Hamilton, D.P. (2019). *Assessing the effects of nutrient load reductions to Lake Rotorua: model simulations for 2001–2015.* ERI Report 128.</span>
+<span id="cb11-387"><a href="#cb11-387" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>McDowell, R.W. and Hawke, M. (2006). Alum dosing of the Utuhina and Puarenga streams (as cited in Sanila 2026).</span>
+<span id="cb11-388"><a href="#cb11-388" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Sanila, S. (2026). *Evaluation of aluminium–phosphorus binding and pH responses to alum dosing of three New Zealand lakes.* MSc thesis, University of Waikato.</span>
+<span id="cb11-389"><a href="#cb11-389" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tempero, G. (2026). *Aluminium in Lake Rotorua sediments, 2024 survey.* ERI Report 178.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://www.boprc.govt.nz/your-council/plans-and-policies/plans/regional-plans/regional-natural-resources-plan/lake-rotorua-nutrient-management-plan-change-10/">
+<p>Rotorua Plan Change 10</p>
+</a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tadhg-moore/rotorua-pc10" style="margin-right: 10px;"> <i class="bi bi-github" style="font-size: 1.3em;"></i> </a> <a href="https://www.boprc.govt.nz/"> <img src="www/boprc-logo.png" alt="Bay of Plenty Logo" style="height: 32px; vertical-align: middle;"> </a></p>
+</div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
