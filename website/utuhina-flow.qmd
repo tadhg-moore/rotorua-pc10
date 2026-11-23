@@ -24,7 +24,7 @@ execute:
 
 ## Purpose
 
-This page summarises the full continuous discharge record for the **Utuhina Stream at Depot St** (BOPRC site EK378429) and interrogates it to support interpretation of ~20 years of fish surveys downstream. It covers:
+This page summarises the full continuous discharge record for the **Utuhina Stream at Depot St** (BOPRC site EK378429) and interrogates it to support interpretation of \~20 years of fish surveys downstream. It covers:
 
 1.  Data coverage and quality (what can and cannot be trusted).
 2.  Multi-annual variation in flow (water-year totals, seasonality, trends).
@@ -66,7 +66,276 @@ raw[, wy := year(date) + (month(date) >= 7L)]
 fish <- data.table::as.data.table(targets::tar_read(electro_fishing))
 fish_dates <- sort(unique(fish$date))
 fish_t <- as.POSIXct(fish_dates, tz = tz)
+
 ```
+
+```{r}
+#| label: daily
+all_dates <- data.table(date = seq(min(raw$date), max(raw$date), by = "day"))
+raw[, hr := floor(as.numeric(t) / 3600)]
+inst <- raw[, .(t, q)]
+daily <- raw[, .(qmean = mean(q), qmax = max(q), qmin = min(q), nh = uniqueN(hr)), by = date]
+daily[nh < 20, c("qmean", "qmax", "qmin") := NA_real_]
+daily <- merge(all_dates, daily[, .(date, qmean, qmax, qmin)], by = "date", all.x = TRUE)
+daily[, `:=`(wy = year(date) + (month(date) >= 7L), month = month(date), year = year(date))]
+daily[, wy_month := factor(mon_lab[(month + 5L) %% 12L + 1L], levels = mon_lab)]
+
+# Water-year coverage: keep only years with >= 90% valid days for annual statistics
+cov_wy <- daily[, .(days = .N, valid = sum(!is.na(qmean))), by = wy][, cov := valid / days]
+cov_wy[, complete := cov >= 0.9 & days >= 360]
+wy_ok <- cov_wy[complete == TRUE, wy]
+```
+
+```{r}
+#| include: false
+#| label: annual-calc
+# Lyne-Hollick digital filter baseflow separation (alpha = 0.925; forward-backward-forward)
+lyne_hollick <- function(q, alpha = 0.925) {
+  pass <- function(x) {
+    f <- numeric(length(x))
+    for (i in 2:length(x)) {
+      f[i] <- alpha * f[i - 1] + (1 + alpha) / 2 * (x[i] - x[i - 1])
+      f[i] <- min(max(f[i], 0), x[i])
+    }
+    x - f
+  }
+  b <- pass(q); b <- rev(pass(rev(b))); pass(b)
+}
+daily[, seg := rleid(is.na(qmean))]
+daily[, base := NA_real_]
+for (s in daily[!is.na(qmean), unique(seg)]) {
+  idx <- which(daily$seg == s)
+  if (length(idx) >= 30) set(daily, idx, "base", lyne_hollick(daily$qmean[idx]))
+}
+daily[, q7 := frollmean(qmean, 7, align = "right")]
+
+# Instantaneous annual maximum
+ams_inst <- raw[, .(peak = max(q), peak_t = t[which.max(q)]), by = wy]
+
+rb_index <- function(x) { x <- x[!is.na(x)]; sum(abs(diff(x))) / sum(x[-1]) }  # Richards-Baker flashiness
+
+annual <- daily[wy %in% wy_ok, .(
+  mean = mean(qmean, na.rm = TRUE),
+  median = median(qmean, na.rm = TRUE),
+  q05 = quantile(qmean, 0.05, na.rm = TRUE),
+  q95 = quantile(qmean, 0.95, na.rm = TRUE),
+  min7 = min(q7, na.rm = TRUE),
+  max_daily = max(qmean, na.rm = TRUE),
+  cv = sd(qmean, na.rm = TRUE) / mean(qmean, na.rm = TRUE),
+  bfi = sum(base, na.rm = TRUE) / sum(qmean[!is.na(base)], na.rm = TRUE),
+  rb = rb_index(qmean)
+), by = wy]
+annual <- merge(annual, ams_inst[, .(wy, max_inst = peak)], by = "wy")
+setorder(annual, wy)
+
+ann_show <- annual[, .(`Water year` = wy, `Mean` = mean, `Median` = median, `Q5` = q05, `Q95` = q95,
+                       `7-day min` = min7, `Max daily` = max_daily, `Max inst.` = max_inst,
+                       `CV` = cv, `BFI` = bfi, `R-B index` = rb)]
+```
+
+```{r}
+#| include: false
+#| label: thresholds
+qs <- quantile(raw$q, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999))
+dmed <- median(daily$qmean, na.rm = TRUE)
+mean_q <- mean(daily$qmean, na.rm = TRUE)
+fre3 <- 3 * dmed
+q95 <- unname(qs["95%"]); q99 <- unname(qs["99%"]); q999 <- unname(qs["99.9%"])
+q_tab <- data.table(Percentile = names(qs), `Flow (m³/s)` = round(unname(qs), 2))
+```
+
+```{r}
+#| include: false
+#| label: events-fun
+min_gap_h <- 48
+inst <- raw[, .(t, q)]
+inst[, dts := pmin(shift(as.numeric(t), type = "lead") - as.numeric(t), 3600, na.rm = TRUE)]
+inst[is.na(dts), dts := 0]
+
+find_events <- function(d, thr, min_gap_h = 48) {
+  d <- copy(d)
+  d[, above := q > thr]
+  d[, run := rleid(above)]
+  runs <- d[above == TRUE, .(start = min(t), end = max(t), peak = max(q), peak_t = t[which.max(q)],
+                               vol = sum((q - thr) * dts), hrs = sum(dts) / 3600), by = run]
+  runs[, gap_h := as.numeric(difftime(start, shift(end), units = "hours"))]
+  runs[, ev := cumsum(is.na(gap_h) | gap_h >= min_gap_h)]
+  ev <- runs[, .(start = min(start), end = max(end), peak = max(peak),
+                 peak_t = peak_t[which.max(peak)], vol_m3 = sum(vol), hrs_above = sum(hrs)), by = ev]
+  ev[, `:=`(
+    dur_h = as.numeric(difftime(end, start, units = "hours")) + 0.25,
+    rise_h = as.numeric(difftime(peak_t, start, units = "hours")),
+    thr = thr
+  )]
+  ev[, rise_rate := (peak - thr) / pmax(rise_h, 0.5)]   # m3/s per hour above the threshold
+  ev[, `:=`(date = as.Date(peak_t, tz = tz))]
+  ev[, `:=`(wy = year(date) + (month(date) >= 7L), month = month(date), doy = yday(date))]
+  ev[, wy_month := factor(mon_lab[(month + 5L) %% 12L + 1L], levels = mon_lab)]
+  ev[, season := factor(fcase(month %in% c(12, 1, 2), "Summer (DJF)", month %in% 3:5, "Autumn (MAM)",
+                              month %in% 6:8, "Winter (JJA)", default = "Spring (SON)"),
+                        levels = c("Spring (SON)", "Summer (DJF)", "Autumn (MAM)", "Winter (JJA)"))]
+  ev[, ev := NULL]
+  ev[]
+}
+```
+
+```{r}
+#| include: false
+#| label: ams
+# Annual maximum series (complete water years) and Gumbel (EV1) fit by L-moments
+ams <- ams_inst[wy %in% wy_ok][order(wy)]
+gumbel_lmom <- function(x) {
+  x <- sort(x); n <- length(x)
+  b0 <- mean(x); b1 <- sum((seq_len(n) - 1) / (n - 1) * x) / n
+  l2 <- 2 * b1 - b0
+  alpha <- l2 / log(2)
+  c(xi = b0 - 0.5772157 * alpha, alpha = alpha)
+}
+gumbel_q <- function(par, T) unname(par["xi"] - par["alpha"] * log(-log(1 - 1 / T)))
+gpar <- gumbel_lmom(ams$peak)
+maf <- gumbel_q(gpar, 2.33)   # mean annual flood
+rps <- c(1.58, 2, 5, 10, 20, 50)
+
+set.seed(1)
+boot <- replicate(2000, gumbel_q(gumbel_lmom(sample(ams$peak, replace = TRUE)), rps))
+rp_tab <- data.table(
+  `Return period (yr)` = rps,
+  `AEP (%)` = round(100 / rps, 1),
+  `Peak flow (m³/s)` = gumbel_q(gpar, rps),
+  `Lower 90% CI` = apply(boot, 1, quantile, 0.05),
+  `Upper 90% CI` = apply(boot, 1, quantile, 0.95)
+)
+```
+
+```{r}
+#| include: false
+#| label: thr-tab
+thrs <- c(`Q95` = q95, `3 × median (FRE3)` = fre3, `Q99` = q99, `Mean annual flood` = maf)
+thrs <- thrs[order(thrs)]
+```
+
+```{r}
+#| include: false
+#| label: events-all
+ev_list <- lapply(thrs, function(x) find_events(inst, x, min_gap_h))
+ev_all <- rbindlist(ev_list, idcol = "threshold")
+ev_all[, threshold := factor(threshold, levels = names(thrs))]
+ev_main <- ev_list[["3 × median (FRE3)"]]
+ev_main[, id := .I]
+
+n_years_rec <- as.numeric(diff(range(raw$t)), units = "days") / 365.25
+ev_sum <- ev_all[, .(
+  Events = .N,
+  `Events per year` = .N / n_years_rec,
+  `Median duration (h)` = median(dur_h),
+  `Max duration (h)` = max(dur_h),
+  `Median hrs above` = median(hrs_above),
+  `Median time to peak (h)` = median(rise_h),
+  `Largest peak (m³/s)` = max(peak)
+), by = .(Threshold = threshold)]
+pct_time <- sapply(thrs, function(x) 100 * mean(raw$q > x))
+ev_sum[, `% time exceeded` := unname(pct_time[as.character(Threshold)])]
+```
+
+```{r}
+#| label: summary-calc
+#| include: false
+# Calculations used by the summary below (kept here so the summary can sit at the top)
+lt_mean <- mean(annual$mean)
+annual[, anom := 100 * (mean - lt_mean) / lt_mean]
+sen <- function(x, y) { i <- combn(length(x), 2); median((y[i[2, ]] - y[i[1, ]]) / (x[i[2, ]] - x[i[1, ]])) }
+trend_row <- function(nm, y, x = annual$wy) {
+  ct <- suppressWarnings(cor.test(x, y, method = "kendall"))
+  data.table(Metric = nm, `Sen slope (per yr)` = sen(x, y), tau = unname(ct$estimate), `p-value` = ct$p.value)
+}
+trend_tab <- rbindlist(list(
+  trend_row("Annual mean flow (m³/s)", annual$mean),
+  trend_row("Annual median flow (m³/s)", annual$median),
+  trend_row("Q5 (low flow, m³/s)", annual$q05),
+  trend_row("7-day minimum (m³/s)", annual$min7),
+  trend_row("Q95 (high flow, m³/s)", annual$q95),
+  trend_row("Annual max instantaneous (m³/s)", annual$max_inst),
+  trend_row("Baseflow index", annual$bfi),
+  trend_row("Richards-Baker flashiness", annual$rb)
+))
+epy <- ev_all[wy %in% wy_ok, .N, by = .(threshold, wy)]
+epy <- merge(CJ(threshold = factor(names(thrs), levels = names(thrs)), wy = wy_ok), epy, by = c("threshold", "wy"), all.x = TRUE)
+epy[is.na(N), N := 0L]
+epy_mean <- epy[, .(m = mean(N)), by = threshold]
+circ <- function(doy) {
+  a <- 2 * pi * doy / 365.25
+  C <- mean(cos(a)); S <- mean(sin(a))
+  R <- sqrt(C^2 + S^2)
+  mean_doy <- (atan2(S, C) %% (2 * pi)) * 365.25 / (2 * pi)
+  data.table(`Mean date of peak` = format(as.Date(round(mean_doy), origin = "2021-12-31"), "%d %b"),
+             `Concentration (R)` = R)
+}
+timing <- ev_all[, circ(doy), by = .(Threshold = threshold)]
+season_tab <- dcast(ev_all[, .N, by = .(threshold, season)], threshold ~ season, value.var = "N", fill = 0)
+setnames(season_tab, "threshold", "Threshold")
+# Large / Major are defined by return period of the annual maximum (Gumbel fit above), so
+# they are rare enough to discriminate between surveys. A 6 x median threshold was tried
+# first, but it is exceeded in almost every six-month window.
+thr_large <- gumbel_q(gpar, 1.58)   # ~ 1-in-1.6-year flood
+thr_major <- gumbel_q(gpar, 5)      # ~ 1-in-5-year flood
+ev_large <- find_events(inst, thr_large, min_gap_h)
+ev_major <- find_events(inst, thr_major, min_gap_h)
+cls_levels <- c("None", "Moderate", "Large", "Major")
+look <- 183L   # ~ six months, in days
+ev_day <- function(ev) as.Date(ev$peak_t, tz = tz)
+cls_rank <- function(nm, nl, nmod) fcase(nm > 0, "Major", nl > 0, "Large", nmod > 0, "Moderate", default = "None")
+
+flood_metrics <- rbindlist(lapply(fish_dates, function(d) {
+  in_win <- function(ev, days) { x <- ev_day(ev); ev[x < d & x >= d - days] }
+  rmax <- function(days) { w <- raw[date < d & date >= d - days]; if (nrow(w)) max(w$q) else NA_real_ }
+  w6 <- raw[date < d & date >= d - look]
+  pk6 <- w6[which.max(q)]
+  prev_big <- function(ev) { x <- ev_day(ev); x <- x[x < d]; if (length(x)) as.numeric(d - max(x)) else NA_real_ }
+  m6 <- in_win(ev_main, look)
+  n_mod <- nrow(m6); n_lg <- nrow(in_win(ev_large, look)); n_mj <- nrow(in_win(ev_major, look))
+  max6 <- rmax(look)
+  data.table(
+    date = d,
+    cov_6m = mean(!is.na(daily[date < d & date >= d - look, qmean])),
+    n_moderate_6m = n_mod, n_large_6m = n_lg, n_major_6m = n_mj,
+    class_6m = factor(cls_rank(n_mj, n_lg, n_mod), levels = cls_levels),
+    max_peak_3m = rmax(92L), max_peak_6m = max6, max_peak_12m = rmax(365L), max_peak_24m = rmax(730L),
+    max_peak_6m_date = pk6$date,
+    days_max_to_survey = as.numeric(d - pk6$date),
+    rp_max_6m = 1 / (1 - exp(-exp(-(max6 - gpar["xi"]) / gpar["alpha"]))),
+    vol_6m_1e3m3 = sum(m6$vol_m3) / 1000,
+    n_large_12m = nrow(in_win(ev_large, 365L)), n_major_12m = nrow(in_win(ev_major, 365L)),
+    n_large_24m = nrow(in_win(ev_large, 730L)), n_major_24m = nrow(in_win(ev_major, 730L)),
+    days_since_large = prev_big(ev_large), days_since_major = prev_big(ev_major)
+  )
+}))
+```
+
+## Summary
+
+```{r}
+#| include: false
+#| label: summary-numbers
+wet_wy  <- annual[which.max(mean), wy]; dry_wy <- annual[which.min(mean), wy]
+big <- ev_main[which.max(peak)]
+ev_main_year <- ev_main[wy %in% wy_ok, .N, by = wy]
+epy_main <- epy[threshold == "3 × median (FRE3)"]
+tr_sig <- trend_tab[`p-value` < 0.05, Metric]
+q10 <- rp_tab[`Return period (yr)` == 10, `Peak flow (m³/s)`]
+tm <- timing[Threshold == "3 × median (FRE3)"]
+season_ct <- table(ev_main$season)
+tm_R <- tm[["Concentration (R)"]]
+```
+
+
+
+- **Regime.** The Utuhina is a baseflow-dominated stream (consistent with groundwater/spring supply) (median `r sprintf("%.2f", dmed)` m³/s; baseflow index ≈ `r sprintf("%.2f", mean(annual$bfi))`) with a narrow low-flow range and brief, sharp storm peaks reaching `r sprintf("%.1f", max(raw$q))` m³/s.
+- **Multi-annual variation.** Annual mean flow ranges from `r sprintf("%.2f", min(annual$mean))` m³/s (WY`r dry_wy`) to `r sprintf("%.2f", max(annual$mean))` m³/s (WY`r wet_wy`), i.e. `r sprintf("%+.0f%% to %+.0f%%", min(annual$anom), max(annual$anom))` of the long-term mean. Metrics with a statistically significant monotonic trend (p \< 0.05): `r if (length(tr_sig)) paste(tr_sig, collapse = "; ") else "none"`.
+- **Return frequency.** 3 × median (`r sprintf("%.1f", fre3)` m³/s) events occur on average `r sprintf("%.1f", mean(epy_main$N))` times per water year (range `r min(epy_main$N)`-`r max(epy_main$N)`). Estimated mean annual flood is `r sprintf("%.1f", maf)` m³/s, the 10-year flow `r sprintf("%.1f", q10)` m³/s. The largest event was `r sprintf("%.1f", big$peak)` m³/s on `r format(big$peak_t, "%d %b %Y")`.
+- **Timing.** Events occur in every season with only a weak winter bias (concentration R = `r sprintf("%.2f", tm_R)`, where 0 is uniform through the year): `r paste(names(season_ct), season_ct, sep = " ", collapse = ", ")` 3 × median events respectively. There is no reliably event-free season, so any survey window can follow a recent high flow.
+- **Floods before fish surveys.** In `r nrow(flood_metrics)` surveys, the largest flood in the previous six months was Major (\> 1-in-5-year, `r sprintf("%.1f", thr_major)` m³/s) before `r sum(flood_metrics$class_6m == "Major")`, Large (\> 1-in-1.6-year, `r sprintf("%.1f", thr_large)` m³/s) before `r sum(flood_metrics$class_6m == "Large")` and only Moderate before `r sum(flood_metrics$class_6m == "Moderate")`. Working with site-standardised CPUE (fish per hour relative to each site's own mean), there is **no consistent relationship** between CPUE of common bully, koura or juvenile trout and the largest flood in the preceding 3-24 months, the number of Large floods, or time since the last Large flood (most \|rho\| below 0.3; none significant after allowing for the number of tests). The direction is mostly negative for the longer windows, and surveys following a Major flood in the previous 12 months had somewhat lower bully (about 17% below site mean) and trout CPUE than surveys with no Large or Major flood, but with only five such surveys this is weak evidence. The two surveys within six months of a Major flood (2011 and 2018) had much lower juvenile trout CPUE (about half the site mean). Survey month shifts bully CPUE by a similar amount (about +0.26 in Nov-Dec and -0.21 in Aug-Oct in log units) so season is a competing explanation that cannot be separated with 23 annual surveys.
+- **Duration.** The median 3 × median event lasts `r sprintf("%.0f", median(ev_main$dur_h))` h from first to last exceedance (`r sprintf("%.0f", median(ev_main$hrs_above))` h actually above the threshold), peaking `r sprintf("%.0f", median(ev_main$rise_h))` h after the threshold is crossed; 90% last under `r sprintf("%.0f", quantile(ev_main$dur_h, 0.9))` h.
+
 
 ## Data and quality
 
@@ -96,21 +365,6 @@ knitr::kable(step_tab, format.args = list(big.mark = ","))
 
 Records are mostly 5-minute (15-minute in the early record). Short gaps are handled by working with **daily means** for any day with at least 20 hours of data, and with the instantaneous series for peaks and event durations.
 
-```{r}
-#| label: daily
-all_dates <- data.table(date = seq(min(raw$date), max(raw$date), by = "day"))
-raw[, hr := floor(as.numeric(t) / 3600)]
-daily <- raw[, .(qmean = mean(q), qmax = max(q), qmin = min(q), nh = uniqueN(hr)), by = date]
-daily[nh < 20, c("qmean", "qmax", "qmin") := NA_real_]
-daily <- merge(all_dates, daily[, .(date, qmean, qmax, qmin)], by = "date", all.x = TRUE)
-daily[, `:=`(wy = year(date) + (month(date) >= 7L), month = month(date), year = year(date))]
-daily[, wy_month := factor(mon_lab[(month + 5L) %% 12L + 1L], levels = mon_lab)]
-
-# Water-year coverage: keep only years with >= 90% valid days for annual statistics
-cov_wy <- daily[, .(days = .N, valid = sum(!is.na(qmean))), by = wy][, cov := valid / days]
-cov_wy[, complete := cov >= 0.9 & days >= 360]
-wy_ok <- cov_wy[complete == TRUE, wy]
-```
 
 ```{r}
 #| label: fig-coverage
@@ -141,10 +395,10 @@ knitr::kable(gr, format.args = list(big.mark = ","))
 ::: callout-note
 ## Caveats on the data
 
--   The series is a **derived** discharge (stage-to-flow via a rating), so **peak flows are the least certain values**: rating extrapolation above the highest gauging inflates uncertainty in the largest events. Treat return-period estimates for the largest events as approximate.
--   The final records (see approval table) are still **"Raw - yet to review"** and may change on approval.
--   Water years `r paste(setdiff(cov_wy$wy, wy_ok), collapse = " and ")` are partial or incomplete and are excluded from annual statistics. All event analyses use every available record.
--   Times are NZST (UTC+12) year-round; the export has no daylight-saving shift.
+- The series is a **derived** discharge (stage-to-flow via a rating), so **peak flows are the least certain values**: rating extrapolation above the highest gauging inflates uncertainty in the largest events. Treat return-period estimates for the largest events as approximate.
+- The final records (see approval table) are still **"Raw - yet to review"** and may change on approval.
+- Water years `r paste(setdiff(cov_wy$wy, wy_ok), collapse = " and ")` are partial or incomplete and are excluded from annual statistics. All event analyses use every available record.
+- Times are NZST (UTC+12) year-round; the export has no daylight-saving shift.
 :::
 
 ## Overall flow regime
@@ -152,12 +406,6 @@ knitr::kable(gr, format.args = list(big.mark = ","))
 ```{r}
 #| label: tbl-thresholds
 #| tbl-cap: "Instantaneous-flow percentiles (all records)."
-qs <- quantile(raw$q, c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999))
-dmed <- median(daily$qmean, na.rm = TRUE)
-mean_q <- mean(daily$qmean, na.rm = TRUE)
-fre3 <- 3 * dmed
-q95 <- unname(qs["95%"]); q99 <- unname(qs["99%"]); q999 <- unname(qs["99.9%"])
-q_tab <- data.table(Percentile = names(qs), `Flow (m³/s)` = round(unname(qs), 2))
 knitr::kable(q_tab)
 ```
 
@@ -213,48 +461,7 @@ ggplot() +
 ```{r}
 #| label: tbl-annual
 #| tbl-cap: "Annual flow statistics (m³/s) for complete water years. BFI = baseflow index; R-B = Richards-Baker flashiness index."
-# Lyne-Hollick digital filter baseflow separation (alpha = 0.925; forward-backward-forward)
-lyne_hollick <- function(q, alpha = 0.925) {
-  pass <- function(x) {
-    f <- numeric(length(x))
-    for (i in 2:length(x)) {
-      f[i] <- alpha * f[i - 1] + (1 + alpha) / 2 * (x[i] - x[i - 1])
-      f[i] <- min(max(f[i], 0), x[i])
-    }
-    x - f
-  }
-  b <- pass(q); b <- rev(pass(rev(b))); pass(b)
-}
-daily[, seg := rleid(is.na(qmean))]
-daily[, base := NA_real_]
-for (s in daily[!is.na(qmean), unique(seg)]) {
-  idx <- which(daily$seg == s)
-  if (length(idx) >= 30) set(daily, idx, "base", lyne_hollick(daily$qmean[idx]))
-}
-daily[, q7 := frollmean(qmean, 7, align = "right")]
 
-# Instantaneous annual maximum
-ams_inst <- raw[, .(peak = max(q), peak_t = t[which.max(q)]), by = wy]
-
-rb_index <- function(x) { x <- x[!is.na(x)]; sum(abs(diff(x))) / sum(x[-1]) }  # Richards-Baker flashiness
-
-annual <- daily[wy %in% wy_ok, .(
-  mean = mean(qmean, na.rm = TRUE),
-  median = median(qmean, na.rm = TRUE),
-  q05 = quantile(qmean, 0.05, na.rm = TRUE),
-  q95 = quantile(qmean, 0.95, na.rm = TRUE),
-  min7 = min(q7, na.rm = TRUE),
-  max_daily = max(qmean, na.rm = TRUE),
-  cv = sd(qmean, na.rm = TRUE) / mean(qmean, na.rm = TRUE),
-  bfi = sum(base, na.rm = TRUE) / sum(qmean[!is.na(base)], na.rm = TRUE),
-  rb = rb_index(qmean)
-), by = wy]
-annual <- merge(annual, ams_inst[, .(wy, max_inst = peak)], by = "wy")
-setorder(annual, wy)
-
-ann_show <- annual[, .(`Water year` = wy, `Mean` = mean, `Median` = median, `Q5` = q05, `Q95` = q95,
-                       `7-day min` = min7, `Max daily` = max_daily, `Max inst.` = max_inst,
-                       `CV` = cv, `BFI` = bfi, `R-B index` = rb)]
 knitr::kable(ann_show, digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3))
 ```
 
@@ -262,8 +469,6 @@ knitr::kable(ann_show, digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3))
 #| label: fig-annual-mean
 #| fig-height: 4
 #| fig-cap: "Annual mean flow relative to the long-term mean of complete water years. Blue = wetter than average, red = drier."
-lt_mean <- mean(annual$mean)
-annual[, anom := 100 * (mean - lt_mean) / lt_mean]
 ggplot(annual, aes(wy, anom, fill = anom > 0)) +
   geom_col() +
   scale_fill_manual(values = c(`TRUE` = col_main, `FALSE` = col_alt), guide = "none") +
@@ -288,26 +493,11 @@ ggplot(mk, aes(wy, value)) +
 
 ### Trends
 
-Non-parametric Mann-Kendall tests (via Kendall's tau) with Theil-Sen slopes. With only ~`r nrow(annual)` annual values, power is limited and serial correlation is not accounted for; treat as indicative.
+Non-parametric Mann-Kendall tests (via Kendall's tau) with Theil-Sen slopes. With only \~`r nrow(annual)` annual values, power is limited and serial correlation is not accounted for; treat as indicative.
 
 ```{r}
 #| label: tbl-trends
 #| tbl-cap: "Mann-Kendall trend tests (Kendall tau) with Theil-Sen slopes for annual flow metrics."
-sen <- function(x, y) { i <- combn(length(x), 2); median((y[i[2, ]] - y[i[1, ]]) / (x[i[2, ]] - x[i[1, ]])) }
-trend_row <- function(nm, y, x = annual$wy) {
-  ct <- suppressWarnings(cor.test(x, y, method = "kendall"))
-  data.table(Metric = nm, `Sen slope (per yr)` = sen(x, y), tau = unname(ct$estimate), `p-value` = ct$p.value)
-}
-trend_tab <- rbindlist(list(
-  trend_row("Annual mean flow (m³/s)", annual$mean),
-  trend_row("Annual median flow (m³/s)", annual$median),
-  trend_row("Q5 (low flow, m³/s)", annual$q05),
-  trend_row("7-day minimum (m³/s)", annual$min7),
-  trend_row("Q95 (high flow, m³/s)", annual$q95),
-  trend_row("Annual max instantaneous (m³/s)", annual$max_inst),
-  trend_row("Baseflow index", annual$bfi),
-  trend_row("Richards-Baker flashiness", annual$rb)
-))
 knitr::kable(trend_tab, digits = c(0, 4, 3, 3))
 ```
 
@@ -355,98 +545,18 @@ knitr::kable(annual[, .(`Water years` = paste(wy, collapse = ", "), `Mean annual
 
 An **event** is a period when instantaneous flow exceeds a threshold. Two excursions separated by less than **48 hours** below the threshold are merged into one event so that a multi-peaked storm is counted once. For each event we record the peak, its timing, the duration (first to last exceedance), the hours actually above the threshold, the volume above the threshold, the time to peak and the rate of rise.
 
-```{r}
-#| label: events-fun
-min_gap_h <- 48
-inst <- raw[, .(t, q)]
-inst[, dts := pmin(shift(as.numeric(t), type = "lead") - as.numeric(t), 3600, na.rm = TRUE)]
-inst[is.na(dts), dts := 0]
-
-find_events <- function(d, thr, min_gap_h = 48) {
-  d <- copy(d)
-  d[, above := q > thr]
-  d[, run := rleid(above)]
-  runs <- d[above == TRUE, .(start = min(t), end = max(t), peak = max(q), peak_t = t[which.max(q)],
-                               vol = sum((q - thr) * dts), hrs = sum(dts) / 3600), by = run]
-  runs[, gap_h := as.numeric(difftime(start, shift(end), units = "hours"))]
-  runs[, ev := cumsum(is.na(gap_h) | gap_h >= min_gap_h)]
-  ev <- runs[, .(start = min(start), end = max(end), peak = max(peak),
-                 peak_t = peak_t[which.max(peak)], vol_m3 = sum(vol), hrs_above = sum(hrs)), by = ev]
-  ev[, `:=`(
-    dur_h = as.numeric(difftime(end, start, units = "hours")) + 0.25,
-    rise_h = as.numeric(difftime(peak_t, start, units = "hours")),
-    thr = thr
-  )]
-  ev[, rise_rate := (peak - thr) / pmax(rise_h, 0.5)]   # m3/s per hour above the threshold
-  ev[, `:=`(date = as.Date(peak_t, tz = tz))]
-  ev[, `:=`(wy = year(date) + (month(date) >= 7L), month = month(date), doy = yday(date))]
-  ev[, wy_month := factor(mon_lab[(month + 5L) %% 12L + 1L], levels = mon_lab)]
-  ev[, season := factor(fcase(month %in% c(12, 1, 2), "Summer (DJF)", month %in% 3:5, "Autumn (MAM)",
-                              month %in% 6:8, "Winter (JJA)", default = "Spring (SON)"),
-                        levels = c("Spring (SON)", "Summer (DJF)", "Autumn (MAM)", "Winter (JJA)"))]
-  ev[, ev := NULL]
-  ev[]
-}
-```
-
-```{r}
-#| label: ams
-# Annual maximum series (complete water years) and Gumbel (EV1) fit by L-moments
-ams <- ams_inst[wy %in% wy_ok][order(wy)]
-gumbel_lmom <- function(x) {
-  x <- sort(x); n <- length(x)
-  b0 <- mean(x); b1 <- sum((seq_len(n) - 1) / (n - 1) * x) / n
-  l2 <- 2 * b1 - b0
-  alpha <- l2 / log(2)
-  c(xi = b0 - 0.5772157 * alpha, alpha = alpha)
-}
-gumbel_q <- function(par, T) unname(par["xi"] - par["alpha"] * log(-log(1 - 1 / T)))
-gpar <- gumbel_lmom(ams$peak)
-maf <- gumbel_q(gpar, 2.33)   # mean annual flood
-rps <- c(1.58, 2, 5, 10, 20, 50)
-
-set.seed(1)
-boot <- replicate(2000, gumbel_q(gumbel_lmom(sample(ams$peak, replace = TRUE)), rps))
-rp_tab <- data.table(
-  `Return period (yr)` = rps,
-  `AEP (%)` = round(100 / rps, 1),
-  `Peak flow (m³/s)` = gumbel_q(gpar, rps),
-  `Lower 90% CI` = apply(boot, 1, quantile, 0.05),
-  `Upper 90% CI` = apply(boot, 1, quantile, 0.95)
-)
-```
 
 Thresholds examined (all in m³/s):
 
 ```{r}
 #| label: tbl-thr-tab
 #| tbl-cap: "Flow thresholds used to define high-flow events."
-thrs <- c(`Q95` = q95, `3 × median (FRE3)` = fre3, `Q99` = q99, `Mean annual flood` = maf)
-thrs <- thrs[order(thrs)]
 knitr::kable(data.table(Threshold = names(thrs), `Flow (m³/s)` = round(unname(thrs), 2)))
 ```
 
 ```{r}
 #| label: tbl-events-all
 #| tbl-cap: "Summary of high-flow events at each threshold (all records)."
-ev_list <- lapply(thrs, function(x) find_events(inst, x, min_gap_h))
-ev_all <- rbindlist(ev_list, idcol = "threshold")
-ev_all[, threshold := factor(threshold, levels = names(thrs))]
-ev_main <- ev_list[["3 × median (FRE3)"]]
-ev_main[, id := .I]
-
-n_years_rec <- as.numeric(diff(range(raw$t)), units = "days") / 365.25
-ev_sum <- ev_all[, .(
-  Events = .N,
-  `Events per year` = .N / n_years_rec,
-  `Median duration (h)` = median(dur_h),
-  `Max duration (h)` = max(dur_h),
-  `Median hrs above` = median(hrs_above),
-  `Median time to peak (h)` = median(rise_h),
-  `Largest peak (m³/s)` = max(peak)
-), by = .(Threshold = threshold)]
-pct_time <- sapply(thrs, function(x) 100 * mean(raw$q > x))
-ev_sum[, `% time exceeded` := unname(pct_time[as.character(Threshold)])]
 knitr::kable(ev_sum, digits = c(0, 0, 1, 0, 0, 0, 0, 2, 2))
 ```
 
@@ -460,10 +570,6 @@ The **3 × median** threshold (`r sprintf("%.1f", fre3)` m³/s) is used as the p
 #| label: fig-events-per-year
 #| fig-height: 6
 #| fig-cap: "Number of events per water year at each threshold. Dashed line = mean of complete years."
-epy <- ev_all[wy %in% wy_ok, .N, by = .(threshold, wy)]
-epy <- merge(CJ(threshold = factor(names(thrs), levels = names(thrs)), wy = wy_ok), epy, by = c("threshold", "wy"), all.x = TRUE)
-epy[is.na(N), N := 0L]
-epy_mean <- epy[, .(m = mean(N)), by = threshold]
 ggplot(epy, aes(wy, N)) +
   geom_col(fill = col_main) +
   geom_hline(data = epy_mean, aes(yintercept = m), linetype = "dashed", colour = col_alt) +
@@ -560,17 +666,6 @@ ggplot(ev_all, aes(wy_month)) +
 ```{r}
 #| label: tbl-timing-circ
 #| tbl-cap: "Circular mean date of event peaks, concentration R (0 = uniform through the year, 1 = all on the same date) and counts by season."
-circ <- function(doy) {
-  a <- 2 * pi * doy / 365.25
-  C <- mean(cos(a)); S <- mean(sin(a))
-  R <- sqrt(C^2 + S^2)
-  mean_doy <- (atan2(S, C) %% (2 * pi)) * 365.25 / (2 * pi)
-  data.table(`Mean date of peak` = format(as.Date(round(mean_doy), origin = "2021-12-31"), "%d %b"),
-             `Concentration (R)` = R)
-}
-timing <- ev_all[, circ(doy), by = .(Threshold = threshold)]
-season_tab <- dcast(ev_all[, .N, by = .(threshold, season)], threshold ~ season, value.var = "N", fill = 0)
-setnames(season_tab, "threshold", "Threshold")
 knitr::kable(merge(timing, season_tab, by = "Threshold", sort = FALSE),
              digits = 2)
 ```
@@ -734,7 +829,7 @@ Daily means smooth over sub-daily dynamics; the 5-minute data give a faster view
 
 ## Antecedent flow for fish survey dates
 
-Whether a survey followed a recent flood can affect abundance and size structure as much as the average flow regime. The function below returns, for any vector of survey dates, the flow on the day, maxima and means over preceding windows, the number of 3 × median events and the days since the last event and last Q99 event.
+Whether a survey followed a recent flood can affect abundance and size structure as much as the average flow regime. For the survey dates, we summarise: the flow on the day, maxima and means over preceding windows, the number of 3 × median events and the days since the last event and last Q99 event.
 
 ```{r}
 #| label: antecedent
@@ -782,14 +877,6 @@ Three event classes are used (all from the instantaneous series, with the same 4
 ```{r}
 #| label: tbl-flood-classes
 #| tbl-cap: "Flood classes used in the fish survey analysis."
-# Large / Major are defined by return period of the annual maximum (Gumbel fit above), so
-# they are rare enough to discriminate between surveys. A 6 x median threshold was tried
-# first, but it is exceeded in almost every six-month window.
-thr_large <- gumbel_q(gpar, 1.58)   # ~ 1-in-1.6-year flood
-thr_major <- gumbel_q(gpar, 5)      # ~ 1-in-5-year flood
-ev_large <- find_events(inst, thr_large, min_gap_h)
-ev_major <- find_events(inst, thr_major, min_gap_h)
-cls_levels <- c("None", "Moderate", "Large", "Major")
 cls_tab <- data.table(
   Class = c("Moderate", "Large", "Major"),
   Definition = c("Peak above 3 × median (a routine fresh)", "Peak above the 1-in-1.6-year flood (about the median annual maximum)", "Peak above the 1-in-5-year flood"),
@@ -807,35 +894,6 @@ For each survey the table gives the number of floods of each class in the previo
 ```{r}
 #| label: tbl-flood-metrics
 #| tbl-cap: "Flood history before each electrofishing survey. Peaks in m³/s; counts are events in the six months before the survey; coverage = % of those days with valid flow data."
-look <- 183L   # ~ six months, in days
-ev_day <- function(ev) as.Date(ev$peak_t, tz = tz)
-cls_rank <- function(nm, nl, nmod) fcase(nm > 0, "Major", nl > 0, "Large", nmod > 0, "Moderate", default = "None")
-
-flood_metrics <- rbindlist(lapply(fish_dates, function(d) {
-  in_win <- function(ev, days) { x <- ev_day(ev); ev[x < d & x >= d - days] }
-  rmax <- function(days) { w <- raw[date < d & date >= d - days]; if (nrow(w)) max(w$q) else NA_real_ }
-  w6 <- raw[date < d & date >= d - look]
-  pk6 <- w6[which.max(q)]
-  prev_big <- function(ev) { x <- ev_day(ev); x <- x[x < d]; if (length(x)) as.numeric(d - max(x)) else NA_real_ }
-  m6 <- in_win(ev_main, look)
-  n_mod <- nrow(m6); n_lg <- nrow(in_win(ev_large, look)); n_mj <- nrow(in_win(ev_major, look))
-  max6 <- rmax(look)
-  data.table(
-    date = d,
-    cov_6m = mean(!is.na(daily[date < d & date >= d - look, qmean])),
-    n_moderate_6m = n_mod, n_large_6m = n_lg, n_major_6m = n_mj,
-    class_6m = factor(cls_rank(n_mj, n_lg, n_mod), levels = cls_levels),
-    max_peak_3m = rmax(92L), max_peak_6m = max6, max_peak_12m = rmax(365L), max_peak_24m = rmax(730L),
-    max_peak_6m_date = pk6$date,
-    days_max_to_survey = as.numeric(d - pk6$date),
-    rp_max_6m = 1 / (1 - exp(-exp(-(max6 - gpar["xi"]) / gpar["alpha"]))),
-    vol_6m_1e3m3 = sum(m6$vol_m3) / 1000,
-    n_large_12m = nrow(in_win(ev_large, 365L)), n_major_12m = nrow(in_win(ev_major, 365L)),
-    n_large_24m = nrow(in_win(ev_large, 730L)), n_major_24m = nrow(in_win(ev_major, 730L)),
-    days_since_large = prev_big(ev_large), days_since_major = prev_big(ev_major)
-  )
-}))
-
 show <- flood_metrics[, .(
   Survey = format(date), `Coverage (%)` = round(100 * cov_6m),
   `Moderate` = n_moderate_6m, `Large` = n_large_6m, `Major` = n_major_6m, `Class (6 mo)` = class_6m,
@@ -886,13 +944,13 @@ ggplot(flood_metrics, aes(factor(date), max_peak_6m, fill = class_6m)) +
 
 The surveys are described in the University of Waikato (ERI) annual monitoring report for the 2025 survey (ERI Report No. 182, prepared for BOPRC). The points that matter for interpreting them against flow are:
 
--   **Purpose and frequency.** One survey per year since June 2006, carried out as a consent requirement for in-stream alum dosing. Alum dosing began (trial) in mid-2006, was largely shut down 1 July to 10 December 2012, and was reduced in 2021; the report concludes it has no notable effect on fish or koura (kura) and attributes between-year differences mainly to hydrology and habitat.
--   **Sites.** Three 50 m reaches: Site 1 (control, 50-100 m upstream of the alum diffuser), Site 2 (50-100 m downstream) and Site 3 (a further ~400 m downstream, near Lake Road).
--   **Method and metric.** Bank-mounted pulsed-DC electrofishing, two passes, two teams. **CPUE is fish (or koura) caught per hour of fishing**. Absolute density cannot be estimated from the two passes, so CPUE and minimum numbers are used.
--   **Species.** Common bully make up about 97% of the catch. "Trout" in the data are **juvenile (young-of-the-year) trout**; adult trout and eels are rare and not in the spreadsheet.
--   **Habitat.** The stream is highly channelised through Rotorua city with little in-stream or bankside cover and eroding banks. Sites 2 and 3 are mobile pumice sand and gravel. Bully and koura prefer low velocities and stable substrate, so the report's explanation for large year-to-year swings is that **major floods disturb the bed and banks and displace animals**, which is the mechanism tested here.
--   **Sites differ systematically.** Long-term mean bully CPUE is lowest at Site 1 (102 fish per hour) and highest at Site 3 (184); koura CPUE in the spreadsheet is lowest at Site 2 (4.6 per hour) and highest at Site 3 (12.3). The report prints a Site 3 koura long-term mean CPUE of 2.30, which does not match the spreadsheet (12.3) and looks like a typo; the other site means in the report match the data. Averaging sites would mix site effects into the time series, so the analysis below works **per site**, then uses **site-standardised anomalies** to combine them.
--   **Timing.** Surveys were done in different months (autumn to winter in most years, in **December from 2020**). Season matters for CPUE (and for juvenile trout in particular, which are newly recruited in spring), so survey month is shown and checked.
+- **Purpose and frequency.** One survey per year since June 2006, carried out as a consent requirement for in-stream alum dosing. Alum dosing began (trial) in mid-2006, was largely shut down 1 July to 10 December 2012, and was reduced in 2021; the report concludes it has no notable effect on fish or koura (kura) and attributes between-year differences mainly to hydrology and habitat.
+- **Sites.** Three 50 m reaches: Site 1 (control, 50-100 m upstream of the alum diffuser), Site 2 (50-100 m downstream) and Site 3 (a further \~400 m downstream, near Lake Road).
+- **Method and metric.** Bank-mounted pulsed-DC electrofishing, two passes, two teams. **CPUE is fish (or koura) caught per hour of fishing**. Absolute density cannot be estimated from the two passes, so CPUE and minimum numbers are used.
+- **Species.** Common bully make up about 97% of the catch. "Trout" in the data are **juvenile (young-of-the-year) trout**; adult trout and eels are rare and not in the spreadsheet.
+- **Habitat.** The stream is highly channelised through Rotorua city with little in-stream or bankside cover and eroding banks. Sites 2 and 3 are mobile pumice sand and gravel. Bully and koura prefer low velocities and stable substrate, so the report's explanation for large year-to-year swings is that **major floods disturb the bed and banks and displace animals**, which is the mechanism tested here.
+- **Sites differ systematically.** Long-term mean bully CPUE is lowest at Site 1 (102 fish per hour) and highest at Site 3 (184); koura CPUE in the spreadsheet is lowest at Site 2 (4.6 per hour) and highest at Site 3 (12.3). The report prints a Site 3 koura long-term mean CPUE of 2.30, which does not match the spreadsheet (12.3) and looks like a typo; the other site means in the report match the data. Averaging sites would mix site effects into the time series, so the analysis below works **per site**, then uses **site-standardised anomalies** to combine them.
+- **Timing.** Surveys were done in different months (autumn to winter in most years, in **December from 2020**). Season matters for CPUE (and for juvenile trout in particular, which are newly recruited in spring), so survey month is shown and checked.
 
 ```{r}
 #| label: tbl-fish-prep
@@ -1065,61 +1123,15 @@ knitr::kable(mg, digits = 2)
 ::: callout-warning
 ## How far these can be pushed
 
--   There are only **`r length(fish_dates)` surveys**, so correlations have little power and a handful of years dominate. Treat results as hypothesis-generating rather than confirmatory.
--   Only one survey per year, with no replicate reaches, and CPUE (catch per hour of fishing, two passes) is a relative index that can be affected by water clarity, conductivity and operator effort as well as by abundance.
--   About 27 correlations are tested (9 predictors by 3 species), so one or two will look "significant" by chance; none should be read in isolation.
--   "Days since last Major/Large flood" is missing for early surveys because no such flood had occurred since the flow record began (September 2005); those surveys are dropped from the correlation (reduced n), which is a form of censoring.
--   Floods also covary with wet years, which change other things (temperature, nutrients, turbidity) that could also influence catch.
--   Combining sites uses each site's anomaly from its own long-term mean, which assumes all three respond to floods in a similar way; the per-site table checks this.
--   Alum dosing began in 2006, was interrupted in 2012 and reduced in 2021, and Site 1 is a control above the diffuser. The ERI report finds no alum effect, but dosing history is not controlled for here.
--   Survey month moved to December from 2020, so the most recent surveys are seasonally different from the earlier ones (juvenile trout especially).
--   Flood size here is flow at the gauge, not the energy or shear stress at the fish habitat. A flood that is "Major" at the gauge may be less damaging to a sheltered reach.
--   If the aim is to model recovery, the 12 and 24 month predictors and days since the last Major flood are better matches to slow processes (vegetation regrowth, koura and trout recolonisation) than the 6 month window.
+- There are only **`r length(fish_dates)` surveys**, so correlations have little power and a handful of years dominate. Treat results as hypothesis-generating rather than confirmatory.
+- Only one survey per year, with no replicate reaches, and CPUE (catch per hour of fishing, two passes) is a relative index that can be affected by water clarity, conductivity and operator effort as well as by abundance.
+- About 27 correlations are tested (9 predictors by 3 species), so one or two will look "significant" by chance; none should be read in isolation.
+- "Days since last Major/Large flood" is missing for early surveys because no such flood had occurred since the flow record began (September 2005); those surveys are dropped from the correlation (reduced n), which is a form of censoring.
+- Floods also covary with wet years, which change other things (temperature, nutrients, turbidity) that could also influence catch.
+- Combining sites uses each site's anomaly from its own long-term mean, which assumes all three respond to floods in a similar way; the per-site table checks this.
+- Alum dosing began in 2006, was interrupted in 2012 and reduced in 2021, and Site 1 is a control above the diffuser. The ERI report finds no alum effect, but dosing history is not controlled for here.
+- Survey month moved to December from 2020, so the most recent surveys are seasonally different from the earlier ones (juvenile trout especially).
+- Flood size here is flow at the gauge, not the energy or shear stress at the fish habitat. A flood that is "Major" at the gauge may be less damaging to a sheltered reach.
+- If the aim is to model recovery, the 12 and 24 month predictors and days since the last Major flood are better matches to slow processes (vegetation regrowth, koura and trout recolonisation) than the 6 month window.
 :::
 
-## Summary
-
-```{r}
-#| label: summary-numbers
-wet_wy  <- annual[which.max(mean), wy]; dry_wy <- annual[which.min(mean), wy]
-big <- ev_main[which.max(peak)]
-ev_main_year <- ev_main[wy %in% wy_ok, .N, by = wy]
-epy_main <- epy[threshold == "3 × median (FRE3)"]
-tr_sig <- trend_tab[`p-value` < 0.05, Metric]
-q10 <- rp_tab[`Return period (yr)` == 10, `Peak flow (m³/s)`]
-tm <- timing[Threshold == "3 × median (FRE3)"]
-season_ct <- table(ev_main$season)
-tm_R <- tm[["Concentration (R)"]]
-```
-
--   **Regime.** The Utuhina is a baseflow-dominated stream (consistent with groundwater/spring supply) (median `r sprintf("%.2f", dmed)` m³/s; baseflow index ≈ `r sprintf("%.2f", mean(annual$bfi))`) with a narrow low-flow range and brief, sharp storm peaks reaching `r sprintf("%.1f", max(raw$q))` m³/s.
--   **Multi-annual variation.** Annual mean flow ranges from `r sprintf("%.2f", min(annual$mean))` m³/s (WY`r dry_wy`) to `r sprintf("%.2f", max(annual$mean))` m³/s (WY`r wet_wy`), i.e. `r sprintf("%+.0f%% to %+.0f%%", min(annual$anom), max(annual$anom))` of the long-term mean. Metrics with a statistically significant monotonic trend (p < 0.05): `r if (length(tr_sig)) paste(tr_sig, collapse = "; ") else "none"`.
--   **Return frequency.** 3 × median (`r sprintf("%.1f", fre3)` m³/s) events occur on average `r sprintf("%.1f", mean(epy_main$N))` times per water year (range `r min(epy_main$N)`-`r max(epy_main$N)`). Estimated mean annual flood is `r sprintf("%.1f", maf)` m³/s, the 10-year flow `r sprintf("%.1f", q10)` m³/s. The largest event was `r sprintf("%.1f", big$peak)` m³/s on `r format(big$peak_t, "%d %b %Y")`.
--   **Timing.** Events occur in every season with only a weak winter bias (concentration R = `r sprintf("%.2f", tm_R)`, where 0 is uniform through the year): `r paste(names(season_ct), season_ct, sep = " ", collapse = ", ")` 3 × median events respectively. There is no reliably event-free season, so any survey window can follow a recent high flow.
--   **Floods before fish surveys.** In `r nrow(flood_metrics)` surveys, the largest flood in the previous six months was Major (> 1-in-5-year, `r sprintf("%.1f", thr_major)` m³/s) before `r sum(flood_metrics$class_6m == "Major")`, Large (> 1-in-1.6-year, `r sprintf("%.1f", thr_large)` m³/s) before `r sum(flood_metrics$class_6m == "Large")` and only Moderate before `r sum(flood_metrics$class_6m == "Moderate")`. Working with site-standardised CPUE (fish per hour relative to each site's own mean), there is **no consistent relationship** between CPUE of common bully, koura or juvenile trout and the largest flood in the preceding 3-24 months, the number of Large floods, or time since the last Large flood (most |rho| below 0.3; none significant after allowing for the number of tests). The direction is mostly negative for the longer windows, and surveys following a Major flood in the previous 12 months had somewhat lower bully (about 17% below site mean) and trout CPUE than surveys with no Large or Major flood, but with only five such surveys this is weak evidence. The two surveys within six months of a Major flood (2011 and 2018) had much lower juvenile trout CPUE (about half the site mean). Survey month shifts bully CPUE by a similar amount (about +0.26 in Nov-Dec and -0.21 in Aug-Oct in log units) so season is a competing explanation that cannot be separated with 23 annual surveys.
--   **Duration.** The median 3 × median event lasts `r sprintf("%.0f", median(ev_main$dur_h))` h from first to last exceedance (`r sprintf("%.0f", median(ev_main$hrs_above))` h actually above the threshold), peaking `r sprintf("%.0f", median(ev_main$rise_h))` h after the threshold is crossed; 90% last under `r sprintf("%.0f", quantile(ev_main$dur_h, 0.9))` h.
-
-## Exports for joining to fish survey data
-
-```{r}
-#| label: export
-out_dir <- "../data/processed"
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-
-annual_out <- Reduce(function(a, b) merge(a, b, by = "wy", all.x = TRUE),
-                     list(annual, low, dabove[, .(wy, days_above_3xmed = days_above)],
-                          gap_wy[, .(wy, n_events_3xmed = n_events, longest_event_free_d = longest_gap_d)],
-                          smr, gap_summer[, .(wy, n_events_summer, longest_gap_summer_d)]))
-fwrite(annual_out, file.path(out_dir, "utuhina_annual_flow_metrics.csv"))
-fwrite(daily[, .(date, wy, qmean, qmax, qmin, baseflow = base)], file.path(out_dir, "utuhina_daily_flow.csv"))
-fwrite(flood_metrics, file.path(out_dir, "utuhina_flood_history_before_fishing.csv"))
-fwrite(ev_all[, .(threshold, thr_m3s = thr, start, end, peak_t, peak_m3s = peak, dur_h, hrs_above, rise_h, rise_rate, vol_m3, wy, season)],
-       file.path(out_dir, "utuhina_high_flow_events.csv"))
-```
-
-Written to `data/processed/`:
-
--   `utuhina_annual_flow_metrics.csv` – one row per complete water year (flow statistics, low-flow, event counts, summer metrics).
--   `utuhina_daily_flow.csv` – daily mean/max/min flow and baseflow.
--   `utuhina_flood_history_before_fishing.csv` – flood metrics for the six (and 3/12/24) months before each electrofishing survey.
--   `utuhina_high_flow_events.csv` – every event at each threshold, with peak, duration, volume, rise time and season.
