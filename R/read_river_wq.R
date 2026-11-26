@@ -74,6 +74,64 @@ river_wq_inflow_key <- function() {
   )
 }
 
+# River WQ variables that bear on the carbonate system / dissolved inorganic carbon (DIC):
+# pH, alkalinity and bicarbonate/carbonate, hardness and the major ions (ionic strength and the
+# alkalinity balance), conductivity, temperature (for the carbonate equilibria), DOC, oxygen and flow.
+river_dic_vars <- c(
+  "pH", "pH - field", "Alkt", "HCO3 diss", "CO3 diss", "Hard", "Ca diss", "Mg diss",
+  "Na diss", "K diss", "Cl diss", "SO4 diss", "F diss", "Anions", "Cations", "Ion Balance",
+  "SpC", "SpC - field", "Water Temp", "DOC", "DNPOC", "DO", "DO sat", "Discharge"
+)
+
+#' Simple range screening for the river WQ values (nothing is removed, only flagged)
+#'
+#' Returns a data frame with `qc_in_range` (TRUE = passes, FALSE = suspect) and `qc_reason`. The limits are
+#' plausibility checks, not statistical outlier tests: pH < 5.5 or > 9 (potentially suspect, though acidic
+#' swamp-fed streams such as the Waiohewa can be genuinely low), water temperature < 0 or > 30 degC,
+#' DO < 0 or > 20 g/m^3, DO saturation < 0 or > 150 %, specific conductance <= 0 or > 1000 uS/cm,
+#' alkalinity/bicarbonate <= 0, discharge < 0.
+river_wq_screen <- function(variable, value) {
+  lim <- function(v, lo, hi, lo_incl = TRUE) {
+    low <- if (is.na(lo)) FALSE else if (lo_incl) value < lo else value <= lo
+    high <- if (is.na(hi)) FALSE else value > hi
+    list(bad = variable %in% v & (low | high),
+         why = ifelse(low, paste0(if (lo_incl) "< " else "<= ", lo), paste0("> ", hi)))
+  }
+  rules <- list(
+    lim(c("pH", "pH - field"), 5.5, 9),
+    lim("Water Temp", 0, 30),
+    lim("DO", 0, 20),
+    lim("DO sat", 0, 150),
+    lim("SpC", 0, 1000, lo_incl = FALSE), lim("SpC - field", 0, 1000, lo_incl = FALSE),
+    lim(c("Alkt", "HCO3 diss"), 0, NA, lo_incl = FALSE),
+    lim("Discharge", 0, NA)
+  )
+  bad <- Reduce(`|`, lapply(rules, `[[`, "bad"))
+  reason <- rep(NA_character_, length(value))
+  for (r in rules) reason[r$bad & is.na(reason)] <- paste(variable, r$why)[r$bad & is.na(reason)]
+  data.frame(qc_in_range = !bad, qc_reason = reason)
+}
+
+#' River pH, alkalinity and other DIC-related variables in long form, named as the PC10 loads
+#'
+#' Reads the BOPRC river WQ workbook (via [read_river_wq()]) for `river_dic_vars` and adds `river`, the
+#' stream name used in `data/raw/pc10_loads_2026` (see `pc10_inflow_key()`; Awahou, Hamurana, Ngongotaha,
+#' Puarenga, Utuhina, Waingaehe, Waiohewa, Waiowhiro, Waiteti). The lake outlet (Ohau Channel at SH33) is
+#' "Ohau outflow", matching the `outflow_ohau` file. Some rivers have two sampling sites (`site_id`).
+#' `qc_in_range` and `qc_reason` come from [river_wq_screen()]; all values are kept.
+#'
+#' @return tibble: river, site_id, location, datetime (NZST), variable, unit, value, qc_in_range, qc_reason
+read_river_dic_wq <- function(file, keep = river_dic_vars) {
+  key <- river_wq_inflow_key()
+  d <- read_river_wq(file, keep = keep) |>
+    dplyr::left_join(dplyr::select(key, location, river = inflow), by = "location")
+  stopifnot(!anyNA(d$river))
+  d |>
+    dplyr::bind_cols(river_wq_screen(d$variable, d$value)) |>
+    dplyr::select(river, site_id, location, datetime, variable, unit, value, qc_in_range, qc_reason) |>
+    dplyr::arrange(datetime, river, site_id, variable)
+}
+
 #' Correct lake TP for silica/arsenic interference in the 2010-2019 BOPRC method
 #'
 #' Formula and period from the "Metat data" sheet of "Rotorua S2 & S5 data 1989_2026.xlsx"
