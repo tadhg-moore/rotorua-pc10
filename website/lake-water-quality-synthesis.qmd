@@ -68,6 +68,10 @@ hflux   <- tr("hyp_flux")
 hod     <- tr("hod_events")
 hyps    <- tr("lake_hyps")
 burger  <- read.csv(here::here("website", "data", "burger2007_chamber_fluxes.csv"))
+sedobs  <- tr("sed_flux_obs_all")   # Burger et al. 2007 + 2026 chambers (Campbell, pers. comm.; unpublished: summaries only)
+sed26   <- sedobs |> filter(source == "chamber_2026") |> group_by(variable, depth_m) |>
+  summarise(med = median(value), q25 = quantile(value, .25), q75 = quantile(value, .75), n = n(), .groups = "drop")
+s26 <- function(v, d, st = "med") sed26[[st]][sed26$variable == v & sed26$depth_m == d]
 enso    <- tr("enso_indices")
 stab    <- tr("lake_stability")
 sdrv    <- tr("strat_drivers")
@@ -1267,37 +1271,71 @@ Two independent estimates are possible from the monitoring data. Both are compar
 - **Which samples are used.** Pairs of consecutive monthly samples at the same site when the CTD casts show the lake stratified on both dates.
 - **Hypolimnetic mass.** The mean of the HYP and BOT samples multiplied by the volume below the thermocline (from the hypsograph, using the mean thermocline depth of the two casts).
 - **Flux.** The change in that mass divided by the time between samples and by the sediment area below the thermocline.
-- **These are lower bounds.** The lake mixes partially between monthly samples, so some released mass is lost upward. Positive intervals are summarised below.
+- **These are lower bounds.** The lake can mix partially between monthly samples, and released mass is then lost upward. A net loss (negative flux) means the hypolimnion leaked, not that the sediment took nutrients back.
+- **Was the lake stratified throughout?** Each pair is classified from the daily buoy density difference between the two sampling dates:
+  - *continuous*: buoy data on at least 80% of days and at most one mixed day;
+  - *interrupted*: stratification broke down at least once in between;
+  - *no buoy data*: before the buoy record or during gaps (2003–2005, late 2010).
+- **Best estimate.** Gains in *continuous* pairs are the cleanest release rates. Gains in *interrupted* pairs are release minus an unknown loss to mixing, and losses are not release rates at all.
+
+```{r}
+#| label: hyp-flux-class
+# Daily buoy stratification between the two sampling dates of each pair (density difference, is_stratified()).
+b_strat <- buoyth |> group_by(date) |> summarise(d_rho = mean(d_rho, na.rm = TRUE), .groups = "drop") |>
+  filter(is.finite(d_rho))
+pair_cls <- hflux |> distinct(site, date0, date) |>
+  mutate(cls = purrr::pmap(list(date0, date), function(d0, d1) {
+    x <- b_strat |> filter(date >= d0, date <= d1); n <- as.numeric(d1 - d0) + 1
+    s <- is_stratified(x$d_rho); r <- rle(!s)
+    tibble(buoy_cov = nrow(x) / n, f_strat = if (nrow(x)) mean(s) else NA_real_, n_mixed = sum(!s),
+           mixed_spells = sum(r$values))
+  })) |> tidyr::unnest(cls) |>
+  mutate(strat_class = factor(case_when(buoy_cov < 0.5 ~ "no buoy data",
+                                        buoy_cov >= 0.8 & n_mixed <= 1 ~ "continuous",
+                                        TRUE ~ "interrupted"),
+                              c("continuous", "interrupted", "no buoy data")))
+hflux <- hflux |> left_join(pair_cls, by = c("site", "date0", "date"))
+hf_cont <- function(v) hflux$flux[hflux$variable == v & hflux$strat_class == "continuous" & hflux$flux > 0]
+```
 
 ```{r}
 #| label: tbl-hyp-flux
-#| tbl-cap: "Hypolimnetic accumulation fluxes (mg/m²/d) from consecutive stratified CTD and chemistry sampling dates, 2003–2026. n is the number of sample pairs; positive pairs are those where the hypolimnetic mass increased."
+#| tbl-cap: "Hypolimnetic accumulation fluxes (mg/m²/d) from consecutive stratified CTD and chemistry sampling dates, 2003–2026, by whether the buoy shows the lake stratified throughout the interval. Positive pairs are those where the hypolimnetic mass increased. Stratified days is the median share of days between samples with a bottom–surface density difference > 0.2 kg/m³."
 hflux |>
-  group_by(Variable = c(nh4 = "NH4-N", drp = "DRP", tp = "TP")[variable]) |>
+  filter(variable %in% c("nh4", "drp", "tp")) |>
+  mutate(Variable = factor(c(nh4 = "NH4-N", drp = "DRP", tp = "TP")[variable], c("NH4-N", "DRP", "TP"))) |>
+  group_by(Variable, `Buoy record between samples` = strat_class) |>
   summarise(`Pairs (n)` = n(), `Positive` = sum(flux > 0),
-            `Median of positive` = median(flux[flux > 0]),
-            `75th pct of positive` = quantile(flux[flux > 0], .75),
-            `Max` = max(flux),
-            `Thermocline (m)` = median(z_th), `Mean hypolimnion thickness (m)` = median(h_mean),
-            `Interval (d)` = median(days)) |>
+            `Median of positive` = if (any(flux > 0)) median(flux[flux > 0]) else NA_real_,
+            `Range of positive` = if (any(flux > 0)) sprintf("%.1f–%.1f", min(flux[flux > 0]), max(flux[flux > 0])) else "–",
+            `Stratified days (%)` = if (all(is.na(f_strat))) NA_real_ else 100 * median(f_strat, na.rm = TRUE),
+            `Interval (d)` = median(days), .groups = "drop") |>
   kable(digits = 1)
 ```
 
 ```{r}
 #| label: fig-hyp-flux
-#| fig-cap: "Hypolimnetic accumulation fluxes for each pair of stratified sampling dates, against mean bottom temperature. Open symbols are negative (net loss, usually partial mixing between samples)."
+#| fig-cap: "Hypolimnetic accumulation fluxes for each pair of stratified sampling dates, against the share of days between the samples on which the buoy shows the lake stratified. Fill colour is the mean bottom temperature for gains; crosses are net losses. Pairs without buoy data (2003–2005, late 2010) are plotted at the left edge. Every NH4 and DRP net loss falls in an interval when stratification broke down."
 #| fig-height: 4
 hflux |>
   mutate(variable = factor(c(nh4 = "NH4-N", drp = "DRP", tp = "TP")[variable], c("NH4-N", "DRP", "TP")),
-         sign = ifelse(flux > 0, "gain", "loss")) |>
-  ggplot(aes(t_bot, flux, colour = site, shape = sign)) +
+         sign = ifelse(flux > 0, "gain", "loss"),
+         x = ifelse(strat_class == "no buoy data", 0.25, f_strat)) |>
+  ggplot(aes(x, flux, fill = t_bot, shape = sign)) +
   geom_hline(yintercept = 0, colour = "grey60") +
-  geom_point(size = 2) +
+  annotate("rect", xmin = 0.2, xmax = 0.3, ymin = -Inf, ymax = Inf, fill = "grey92") +
+  geom_point(size = 2.2, stroke = 0.5, colour = "grey25") +
   facet_wrap(~variable, scales = "free_y") +
-  scale_shape_manual(values = c(gain = 16, loss = 1)) +
-  scale_colour_manual(values = pal_site) +
-  labs(x = "Bottom temperature (°C)", y = "Flux (mg/m²/d)", colour = NULL, shape = NULL)
+  scale_shape_manual(values = c(gain = 21, loss = 4)) +
+  guides(shape = guide_legend(override.aes = list(fill = "grey60"))) +
+  scale_fill_gradientn(colours = c("#2166AC", "#F7F7F7", "#B2182B"), limits = c(14, 22), oob = scales::squish) +
+  scale_x_continuous(breaks = c(0.25, 0.4, 0.6, 0.8, 1), labels = c("no\nbuoy", "40", "60", "80", "100")) +
+  labs(x = "Days stratified between samples (%)", y = "Flux (mg/m²/d)", fill = "Bottom T (°C)", shape = NULL)
 ```
+
+- **Mixing explains the NH₄ and DRP losses.** Every NH₄ and DRP net loss falls in an *interrupted* interval, and even two mixed days can be enough (December 2021 to January 2022, 93% of days stratified). All `r sum(hflux$variable == "drp" & hflux$strat_class == "continuous")` *continuous* pairs are gains for both. TP can also fall without mixing, because particulate P settles out of the hypolimnion, and one continuous TP pair is a loss.
+- **The continuous pairs give the cleanest rates**: NH₄ `r sprintf("%.0f–%.0f", min(hf_cont("nh4")), max(hf_cont("nh4")))` mg N/m²/d (median `r sprintf("%.0f", median(hf_cont("nh4")))`) and DRP `r sprintf("%.1f–%.1f", min(hf_cont("drp")), max(hf_cont("drp")))` mg P/m²/d (median `r sprintf("%.1f", median(hf_cont("drp")))`). They fall in only four summers between 2016 and 2024, so they cannot show a trend.
+- **Bottom temperature.** A fitted temperature dependence (θ) is not resolved by these few pairs over 16–21 °C (p ≈ 0.5 for both NH₄ and DRP). Normalising the positive pairs to 20 °C, with either that θ or the θ of the oxygen depletion, does not change the conclusions below.
 
 **2. Hypolimnetic oxygen depletion (from the buoys).**
 
@@ -1340,6 +1378,259 @@ pos <- function(v) median(hflux$flux[hflux$variable == v & hflux$flux > 0])
 - The median AHOD is **`r sprintf("%.1f", ahod_med)` g O₂/m²/d** (interquartile range `r sprintf("%.1f–%.1f", ahod_iqr[1], ahod_iqr[2])`).
 - The depletion rate rises with bottom temperature, with θ ≈ `r sprintf("%.3f", theta)` per °C. That is about `r sprintf("%.0f", 100 * (theta^5 - 1))` % faster at 20 °C than at 15 °C. This is one mechanism by which warmer summers strengthen internal loading.
 - The AHOD values sit within the chamber SOD range of Burger et al. (2007), 0.3–4.0 g O₂/m²/d in the light chambers. They are towards the upper part of it, which is expected, because AHOD also includes oxygen demand in the water column below the thermocline.
+- The 2026 chambers (Campbell, pers. comm., 2026; 10, 15 and 20 m) measured lower SOD, with medians of `r sprintf("%.1f", s26("SOD", 10))`, `r sprintf("%.1f", s26("SOD", 15))` and `r sprintf("%.1f", s26("SOD", 20))` g O₂/m²/d (@fig-sod-time).
+
+**Oxygen demand over time.**
+
+```{r}
+#| label: sod-time-data
+sed_cmp <- sedobs |> filter(variable == "SOD")
+# Burger et al. (2007), published: survey x chamber means by depth. 2026 (Campbell, pers. comm., unpublished): medians and IQR by depth only.
+sod_b <- sed_cmp |> filter(source == "burger_2007")
+sod_c <- sed_cmp |> filter(source == "chamber_2026") |> group_by(depth_m) |>
+  summarise(med = median(value), lo = quantile(value, .25), hi = quantile(value, .75), n = n(), .groups = "drop") |>
+  mutate(date = as.Date("2026-03-18") + (depth_m - 15) * 8)
+sod_bs <- sod_b |> group_by(depth_m) |> summarise(med = median(value), lo = quantile(value, .25), hi = quantile(value, .75), n = n(), .groups = "drop")
+hod_t <- hod_ok |> mutate(yr = as.numeric(format(start, "%Y")) + as.numeric(format(start, "%j")) / 365,
+                          ahod20 = ahod / theta^(t_bot - 20))
+sen_slope <- function(x, y) { i <- utils::combn(length(x), 2); s <- (y[i[2, ]] - y[i[1, ]]) / (x[i[2, ]] - x[i[1, ]]); stats::median(s[is.finite(s)]) }
+trend_of <- function(v) {
+  k <- suppressWarnings(cor.test(hod_t$yr, hod_t[[v]], method = "kendall"))
+  b <- sen_slope(hod_t$yr, hod_t[[v]]); a <- stats::median(hod_t[[v]] - b * hod_t$yr)
+  list(slope = b, intercept = a, tau = unname(k$estimate), p = k$p.value)
+}
+tr_raw <- trend_of("ahod"); tr_20 <- trend_of("ahod20")
+hod_per <- hod_t |> mutate(per = cut(yr, c(2007, 2012.5, 2017.5, 2022.5, 2027), labels = c("2007–2012", "2013–2017", "2018–2022", "2023–2026"))) |>
+  group_by(per) |> summarise(n = n(), ahod = median(ahod), ahod20 = median(ahod20), t_bot = median(t_bot), .groups = "drop")
+yr_d <- function(y) as.Date(paste0(floor(y), "-01-01")) + round((y - floor(y)) * 365)
+tr_line <- tibble(yr = range(hod_t$yr)) |> mutate(date = yr_d(yr), ahod = tr_raw$intercept + tr_raw$slope * yr)
+```
+
+```{r}
+#| label: fig-sod-time
+#| fig-cap: "Sediment and hypolimnetic oxygen demand, 2003–2026. Middle: areal hypolimnetic oxygen demand (AHOD) of each buoy-recorded stratified period (r² ≥ 0.5), coloured by mean bottom temperature, with the Theil–Sen trend (dashed: not significant, Kendall p ≥ 0.05). Open grey circles: the same AHOD normalised to 20 °C with the fitted θ. Left: Burger et al. (2007) chamber SOD in the 2003–2004 surveys (published survey means; circles light, triangles dark chambers; bar the median) at 7, 14 and 20 m. Right: 2026 chamber SOD (Campbell, pers. comm., 2026; unpublished): median (diamond) and interquartile range of the light and dark chambers together at each depth; individual chambers are not shown. Chamber SOD is the demand of the sediment alone; AHOD also includes the oxygen demand of the water below the thermocline."
+#| fig-height: 5
+pal_dep <- c(`7` = "#C6DBEF", `10` = "#9ECAE1", `14` = "#4292C6", `15` = "#2171B5", `20` = "#08306B")
+ylim_s <- c(0, max(c(sod_b$value, hod_t$ahod, sod_c$hi), na.rm = TRUE) * 1.05)
+ylab_o2 <- expression("Oxygen demand (g O"[2]*" m"^-2*" d"^-1*")")
+pl <- ggplot(sod_b, aes(factor(depth_m), value)) +
+  stat_summary(fun = median, geom = "crossbar", width = 0.6, linewidth = 0.3, colour = "grey30") +
+  geom_point(aes(fill = factor(depth_m, names(pal_dep)), shape = light), size = 2.3, colour = "grey15",
+             position = position_jitter(width = 0.15, height = 0, seed = 1)) +
+  scale_fill_manual(values = pal_dep, guide = "none") +
+  scale_shape_manual(values = c(Light = 21, Dark = 24), name = "Burger
+chamber") +
+  scale_y_continuous(limits = ylim_s, expand = expansion(mult = c(0, 0.02))) +
+  labs(x = "Depth (m)", y = ylab_o2, title = "Burger et al. (2007)
+2003–2004") +
+  theme(plot.title = element_text(size = 9))
+pm <- ggplot(hod_t, aes(start)) +
+  geom_point(aes(y = ahod20), shape = 1, size = 1.6, colour = "grey55") +
+  geom_point(aes(y = ahod, colour = t_bot), size = 2) +
+  geom_line(data = tr_line, aes(date, ahod), colour = "black", linewidth = 0.8,
+            linetype = if (tr_raw$p < 0.05) "solid" else "dashed") +
+  scale_colour_gradientn(colours = c("#2166AC", "#F7F7F7", "#B2182B"), limits = c(14, 22), oob = scales::squish,
+                         name = "AHOD:
+bottom T (°C)") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+  scale_y_continuous(limits = ylim_s, expand = expansion(mult = c(0, 0.02))) +
+  labs(x = NULL, y = NULL, title = "Hypolimnetic oxygen demand (AHOD), buoys, 2007–2026") +
+  theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+pr <- ggplot(sod_c, aes(factor(depth_m), med)) +
+  geom_linerange(aes(ymin = lo, ymax = hi), colour = "grey15", linewidth = 0.8) +
+  geom_point(aes(fill = factor(depth_m, names(pal_dep))), shape = 23, size = 3.2, colour = "grey15") +
+  scale_fill_manual(values = pal_dep, guide = "none") +
+  scale_y_continuous(limits = ylim_s, expand = expansion(mult = c(0, 0.02))) +
+  labs(x = "Depth (m)", y = NULL, title = "2026 chambers
+(median, IQR)") +
+  theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+(pl | pm | pr) + plot_layout(widths = c(0.9, 4, 0.7), guides = "collect")
+```
+
+- **No significant trend from 2007 to 2026.** The Theil–Sen slope of AHOD is `r sprintf("%+.3f", tr_raw$slope)` g O₂/m²/d per year (Kendall τ = `r sprintf("%.2f", tr_raw$tau)`, p = `r sprintf("%.2f", tr_raw$p)`; @fig-sod-time). After normalising to 20 °C, which removes the effect of warmer or cooler summers, it is `r sprintf("%+.3f", tr_20$slope)` per year (p = `r sprintf("%.2f", tr_20$p)`).
+- **Between periods**, the median AHOD was `r paste(sprintf("%.1f", hod_per$ahod), collapse = ", ")` g O₂/m²/d in `r paste(hod_per$per, collapse = ", ")`. It peaked in the warm 2018–2022 summers of the dosing pause and was lowest since 2023. The 2023–2026 values come from the new buoy's bottom DO (≥ 18 m, from 0.5 m profiles), so part of the step at 2022 may reflect the change of buoy.
+- **The chambers bookend the record.**
+  - Burger et al. (2007) measured median SOD of `r sprintf("%.1f", sod_bs$med[sod_bs$depth_m == 7])`, `r sprintf("%.1f", sod_bs$med[sod_bs$depth_m == 14])` and `r sprintf("%.1f", sod_bs$med[sod_bs$depth_m == 20])` g O₂/m²/d at 7, 14 and 20 m in 2003–2004, before alum dosing. This is similar to the AHOD of 2007–2022.
+  - The 2026 chambers measured `r sprintf("%.1f", sod_c$med[sod_c$depth_m == 10])`, `r sprintf("%.1f", sod_c$med[sod_c$depth_m == 15])` and `r sprintf("%.1f", sod_c$med[sod_c$depth_m == 20])` g O₂/m²/d at 10, 15 and 20 m (medians; Campbell, pers. comm., 2026). That is about a quarter of Burger's values at 15–20 m, and below the 2023–2026 AHOD.
+- **Reading.**
+  - Taken together, the chambers and the recent AHOD point to a lower oxygen demand now than in the 2000s and 2010s. But the buoy record alone shows no steady decline: the change is concentrated after 2022.
+  - The gap between the 2026 chambers and the AHOD is expected. AHOD also includes oxygen use in the water below the thermocline (decomposing algae and organic particles), and chambers measure one place at one time (March 2026).
+  - A lower sediment oxygen demand would be consistent with less organic matter reaching the bed, or with less reduced material (iron and sulphide) in an alum-amended sediment. Neither can be tested with these data.
+
+**Nutrient release over time.**
+
+```{r}
+#| label: nut-time-data
+# Burger et al. (2007), published: survey x chamber means by depth. 2026 (Campbell, pers. comm., unpublished): medians and IQR by depth only.
+nut_b <- sedobs |> filter(source == "burger_2007", variable %in% c("NH4", "PO4"))
+nut_c <- sedobs |> filter(source == "chamber_2026", variable %in% c("NH4", "PO4")) |> group_by(variable, depth_m) |>
+  summarise(med = median(value), lo = quantile(value, .25), hi = quantile(value, .75), n = n(), .groups = "drop")
+nut_h <- hflux |> filter(variable %in% c("nh4", "drp")) |>
+  mutate(variable = c(nh4 = "NH4", drp = "PO4")[variable],
+         pt = factor(case_when(flux <= 0 ~ "net loss (mixing)",
+                               strat_class == "continuous" ~ "gain, stratified throughout",
+                               strat_class == "interrupted" ~ "gain, stratification broke",
+                               TRUE ~ "gain, no buoy data"),
+                     c("gain, stratified throughout", "gain, stratification broke", "gain, no buoy data", "net loss (mixing)")))
+nb_med <- function(v, d) median(nut_b$value[nut_b$variable == v & nut_b$depth_m == d])
+pre11 <- function(v) nut_h$flux[nut_h$variable == v & nut_h$date < as.Date("2011-01-01")]
+n_cont_yr <- n_distinct(hflux$hy[hflux$variable == "drp" & hflux$strat_class == "continuous"])
+```
+
+```{r}
+#| label: fig-nut-time
+#| fig-cap: "Sediment nutrient release, 2003–2026 (pseudo-log axis, which also shows negative values). Top: NH4-N; bottom: DRP (SRP in the chambers). Middle: hypolimnetic accumulation flux for each pair of stratified monthly samples (Sites 2 and 5), coloured by mean bottom temperature, with symbols showing whether the buoy recorded the lake stratified throughout the interval. Large circles (stratified throughout) are the best estimates of release; gains in intervals where stratification broke are biased low; net losses (crosses) are mixing, not release. The grey band is the range of the stratified-throughout pairs. Left: Burger et al. (2007) chamber fluxes in the 2003–2004 surveys (published survey means; circles light, triangles dark chambers; bar the median) at 7, 14 and 20 m. Right: 2026 chamber fluxes (Campbell, pers. comm., 2026; unpublished): median (diamond) and interquartile range of the light and dark chambers together at each depth; individual chambers are not shown."
+#| fig-height: 7
+nut_y <- scale_y_continuous(transform = scales::transform_pseudo_log(sigma = 1),
+                            breaks = c(-50, -10, -1, 0, 1, 10, 100), labels = c(-50, -10, -1, 0, 1, 10, 100))
+nut_row <- function(v, ylab) {
+  rng <- range(c(nut_b$value[nut_b$variable == v], nut_h$flux[nut_h$variable == v], nut_c$hi[nut_c$variable == v]))
+  lims <- coord_cartesian(ylim = rng * 1.15)
+  cont <- range(nut_h$flux[nut_h$variable == v & nut_h$pt == "gain, stratified throughout"])
+  band <- annotate("rect", xmin = -Inf, xmax = Inf, ymin = cont[1], ymax = cont[2], fill = "grey90")
+  pl <- ggplot(filter(nut_b, variable == v), aes(factor(depth_m), value)) +
+    band + geom_hline(yintercept = 0, colour = "grey70") +
+    stat_summary(fun = median, geom = "crossbar", width = 0.6, linewidth = 0.3, colour = "grey30") +
+    geom_point(aes(fill = factor(depth_m, names(pal_dep)), shape = light), size = 2.3, colour = "grey15",
+               position = position_jitter(width = 0.15, height = 0, seed = 1)) +
+    scale_fill_manual(values = pal_dep, guide = "none") +
+    scale_shape_manual(values = c(Light = 21, Dark = 24), name = "Burger\nchamber") +
+    nut_y + lims + labs(x = "Depth (m)", y = ylab, title = "Burger et al. (2007)\n2003–2004") +
+    theme(plot.title = element_text(size = 9))
+  pm <- ggplot(filter(nut_h, variable == v), aes(date, flux)) +
+    band + geom_hline(yintercept = 0, colour = "grey70") +
+    geom_point(aes(fill = t_bot, shape = pt, size = pt), colour = "grey25", stroke = 0.5) +
+    scale_shape_manual(values = c(`gain, stratified throughout` = 21, `gain, stratification broke` = 24,
+                                  `gain, no buoy data` = 22, `net loss (mixing)` = 4), name = "Accumulation", drop = FALSE) +
+    scale_size_manual(values = c(`gain, stratified throughout` = 3.4, `gain, stratification broke` = 2.2,
+                                 `gain, no buoy data` = 2.2, `net loss (mixing)` = 1.8), name = "Accumulation", drop = FALSE) +
+    guides(shape = guide_legend(override.aes = list(fill = "grey60")), size = guide_legend(override.aes = list(fill = "grey60"))) +
+    scale_fill_gradientn(colours = c("#2166AC", "#F7F7F7", "#B2182B"), limits = c(14, 22), oob = scales::squish,
+                           name = "Accumulation:\nbottom T (°C)") +
+    scale_x_date(limits = as.Date(c("2003-07-01", "2026-06-30")), date_breaks = "2 years", date_labels = "%Y") +
+    nut_y + lims + labs(x = NULL, y = NULL, title = "Hypolimnetic accumulation, monthly samples, 2004–2025") +
+    theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  pr <- ggplot(filter(nut_c, variable == v), aes(factor(depth_m), med)) +
+    band + geom_hline(yintercept = 0, colour = "grey70") +
+    geom_linerange(aes(ymin = lo, ymax = hi), colour = "grey15", linewidth = 0.8) +
+    geom_point(aes(fill = factor(depth_m, names(pal_dep))), shape = 23, size = 3.2, colour = "grey15") +
+    scale_fill_manual(values = pal_dep, guide = "none") +
+    nut_y + lims + labs(x = "Depth (m)", y = NULL, title = "2026 chambers\n(median, IQR)") +
+    theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  list(pl, pm, pr)
+}
+r1 <- nut_row("NH4", expression("NH"[4]*"-N release (mg m"^-2*" d"^-1*")"))
+r2 <- nut_row("PO4", expression("DRP release (mg P m"^-2*" d"^-1*")"))
+wrap_plots(c(r1, r2), ncol = 3, widths = c(0.9, 4, 0.7)) + plot_layout(guides = "collect")
+```
+
+- **No trend can be fitted to the accumulation record.** Only `r sum(hflux$variable == "drp" & hflux$strat_class == "continuous")` pairs, in `r n_cont_yr` summers (2016–2024), were stratified throughout. The pre-2011 pairs have no buoy record to show whether they were. A trend fitted to all pairs mostly measures how often the lake mixed between samples, so none is shown (@fig-nut-time).
+- **The best estimates of release.**
+  - The pairs stratified throughout give NH₄ `r sprintf("%.0f–%.0f", min(hf_cont("nh4")), max(hf_cont("nh4")))` mg N/m²/d and DRP `r sprintf("%.1f–%.1f", min(hf_cont("drp")), max(hf_cont("drp")))` mg P/m²/d (grey band).
+  - The 2004–2010 pairs (all gains, no buoy data) overlap the same range: NH₄ `r sprintf("%.0f–%.0f", min(pre11("NH4")), max(pre11("NH4")))` and DRP `r sprintf("%.1f–%.1f", min(pre11("PO4")), max(pre11("PO4")))`. There is no sign that summer release under stratification was higher in the first years of alum dosing than in 2016–2024.
+- **The chambers bookend the record.**
+  - Burger et al. (2007) median release was `r sprintf("%.0f", nb_med("NH4", 7))`, `r sprintf("%.0f", nb_med("NH4", 14))` and `r sprintf("%.0f", nb_med("NH4", 20))` mg N/m²/d and `r sprintf("%.1f", nb_med("PO4", 7))`, `r sprintf("%.1f", nb_med("PO4", 14))` and `r sprintf("%.0f", nb_med("PO4", 20))` mg P/m²/d at 7, 14 and 20 m. NH₄ is above every accumulation estimate. Shallow DRP is at the top of the accumulation range, and the 20 m DRP is well above it.
+  - The 2026 chambers measured `r sprintf("%.0f", s26("NH4", 10))`, `r sprintf("%.0f", s26("NH4", 15))` and `r sprintf("%.0f", s26("NH4", 20))` mg N/m²/d and `r sprintf("%.1f", s26("PO4", 10))`, `r sprintf("%.1f", s26("PO4", 15))` and `r sprintf("%.1f", s26("PO4", 20))` mg P/m²/d at 10, 15 and 20 m (medians; Campbell, pers. comm., 2026). NH₄ is about 6–8× lower than Burger's at each depth and at the low end of the stratified-throughout range. DRP is about 1.5–4× lower at 10–15 m and about 9× lower at 20 m, in the middle of the accumulation range.
+- **Reading.**
+  - The chambers show a large fall in NH₄ release, a smaller fall in shallow DRP and the largest fall in deep DRP between 2003–2004 and 2026. That fits an alum-capped deep sediment, together with the lower oxygen demand (@fig-sod-time).
+  - The lake-scale accumulation does not show the same fall. DRP release in intervals stratified throughout reached about 5–8 mg P/m²/d in 2020 (Site 2), 2021/22 and 2024, as high as in 2004–2010. Prolonged stratification can therefore still drive substantial P release, even if the March 2026 chambers, under oxygenated bottom water, measured little.
+  - Chambers and accumulation measure different things (one site and day against the lake hypolimnion over a month), so differences of a factor of 2–3 between them are not meaningful on their own.
+
+**Is there a trend in release, and are the chambers comparable?** @fig-nut-time-lin repeats @fig-nut-time on a linear axis with the net losses left out, since they measure mixing rather than release.
+
+```{r}
+#| label: nut-lin-data
+nut_g <- nut_h |> filter(flux > 0) |>
+  mutate(yr = as.numeric(format(date, "%Y")) + as.numeric(format(date, "%j")) / 365)
+sen_fit <- function(d) {
+  k <- suppressWarnings(cor.test(d$yr, d$flux, method = "kendall", exact = FALSE))
+  b <- sen_slope(d$yr, d$flux); a <- stats::median(d$flux - b * d$yr)
+  tibble(n = nrow(d), slope = b, intercept = a, tau = unname(k$estimate), p = k$p.value)
+}
+nut_gtr <- bind_rows(
+  nut_g |> group_by(variable) |> group_modify(~ sen_fit(.x)) |> mutate(set = "all gains"),
+  nut_g |> filter(pt != "gain, stratification broke") |> group_by(variable) |> group_modify(~ sen_fit(.x)) |>
+    mutate(set = "excluding interrupted")) |> ungroup()
+gtr <- function(v, set, col) nut_gtr[[col]][nut_gtr$variable == v & nut_gtr$set == set]
+nut_gline <- nut_gtr |> filter(set == "all gains") |>
+  left_join(nut_g |> group_by(variable) |> summarise(y0 = min(yr), y1 = max(yr)), by = "variable") |>
+  tidyr::pivot_longer(c(y0, y1), values_to = "yr") |>
+  mutate(date = yr_d(yr), flux = intercept + slope * yr, sig = p < 0.05)
+# Same-month comparison: Burger's January 2004 survey and the accumulation pairs of 17 Dec 2003 - 22 Jan 2004
+jan04_b <- nut_b |> filter(format(date, "%Y-%m") == "2004-01")
+jan04_h <- nut_g |> filter(date == as.Date("2004-01-22"))
+j04 <- function(v, src) { x <- if (src == "b") jan04_b$value[jan04_b$variable == v] else jan04_h$flux[jan04_h$variable == v]
+  sprintf(if (v == "NH4") "%.0f–%.0f" else "%.1f–%.1f", min(x), max(x)) }
+j04r <- function(v) median(jan04_b$value[jan04_b$variable == v]) / median(jan04_h$flux[jan04_h$variable == v])
+```
+
+```{r}
+#| label: fig-nut-time-lin
+#| fig-cap: "As @fig-nut-time on a linear axis, with net losses (mixing) left out. Middle: hypolimnetic accumulation gains, symbols as in @fig-nut-time, with the Theil–Sen trend of all gains (dashed: not significant). Outlined in black: Burger's January 2004 survey (left) and the accumulation pairs of 17 December 2003 to 22 January 2004 (middle), the one time the two methods overlap. The DRP axis is cut at 35 mg P/m²/d; the two higher Burger values and the 20 m median (43) are off the axis. Right: 2026 chambers (Campbell, pers. comm., 2026; unpublished), median and interquartile range by depth."
+#| fig-height: 7
+lin_row <- function(v, ylab, cap = NA) {
+  yl <- c(0, if (is.na(cap)) max(c(nut_b$value[nut_b$variable == v], nut_g$flux[nut_g$variable == v], nut_c$hi[nut_c$variable == v])) * 1.05 else cap)
+  lims <- coord_cartesian(ylim = yl)
+  ysc <- scale_y_continuous(expand = expansion(mult = c(0, 0.02)))
+  cont <- range(nut_g$flux[nut_g$variable == v & nut_g$pt == "gain, stratified throughout"])
+  band <- annotate("rect", xmin = -Inf, xmax = Inf, ymin = cont[1], ymax = cont[2], fill = "grey90")
+  bb <- filter(nut_b, variable == v) |> mutate(jan04 = format(date, "%Y-%m") == "2004-01", x = factor(depth_m))
+  off <- bb |> filter(!is.na(cap), value > cap)
+  pl <- ggplot(bb, aes(x, value)) + band +
+    stat_summary(fun = median, geom = "crossbar", width = 0.6, linewidth = 0.3, colour = "grey30") +
+    geom_point(aes(fill = factor(depth_m, names(pal_dep)), shape = light, colour = jan04, stroke = ifelse(jan04, 1.1, 0.4)),
+               size = 2.3, position = position_jitter(width = 0.15, height = 0, seed = 1)) +
+    scale_colour_manual(values = c(`TRUE` = "black", `FALSE` = "grey45"), guide = "none") +
+    scale_fill_manual(values = pal_dep, guide = "none") +
+    scale_shape_manual(values = c(Light = 21, Dark = 24), name = "Burger\nchamber") +
+    ysc + lims + labs(x = "Depth (m)", y = ylab, title = "Burger et al. (2007)\n2003–2004") +
+    theme(plot.title = element_text(size = 9))
+  if (nrow(off)) pl <- pl + annotate("text", x = 2, y = cap * 0.995, vjust = 1, size = 2.5,
+                                     label = paste0("20 m off scale:
+", paste(sprintf("%.0f", sort(off$value, decreasing = TRUE)), collapse = ", ")))
+  gm <- filter(nut_g, variable == v)
+  pm <- ggplot(gm, aes(date, flux)) + band +
+    geom_line(data = filter(nut_gline, variable == v), aes(date, flux, linetype = sig), colour = "black", linewidth = 0.8) +
+    geom_point(data = filter(gm, date == as.Date("2004-01-22")), shape = 21, size = 5, colour = "black", stroke = 1.1) +
+    geom_point(aes(fill = t_bot, shape = pt, size = pt), colour = "grey25", stroke = 0.5) +
+    scale_linetype_manual(values = c(`TRUE` = "solid", `FALSE` = "dashed"), guide = "none") +
+    scale_shape_manual(values = c(`gain, stratified throughout` = 21, `gain, stratification broke` = 24,
+                                  `gain, no buoy data` = 22), name = "Accumulation") +
+    scale_size_manual(values = c(`gain, stratified throughout` = 3.4, `gain, stratification broke` = 2.2,
+                                 `gain, no buoy data` = 2.2), name = "Accumulation") +
+    guides(shape = guide_legend(override.aes = list(fill = "grey60")), size = guide_legend(override.aes = list(fill = "grey60"))) +
+    scale_fill_gradientn(colours = c("#2166AC", "#F7F7F7", "#B2182B"), limits = c(14, 22), oob = scales::squish,
+                         name = "Accumulation:\nbottom T (°C)") +
+    scale_x_date(limits = as.Date(c("2003-07-01", "2026-06-30")), date_breaks = "2 years", date_labels = "%Y") +
+    ysc + lims + labs(x = NULL, y = NULL, title = "Hypolimnetic accumulation gains, monthly samples, 2004–2025") +
+    theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  pr <- ggplot(filter(nut_c, variable == v), aes(factor(depth_m), med)) + band +
+    geom_linerange(aes(ymin = lo, ymax = hi), colour = "grey15", linewidth = 0.8) +
+    geom_point(aes(fill = factor(depth_m, names(pal_dep))), shape = 23, size = 3.2, colour = "grey15") +
+    scale_fill_manual(values = pal_dep, guide = "none") +
+    ysc + lims + labs(x = "Depth (m)", y = NULL, title = "2026 chambers\n(median, IQR)") +
+    theme(plot.title = element_text(size = 9), axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  list(pl, pm, pr)
+}
+l1 <- lin_row("NH4", expression("NH"[4]*"-N release (mg m"^-2*" d"^-1*")"))
+l2 <- lin_row("PO4", expression("DRP release (mg P m"^-2*" d"^-1*")"), cap = 35)
+wrap_plots(c(l1, l2), ncol = 3, widths = c(0.9, 4, 0.7)) + plot_layout(guides = "collect")
+```
+
+- **Trend in release (gains only).**
+  - NH₄: Theil–Sen slope `r sprintf("%+.2f", gtr("NH4", "all gains", "slope"))` mg N/m²/d per year (n = `r gtr("NH4", "all gains", "n")`, Kendall p = `r sprintf("%.2f", gtr("NH4", "all gains", "p"))`).
+  - DRP: `r sprintf("%+.2f", gtr("PO4", "all gains", "slope"))` mg P/m²/d per year (n = `r gtr("PO4", "all gains", "n")`, p = `r sprintf("%.2f", gtr("PO4", "all gains", "p"))`).
+  - Leaving out the gains in intervals where stratification broke (which are biased low) gives p = `r sprintf("%.2f", gtr("NH4", "excluding interrupted", "p"))` for NH₄ and p = `r sprintf("%.2f", gtr("PO4", "excluding interrupted", "p"))` for DRP.
+  - So release during stratified intervals shows no trend over 2004–2025. The highest DRP values (above 5 mg P/m²/d) occur both at the start (January 2004) and in 2020–2025. The low DRP gains of 2010–2018 are mostly from intervals that were partly mixed or had no buoy data.
+- **Are the chambers comparable? The one direct overlap.**
+  - Burger's January 2004 survey (27 January) fell within days of an accumulation interval (17 December 2003 to 22 January 2004, both sites, no buoy record).
+  - Chambers then measured NH₄ `r j04("NH4", "b")` mg N/m²/d and DRP `r j04("PO4", "b")` mg P/m²/d across depths and light and dark chambers. Accumulation over the same weeks was NH₄ `r j04("NH4", "h")` and DRP `r j04("PO4", "h")`.
+  - The median chamber value was therefore about `r sprintf("%.0f", j04r("NH4"))`× the lake-scale accumulation for NH₄ and about `r sprintf("%.0f", j04r("PO4"))`× for DRP at the same time. Only the 14 m dark chamber NH₄ was as low as the accumulation.
+- **Reading.**
+  - Part of that gap is expected. Accumulation is a lower bound, because some release is lost upward even in a stratified month and some NH₄ is nitrified. Chambers also isolate the bed from the overlying water, and enclosed water can become anoxic faster than the open hypolimnion.
+  - So Burger's chamber rates probably overstate lake-wide release at that time, especially for NH₄ and at 20 m. Comparing Burger with the 2026 chambers directly (about 9× lower deep DRP) assumes both studies ran their chambers the same way.
+  - The accumulation record does not show the decline the two chamber studies suggest: lake-scale summer release under stratification was similar in 2020–2025 to January 2004.
+  - The 2026 chambers sit inside the range of the recent accumulation values for DRP and at its low end for NH₄. They are therefore consistent with the lake-scale estimates, but one occasion in March, under oxygenated water, is unlikely to represent the peak of a long stratified period.
 
 **Converting oxygen demand to nutrient release.** If the oxygen demand were all due to the mineralisation of Redfield organic matter (O₂:N:P = 138:16:1 by mole), the median AHOD would correspond to:
 
@@ -1350,22 +1641,26 @@ This is an upper-bound-type estimate for N. For P it is an estimate of mineralis
 
 ```{r}
 #| label: tbl-flux-compare
-#| tbl-cap: "Comparison of internal-load flux estimates for Lake Rotorua (mg/m²/d, O₂ in g/m²/d). Chamber values are the range of the light-chamber means of Burger et al. (2007), 2003–2004, at 7–20 m depth. The aed.nml values are the current model settings (three sediment zones)."
+#| tbl-cap: "Comparison of internal-load flux estimates for Lake Rotorua (mg/m²/d, O₂ in g/m²/d). Burger et al. (2007): range of the light-chamber means, 2003–2004, at 7–20 m. 2026 chambers (Campbell, pers. comm., 2026; unpublished): medians of the light and dark chambers at 10, 15 and 20 m, in that order. The aed.nml values are the current model settings (three sediment zones)."
 bl <- burger |> filter(chamber == "light")
 fmt_r <- function(x, d = 0) paste(formatC(min(x), format = "f", digits = d), "–", formatC(max(x), format = "f", digits = d))
 tibble::tribble(
   ~Method, ~`NH4-N`, ~`DRP / SRP`, ~`O2 demand`,
   "Hypolimnetic accumulation, this study (median of positive intervals; lower bound)",
     sprintf("%.0f", pos("nh4")), sprintf("%.1f", pos("drp")), "–",
-  "Hypolimnetic accumulation, 75th percentile / max",
-    sprintf("%.0f / %.0f", quantile(hflux$flux[hflux$variable == "nh4" & hflux$flux > 0], .75), max(hflux$flux[hflux$variable == "nh4"])),
-    sprintf("%.1f / %.1f", quantile(hflux$flux[hflux$variable == "drp" & hflux$flux > 0], .75), max(hflux$flux[hflux$variable == "drp"])), "–",
+  "Hypolimnetic accumulation, pairs stratified throughout (buoy), median (range); best estimate",
+    sprintf("%.0f (%.0f–%.0f)", median(hf_cont("nh4")), min(hf_cont("nh4")), max(hf_cont("nh4"))),
+    sprintf("%.1f (%.1f–%.1f)", median(hf_cont("drp")), min(hf_cont("drp")), max(hf_cont("drp"))), "–",
   "Oxygen depletion (AHOD), buoys, median",
     sprintf("%.0f (Redfield)", ahod_med * 1000 * gN_per_gO2), sprintf("%.1f (Redfield)", ahod_med * 1000 * gP_per_gO2),
     sprintf("%.1f", ahod_med),
   "Burger et al. 2007 chambers (light, 7–20 m)",
     paste(fmt_r(bl$nh4_phase2_mg_m2_d), "(phase 2);", fmt_r(bl$nh4_phase1_mg_m2_d), "(phase 1)"),
     fmt_r(bl$srp_mg_m2_d, 1), fmt_r(bl$sod_g_m2_d, 2),
+  "2026 chambers, Campbell (pers. comm., 2026), medians at 10 / 15 / 20 m",
+    sprintf("%.0f / %.0f / %.0f", s26("NH4", 10), s26("NH4", 15), s26("NH4", 20)),
+    sprintf("%.1f / %.1f / %.1f", s26("PO4", 10), s26("PO4", 15), s26("PO4", 20)),
+    sprintf("%.2f / %.2f / %.2f", s26("SOD", 10), s26("SOD", 15), s26("SOD", 20)),
   "Model aed.nml (fsed_amm, fsed_frp, fsed_oxy; zones 1–3)",
     paste(sprintf("%.0f", c(6.654, 2.408, 0.616) * 14.007), collapse = ", "),
     paste(sprintf("%.1f", c(0.0602, 0.0657, 0.0254) * 30.974), collapse = ", "),
@@ -1376,25 +1671,29 @@ tibble::tribble(
 **How the estimates compare.**
 
 - **NH₄.**
-  - The accumulation estimates (median about 25 mg N/m²/d, up to about 80) are at the low end of the chamber rates (33–224 mg N/m²/d in the secondary phase).
+  - The accumulation estimates in intervals stratified throughout (median `r sprintf("%.0f", median(hf_cont("nh4")))` mg N/m²/d, range `r sprintf("%.0f–%.0f", min(hf_cont("nh4")), max(hf_cont("nh4")))`) are at the low end of the chamber rates (33–224 mg N/m²/d in the secondary phase).
   - The oxygen-demand-based estimate (about 78 mg N/m²/d) sits within them.
   - Together they put summer NH₄ release in Rotorua at roughly **25–100 mg N/m²/d**, so the model's zone-1 value (about 93 mg N/m²/d) is plausible.
   - The two deeper zones (34 and 9 mg N/m²/d) look low.
+  - The 2026 chambers (`r sprintf("%.0f", min(sed26$med[sed26$variable == "NH4"]))`–`r sprintf("%.0f", max(sed26$med[sed26$variable == "NH4"]))` mg N/m²/d, medians by depth) are below both the accumulation estimate and Burger's rates. Measured release in March 2026, under oxygenated water, was low.
 - **DRP.**
-  - Accumulation (2004–2024) gives about 2–5 mg P/m²/d (maximum about 8 mg P/m²/d, in 2019/20 and 2020/21).
+  - Accumulation in intervals stratified throughout gives `r sprintf("%.1f–%.1f", min(hf_cont("drp")), max(hf_cont("drp")))` mg P/m²/d (median `r sprintf("%.1f", median(hf_cont("drp")))`; @tbl-hyp-flux). Positive pairs overall have a median of `r sprintf("%.1f", pos("drp"))`, pulled down by intervals in which the lake mixed.
   - That is at the lower end of the 2003–2004 chamber range (2–86 mg P/m²/d in the light chambers), which was measured before alum dosing.
-  - The model's `fsed_frp` (0.8–2 mg P/m²/d) is at or below the lowest observed value. It may be too low unless the model supplies P to the sediment by another route (settling and mineralisation, or the alum-bound pool).
-- **Oxygen.** AHOD (interquartile range about 1.0–2.1 g O₂/m²/d) is consistent with the chamber SOD. It is above `fsed_oxy` (0.75–0.96 g O₂/m²/d), but the difference is mostly accounted for by water-column demand below the thermocline.
+  - The 2026 chambers (medians `r sprintf("%.1f", s26("PO4", 10))`, `r sprintf("%.1f", s26("PO4", 15))` and `r sprintf("%.1f", s26("PO4", 20))` mg P/m²/d at 10, 15 and 20 m) agree with the accumulation estimate. At 20 m they are about a tenth of Burger's value, consistent with an alum-capped sediment.
+  - The model's `fsed_frp` (0.8–2 mg P/m²/d) is at or below the lowest observed value, and well below the median of the intervals stratified throughout. It may be too low unless the model supplies P to the sediment by another route (settling and mineralisation, or the alum-bound pool).
+- **Oxygen.** AHOD (interquartile range about 1.0–2.1 g O₂/m²/d) is consistent with Burger's chamber SOD and above the 2026 chamber SOD (0.4–1.0 g O₂/m²/d). It is above `fsed_oxy` (0.75–0.96 g O₂/m²/d), but the difference is mostly accounted for by water-column demand below the thermocline (@fig-sod-time).
 
 ```{r}
 #| label: tbl-internal-annual
-#| tbl-cap: "Order-of-magnitude summer internal load: release rate × sediment area below the median summer thermocline × stratified days (December–February, buoy). Low uses the median hypolimnetic accumulation flux and high the 75th percentile (DRP), or the Redfield-equivalent of AHOD (NH4). Compare with the external loads (alum_storm_central)."
+#| tbl-cap: "Order-of-magnitude summer internal load: release rate × sediment area below the median summer thermocline × stratified days (December–February, buoy). DRP: low uses the median of all positive hypolimnetic accumulation pairs and high the median of the pairs stratified throughout (buoy). NH4: low uses the median of the pairs stratified throughout and high the Redfield-equivalent of AHOD. Compare with the external loads (alum_storm_central)."
 a_sed <- hyps_area(hyps, median(bdaily$thermo_depth[as.integer(format(bdaily$date, "%m")) %in% c(12, 1, 2)], na.rm = TRUE))
-q_drp <- quantile(hflux$flux[hflux$variable == "drp" & hflux$flux > 0], c(.5, .75))
-f_nh4 <- c(pos("nh4"), ahod_med * 1000 * gN_per_gO2)
+q_drp <- c(pos("drp"), median(hf_cont("drp")))
+f_nh4 <- c(median(hf_cont("nh4")), ahod_med * 1000 * gN_per_gO2)
 ext <- loads |> filter(scenario == "alum_storm_central") |> select(hy, ext_tp = tp, ext_tn = tn)
-sstrat |>
-  inner_join(ext, by = "hy") |>
+int_ld <- sstrat |> inner_join(ext, by = "hy") |>
+  mutate(drp_lo = strat_days * a_sed * q_drp[1] / 1e9, drp_hi = strat_days * a_sed * q_drp[2] / 1e9,
+         nh4_lo = strat_days * a_sed * f_nh4[1] / 1e9, nh4_hi = strat_days * a_sed * f_nh4[2] / 1e9)
+int_ld |>
   transmute(`Hydrological year` = hy, `Stratified days` = round(strat_days),
             `DRP (t P)` = sprintf("%.1f–%.1f", strat_days * a_sed * q_drp[1] / 1e9, strat_days * a_sed * q_drp[2] / 1e9),
             `External TP (t/y)` = round(ext_tp, 1),
@@ -1407,13 +1706,13 @@ sstrat |>
 
 - Sediment area below the median summer thermocline: about `r sprintf("%.0f", a_sed / 1e6)` km².
 - Release rates:
-  - DRP: `r sprintf("%.1f–%.1f", q_drp[1], q_drp[2])` mg/m²/d
-  - NH₄: `r sprintf("%.0f–%.0f", f_nh4[1], f_nh4[2])` mg N/m²/d
+  - DRP: `r sprintf("%.1f–%.1f", q_drp[1], q_drp[2])` mg/m²/d (all positive pairs to pairs stratified throughout)
+  - NH₄: `r sprintf("%.0f–%.0f", f_nh4[1], f_nh4[2])` mg N/m²/d (pairs stratified throughout to the Redfield equivalent of AHOD)
 
 **What the scaling suggests.**
 
-- **P.** Each summer's stratified periods release in the order of 3–15 t of DRP in most years, against an external TP load of about 28–60 t/y. It was lowest in the barely stratified 2009/10 (about 1–2 t) and highest in 2021/22 (about 7–16 t).
-- **N.** NH₄-N release is in the order of 30–230 t, against an external TN load of 380–815 t/y.
+- **P.** Each summer's stratified periods release in the order of `r sprintf("%.0f–%.0f", quantile(int_ld$drp_lo, .1), quantile(int_ld$drp_hi, .9))` t of DRP in most years, against an external TP load of about `r sprintf("%.0f–%.0f", min(int_ld$ext_tp), max(int_ld$ext_tp))` t/y. It was lowest in hydrological year `r int_ld$hy[which.min(int_ld$strat_days)]` (about `r sprintf("%.1f–%.1f", min(int_ld$drp_lo), min(int_ld$drp_hi))` t) and highest in `r int_ld$hy[which.max(int_ld$strat_days)]` (about `r sprintf("%.0f–%.0f", max(int_ld$drp_lo), max(int_ld$drp_hi))` t).
+- **N.** NH₄-N release is in the order of `r sprintf("%.0f–%.0f", quantile(int_ld$nh4_lo, .1), quantile(int_ld$nh4_hi, .9))` t, against an external TN load of `r sprintf("%.0f–%.0f", min(int_ld$ext_tn), max(int_ld$ext_tn))` t/y.
 
 **Limits of these totals.**
 
@@ -1486,26 +1785,27 @@ zsv <- function(zn, s) { x <- zsum$v[zsum$zone == zn]; c(med = median(x), q25 = 
 
 ```{r}
 #| label: tbl-zone-release
-#| tbl-cap: "Release rates by depth zone. Burger et al. (2007): chamber medians over the four 2003–2004 surveys (light and dark chambers), before alum dosing; NH4 in the secondary (longer-term) phase. Oxygen, this study: the upper bound (all of a layer's DO depletion assigned to its own sediment), median and interquartile range over the buoy's stratified periods 2022–2026, and the lake-wide AHOD (2007–2026). Nutrients, this study: two-layer accumulation from the monthly samples, 2003–2026 (median and interquartile range of the stratified sample pairs; negative values are net losses between samples)."
+#| tbl-cap: "Release rates by depth zone. Burger et al. (2007): chamber medians over the four 2003–2004 surveys (light and dark chambers), before alum dosing; NH4 in the secondary (longer-term) phase. 2026 chambers (Campbell, pers. comm., 2026; unpublished): medians of the light and dark chambers at 10, 15 and 20 m, as SOD (g O₂/m²/d) / NH4 / PO4 (mg/m²/d). Oxygen, this study: the upper bound (all of a layer's DO depletion assigned to its own sediment), median and interquartile range over the buoy's stratified periods 2022–2026, and the lake-wide AHOD (2007–2026). Nutrients, this study: two-layer accumulation from the monthly samples, 2003–2026 (median and interquartile range of the stratified sample pairs; negative values are net losses between samples)."
 fq <- function(m, a, b, d = 1) sprintf(paste0("%.", d, "f (%.", d, "f to %.", d, "f)"), m, a, b)
+c26 <- function(d) sprintf("%.2f / %.0f / %.1f", s26("SOD", d), s26("NH4", d), s26("PO4", d))
 tibble::tribble(
-  ~Zone, ~`Burger SOD, light / dark (g O₂/m²/d)`, ~`Burger NH4 (mg N/m²/d)`, ~`Burger SRP (mg P/m²/d)`,
+  ~Zone, ~`Burger SOD, light / dark (g O₂/m²/d)`, ~`Burger NH4 (mg N/m²/d)`, ~`Burger SRP (mg P/m²/d)`, ~`2026 chambers: SOD / NH4 / PO4`,
   ~`O₂ upper bound, this study (g/m²/d)`, ~`NH4, two-layer (mg N/m²/d)`, ~`DRP, two-layer (mg P/m²/d)`,
-  "7–10 m (Burger 7 m)",
-    sod_lbl(7), sprintf("%.0f", bzv(7, "light", "nh4")), sprintf("%.1f", bzv(7, "light", "srp")),
+  "7–10 m (Burger 7 m; 2026 at 10 m)",
+    sod_lbl(7), sprintf("%.0f", bzv(7, "light", "nh4")), sprintf("%.1f", bzv(7, "light", "srp")), c26(10),
     "not measurable (above the thermocline)", "not measurable", "not measurable",
-  "14–15 m (Burger 14 m)",
-    sod_lbl(14), sprintf("%.0f", bzv(14, "light", "nh4")), sprintf("%.1f", bzv(14, "light", "srp")),
+  "14–15 m (Burger 14 m; 2026 at 15 m)",
+    sod_lbl(14), sprintf("%.0f", bzv(14, "light", "nh4")), sprintf("%.1f", bzv(14, "light", "srp")), c26(15),
     sprintf("%s, n = %d", fq(zsv("15 m (12–17 m)", "med"), zsv("15 m (12–17 m)", "q25"), zsv("15 m (12–17 m)", "q75"), 2), zsv("15 m (12–17 m)", "n")),
     sprintf("%s, upper layer %.0f–%.0f m", fq(nfv("nh4", "upper"), nfv("nh4", "upper", "q25"), nfv("nh4", "upper", "q75"), 0), nfv("nh4", "upper", "z0"), nfv("nh4", "upper", "z1")),
     fq(nfv("drp", "upper"), nfv("drp", "upper", "q25"), nfv("drp", "upper", "q75")),
-  "20 m (Burger 20 m)",
-    sod_lbl(20), sprintf("%.0f", bzv(20, "light", "nh4")), sprintf("%.1f", bzv(20, "light", "srp")),
+  "20 m (Burger 20 m; 2026 at 20 m)",
+    sod_lbl(20), sprintf("%.0f", bzv(20, "light", "nh4")), sprintf("%.1f", bzv(20, "light", "srp")), c26(20),
     sprintf("%s, n = %d", fq(zsv("20 m (17–21 m)", "med"), zsv("20 m (17–21 m)", "q25"), zsv("20 m (17–21 m)", "q75"), 2), zsv("20 m (17–21 m)", "n")),
     sprintf("%s, lower layer %.0f m–bed", fq(nfv("nh4", "lower"), nfv("nh4", "lower", "q25"), nfv("nh4", "lower", "q75"), 0), nfv("nh4", "lower", "z0")),
     fq(nfv("drp", "lower"), nfv("drp", "lower", "q25"), nfv("drp", "lower", "q75")),
   "Whole hypolimnion (lake-wide)",
-    "–", "–", "–", sprintf("AHOD %.1f", ahod_med), sprintf("%.0f (median of positive intervals)", pos("nh4")), sprintf("%.1f", pos("drp"))
+    "–", "–", "–", "–", sprintf("AHOD %.1f", ahod_med), sprintf("%.0f (median of positive intervals)", pos("nh4")), sprintf("%.1f", pos("drp"))
 ) |> kable()
 ```
 
@@ -1523,7 +1823,7 @@ tibble::tribble(
 - The spread is wide. About a third to half of the sample pairs show a net loss, because mixing between monthly samples removes mass.
 - These are net accumulation rates. They are lower bounds of the gross release, and like the lake-wide rates they are well below the chamber rates.
 
-**What the chambers show.** Burger et al. (2007) is the only depth-resolved measurement:
+**What the chambers show.** Burger et al. (2007) and the 2026 chambers (Campbell, pers. comm., 2026) are the only depth-resolved measurements:
 
 - **SOD:** similar at all three depths (light-chamber medians `r sprintf("%.1f", bzv(7, "light", "sod"))`, `r sprintf("%.1f", bzv(14, "light", "sod"))` and `r sprintf("%.1f", bzv(20, "light", "sod"))` g O₂/m²/d at 7, 14 and 20 m).
 - **NH₄ and SRP:** release was much higher at 20 m, in the pre-alum lake.
@@ -1534,7 +1834,12 @@ tibble::tribble(
 
 - **Oxygen.** The monitoring cannot tell the model's zone 2 (8–13 m) from zone 1 (13 m to the bed). It constrains only the total demand of the bottom layer (AHOD). The chambers suggest a similar SOD at all depths. Together these support keeping the zone `fsed_oxy` values close to each other, rather than the large mid-depth demand the calibration found (@sec-model-targets).
 - **Nutrients.** Both the chambers (strongly) and the two-layer data (weakly) point to higher NH₄ and P release in the deepest zone. That deepest zone (below about 17 m) holds only about `r scales::percent(bed17, 1)` of the lake bed.
-- **A zone-resolved measurement would need sediment chambers or cores**, as in Burger et al. (2007) and the recent 10/15/20 m study, not water-column monitoring.
+- **2026 chambers:** NH4 and PO4 release was lower at every depth than in 2003–2004, and SOD was lower at 15–20 m but similar near 10 m (medians by depth in @tbl-zone-release). The depth pattern was weaker.
+  - SOD was highest at 10 m (`r sprintf("%.1f", s26("SOD", 10))` g O₂/m²/d) and about `r sprintf("%.1f", s26("SOD", 15))` at 15 and 20 m.
+  - PO4 was `r sprintf("%.1f", min(sed26$med[sed26$variable == "PO4"]))`–`r sprintf("%.1f", max(sed26$med[sed26$variable == "PO4"]))` mg P/m²/d with no clear trend with depth.
+  - NH4 was highest at 20 m.
+  - The fall in deep P release since 2003–2004 (about tenfold at 20 m) is larger than the fall in NH4 or SOD, as expected if alum caps P in particular.
+- **A zone-resolved measurement would need sediment chambers or cores**, as in Burger et al. (2007) and the 2026 study, not water-column monitoring.
 
 
 ## Sudden changes and events {#sec-events}
