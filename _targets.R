@@ -2359,6 +2359,8 @@ list(
   ),
   tar_target(river_wq_sites, read_river_wq_sites(river_wq_file)),
   tar_target(river_wq_data, read_river_wq(river_wq_file)),
+  # pH, alkalinity and other DIC-related river variables, long form, rivers named as in pc10_loads_2026
+  tar_target(river_dic_wq, read_river_dic_wq(river_wq_file)),
 
   #* Extended lake chemistry and CTD (to 2026-06) ----
   # Lake chemistry: the BOPRC workbook on OneDrive (rotorua-pc10/data/raw/bop_wq, added 2026-11-16; the same file

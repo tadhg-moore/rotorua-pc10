@@ -34,6 +34,11 @@ ph_raw |> arrange(datetime, depth_m) |> mutate(datetime = format(datetime, "%Y-%
 
 prof <- tar_read(buoy_profile_daily)
 
+# River pH, alkalinity and related variables (target `river_dic_wq`), long form, oldest first, times in NZST
+rdic <- tar_read(river_dic_wq)
+rdic |> arrange(datetime, river, site_id, variable) |> mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT-12")) |>
+  write.csv("downloads/rotorua_river_dic_chemistry.csv", row.names = FALSE)
+
 alk <- tar_read(alk_data) |>
   mutate(date = as.Date(datetime), site = ifelse(grepl("^EK", site_id), "Site 2", "Site 5"),
          sample = c(DIS = "Discrete", INT = "Integrated", HYP = "Hypolimnion")[sub(".*_", "", site_id)])
@@ -250,12 +255,105 @@ Mostly, yes. `r cc["same_day", "Alkalinity"]` of the `r cc["n", "Alkalinity"]` a
 ggplot(jj, aes(alkalinity_mgl_caco3, ph, colour = site)) + geom_point(size = 2) + labs(x = "Alkalinity (mg/L as CaCO₃)", y = "pH", colour = NULL) + th + theme(legend.position = "top")
 ```
 
+## River pH, alkalinity and other DIC variables
+
+The BOPRC river water quality workbook (`BOPRC - River WQ Data Rotorua.xlsx`, target `river_wq_data`) has 12 monitoring locations on the streams entering Lake Rotorua and the Ōhau Channel outlet. Target `river_dic_wq` pulls the variables that bear on dissolved inorganic carbon (DIC) into long form: pH, alkalinity (`Alkt`), bicarbonate and carbonate, hardness and the major ions, conductivity, water temperature, DOC, dissolved oxygen and discharge. Rivers are named as in the PC10 2026 loads (`data/raw/pc10_loads_2026`): Awahou, Hamurana (Kaikaitahuna at Hamurana Rd), Ngongotaha, Puarenga, Utuhina, Waingaehe, Waiohewa, Waiowhiro and Waiteti, plus the lake outlet as `Ohau outflow`. Ngongotaha and Waiteti each have two sites, kept in `site_id` and `location`. Units are as supplied (g/m³, which equals mg/L); the workbook does not say that alkalinity and hardness are as CaCO₃, though the lake file from the same laboratory is.
+
+```{r}
+#| include: false
+rdic <- rdic |> mutate(date = as.Date(datetime))
+rq <- rdic |> filter(is.na(qc_in_range) | qc_in_range)
+rivers <- sort(setdiff(unique(rdic$river), "Ohau outflow"))
+rivers <- c(rivers, "Ohau outflow")
+rq$river <- factor(rq$river, rivers)
+vsum <- rdic |> group_by(Variable = variable, Unit = unit) |>
+  summarise(Samples = n(), Rivers = n_distinct(river), First = min(date), Last = max(date), Median = signif(median(value), 3), .groups = "drop") |>
+  arrange(desc(Samples))
+n_alk <- sum(rdic$variable == "Alkt"); n_hco3 <- sum(rdic$variable == "HCO3 diss")
+```
+
+```{r}
+#| tbl-cap: "River variables in `river_dic_wq`: number of values, rivers, date range and median (units as supplied)."
+knitr::kable(vsum)
+```
+
+pH, temperature, oxygen, conductivity and discharge are routine monthly measurements with `r format(sum(rdic$variable == "pH"), big.mark = ",")` pH values from 1991 to 2025. Alkalinity is sparse: only `r n_alk` values (mostly the Utuhina and Ngongotaha, 1994 to 2018), and `r n_hco3` bicarbonate values, so alkalinity at the river mouths cannot be taken from the monitoring data directly.
+
+```{r}
+#| tbl-cap: "Number of pH, alkalinity, bicarbonate and conductivity values by river."
+rdic |> filter(variable %in% c("pH", "Alkt", "HCO3 diss", "Hard", "SpC", "Water Temp", "Discharge")) |>
+  count(River = river, variable) |> tidyr::pivot_wider(names_from = variable, values_from = n, values_fill = 0) |>
+  select(River, pH, Alkalinity = Alkt, Bicarbonate = `HCO3 diss`, Hardness = Hard, Conductivity = SpC, Temperature = `Water Temp`, Discharge) |>
+  knitr::kable()
+```
+
+```{r}
+#| label: fig-river-ph
+#| fig-cap: "pH in each river, 1991 to 2025 (grey points: individual samples; line: loess smooth). pH outside 4 to 11 omitted."
+#| out-width: "100%"
+#| fig-height: 8
+ggplot(filter(rq, variable == "pH"), aes(datetime, value)) + geom_point(size = .5, alpha = .35, colour = "grey40") +
+  geom_smooth(method = "loess", formula = y ~ x, span = .3, se = FALSE, colour = "#e31a1c", linewidth = .6) +
+  facet_wrap(~river, ncol = 2) + labs(x = NULL, y = "pH") + th
+```
+
+```{r}
+#| label: fig-river-box
+#| fig-cap: "Distribution of pH, conductivity, water temperature and dissolved oxygen saturation by river (all years)."
+#| out-width: "100%"
+#| fig-height: 7
+rq |> filter(variable %in% c("pH", "SpC", "Water Temp", "DO sat")) |>
+  mutate(variable = c(pH = "pH", SpC = "Specific conductance (µS/cm)", `Water Temp` = "Water temperature (°C)", `DO sat` = "DO saturation (%)")[variable]) |>
+  ggplot(aes(river, value)) + geom_boxplot(outlier.size = .3, fill = "#a6cee3") + coord_flip() +
+  facet_wrap(~variable, scales = "free_x", nrow = 1) + scale_x_discrete(limits = rev) + labs(x = NULL, y = NULL) + th
+```
+
+```{r}
+#| include: false
+med <- rq |> filter(variable == "pH") |> group_by(river) |> summarise(m = median(value))
+wide <- rq |> filter(variable %in% c("Alkt", "HCO3 diss", "SpC")) |>
+  group_by(river, site_id, date, variable) |> summarise(value = mean(value), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = variable, values_from = value)
+a_sp <- wide |> filter(!is.na(Alkt), !is.na(SpC)); h_sp <- wide |> filter(!is.na(`HCO3 diss`), !is.na(SpC))
+r_as <- if (nrow(a_sp) > 3) cor(a_sp$Alkt, a_sp$SpC) else NA
+r_hs <- if (nrow(h_sp) > 3) cor(h_sp$`HCO3 diss`, h_sp$SpC) else NA
+```
+
+```{r}
+#| label: fig-river-alk
+#| fig-cap: "All river alkalinity (g/m³) and bicarbonate (g/m³) values through time, by river."
+#| out-width: "100%"
+#| fig-height: 6
+rq |> filter(variable %in% c("Alkt", "HCO3 diss")) |>
+  mutate(variable = c(Alkt = "Alkalinity", `HCO3 diss` = "Bicarbonate (HCO3)")[variable]) |>
+  ggplot(aes(datetime, value, colour = variable, shape = variable)) + geom_point(size = 1.8) + facet_wrap(~river, ncol = 3) +
+  scale_colour_manual(values = c(Alkalinity = "#1f78b4", `Bicarbonate (HCO3)` = "#e31a1c")) +
+  labs(x = NULL, y = "g/m³", colour = NULL, shape = NULL) + th + theme(legend.position = "top")
+```
+
+```{r}
+#| label: fig-river-alk-spc
+#| fig-cap: "Alkalinity and bicarbonate against specific conductance for samples taken on the same date at the same site."
+#| out-width: "90%"
+#| fig-height: 4
+wide |> tidyr::pivot_longer(c(Alkt, `HCO3 diss`), names_to = "variable", values_to = "value", values_drop_na = TRUE) |>
+  filter(!is.na(SpC)) |> mutate(variable = c(Alkt = "Alkalinity", `HCO3 diss` = "Bicarbonate (HCO3)")[variable]) |>
+  ggplot(aes(SpC, value, colour = river)) + geom_point(size = 2) + facet_wrap(~variable) +
+  labs(x = "Specific conductance (µS/cm)", y = "g/m³", colour = NULL) + th
+```
+
+- **Rivers are close to neutral to slightly acidic**, with median pH from `r r2(min(med$m))` to `r r2(max(med$m))` (see the box plot). `r sum(rdic$qc_in_range == FALSE, na.rm = TRUE)` pH values outside 4 to 11 (a pH of 2.4 in the Puarenga, for example) are flagged `qc_in_range = FALSE` in the download and left out of the figures.
+- **Alkalinity data are too few to describe seasonality or trends:** `r n_alk` values in total, from 1994 to 2018 (the Utuhina ones end in 2007), with `r sum(rdic$variable == "Alkt" & rdic$river == "Utuhina")` in the Utuhina and `r sum(rdic$variable == "Alkt" & rdic$river == "Ngongotaha")` in the Ngongotaha, and none for the Waiteti.
+- **Conductivity is available at nearly every sampling** (`r format(sum(rdic$variable == "SpC"), big.mark = ",")` values), so it may be useful as a covariate to estimate alkalinity. On the dates where both are measured, alkalinity and conductivity have a correlation of `r r2(r_as)` (n = `r nrow(a_sp)`) and bicarbonate and conductivity `r r2(r_hs)` (n = `r nrow(h_sp)`), which is based on very few points and is not a calibrated relationship.
+- A full carbonate-system calculation of DIC (pH and alkalinity, with temperature and ionic strength) is only possible on the dates where pH and alkalinity were measured together; the download has the values side by side in long form for that.
+
 ## Download
 
 The raw, sub-daily pH record from both buoys (`r format(nrow(ph_raw), big.mark = ",")` rows), and the alkalinity, hardness and DOC samples, are available as CSV files. The figures and tables on this page use daily means in 0.5 m depth bins; the download is not averaged.
 
 <a class="btn btn-primary" href="downloads/rotorua_ph_timeseries.csv" download><i class="bi bi-download"></i> Raw pH time series CSV (`r round(file.size("downloads/rotorua_ph_timeseries.csv") / 1e6)` MB)</a>
 <a class="btn btn-outline-primary" href="downloads/rotorua_alkalinity_hardness_doc.csv" download><i class="bi bi-download"></i> Alkalinity, hardness and DOC CSV</a>
+<a class="btn btn-outline-primary" href="downloads/rotorua_river_dic_chemistry.csv" download><i class="bi bi-download"></i> River pH, alkalinity and DIC variables CSV (`r round(file.size("downloads/rotorua_river_dic_chemistry.csv") / 1e6, 1)` MB)</a>
 
 pH file columns:
 
@@ -266,6 +364,8 @@ pH file columns:
 | `value` | pH (pH units) |
 | `source` | `old buoy` or `new buoy` |
 | `qc_in_range` | `TRUE` if 4 < pH < 11; no values are removed |
+
+The river file is in long form (one row per sample and variable, oldest first) with columns `river` (named as in the PC10 2026 loads; the lake outlet is `Ohau outflow`), `site_id`, `location`, `datetime` (NZST), `variable`, `unit`, `value` and `qc_in_range` (pH only: `TRUE` if 4 < pH < 11; `NA` for other variables). Variables are those in the BOPRC workbook: `pH`, `pH - field`, `Alkt` (alkalinity), `HCO3 diss`, `CO3 diss`, `Hard`, `Ca diss`, `Mg diss`, `Na diss`, `K diss`, `Cl diss`, `SO4 diss`, `F diss`, `Anions`, `Cations`, `Ion Balance`, `SpC`, `SpC - field`, `Water Temp`, `DOC`, `DNPOC`, `DO`, `DO sat` and `Discharge`.
 
 The alkalinity file (one row per sample) has `site_id`, `location`, `datetime`, `alkalinity_mgl_caco3`, `doc_gm3` and `hardness_mgl_caco3` (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³).
 
