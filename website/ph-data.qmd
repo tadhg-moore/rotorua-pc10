@@ -262,7 +262,8 @@ The BOPRC river water quality workbook (`BOPRC - River WQ Data Rotorua.xlsx`, ta
 ```{r}
 #| include: false
 rdic <- rdic |> mutate(date = as.Date(datetime))
-rq <- rdic |> filter(is.na(qc_in_range) | qc_in_range)
+rq <- rdic |> filter(qc_in_range)
+sus <- rdic |> filter(!qc_in_range)
 rivers <- sort(setdiff(unique(rdic$river), "Ohau outflow"))
 rivers <- c(rivers, "Ohau outflow")
 rq$river <- factor(rq$river, rivers)
@@ -277,6 +278,15 @@ n_alk <- sum(rdic$variable == "Alkt"); n_hco3 <- sum(rdic$variable == "HCO3 diss
 knitr::kable(vsum)
 ```
 
+**Screening.** Each value is checked against simple plausibility limits (nothing is removed; failures get `qc_in_range = FALSE` and a `qc_reason` in the download): pH below 5.5 or above 9, water temperature below 0 or above 30 °C, DO below 0 or above 20 g/m³, DO saturation below 0 or above 150%, specific conductance of 0 or above 1,000 µS/cm, alkalinity or bicarbonate of 0 or less, and negative discharge. `r nrow(sus)` of the `r format(nrow(rdic), big.mark = ",")` values fail, and all figures and statistics on this page exclude them.
+
+```{r}
+#| tbl-cap: "Values flagged as suspect, by variable and reason."
+sus |> count(Variable = variable, Reason = qc_reason, name = "n") |> arrange(desc(n)) |> knitr::kable()
+```
+
+The pH flags need care. Of the `r sum(sus$variable == "pH")` pH values below 5.5, `r sum(sus$variable == "pH" & sus$river == "Waiohewa")` are in the Waiohewa, where values of 4 to 5.5 recur through 1992 to 2024, so these may be real (acidic water in a small stream, not checked) rather than errors. The single pH of 2.4 in the Puarenga (1993) is the least plausible. The two water temperatures above 30 °C (93.7 and 106.8) look like unit or entry errors, and 10 of the 12 conductivities of exactly 0 fall on two dates (8 Nov 2004 and 26 Jan 2010, several rivers each), which suggests a meter failure or missing values entered as zero.
+
 pH, temperature, oxygen, conductivity and discharge are routine monthly measurements with `r format(sum(rdic$variable == "pH"), big.mark = ",")` pH values from 1991 to 2025. Alkalinity is sparse: only `r n_alk` values (mostly the Utuhina and Ngongotaha, 1994 to 2018), and `r n_hco3` bicarbonate values, so alkalinity at the river mouths cannot be taken from the monitoring data directly.
 
 ```{r}
@@ -289,10 +299,12 @@ rdic |> filter(variable %in% c("pH", "Alkt", "HCO3 diss", "Hard", "SpC", "Water 
 
 ```{r}
 #| label: fig-river-ph
-#| fig-cap: "pH in each river, 1991 to 2025 (grey points: individual samples; line: loess smooth). pH outside 4 to 11 omitted."
+#| fig-cap: "pH in each river, 1991 to 2025 (grey points: individual samples; red: flagged as suspect, pH < 5.5; line: loess smooth of the unflagged values)."
 #| out-width: "100%"
 #| fig-height: 8
+sus_ph <- sus |> filter(variable == "pH") |> mutate(river = factor(river, rivers))
 ggplot(filter(rq, variable == "pH"), aes(datetime, value)) + geom_point(size = .5, alpha = .35, colour = "grey40") +
+  geom_point(data = sus_ph, size = 1.2, colour = "#e31a1c") +
   geom_smooth(method = "loess", formula = y ~ x, span = .3, se = FALSE, colour = "#e31a1c", linewidth = .6) +
   facet_wrap(~river, ncol = 2) + labs(x = NULL, y = "pH") + th
 ```
@@ -342,9 +354,9 @@ wide |> tidyr::pivot_longer(c(Alkt, `HCO3 diss`), names_to = "variable", values_
   labs(x = "Specific conductance (µS/cm)", y = "g/m³", colour = NULL) + th
 ```
 
-- **Rivers are close to neutral to slightly acidic**, with median pH from `r r2(min(med$m))` to `r r2(max(med$m))` (see the box plot). `r sum(rdic$qc_in_range == FALSE, na.rm = TRUE)` pH values outside 4 to 11 (a pH of 2.4 in the Puarenga, for example) are flagged `qc_in_range = FALSE` in the download and left out of the figures.
+- **Rivers are close to neutral to slightly acidic**, with median pH from `r r2(min(med$m))` to `r r2(max(med$m))` (see the box plot). The medians exclude the `r sum(sus$variable == "pH")` pH values below 5.5, which are flagged (see the screening above) and shown in red in the first figure.
 - **Alkalinity data are too few to describe seasonality or trends:** `r n_alk` values in total, from 1994 to 2018 (the Utuhina ones end in 2007), with `r sum(rdic$variable == "Alkt" & rdic$river == "Utuhina")` in the Utuhina and `r sum(rdic$variable == "Alkt" & rdic$river == "Ngongotaha")` in the Ngongotaha, and none for the Waiteti.
-- **Conductivity is available at nearly every sampling** (`r format(sum(rdic$variable == "SpC"), big.mark = ",")` values), so it may be useful as a covariate to estimate alkalinity. On the dates where both are measured, alkalinity and conductivity have a correlation of `r r2(r_as)` (n = `r nrow(a_sp)`) and bicarbonate and conductivity `r r2(r_hs)` (n = `r nrow(h_sp)`), which is based on very few points and is not a calibrated relationship.
+- **Conductivity cannot stand in for alkalinity here.** It is measured at nearly every sampling (`r format(sum(rdic$variable == "SpC" & rdic$qc_in_range), big.mark = ",")` screened values), but where it was measured on the same date as alkalinity the two are only weakly related (correlation `r r2(r_as)`, n = `r nrow(a_sp)`), and bicarbonate and conductivity are essentially unrelated (`r r2(r_hs)`, n = `r nrow(h_sp)`). The scatter plot shows no usable relationship, so a regression estimate of alkalinity from conductivity would not be reliable. River alkalinity would need to be measured.
 - A full carbonate-system calculation of DIC (pH and alkalinity, with temperature and ionic strength) is only possible on the dates where pH and alkalinity were measured together; the download has the values side by side in long form for that.
 
 ## Download
@@ -365,7 +377,7 @@ pH file columns:
 | `source` | `old buoy` or `new buoy` |
 | `qc_in_range` | `TRUE` if 4 < pH < 11; no values are removed |
 
-The river file is in long form (one row per sample and variable, oldest first) with columns `river` (named as in the PC10 2026 loads; the lake outlet is `Ohau outflow`), `site_id`, `location`, `datetime` (NZST), `variable`, `unit`, `value` and `qc_in_range` (pH only: `TRUE` if 4 < pH < 11; `NA` for other variables). Variables are those in the BOPRC workbook: `pH`, `pH - field`, `Alkt` (alkalinity), `HCO3 diss`, `CO3 diss`, `Hard`, `Ca diss`, `Mg diss`, `Na diss`, `K diss`, `Cl diss`, `SO4 diss`, `F diss`, `Anions`, `Cations`, `Ion Balance`, `SpC`, `SpC - field`, `Water Temp`, `DOC`, `DNPOC`, `DO`, `DO sat` and `Discharge`.
+The river file is in long form (one row per sample and variable, oldest first) with columns `river` (named as in the PC10 2026 loads; the lake outlet is `Ohau outflow`), `site_id`, `location`, `datetime` (NZST), `variable`, `unit`, `value`, `qc_in_range` (`FALSE` for values that fail the plausibility screening described above; nothing is removed) and `qc_reason` (the failed rule, otherwise `NA`). Variables are those in the BOPRC workbook: `pH`, `pH - field`, `Alkt` (alkalinity), `HCO3 diss`, `CO3 diss`, `Hard`, `Ca diss`, `Mg diss`, `Na diss`, `K diss`, `Cl diss`, `SO4 diss`, `F diss`, `Anions`, `Cations`, `Ion Balance`, `SpC`, `SpC - field`, `Water Temp`, `DOC`, `DNPOC`, `DO`, `DO sat` and `Discharge`.
 
 The alkalinity file (one row per sample) has `site_id`, `location`, `datetime`, `alkalinity_mgl_caco3`, `doc_gm3` and `hardness_mgl_caco3` (alkalinity and hardness in mg/L as CaCO₃; DOC in g/m³).
 
