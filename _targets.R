@@ -645,7 +645,7 @@ list(
     sediment_chamber, read_sediment_chamber(sediment_chamber_file)
   ),
   #* Sediment zones and the flux data that constrain them (R/sed_zones.R) ----
-  # 5 zones on the GNS model hypsograph, one per chamber depth (zone 1 deepest): 17.5-25, 13-17.5, 8-13, 3.5-8, 0-3.5 m.
+  # 5 zones on the GNS model hypsograph, one per chamber depth (zone 1 deepest): 17.5-bed (25 m or 28 m cut), 13-17.5, 8-13, 3.5-8, 0-3.5 m.
   # Used by the 5-zone calibration base (calibration/hyps_gns/15_make_base_5zone.R, SED_NZONE=5 in calibration/all_stage/lib_all.R).
   tar_target(sed_zones, define_sed_zones(gns_hyps_model)),
   tar_target(sed_zone_glm_param, sed_zone_glm_params(sed_zones)),
@@ -1119,9 +1119,9 @@ list(
   #   },
   #   format = "file"
   # ),
-  # Survey (GNS) hypsograph in model datum, basin cut at 25 m
+  # Survey (GNS) hypsograph in model datum, basin cut at 28 m (25 m until 2026-11-27; the CTD reaches 27 m)
   tar_target(
-    gns_hyps_model, get_gns_hyps_model(gns_hyps, corr_hyps, cut_depth = 25)
+    gns_hyps_model, get_gns_hyps_model(gns_hyps, corr_hyps, cut_depth = 28)
   ),
   tar_target(
     hyps_no_hole, {
@@ -1621,7 +1621,7 @@ list(
     aeme_baseline, readRDS(aeme_base_file)
   ),
 
-  # Alternate baseline on the survey (GNS) hypsograph (gns_hyps_model: basin cut at 25 m, above-surface
+  # Alternate baseline on the survey (GNS) hypsograph (gns_hyps_model: basin cut at 28 m, above-surface
   # extension and surface elevation taken from the current hypsograph). Identical to aeme_base_file in
   # every other respect; sediment zone heights follow the new bed depth via build_calib_base_aeme().
   tar_target(

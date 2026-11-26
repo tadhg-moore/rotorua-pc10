@@ -8,11 +8,13 @@
 #   zone 4 3.5 - 8 m     Burger 7 m
 #   zone 5 0 - 3.5 m     no flux data
 # GLM's zone_heights are the tops of the zones as heights above the bed: bed_depth + level_offset - top depth.
-# On the GNS model hypsograph the bed is at 25 m and the median modelled level 0.5 m above the hypsograph
-# surface (run_gnssodp_best lake.csv), so the 13 m boundary is 12.5 m above the bed, as in the 4-zone base.
+# On the GNS model hypsograph (basin cut at gns_hyps_model cut_depth: 25 m until 2026-11-27, 28 m since) the median modelled level is 0.5 m above the
+# hypsograph surface (run_gnssodp_best lake.csv), so the 13 m boundary is bed + 0.5 - 13 m above the bed (12.5 m for a 25 m bed, as in the 4-zone base).
+# The zone 1 band follows the bed: 17.5 m - bed (17.5-25 m on the 25 m cut, 17.5-28 m on the 28 m cut).
 
-define_sed_zones <- function(hyps, breaks = c(3.5, 8, 13, 17.5), level_offset = 0.5, top_height = 36.35) {
+define_sed_zones <- function(hyps, breaks = c(3.5, 8, 13, 17.5), level_offset = 0.5, top_height = NULL) {
   bed <- abs(min(hyps$depth))
+  if (is.null(top_height)) top_height <- bed + 11.35        # upper limit of the top zone: above the surface, 36.35 for a 25 m bed
   top <- c(rev(breaks), 0)                         # zone 1 (deepest) first
   bot <- c(bed, rev(breaks))
   h <- hyps[hyps$depth <= 0, ]
