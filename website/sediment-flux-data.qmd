@@ -186,6 +186,8 @@ The calibration fitted the in-lake data with sediment fluxes that are partly inc
 
 ## Using the data in calibration {#sec-calibration}
 
+The stage 2 calibration that uses these priors is described on [Calibration Stage 2: Sediment Fluxes](calibration-stage2-sediment.qmd).
+
 ### Where the data enter GLM-AED
 
 GLM-AED's Constant2d sediment model sets the sediment–water fluxes of oxygen, ammonium and phosphate separately for each sediment zone. Each zone has three parameters per flux:

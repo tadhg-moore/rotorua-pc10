@@ -1,0 +1,481 @@
+---
+title: "Calibration Stage 2: Sediment Fluxes and Organic-Matter Supply"
+subtitle: "Bottom-water anoxia, ammonium and phosphorus in two eras (before alum and with alum), with the physics fixed"
+author: "Tadhg Moore"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+img <- "images/stage2"
+kab <- function(x, ...) kable(x, ...) |> kable_styling(full_width = FALSE, bootstrap_options = c("striped", "condensed"))
+rd <- function(f) read.csv(file.path(img, f), check.names = FALSE)
+```
+
+::: {.callout-note}
+## Status (`r format(Sys.Date(), "%d %B %Y")`)
+Both calibrations ran on 21 November 2026 (@sec-results). Their oxygen fit relies on an unphysical shallow-zone sediment oxygen demand, so they are a diagnosis. A second run with the shallow SOD bounded and a surface-oxygen guard (@sec-v2) ran on 21–22 November and fits bottom oxygen without lowering surface DO (@sec-results-v2). Its deepest zone carries about 6× the chamber oxygen demand. A PEST++ IES cross-check of the alum-era v2 run (25 November, @sec-pest) found the same solution with a better fit, with even more demand in the deepest zone.
+:::
+
+## Aim
+
+Stage 2 calibrates the sediment–water exchange and the supply of organic matter to the bottom water. The physics and the rest of the biogeochemistry stay at the current best member. The targets are:
+
+- bottom-water oxygen depletion and anoxia;
+- the build-up of ammonium and phosphate in the bottom water during stratification.
+
+The [sediment chamber data](sediment-flux-data.qmd) act as priors on the sediment fluxes.
+
+## Design
+
+### Two eras
+
+Benthic chambers measured fluxes 4–10× lower in 2026 than Burger et al. measured in 2003–04. GLM-AED's sediment rates are constant in time, so one parameter set cannot represent both. The alum module removes some of the phosphate the sediment releases after dosing starts, but nothing in the model lowers the ammonium release or the sediment oxygen demand.
+
+So there are two calibrations with the same free parameters, each scored on its own period and given its own prior:
+
+| | Pre-alum | Alum era |
+|---|---|---|
+| Period scored | July 2003 – June 2006 | July 2007 – June 2022 |
+| Profile data | monthly CTD casts | daily buoy, plus monthly CTD |
+| Chemistry | monthly (bottom, hypolimnion, surface) | monthly |
+| Sediment flux prior | Burger et al. (2007), 2003–04 | benthic chambers, 2026 (Campbell, pers. comm., 2026) |
+
+Comparing the two posteriors shows:
+
+- how far the sediment rates changed between eras;
+- whether the change matches the change measured in the chambers;
+- whether the oxygen and temperature responses (`ksed`, θ) and the organic-matter supply agree between eras.
+
+If they agree, a single response with rates that changed between eras is supported. If they disagree, more than the rates changed.
+
+### Free parameters
+
+- **Sediment fluxes**, per sediment zone (five zones, @sec-zones-ref): maximum rates for oxygen, ammonium, nitrate and phosphate (`fsed`), with oxygen half-saturation constants (`ksed`) and temperature coefficients (θ).
+- **Organic-matter supply**: particulate organic matter settling, particulate carbon hydrolysis and the temperature coefficient of mineralisation.
+  - The sediment smoke tests showed that, within 3× the chamber value, sediment oxygen demand cannot produce the observed anoxia.
+  - Faster decay in the water column changed little.
+  - The supply of organic matter to the bottom water therefore looks like the limit.
+
+Everything else is fixed, including mixing, light, phytoplankton and the alum module.
+
+### Objective
+
+- **Oxygen:** share of summer days anoxic, annual minimum bottom DO, DO decline rate, areal hypolimnetic oxygen demand.
+- **Nutrients:** summer bottom NH4 and DRP maxima, bottom–surface excess in January–February, hypolimnetic accumulation rates, surface TP in each period.
+- **Stratification:** share of summer days stratified, longest stratified spell, thermocline depth, surface temperature. These stay in as a guard, not as targets the free parameters can move.
+- **Chamber prior:** for each zone with data, the modelled flux at the chamber's oxygen and temperature against the chamber median, in log space (see [Using the data in calibration](sediment-flux-data.qmd#sec-calibration)).
+
+Before the buoy (2007) there are no daily profiles, so the pre-alum calibration is scored on the chemistry, hypolimnetic accumulation and the CTD casts only.
+
+### Sediment zones {#sec-zones-ref}
+
+Five zones (deepest first): 17.5–25, 13–17.5, 8–13, 3.5–8 and 0–3.5 m. The 2026 chambers sit in zones 1–3. Burger et al. sampled zones 1, 2 and 4. The maps are on the [sediment flux data page](sediment-flux-data.qmd#sec-zones).
+
+## Stratification check {#sec-strat}
+
+The physics is fixed in both calibrations, so stratification has to be right first. Otherwise the sediment and organic-matter parameters would compensate for mixing errors. For example, too much mixing would leave too little anoxia and push oxygen demand up.
+
+The check uses the stage 2 starting member, run from 2002 to 2022 so that the same run covers both eras.
+
+```{r}
+#| label: tbl-gate
+#| tbl-cap: "Stratification check. z: model minus observed in units of the observed year-to-year spread (|z| ≤ 1 is within it)."
+g <- rd("strat_gate.csv"); g$pass <- ifelse(g$pass, "pass", "fail"); kab(g, col.names = c("Check", "Value", "Result"))
+```
+
+### Daily buoy record (alum era)
+
+```{r}
+#| label: tbl-p1
+#| tbl-cap: "Priority-1 stratification and oxygen targets, alum era (buoy, July 2007 – June 2022)."
+p1 <- rd("strat_p1.csv") |> mutate(across(c(obs, sim), ~ signif(.x, 3))); kab(p1[, -1], col.names = c("Target", "Observed", "Model", "z"))
+```
+
+- **Stratification is well matched on average.** The share of stratified days, thermocline depth and surface temperature are within a tenth of the year-to-year spread. The longest spell is about half a spread short.
+- **Oxygen is not.** The model has no anoxic days, and its annual minimum bottom DO is about 5 mg/L against 0.3 observed.
+
+![Summer (November–March) stratification by year: buoy and model.](images/stage2/strat_summers.png){#fig-summers}
+
+```{r}
+#| label: tbl-summers
+#| tbl-cap: "Longest stratified spell each summer (days, November–March) and the number of spells, buoy and model."
+s <- rd("strat_summers.csv") |> transmute(`Summer ending` = hy, `Longest, obs` = longest_obs, `Longest, model` = longest_mod, Ratio = ratio,
+                                          `Spells, obs` = n_obs, `Spells, model` = n_mod, `Onset difference (d)` = onset_diff_d)
+kab(s)
+```
+
+- **Spell length.** The single longest spell matches within ±30% in 7 of 15 summers, so the criterion fails. The misses go both ways:
+  - too long in 2008, 2011, 2014, 2018 and 2022, where the model misses a mixing event and joins two spells;
+  - too short in 2009, 2012 and 2020, where it mixes once too often.
+- **Onset.** Stratification starts within a few days of the buoy in most years.
+
+```{r}
+#| label: tbl-anoxia
+#| tbl-cap: "Each observed anoxic event (buoy, bottom DO < 2 mg/L for ≥ 3 days): days the lake had been stratified when it began, observed and modelled, and the modelled bottom DO that day."
+a <- rd("strat_anoxia_spells.csv"); kab(a, col.names = c("Anoxia began", "Duration (d)", "Stratified for (d), obs", "Stratified for (d), model", "Model bottom DO (mg/L)"))
+```
+
+For most anoxic events, the model had been stratified about as long as the lake when anoxia began. Even so, its bottom DO on those days was 5–8 mg/L. The missing anoxia is therefore a shortfall in oxygen demand, not in stratification, which is what stage 2 is meant to fix.
+
+The exceptions are single events: January 2009 (26 days observed, 3 modelled), February 2020 (37 vs 7), and January 2011 and January 2018 (where the model was stratified much longer). The model can't fit those years through the sediment parameters.
+
+### CTD casts (both eras)
+
+```{r}
+#| label: tbl-ctd
+#| tbl-cap: "Model against the CTD casts (mean of sites 2 and 5) by era: bias and RMSE (model − observed), correlation; for 'stratified', the bias is the difference in the share of casts stratified and r is the share of casts where model and observation agree."
+c <- rd("strat_ctd_era.csv"); kab(c, col.names = c("Era", "Variable", "n", "Bias", "RMSE", "r / agreement"))
+```
+
+![Model against the CTD casts, both eras.](images/stage2/strat_ctd.png){#fig-ctd}
+
+![2003–2010: modelled density difference and bottom DO (blue), buoy (grey, from July 2007) and CTD casts (black).](images/stage2/strat_series.png){#fig-series}
+
+- **Same quality in both eras.**
+  - Bottom temperature RMSE is 0.52 °C before alum and 0.53 °C with alum.
+  - The density difference RMSE is 0.1 kg/m³ in both.
+  - Model and casts agree on whether the lake is stratified in 92–93% of casts.
+- **The pre-alum casts also show low bottom DO** (1–2.5 mg/L in the summers of 2004 and 2005) that the model does not reach.
+
+### Verdict
+
+Mean stratification, its timing and bottom temperature are good in both eras. The spell-length criterion fails, but not through a bias. Most anoxic events start after stratified spells of similar length in the model and in the lake. So the sediment calibration can go ahead with the physics fixed.
+
+A few summers will stay hard to fit for reasons the sediment parameters cannot address: 2009, 2011, 2018 and 2020.
+
+### Pre-alum chemistry at the start
+
+```{r}
+#| label: tbl-prealum
+#| tbl-cap: "Pre-alum targets (July 2003 – June 2006) for the starting member. The hypolimnetic accumulation rates are not scored: only two modelled intervals pass the selection, against five observed."
+kab(rd("strat_wq_prealum.csv")[, -1], col.names = c("Target", "Observed", "Model", "z"))
+```
+
+Before alum, the starting member has too much surface TP (70 vs 40 mg/m³) and bottom DRP, and too little bottom NH4. That fits sediment rates taken from the 2026 chambers: NH4 release too low and P release not suppressed enough by oxygen.
+
+## Priors from the chambers
+
+The priors follow [Using the data in calibration](sediment-flux-data.qmd#sec-calibration). In each era, the zones with chamber data get limits relative to that era's chamber-implied rate, and a log-space prior term on the modelled flux at the chamber conditions. Zones without data keep wide limits. The 2026 data are unpublished (Campbell, pers. comm., 2026), so this page shows only model results and summaries.
+
+## Calibration set-up and smoke tests {#sec-setup}
+
+Both eras use ensemble smoother calibration (ES-MDA): 64 members and 5 assimilation steps, with 29 free parameters. The start member has the current best physics and biogeochemistry. Its sediment rates in the zones with data are set to the chamber-implied rates of its era.
+
+- **Sediment limits, zones with data:** multiples of that era's chamber-implied rate. SOD 0.5–8×; NH4 and P release 0.33–3×.
+- **Pre-alum zone 3 (8–13 m):** no Burger data, but it lies between two sampled depths. It takes the geometric mean of its neighbours with a wider range (0.1–10×).
+- **Zones without data otherwise** (alum era 4–5, pre-alum 5) keep wide absolute ranges.
+- **`ksed_frp`:** 5–200, starting at 45.
+- **The other free parameters** (`ksed`, θ, organic-matter supply) have the same limits and start in both eras.
+
+```{r}
+#| label: tbl-limits
+#| tbl-cap: "Limits and start of the free parameters by era (AED units: fsed in mmol/m²/d at 20 °C, maximum rate; w_pom in m/d; ksed in mmol/m³). Zones 1–5 are deepest to shallowest."
+l <- rd("limits.csv"); for (n in names(l)[-1]) l[[n]] <- signif(l[[n]], 3)
+kab(l, col.names = c("Parameter", "Alum: low", "Alum: high", "Alum: start", "Pre-alum: low", "Pre-alum: high", "Pre-alum: start"))
+```
+
+The Burger-era start rates are 4–8× the 2026 ones for SOD and NH4, and 2–8× for P.
+
+### Smoke tests: the start member in each era
+
+```{r}
+#| label: tbl-smoke
+#| tbl-cap: "Objective terms of the start member (0 = match). Lake terms are z scores scaled by priority weight and 0.7 (|term| ≈ 0.6–0.7 × z); chamber terms (c_) are log ratios in tolerance units × 0.5."
+sa <- rd("smoke_terms_alum.csv"); sp <- rd("smoke_terms_prealum.csv")
+full_join(sa, sp, by = "term") |> kab(col.names = c("Term", "Alum era", "Pre-alum"))
+```
+
+- **Alum era.** The 25 terms are all finite, and one run takes about 4 minutes.
+  - The stratification guard terms are near zero.
+  - The two largest misfits are annual minimum bottom DO (too high) and the TP rise after the dosing pause (too small).
+  - Areal oxygen demand is somewhat low, and the anoxic share is close to the observed (small) median.
+- **Pre-alum.** The 16 terms are all finite, and one run takes about 2 minutes.
+  - At the Burger-based start, surface TP, bottom DRP and bottom NH4 are all well above observed. Taken at face value, Burger's rates release more than the 2003–06 lake record allows.
+  - Bottom DO on the CTD dates is about 1 mg/L too high.
+  - So the pre-alum calibration will have to pull release below its prior. How far it goes will show how much the two kinds of evidence disagree.
+- **Chamber terms** start near zero in both eras, because the start sits on the anchors.
+
+With 4 workers, the alum-era calibration took about 5 hours and the pre-alum one about 1.5.
+
+## Results of the first runs {#sec-results}
+
+Both calibrations ran on 21 November 2026, one after the other. Every model run succeeded: 64 members × 6 batches per era.
+
+- **Alum era:** the median ensemble misfit fell from 2.98 to 1.28, and the best member reached 0.83.
+- **Pre-alum:** the median fell from 5.85 to 4.26, and the best member reached 3.62.
+
+::: {.callout-warning}
+## The oxygen fit is not physical
+Both calibrations reached the low bottom DO by giving a shallow zone with no chamber data an extreme sediment oxygen demand:
+
+- alum era: 3.5–8 m, about 35 g O₂/m²/d;
+- pre-alum: 0–3.5 m, about 15 g O₂/m²/d.
+
+That is 10–70× the deep zones and the chambers. That sediment lies under well-mixed, oxygenated water, so its demand drains oxygen from the whole lake. The winter bottom-DO peaks sit 1–2 mg/L below the observations (@fig-check-do).
+
+When the shallow SOD is capped at the 8–13 m value, the alum-era oxygen fit goes back to that of the start member (@tbl-check). These calibrations are therefore a diagnosis, not a result. Within the chamber priors, the deep-zone SOD and the organic-matter supply as set up cannot produce the observed oxygen depletion.
+:::
+
+### Fit by era, including the cross-runs
+
+Each era's best member was run over 2002–2022 and scored in both eras, so the cross-runs come from the same runs.
+
+```{r}
+#| label: tbl-check
+#| tbl-cap: "Model value (z) of the oxygen, nutrient and stratification targets for the start member, each era's best member, and the alum-era best with the 0–8 m SOD capped at the 8–13 m value; then the v2 best members and the PEST++ best member of the alum-era v2 (@sec-pest). Pre-alum bottom DO is on the CTD dates."
+ck <- rd("check_scores.csv"); kab(ck[, -2], col.names = c("Era", "Target", "Observed", names(ck)[-(1:4)]))
+```
+
+![Bottom DO (18–20.5 m), 2003–2022: start member, the two calibrations, the capped alum-era member, the v2 best members and the PEST++ best member, against the buoy (grey) and CTD casts (black).](images/stage2/check_bottom_do.png){#fig-check-do}
+
+- **Alum era:**
+  - Minimum bottom DO, anoxic days and oxygen demand improve only with the high shallow SOD. With it capped, all three are back near the start member.
+  - Surface TP under alum gets worse (29 vs 16 mg/m³), and the TP response to the dosing pause improves (z −6.3 to −2.8).
+  - Hypolimnetic NH4 accumulation stays well below observed.
+- **Pre-alum:**
+  - Surface TP is far too high in every run (66–91 against 40 mg/m³), so it does not depend on the sediment set. The excess comes from somewhere other than the sediment, such as the pre-alum external loads or the P sinks.
+  - The pre-alum calibration pulls NH4 and P release about 1–1.7 tolerances below Burger et al. (the chamber terms of its best member).
+- **Cross-runs.** The pre-alum sediment set run in the alum era matches hypolimnetic NH4 and DRP accumulation (z 0.0), with bottom NH4 too high. The alum-era set run before alum gives too little bottom NH4. Release in the deep zones did change between eras, at least for N.
+
+### Sediment rates by era
+
+![Modelled flux at a common condition (bottom DO 2 mg/L, 18 °C) by zone: prior (open) and posterior (filled) of the two calibrations.](images/stage2/era_flux_ref.png){#fig-era-flux}
+
+```{r}
+#| label: tbl-era-ratio
+#| tbl-cap: "Posterior median flux at DO 2 mg/L, 18 °C, by era, the ratio pre-alum / alum era, and the ratio of the chamber medians in the same zone (Burger 2003–04 / chambers 2026). Zones with both surveys only."
+fr <- rd("era_flux_ref.csv") |> filter(stage == "post", !is.na(chamber_ratio)) |> select(era, zone, variable, median, model_ratio, chamber_ratio) |>
+  tidyr::pivot_wider(names_from = era, values_from = median)
+kab(fr[, c(1, 2, 5, 6, 3, 4)], col.names = c("Zone", "Variable", names(fr)[5:6], "Model ratio", "Chamber ratio"))
+```
+
+- **Deep zones (17.5–25 m and 13–17.5 m).** The change between eras in SOD (3.5× and 3.0×) matches the chambers (3.6× and 3.7×). In zone 2, NH4 and P change about as much as the chambers show. In zone 1, NH4 and P change less (2.6× against 5.8× and 9.3×), because the pre-alum lake data pull Burger's deep release down.
+- **Shared parameters.**
+  - `ksed_frp` is the best-constrained parameter in both eras: posterior median 36 with alum and 15 before, both far above the earlier 2.6. Phosphate release depends only weakly on oxygen in both eras.
+  - The other shared parameters overlap between eras and stay close to their priors.
+  - POM settling stayed slow in both (0.008–0.013 m/d). The calibrations did not raise the organic-matter supply; they used the shallow SOD instead.
+
+![Shared parameters by era: prior (open) and posterior (filled), median and 5–95%.](images/stage2/era_params.png){#fig-era-params}
+
+### Second run: set-up {#sec-v2}
+
+The second run keeps the design and adds two constraints. Its results are in @sec-results-v2.
+
+**1. Shallow SOD restrained.** The SOD of the 0–8 m zones is bounded at 0.5–3× a measured rate:
+
+- **Alum era:** the 8–13 m chamber, the shallowest measured. Its higher SOD includes oxygen uptake by kākahi (freshwater mussels) living in the shallow sediment (Campbell, pers. comm., 2026), and kākahi also live in the 0–8 m zones.
+- **Pre-alum:** Burger et al.'s 7 m rate.
+
+The upper bound works out at about 3 g O₂/m²/d at saturation and 20 °C. That is the most oxygen the still water layer above the sediment can supply. The first runs went to 15–35 g O₂/m²/d.
+
+**2. Surface oxygen guard.** Two terms on surface DO (0–1.5 m), each as mean model − observed bias ÷ 0.5 mg/L:
+
+- over the whole year;
+- over June–September, when the lake is mixed and any lake-wide oxygen sink shows.
+
+The observations are the daily buoy in the alum era and the monthly CTD casts in the pre-alum era. From 2007 the CTD surface DO reads about 1.8 mg/L below the buoy on the same days, so the CTD is used only before the buoy.
+
+The guard separates the first runs clearly (@tbl-surf-do). The start member is already 0.5–1 mg/L low in winter; the sediment set cannot fix that offset.
+
+```{r}
+#| label: tbl-surf-do
+#| tbl-cap: "Surface DO bias (model − observed, mg/L) of the first runs: alum era against the buoy, pre-alum against the CTD casts."
+kab(rd("surf_do_check.csv"), col.names = c("Run", "Alum era, year", "Alum era, Jun–Sep", "Pre-alum, year", "Pre-alum, Jun–Sep"))
+```
+
+**Smoke tests (start member).** Both eras run with finite terms: 27 in the alum era, 18 pre-alum. The surface terms of the start member are −0.2 and −1.0 (alum era) and −0.6 and −0.8 (pre-alum), after the 0.7 weight.
+
+**Still outside stage 2.** Pre-alum surface TP is too high whatever the sediment does, so the pre-alum inflow loads need checking separately.
+
+## Results of the second run {#sec-results-v2}
+
+Both v2 calibrations ran on 21–22 November 2026, and every model run succeeded.
+
+- **Alum era:** the median misfit fell from 2.92 to 1.49, and the best member reached 1.06.
+- **Pre-alum:** the median fell from 5.28 to 3.57, and the best member reached 1.23.
+
+The v2 best members are the last two columns of @tbl-check and the bottom two panels of @fig-check-do.
+
+**Oxygen is now fitted without draining the lake.**
+
+- Alum era, bottom water:
+  - minimum bottom DO z +1.7, as in the first run;
+  - anoxic days −0.4;
+  - oxygen demand (AHOD) −0.5;
+  - DO decline rate +0.5.
+- Surface DO stays at the start member's level: −0.4 mg/L over the year, −1.0 in June–September. The first run was at −2.5 and −2.2.
+- The winter bottom-DO peaks now reach the observations.
+- Shallow SOD settled at about 1.3–1.7 g/m²/d (Nov–Mar mean), inside its new bounds.
+
+**Hypolimnetic accumulation matches.** In the alum era, NH4 and DRP accumulation both reach z 0.0, and the summer bottom NH4 maximum matches (309 vs 311 mg/m³). The bottom DRP maximum is still too high (+0.8).
+
+**The extra oxygen demand comes from three places:**
+
+- **The deepest zone (17.5–25 m).** Its SOD averages 2.6 g O₂/m²/d over Nov–Mar, about 6× its chamber-based start and inside the 0.5–8× range.
+  - That is above what the chambers measured.
+  - It is also near or above the diffusion ceiling at the low bottom DO of late summer.
+  - So it most likely stands in for demand the chambers do not see, such as methane and reduced iron and sulphide diffusing up and oxidising in the water column. It should not be read as a measured sediment rate.
+- **A lower `ksed_oxy` in the alum era** (32 against 75 mmol/m³), which keeps sediment demand high as the bottom water runs out of oxygen.
+- **The 8–13 m zone**, at 1.7 g/m²/d.
+
+**What got worse.**
+
+- **Alum-era surface TP:** z +4.2 (start member +1.9).
+- **Pre-alum:**
+  - surface TP improves (60 against 70 mg/m³ for the start member), but is still too high;
+  - the bottom NH4 maximum is now too high (+1.8);
+  - bottom DO on the CTD dates is 1.8 mg/L too high.
+
+```{r}
+#| label: tbl-era-ratio-v2
+#| tbl-cap: "Second run: posterior median flux at DO 2 mg/L, 18 °C, by era, the ratio pre-alum / alum era, and the ratio of the chamber medians in the same zone (Burger 2003–04 / chambers 2026)."
+fr2 <- rd("era_flux_ref_v2.csv") |> filter(stage == "post", !is.na(chamber_ratio)) |> select(era, zone, variable, median, model_ratio, chamber_ratio) |>
+  tidyr::pivot_wider(names_from = era, values_from = median)
+kab(fr2[, c(1, 2, 5, 6, 3, 4)], col.names = c("Zone", "Variable", names(fr2)[5:6], "Model ratio", "Chamber ratio"))
+```
+
+**Comparing the eras.**
+
+- **Deep SOD:** with the shallow loophole closed, deep-zone SOD is now about the same in both eras (model ratio 1.1 in zone 1, 2.2 in zone 2, against the chambers' 3.6–3.7). The lake data ask for high deep demand in both eras, so the drop the chambers show is not visible in the oxygen record.
+- **NH4:** release in zone 2 changes about as much as the chambers show (8.5× vs 7.8×); zone 1 changes less (3.2× vs 5.8×).
+- **P:**
+  - Zone 1 changes far less than the chambers show (1.5× vs 9.3×).
+  - `ksed_frp` now differs between eras: 54 with alum against 10 before.
+  - So before alum, P release depended more strongly on low oxygen.
+- **Cross-run:** the pre-alum v2 set run in the alum era gives the best alum-era surface TP of any run (19 mg/m³, z +1.2). It still matches accumulation, but it misses the dosing-pause response (z −6.2).
+
+![Second run: modelled flux at a common condition (bottom DO 2 mg/L, 18 °C) by zone, prior (open) and posterior (filled).](images/stage2/era_flux_ref_v2.png){#fig-era-flux-v2}
+
+![Second run: shared parameters by era, prior (open) and posterior (filled), median and 5–95%.](images/stage2/era_params_v2.png){#fig-era-params-v2}
+
+### Prior and posterior distributions
+
+The full 64-member ensembles before (prior) and after (posterior) calibration, for every free parameter. Where the posterior sits on the prior, the lake data say little about that parameter.
+
+![Second run: prior and posterior of the shared parameters, both eras. The prior is the same in both eras.](images/stage2/prior_post_shared_v2.png){#fig-prior-post-shared}
+
+::: {.panel-tabset}
+## Alum era
+
+![Second run, alum era: prior (grey) and posterior (blue) of every free parameter. Dashed lines: calibration range. Dotted: start value.](images/stage2/prior_post_alum_v2.png){#fig-prior-post-alum}
+
+## Pre-alum
+
+![Second run, pre-alum: prior (grey) and posterior (orange) of every free parameter. Dashed lines: calibration range. Dotted: start value.](images/stage2/prior_post_prealum_v2.png){#fig-prior-post-prealum}
+:::
+
+- **The data move few parameters.** Most posteriors sit on their priors.
+- **Alum era:**
+  - Deepest-zone SOD (`fsed_oxy` z1) moves furthest, towards the top of its range.
+  - `ksed_oxy` moves down.
+  - `ksed_frp` narrows.
+- **Pre-alum:**
+  - `ksed_frp` moves well down.
+  - `ksed_amm` and `theta_minerl` move down.
+  - Deepest-zone P release moves down, and the 13–17.5 m zone moves up.
+  - These are the parameters the eras disagree on. Pre-alum deep SOD stays near its Burger-based prior.
+
+## Cross-check with PEST++ IES {#sec-pest}
+
+To check that the result does not depend on the hand-written ES-MDA solver, the alum-era v2 calibration was run again with PEST++ IES (version 5.2.16), through `aemetools::calib_aeme()`. Both solvers had the same problem:
+
+- **the same model:** the start member, with the physics and every other parameter fixed;
+- **the same 29 free parameters** with the same ranges, log-scaled in the same places;
+- **the same 64 prior members.** Iteration 0 gives the same misfits in both runs (@tbl-pest-phi);
+- **the same 27 objective terms** (`calibration/all_stage/lib_objective.R`), with the same noise;
+- **the same budget:** 5 updates, about 400 model runs.
+
+What differs is how the solvers update the ensemble:
+
+- PEST++ tries three step sizes on a 4-member subset each iteration, then runs the best one on the whole ensemble.
+- It drops members whose misfit is more than 2 SD above the mean. 56 of the 64 members were left at the end.
+- ES-MDA takes five fixed steps (inflation α = 5 each) and keeps every member.
+
+The run took 7.6 hours on 4 agents (25 November 2026). Set-up and checks: `calibration/all_stage/pest_sed/README.md`.
+
+```{r}
+#| label: tbl-pest-phi
+#| tbl-cap: "Misfit (mean of the squared objective terms) by iteration: ensemble mean, median and best member. Iteration 0 is the shared prior."
+ph <- rd("pest_phi_alum.csv") |> tidyr::pivot_wider(names_from = solver, values_from = c(n, mean, median, best))
+kab(ph[, c("iter", "mean_ES-MDA", "mean_PEST++ IES", "median_ES-MDA", "median_PEST++ IES", "best_ES-MDA", "best_PEST++ IES", "n_PEST++ IES")],
+    col.names = c("Iteration", "ES-MDA", "PEST++", "ES-MDA", "PEST++", "ES-MDA", "PEST++", "PEST++ members")) |>
+  add_header_above(c(" " = 1, "Mean" = 2, "Median" = 2, "Best" = 2, " " = 1))
+```
+
+![Misfit by iteration for the two solvers (log scale). Boxes: ensemble; diamonds: best member.](images/stage2/pest_phi_alum.png){#fig-pest-phi}
+
+**PEST++ fits better with the same number of runs.** Its ensemble mean misfit after one update (1.86) is about where ES-MDA was after three. At the end, the mean is 1.16 against 1.52, and the best member 0.95 against 1.06.
+
+```{r}
+#| label: tbl-pest-terms
+#| tbl-cap: "Objective terms (0 = match) of the prior, the two posteriors (ensemble median) and each solver's best member. Lake terms are z scores × priority weight × 0.7; chamber terms (c_) are log ratios in tolerance units × 0.5."
+tp <- rd("pest_terms_alum.csv"); kab(tp, col.names = c("Term", "Prior", "ES-MDA", "PEST++", "ES-MDA best", "PEST++ best"), digits = 2) |>
+  add_header_above(c(" " = 2, "Posterior median" = 2, " " = 2))
+```
+
+**The fit improves where the oxygen record is.**
+
+- **Better in PEST++:**
+  - minimum bottom DO, 3.5 → 1.1;
+  - DO decline rate, 0.5 → 0.0;
+  - AHOD, −0.6 → −0.3;
+  - summer anoxic days, −0.7 → −0.4;
+  - hypolimnetic NH4 accumulation, −0.4 → 0.0.
+- **The price is the deepest-zone chamber SOD term**, which gets worse: 1.6 → 2.3.
+- **Little change** in surface TP, the dosing-pause response and surface DO. These are the largest misfits left, and the sediment parameters cannot fix them.
+
+![Posterior median and 5–95% range of each free parameter for the two solvers, as a position in the calibration range.](images/stage2/pest_params_alum.png){#fig-pest-params}
+
+**The two solvers find the same solution; PEST++ goes further along it.**
+
+- **More deep oxygen demand.** The deepest-zone `fsed_oxy` rises further, near the top of its range: posterior median −113 against −60 mmol/m²/d. `ksed_oxy` falls further (17 against 32 mmol/m³), so sediment demand holds up as the bottom water runs out of oxygen.
+- **Shallow P release falls** (zones 4–5, about 0.3× the ES-MDA median). Few lake data bear on it.
+- **Everything else is within about 0.75–1.4×**, with ranges that overlap.
+- **The posterior ranges are similar or wider in PEST++.** ES-MDA's fixed steps narrow the ensemble a little more. Neither ensemble collapsed.
+
+### The PEST++ best member over 2002–2022
+
+The PEST++ best member was run forward over 2002–2022 in the same way as the ES-MDA best members. It is the last column of @tbl-check and the bottom panel of @fig-check-do.
+
+```{r}
+#| label: tbl-pest-zoneflux
+#| tbl-cap: "Mean modelled sediment flux, November–March 2008–2022, by zone (1 = deepest), for the alum-era v2 best members of the two solvers: SOD in g O₂/m²/d (uptake), NH₄ in mg N/m²/d and PO₄ in mg P/m²/d (release)."
+zf <- rd("check_zoneflux.csv") |> filter(era == "alum era (2008-22)", run %in% c("alum-era v2", "alum-era v2, PEST++")) |>
+  mutate(run = ifelse(run == "alum-era v2", "ES-MDA", "PEST++")) |> select(variable, run, `zone 1`:`zone 5`) |> arrange(variable, run)
+kab(zf, col.names = c("Flux", "Solver", paste("Zone", 1:5)), digits = 3)
+```
+
+- **Deepest-zone SOD** is 3.0 g O₂/m²/d (Nov–Mar mean), against 2.6 for the ES-MDA best. That is about 7× the chambers. The reading of @sec-results-v2 holds, and more strongly: the lake record asks for more oxygen demand at depth than the chambers measure.
+- **The 8–13 m zone** carries less (1.3 against 1.7 g/m²/d), so the demand has moved deeper.
+- **Shallow P release is nearly off.** It is about 0.02 mg P/m²/d in zones 4–5, against 3.4 and 0.06 for ES-MDA.
+  - Surface TP under alum improves (24 against 27 mg/m³; z +3.2 against +4.2).
+  - The TP response to the dosing pause gets worse (z −4.4 against −3.4).
+  - The two targets pull on the same shallow release.
+- **Bottom water fits the same or better.** Minimum bottom DO z +1.3, bottom NH4 maximum 339 against 311 mg/m³, and the NH4 excess −0.3 (ES-MDA −1.0). Surface DO is the same as ES-MDA.
+
+**What the cross-check settles:**
+
+- **The stage 2 result is not a quirk of the ES-MDA code.** An independent solver on the same problem finds the same deep-SOD solution and fits the oxygen record better.
+- **PEST++ is the better solver for later calibrations here.** It is more efficient at the same run budget.
+- **One caution.** GLM-AED responds to parameter changes of about 1e-10, the rounding in PEST's 10-digit parameter files. That puts a small noise floor on the objective. It does not matter for ensemble methods, but rules out finite-difference gradient methods (`pestpp-glm`).
+
+
+## Caveats
+
+- **Pre-alum constraint is weak.** The record is three years of monthly casts and chemistry with no daily profiles, so the pre-alum posterior may stay close to its prior.
+- **Chamber and model P fluxes differ in kind.** In the alum era, the model's sediment P release is partly taken up by benthic alum before it reaches the water. The chambers measure the net flux.
+- **Single-summer misfits.** Stratified spells that are too long or too short in individual summers (@sec-strat) will show up as anoxia misfits in those years, whatever the sediment parameters.
