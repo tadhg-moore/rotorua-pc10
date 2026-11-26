@@ -337,6 +337,85 @@ ggplot(cm, aes(Date, value, colour = site)) +
   theme(legend.position = "top")
 ```
 
+#### Dose on the sampling day and apparent FRP uptake
+
+Pairing the two sites by sample date and adding the Puarenga dose on that day (portal extract) lets us estimate how much dissolved reactive P (FRP, reported here as DRP) disappears between the sites. Three quantities are calculated:
+
+- **FRP removed** = upstream DRP − downstream DRP (µg/L), and as a percentage of the upstream value.
+- **Apparent molar Al:P removed** = (downstream Al − upstream Al) ÷ (FRP removed), both converted to mol/L. This uses *total* Al, so it includes Al that is not bound to P.
+- **Implied flow** = Puarenga dose (kg Al/day) ÷ the Al increase (mg/L). If the Al increase is all from the dosing, this should be close to the stream flow on the day, and it is a check on whether the two sites bracket the dosing.
+
+```{r}
+#| label: tbl-uptake
+#| tbl-cap: "Paired Puarenga samples with the dose on the day and apparent FRP uptake. Dose is the daily mean from the Environmental Data Portal."
+cm_raw <- suppressMessages(read_excel(portal_file, sheet = 2, skip = 4, col_names = FALSE, col_types = "text"))
+nm <- c("dt", "pH", "TP", "DRP", "Al")
+cm_ds <- cm_raw |> select(1:5) |> setNames(nm) |> mutate(across(everything(), \(x) suppressWarnings(as.numeric(x)))) |>
+  filter(!is.na(dt), dt > 40000) |> mutate(Date = as.Date(floor(dt), origin = "1899-12-30")) |> select(-dt)
+cm_us <- cm_raw |> select(7:11) |> setNames(nm) |> mutate(across(everything(), \(x) suppressWarnings(as.numeric(x)))) |>
+  filter(!is.na(dt), dt > 40000) |> mutate(Date = as.Date(floor(dt), origin = "1899-12-30")) |> select(-dt)
+
+uptake <- inner_join(cm_ds, cm_us, by = "Date", suffix = c("_ds", "_us")) |>
+  left_join(portal |> select(Date, dose = Puarenga), by = "Date") |>
+  mutate(
+    dose7 = zoo::rollapplyr(
+      portal$Puarenga, 7, mean, fill = NA)[match(Date, portal$Date)],
+    frp_removed_ugL = (DRP_us - DRP_ds) * 1000,
+    frp_removed_pct = 100 * (DRP_us - DRP_ds) / DRP_us,
+    dAl_mgL = Al_ds - Al_us,
+    alp_molar = (dAl_mgL / 1000 / mw_Al) / ((DRP_us - DRP_ds) / 1000 / mw_P),
+    implied_flow_m3s = dose / dAl_mgL * 1000 / 86400
+  ) |>
+  filter(!is.na(DRP_us), !is.na(DRP_ds))
+
+uptake |>
+  transmute(Date,
+            `Dose (kg Al/d)` = round(dose),
+            `7-d mean dose` = round(dose7),
+            `DRP up (µg/L)` = round(DRP_us * 1000, 1),
+            `DRP down (µg/L)` = round(DRP_ds * 1000, 1),
+            `FRP removed (µg/L)` = round(frp_removed_ugL, 1),
+            `Removed (%)` = round(frp_removed_pct),
+            `Al up (mg/L)` = Al_us, `Al down (mg/L)` = Al_ds,
+            `Al:P removed (mol/mol)` = round(alp_molar),
+            `Implied flow (m³/s)` = round(implied_flow_m3s, 2))
+```
+
+```{r}
+#| label: fig-uptake
+#| fig-cap: "Apparent FRP removal between the upstream and downstream Puarenga sites against the dose on the sampling day. Point labels show the sample month."
+#| fig-height: 4
+#| fig-width: 8
+ggplot(uptake, aes(dose, frp_removed_pct)) +
+  geom_point(size = 2.5, colour = "#eb6834") +
+  geom_text(aes(label = format(Date, "%b%y")), vjust = -0.9, size = 3) +
+  labs(x = "Puarenga dose on sampling day (kg Al/day)", y = "Apparent FRP removal (%)") +
+  coord_cartesian(ylim = c(NA, 105))
+```
+
+```{r}
+#| label: uptake-stats
+dosed <- uptake |> filter(dose > 0)
+undosed <- uptake |> filter(dose == 0)
+alp_ok <- dosed |> filter(dAl_mgL > 0)   # drop the April 2026 storm sample (upstream Al higher than downstream)
+```
+
+**Dosed days.** On the `r nrow(dosed)` sampling days with dosing (daily mean `r round(min(dosed$dose))` to `r round(max(dosed$dose))` kg Al/day) the apparent FRP removal ranged from `r round(min(dosed$frp_removed_pct))` to `r round(max(dosed$frp_removed_pct))`% (median `r round(median(dosed$frp_removed_pct))`%, about `r round(median(dosed$frp_removed_ugL))` µg/L), leaving `r round(min(dosed$DRP_ds * 1000), 0)` to `r round(max(dosed$DRP_ds * 1000), 0)` µg/L downstream. Within this narrow range of doses there is no clear relationship between dose and removal (@fig-uptake); the doses were similar on most days, and the downstream DRP is near the 4 µg/L detection limit on several dates, so the percentage removal is capped by the upstream concentration.
+
+**Undosed days.** On the `r nrow(undosed)` sampling days with a recorded dose of zero (May and June 2026) removal fell to `r paste(round(undosed$frp_removed_pct), collapse = " and ")`%, and total Al downstream fell to `r paste(undosed$Al_ds, collapse = " and ")` mg/L (upstream `r paste(undosed$Al_us, collapse = " and ")` mg/L). This lines up with the drop in downstream Al and the rise in downstream DRP in @fig-puarenga, and is the best evidence in this data set that the sites bracket the dosing and that the removal is mostly alum. Without alum the residual removal of a few µg/L is the background difference between the sites. (The dosing record, not a different behaviour of the plant, is the likely reason; BOPRC should confirm the dosing was off.)
+
+**Apparent Al:P.** The apparent molar Al:P of the removal on dosed days is large, median `r round(median(alp_ok$alp_molar))` mol/mol (range `r round(min(alp_ok$alp_molar))` to `r round(max(alp_ok$alp_molar))`), against about 0.7 in jar tests and about 7 operationally. Only a small fraction of the Al that is added is needed for the DRP that is removed, because the stream carries only about 30 µg/L of DRP and the dose adds about 1 mg/L of Al. The rest of the Al is in floc that is carrying other particles, in particulate P, or is available to bind further P downstream (and in the lake). The April 2026 storm sample is excluded: upstream Al exceeded downstream (3.3 against 1.9 mg/L), so the dose cannot be backed out.
+
+**Implied flow.** Dividing the dose by the Al increase gives a median of `r round(median(alp_ok$implied_flow_m3s), 1)` m³/s on dosed days (range `r round(min(alp_ok$implied_flow_m3s), 1)` to `r round(max(alp_ok$implied_flow_m3s), 1)`). That is a plausible magnitude for the Puarenga, which supports the interpretation that the Al increase is the dose. It should be compared with the gauged flow on those days.
+
+Caveats on these estimates:
+
+- **Only a handful of paired samples**, taken for wastewater compliance, not to measure alum performance.
+- **The sites bracket the wastewater plant as well as (possibly) the dosing point.** Plant effluent, groundwater and dilution between the sites change DRP and Al independently of alum, so the removal is an upper bound for alum alone if effluent adds DRP, and a lower bound if it dilutes.
+- **DRP is near the detection limit** on several dates (about 4 µg/L), so the percentages are sensitive to rounding.
+- **Total Al is not dissolved Al.** The mol Al:mol P is an upper bound for what binds P.
+- **Daily mean dose** does not capture the dose at the actual sampling hour, and travel time between dosing point and site means the relevant dose may be from the previous day (the 7-day mean is given for context).
+
 From August 2025 to April 2026 total Al downstream of the plant was high (about 1 to 2 mg/L) and DRP low, while upstream DRP was higher and Al about 0.3 to 0.5 mg/L. The pH downstream is lower, around 5.6 to 6.3, which is at or below the lower end of the 6 to 8 window for efficient binding. From May 2026 downstream Al drops to 0.4 to 0.6 mg/L and DRP rises towards upstream values; the cause is not stated in the file (a change in dosing is one possibility). The April 2026 sample (probably a storm event) shows a TP and Al spike at both sites. These are only a few samples and the sampling locations are for wastewater compliance, not for the dosing itself, so they are indicative.
 
 ## How the data are used in the model
